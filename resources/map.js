@@ -1,10 +1,13 @@
-/*global $:false,google:false*/
-$(function() {
-	'use strict';
+/*jslint browser:true*/
+/*global $:false,google:false,console:false,search:false*/
+'use strict';
 
-	var _defaultMapOptions = {
-		center: new google.maps.LatLng(-33.8688, 151.2195),
-		zoom: 13,
+
+var map = {
+
+	defaultMapOptions: {
+		center: new google.maps.LatLng(20, 12),
+		zoom: 2,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		mapTypeControl: true,
 		mapTypeControlOptions: {
@@ -25,18 +28,20 @@ $(function() {
 			position: google.maps.ControlPosition.BOTTOM_LEFT
 		},
 		streetViewControl: false
-	};
+	},
 
-	var _mapCanvas = $('#mapCanvas')[0];
-	var _map = null;
-	var _searchField = $('#searchTextField')[0];
-	var _icon = 'resources/images/marker.png';
+	// contains the actual Google Map element
+	el: null,
+	icon: 'resources/images/marker.png',
 
 
-	function initialize() {
-		_map = new google.maps.Map(_mapCanvas, _defaultMapOptions);
-		var autocomplete = new google.maps.places.Autocomplete(_searchField);
-		autocomplete.bindTo('bounds', _map);
+	/**
+	 * Called by search's init function.
+	 */
+	initialize: function() {
+		map.el = new google.maps.Map(search.mapCanvas, map.defaultMapOptions);
+		var autocomplete = new google.maps.places.Autocomplete(search.searchField);
+		autocomplete.bindTo('bounds', map.el);
 
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 			var place = autocomplete.getPlace();
@@ -50,10 +55,10 @@ $(function() {
 
 			// if the place has a geometry, then present it on a map
 			if (place.geometry.viewport) {
-				_map.fitBounds(place.geometry.viewport);
+				map.el.fitBounds(place.geometry.viewport);
 			} else {
-				_map.setCenter(place.geometry.location);
-				_map.setZoom(17);
+				map.el.setCenter(place.geometry.location);
+				map.el.setZoom(17);
 			}
 
 			var numAddressComponents = place.address_components.length;
@@ -85,36 +90,25 @@ $(function() {
 					break;
 			}
 
-			$.ajax({
-				url: "ajax/getHotspots.php",
-				data: {
-					regionType: regionType,
-					region: region
-				},
-				type: "POST",
-				dataType: "json",
-				success: displayHotspots,
-				error: function(response) {
-					console.log("error: ", response);
-				}
-			});
+			// not terribly pretty. Will use requireJS and make this into a pub/sub message
+			search.regionType = regionType;
+			search.region = region;
+			search.getHotspots();
 		});
-	};
+	},
 
-	function displayHotspots(data) {
+	displayHotspots: function(data) {
 		for (var i=0; i<data.length; i++) {
 			var latlng = new google.maps.LatLng(data[i].lt, data[i].lg);
 			var marker = new google.maps.Marker({
 				position: latlng,
-				map: _map,
+				map: map.el,
 				title: data[i].n,
-				icon: _icon,
+				icon: map.icon,
 				locationID: data[i].i
 			});
 
 			google.maps.event.addListener(marker, 'click', function() {
-				
-				// request the 
 				$.ajax({
 					url: "ajax/getHotspotObservations.php",
 					data: {
@@ -122,22 +116,23 @@ $(function() {
 					},
 					type: "POST",
 					dataType: "json",
-					success: displayHotspotObservations,
+					success: map.displayHotspotObservations,
 					error: function(response) {
 						console.log("error: ", response);
 					}
 				});
 
-				_map.setZoom(8);
-				_map.setCenter(marker.getPosition());
+				map.el.setZoom(8);
+				map.el.setCenter(marker.getPosition());
 			});
 		}
-	};
 
-	function displayHotspotObservations(response) {
+		// pass the hotspot data over to the main search
+		search.onDisplayHotspots(data);
+	},
+
+	displayHotspotObservations: function(response) {
 		console.log("!!!");
 		console.log(response);
-	};
-
-	initialize();
-});
+	}
+};

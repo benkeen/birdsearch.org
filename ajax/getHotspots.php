@@ -1,15 +1,21 @@
 <?php
 
-if (!isset($_POST["regionType"]) || !isset($_POST["region"])) {
+if (!isset($_POST["regionType"]) || empty($_POST["regionType"]) ||
+	!isset($_POST["region"]) || empty($_POST["region"])) {
 	exit;
 }
 
-// 
-echo getHotspots($_POST["regionType"], $_POST["region"]);
+
+$regionType = $_POST["regionType"];
+$region     = $_POST["region"];
+$recency    = $_POST["recency"];
+
+echo getHotspots($regionType, $region, $recency);
 
 
-function getHotspots($regionType, $region) {
-	$url = "http://ebird.org/ws1.1/ref/hotspot/region?rtype=$regionType&r=$region&fmt=xml&back=7";
+function getHotspots($regionType, $region, $recency) {
+
+	$url = "http://ebird.org/ws1.1/ref/hotspot/region?rtype=$regionType&r=$region&fmt=xml&back=$recency";
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
