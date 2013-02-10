@@ -4,13 +4,16 @@
 
 var search = {
 
-	regionType: null,	
+	regionType: null,
 	region: null,
 	observationRecency: null,
 
 	// some dom elements
 	mapCanvas: null,
 	searchField: null,
+
+	hotspots: [],
+	activeHotspotRequest: false,
 
 
 	init: function() {
@@ -31,14 +34,19 @@ var search = {
 
 		// initialize the map
 		map.initialize();
+
+		// focus!
+		$(search.searchField).focus();
 	},
 
+	// not the prettiest thing ever, but since flexbox isn't implemented in all browsers yet...
 	handleWindowResize: function() {
-		// set the height and width of the map and sidebar 
 		var windowHeight = $(window).height();
 		var windowWidth = $(window).width();
-		$('#mapCanvas,#sidebar').css('height', windowHeight - 40);
-		$('#mapCanvas').css('width', windowWidth - 270);
+		$('#sidebar').css('height', windowHeight - 40);
+		$('#mainPanel').css('height', windowHeight - 74);
+		$('#mainPanel').css('width', windowWidth - 280);
+		$('#searchResults').css('height', windowHeight - 160);
 	},
 
 	addEventHandlers: function() {
@@ -51,12 +59,53 @@ var search = {
 	},
 
 	onDisplayHotspots: function(data) {
+		search.hotspots = data;
+
 		var numHotspots = data.length;
 		$('#numHotspotsFound span').html(data.length);
+
+		var html = search.generateHotspotTable(data);
+		$('#searchResults').html(html).removeClass('hidden');
+
+		// now start requesting all the observation data for each hotspot
+		search.getAllHotspotObservations();
+	},
+
+	// should be templated, of course
+	generateHotspotTable: function(data) {
+		var html = '<table><tr><th width="20"><input type="checkbox" checked="checked" /></th><th>Location</th></tr>';
+		for (var i=0; i<data.length; i++) {
+			html += '<tr id="location_' + data[i].i + '">' +
+				'<td width="20"><input type="checkbox" checked="checked" /></td>' +
+				'<td><a href="">' + data[i].n + '</a></td></tr>';
+		}
+		html += '</table>';
+		return html;
 	},
 
 	// AJAX methods
+	
+	getAllHotspotObservations: function() {
+
+	},
+
+	getSingleHotspotObservation: function(locationID) {
+		$.ajax({
+			url: "ajax/getHotspotObservations.php",
+			data: {
+				locationID: locationID
+			},
+			type: "POST",
+			dataType: "json",
+			success: map.displayHotspotObservations,
+			error: function(response) {
+				console.log("error: ", response);
+			}
+		});
+	},
+
 	getHotspots: function() {
+		search.activeHotspotRequest = true;
 		$.ajax({
 			url: "ajax/getHotspots.php",
 			data: {

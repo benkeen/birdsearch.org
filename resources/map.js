@@ -43,17 +43,15 @@ var map = {
 		var autocomplete = new google.maps.places.Autocomplete(search.searchField);
 		autocomplete.bindTo('bounds', map.el);
 
+		// executed whenever the user selects a place through the auto-complete function
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 			var place = autocomplete.getPlace();
 
 			// inform the user that the place was not found and return
 			if (!place.geometry) {
-				//input.className = '';
-				//input.className = 'notfound';
 				return;
 			}
 
-			// if the place has a geometry, then present it on a map
 			if (place.geometry.viewport) {
 				map.el.fitBounds(place.geometry.viewport);
 			} else {
@@ -90,16 +88,39 @@ var map = {
 					break;
 			}
 
-			// not terribly pretty. Will use requireJS and make this into a pub/sub message
+			// not terribly pretty, but simple and clean enough for now
 			search.regionType = regionType;
 			search.region = region;
 			search.getHotspots();
 		});
+
+		// called any time the map viewport is changed
+		google.maps.event.addListener(map.el, 'center_changed', function() {
+			
+			// if there's already a search underway, do nothing
+			if (search.activeHotspotRequest) {
+				return;
+			}
+		});
+
 	},
 
 	displayHotspots: function(data) {
+
+		// make a note that the hotspot request has completed
+		search.activeHotspotRequest = false;
+
+		var mapBoundary = map.el.getBounds();
+		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
+		var foundResults = [];
+
 		for (var i=0; i<data.length; i++) {
 			var latlng = new google.maps.LatLng(data[i].lt, data[i].lg);
+
+			if (!boundsObj.contains(latlng)) {
+				continue;
+			}
+
 			var marker = new google.maps.Marker({
 				position: latlng,
 				map: map.el,
@@ -108,27 +129,30 @@ var map = {
 				locationID: data[i].i
 			});
 
-			google.maps.event.addListener(marker, 'click', function() {
-				$.ajax({
-					url: "ajax/getHotspotObservations.php",
-					data: {
-						locationID: marker.locationID
-					},
-					type: "POST",
-					dataType: "json",
-					success: map.displayHotspotObservations,
-					error: function(response) {
-						console.log("error: ", response);
-					}
-				});
+			// this sucks - move to helper function & bypass closures
+			// google.maps.event.addListener(marker, 'click', function() {
+			// 	$.ajax({
+			// 		url: "ajax/getHotspotObservations.php",
+			// 		data: {
+			// 			locationID: marker.locationID
+			// 		},
+			// 		type: "POST",
+			// 		dataType: "json",
+			// 		success: map.displayHotspotObservations,
+			// 		error: function(response) {
+			// 			console.log("error: ", response);
+			// 		}
+			// 	});
 
-				map.el.setZoom(8);
-				map.el.setCenter(marker.getPosition());
-			});
+			// 	map.el.setZoom(8);
+			// 	map.el.setCenter(marker.getPosition());
+			// });
+
+			foundResults.push(data[i]);
 		}
 
 		// pass the hotspot data over to the main search
-		search.onDisplayHotspots(data);
+		search.onDisplayHotspots(foundResults);
 	},
 
 	displayHotspotObservations: function(response) {
