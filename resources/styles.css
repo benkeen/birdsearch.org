@@ -41,6 +41,14 @@ a:link, a:visited {
 	color: white;
 	display: inline;
 }
+#loadingSpinner {
+	float: right;
+	width: 32px;
+	height: 32px;
+	background-image: url(images/loading.gif);
+	display: none;
+	margin: 3px;
+}
 
 /* sidebar */
 .sidebarSection {
@@ -59,8 +67,20 @@ a:link, a:visited {
 	vertical-align: top;
 	text-align: left;
 }
+.loadingStatus {
+	background-repeat: no-repeat;
+	display: block;
+	width: 16px;
+	height: 16px;
+}
+.notLoaded {
+	background-image: url(images/tick_grey.png);
+}
+.loaded {
+	background-image: url(images/tick.png);
+}
 
-/* top row 	*/
+/* main body */
 #mapCanvas {
 	width: 100%;
 	height: 100%;

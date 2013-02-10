@@ -1,5 +1,5 @@
 /*jslint browser:true*/
-/*global $:false,map:false,console:false*/
+/*global $:false,map:false,manager:false,console:false*/
 'use strict';
 
 var search = {
@@ -8,12 +8,10 @@ var search = {
 	region: null,
 	observationRecency: null,
 
-	// some dom elements
-	mapCanvas: null,
 	searchField: null,
 
-	hotspots: [],
 	activeHotspotRequest: false,
+	maxNumHotspots: 50,
 
 
 	init: function() {
@@ -26,7 +24,6 @@ var search = {
 		search.addEventHandlers();
 
 		// make a note of some important DOM elements
-		search.mapCanvas   = $('#mapCanvas')[0];
 		search.searchField = $('#searchTextField')[0];
 
 		// set the default values
@@ -46,7 +43,7 @@ var search = {
 		$('#sidebar').css('height', windowHeight - 40);
 		$('#mainPanel').css('height', windowHeight - 74);
 		$('#mainPanel').css('width', windowWidth - 280);
-		$('#searchResults').css('height', windowHeight - 160);
+		$('#searchResults').css('height', windowHeight - 100);
 	},
 
 	addEventHandlers: function() {
@@ -58,11 +55,14 @@ var search = {
 		search.getHotspots();
 	},
 
+	/**
+	 * Gets called by map.js when the markers have been loaded onto the screen. This updates
+	 * the sidebar and starts requesting the hotspot observation data.
+	 */
 	onDisplayHotspots: function(data) {
-		search.hotspots = data;
-
-		var numHotspots = data.length;
-		$('#numHotspotsFound span').html(data.length);
+		manager.hotspots = data;
+		manager.numHotspots = data.length;
+		$('#numHotspotsFound span').html(manager.numHotspots);
 
 		var html = search.generateHotspotTable(data);
 		$('#searchResults').html(html).removeClass('hidden');
@@ -73,39 +73,103 @@ var search = {
 
 	// should be templated, of course
 	generateHotspotTable: function(data) {
-		var html = '<table><tr><th width="20"><input type="checkbox" checked="checked" /></th><th>Location</th></tr>';
+		var html = '<table><tr><th width="20"><input type="checkbox" checked="checked" /></th><th>Location</th><th></th></tr>';
 		for (var i=0; i<data.length; i++) {
 			html += '<tr id="location_' + data[i].i + '">' +
 				'<td width="20"><input type="checkbox" checked="checked" /></td>' +
-				'<td><a href="">' + data[i].n + '</a></td></tr>';
+				'<td><a href="">' + data[i].n + '</a></td>' +
+				'<td class="loadingStatus notLoaded"></td>' +
+				'</tr>';
 		}
 		html += '</table>';
 		return html;
 	},
 
+
 	// AJAX methods
 	
+	/**
+	 * Loop through all hotspots returned and fire off Ajax requests for each,
+	 */
 	getAllHotspotObservations: function() {
-
+		for (var i=0; i<manager.numHotspots; i++) {
+			search.getSingleHotspotObservation(manager.hotspots[i].i);
+		}
 	},
 
 	getSingleHotspotObservation: function(locationID) {
 		$.ajax({
 			url: "ajax/getHotspotObservations.php",
 			data: {
-				locationID: locationID
+				locationID: locationID,
+				recency: search.observationRecency
 			},
 			type: "POST",
 			dataType: "json",
-			success: map.displayHotspotObservations,
-			error: function(response) {
-				console.log("error: ", response);
-			}
+			success: function(response) {
+				search.onSuccessReturnObservations(locationID, response);
+			},
+			error: search.onErrorReturnObservations
 		});
+	},
+
+	onSuccessReturnObservations: function(locationID, response) {
+		var hotspotIndex = search.getHotspotLocationIndex(locationID);
+		manager.hotspots[hotspotIndex].observations = {
+			success: true,
+			data: response
+		};
+
+		$('#location_' + locationID + ' .notLoaded').removeClass('notLoaded').addClass('loaded');
+
+		if (search.checkAllObservationsLoaded()) {
+			search.stopLoading();
+			manager.init();
+		}
+	},
+	
+	onErrorReturnObservations: function(locationID, response) {
+		var hotspotIndex = search.getHotspotLocationIndex(locationID);
+		manager.hotspots[hotspotIndex].observations = {
+			success: false
+		};
+
+		if (search.checkAllObservationsLoaded()) {
+			search.stopLoading();
+		}
+	},
+
+	getHotspotLocationIndex: function(locationID) {
+		var index = null;
+		for (var i=0; i<manager.numHotspots; i++) {
+			if (manager.hotspots[i].i == locationID) {
+				index = i;
+				break;
+			}
+		}
+		return index;
+	},
+
+
+	/**
+	 * Called after any observations has been returned. It looks through all of data.hotspots
+	 * and confirms every one has an observations property (they are added after a response - success
+	 * or failure).
+	 */
+	checkAllObservationsLoaded: function() {
+		var allLoaded = true;
+		for (var i=0; i<manager.numHotspots; i++) {
+			if (!manager.hotspots[i].hasOwnProperty('observations')) {
+				allLoaded = false;
+				break;
+			}
+		}
+		return allLoaded;
 	},
 
 	getHotspots: function() {
 		search.activeHotspotRequest = true;
+		search.startLoading();
 		$.ajax({
 			url: "ajax/getHotspots.php",
 			data: {
@@ -120,6 +184,14 @@ var search = {
 				console.log("error: ", response);
 			}
 		});
+	},
+
+	startLoading: function() {
+		$('#loadingSpinner').show();
+	},
+
+	stopLoading: function() {
+		$('#loadingSpinner').hide();
 	}
 };
 

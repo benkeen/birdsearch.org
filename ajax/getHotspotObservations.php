@@ -1,16 +1,20 @@
 <?php
 
+header('Content-Type: application/json');
+
 if (!isset($_POST["locationID"])) {
 	exit;
 }
 
-// 
-echo getHotspotObservations($_POST["locationID"]);
+$locationID = $_POST["locationID"];
+$recency    = $_POST["recency"];
+
+echo getHotspotObservations($locationID, $recency);
 
 
-function getHotspotObservations($locationID) {
-	$url = "http://ebird.org/ws1.1/data/obs/hotspot/recent?r=$locationID&fmt=xml&back=7";
-
+function getHotspotObservations($locationID, $recency) {
+	$url = "http://ebird.org/ws1.1/data/obs/loc/recent?r=$locationID&fmt=json&back=$recency";
+			//http://ebird.org/ws1.1/data/obs/hotspot/recent
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
@@ -18,17 +22,37 @@ function getHotspotObservations($locationID) {
 	$response = curl_exec($ch);
 	curl_close($ch);      
 
-	// no error checking yet...! 
-	$xml = new SimpleXMLElement($response);
+	// wow! What amazing error checking. I stun myself.
 
-	$observations = array();
-	foreach ($xml->result[0]->sighting as $observationInfo) {
-		$observations[] = array(
-			"od"  => (string) $observationInfo->{"obs-dt"},
-			"hm" => (float) $observationInfo->{"how-many"},
-			"cm" => (float) $observationInfo->{"com-name"},
-			"sn"  => (string) $observationInfo->{"sci-name"}
-		);
-	}
-	return json_encode($observations);
+	return $response;
 }
+
+/*
+[
+   {
+      "comName":"Rock Pigeon",
+      "howMany":12,
+      "lat":49.1716971,
+      "lng":-122.947197,
+      "locID":"L1140384",
+      "locName":"Annacis Island",
+      "locationPrivate":false,
+      "obsDt":"2013-02-07",
+      "obsReviewed":false,
+      "obsValid":true,
+      "sciName":"Columba livia"
+   },
+   {
+      "comName":"Glaucous-winged Gull",
+      "howMany":1,
+      "lat":49.1716971,
+      "lng":-122.947197,
+      "locID":"L1140384",
+      "locName":"Annacis Island",
+      "locationPrivate":false,
+      "obsDt":"2013-02-05",
+      "obsReviewed":false,
+      "obsValid":true,
+      "sciName":"Larus glaucescens"
+   }
+]*/

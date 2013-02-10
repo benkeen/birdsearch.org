@@ -30,16 +30,19 @@ var map = {
 		streetViewControl: false
 	},
 
-	// contains the actual Google Map element
+	mapCanvas: null,
 	el: null,
 	icon: 'resources/images/marker.png',
-
+	geocoder: null,
 
 	/**
 	 * Called by search's init function.
 	 */
 	initialize: function() {
-		map.el = new google.maps.Map(search.mapCanvas, map.defaultMapOptions);
+		map.mapCanvas = $('#mapCanvas')[0];
+		map.el        = new google.maps.Map(map.mapCanvas, map.defaultMapOptions);
+		map.geocoder  = new google.maps.Geocoder();
+
 		var autocomplete = new google.maps.places.Autocomplete(search.searchField);
 		autocomplete.bindTo('bounds', map.el);
 
@@ -88,21 +91,21 @@ var map = {
 					break;
 			}
 
-			// not terribly pretty, but simple and clean enough for now
+			// not terribly pretty, but simple enough for now
 			search.regionType = regionType;
 			search.region = region;
 			search.getHotspots();
 		});
 
-		// called any time the map viewport is changed
+		// called any time the map viewport is changed. This is incomplete: it should re-request all data based on the 
+		// new lat-lng boundaries
+		/*
 		google.maps.event.addListener(map.el, 'center_changed', function() {
-			
 			// if there's already a search underway, do nothing
 			if (search.activeHotspotRequest) {
 				return;
 			}
-		});
-
+		});*/
 	},
 
 	displayHotspots: function(data) {
@@ -114,11 +117,15 @@ var map = {
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
 		var foundResults = [];
 
+		var counter = 0;
 		for (var i=0; i<data.length; i++) {
 			var latlng = new google.maps.LatLng(data[i].lt, data[i].lg);
 
 			if (!boundsObj.contains(latlng)) {
 				continue;
+			}
+			if (counter > search.maxNumHotspots) {
+				break;
 			}
 
 			var marker = new google.maps.Marker({
@@ -149,14 +156,54 @@ var map = {
 			// });
 
 			foundResults.push(data[i]);
+			counter++;
 		}
 
 		// pass the hotspot data over to the main search
 		search.onDisplayHotspots(foundResults);
 	},
 
-	displayHotspotObservations: function(response) {
-		console.log("!!!");
-		console.log(response);
-	}
+
+/*	reverseGeocode: function(lat, lng) {
+		var position = new google.maps.LatLng(lat, lng);
+//		var city, region, country;
+		map.geocoder.geocode({ latLng: position}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				console.log(results[j].address_components);
+
+				if (results[1]) {
+					var indice=0;
+					for (var j=0; j<results.length; j++) {
+						if (results[j].types[0]=='locality') {
+							indice=j;
+							break;
+						}
+					}
+
+					// for (var i=0; i<results[j].address_components.length; i++) {
+					// 	if (results[j].address_components[i].types[0] == "locality") {
+					// 		//this is the object you are looking for
+					// 		city = results[j].address_components[i];
+					// 	}
+					// 	if (results[j].address_components[i].types[0] == "administrative_area_level_1") {
+					// 		//this is the object you are looking for
+					// 		region = results[j].address_components[i];
+					// 	}
+					// 	if (results[j].address_components[i].types[0] == "country") {
+					// 		//this is the object you are looking for
+					// 		country = results[j].address_components[i];
+					// 	}
+					// }
+
+					//city data
+					// console.log((city.long_name + " || " + region.long_name + " || " + country.short_name)
+				} else {
+
+				}
+			} else {
+
+			}
+		});
+	},*/
+
 };
