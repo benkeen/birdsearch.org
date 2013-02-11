@@ -52,7 +52,7 @@ var manager = {
 			height: windowHeight - 76,
 			width: windowWidth - 280
 		});
-		$('#searchResults').css('height', windowHeight - 102);
+		$('#searchResults').css('height', windowHeight - 83);
 	},
 
 	addEventHandlers: function() {
@@ -308,16 +308,14 @@ var manager = {
 				'<tr>' +
 					'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" /></th>' +
 					'<th>Location</th>' +
-					'<th width="20" class="{ sorter: false }"></th>' +
 				'</tr>' +
 				'</thead>' +
 				'<tbody>';
 
 		for (var i=0; i<data.length; i++) {
 			html += '<tr id="location_' + data[i].i + '">' +
-					'<td><input type="checkbox" name="hs[]" checked="checked" /></td>' +
-					'<td>' + data[i].n + '</td>' +
-					'<td class="loadingStatus notLoaded"><span></span></td>' +
+						'<td><input type="checkbox" id="row' + i + '" checked="checked" /></td>' +
+						'<td class="loadingStatus notLoaded"><label for="row' + i + '">' + data[i].n + '</label></td>' +
 					'</tr>';
 		}
 		html += '</tbody></table>';

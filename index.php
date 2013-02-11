@@ -6,6 +6,7 @@
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/styles.css" rel="stylesheet" type="text/css" />
+	<script src="resources/html5shiv.js"></script>
 	<script src="resources/moment.min.js"></script>
 	<script src="resources/jquery.min.js"></script>
 	<script src="resources/jquery.tablesorter.min.js"></script>

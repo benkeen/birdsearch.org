@@ -85,18 +85,14 @@ a:link, a:visited {
 #searchResults .table-bordered th, #searchResults .table-bordered td {
 	border: 0px;
 }
-.loadingStatus span {
-	background-repeat: no-repeat;
-	display: block;
-	width: 16px;
-	height: 16px;
-	margin-top: 3px;
+.loadingStatus {
+	margin-bottom: 0px;
 }
-.notLoaded span {
-	background-image: url(../images/tick_grey.png);
+.notLoaded label {
+	color: #cccccc;
 }
-.loaded span {
-	background-image: url(../images/tick.png);
+.loaded label {
+	color: #333333;
 }
 
 /* main body */
