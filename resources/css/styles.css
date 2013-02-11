@@ -148,6 +148,9 @@ a:link, a:visited {
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+#birdSpeciesTable p {
+	padding: 10px;
+}
 #birdSpeciesTable table {
 	width: 100%;
 	margin: 3px;

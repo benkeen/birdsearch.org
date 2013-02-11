@@ -35,6 +35,9 @@ var map = {
 	icon: 'resources/images/marker.png',
 	geocoder: null,
 
+	markers: {},
+
+
 	/**
 	 * Called by search's init function.
 	 */
@@ -62,6 +65,8 @@ var map = {
 				map.el.setZoom(17);
 			}
 
+			// nope! The following code contains bugs & will need to be revised. Try searching for somewhere like "Boundary Bay, Delta"
+			// to see.
 			var numAddressComponents = place.address_components.length;
 			var countryCode = place.address_components[numAddressComponents-1].short_name;
 			var subNational1Code = null;
@@ -128,7 +133,7 @@ var map = {
 				break;
 			}
 
-			var marker = new google.maps.Marker({
+			map.markers[data[i].i] = new google.maps.Marker({
 				position: latlng,
 				map: map.el,
 				title: data[i].n,
@@ -161,7 +166,7 @@ var map = {
 
 		// pass the hotspot data over to the main search
 		manager.onDisplayHotspots(foundResults);
-	},
+	}
 
 
 /*	reverseGeocode: function(lat, lng) {

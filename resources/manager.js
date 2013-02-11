@@ -130,13 +130,7 @@ var manager = {
 		if (manager.checkAllObservationsLoaded()) {
 			manager.stopLoading();
 			manager.createSpeciesMap();
-			$('#birdSpeciesTab').removeClass('disabled').html('Bird Species (' + manager.numSpecies + ')');
-			$('#birdSpeciesTable').html(manager.generateSpeciesTable());
-			$("#speciesTable").tablesorter({
-				theme: 'bootstrap',
-				headerTemplate: '{content} {icon}',
-				widgets: ['zebra','columns', 'uitheme']
-			});
+			manager.updateSpeciesTab();
 		}
 	},
 	
@@ -260,11 +254,6 @@ var manager = {
 		$('#' + manager.currTabID + 'Content').addClass('hidden');
 		$('#' + tabID + 'Content').removeClass('hidden');
 
-		if (tabID == 'mapTab') {
-
-		} else {
-
-		}
 		manager.currTabID = tabID;
 	},
 
@@ -278,19 +267,34 @@ var manager = {
 		} else {
 			$('#hotspotTable tbody input').removeAttr('checked');
 		}
+
+		// loop through all markers and enable/disable them
+		for (var i in map.markers) {
+			map.markers[i].setVisible(isChecked);
+		}
+
+		for (var locationID in manager.hotspots) {
+			manager.hotspots[locationID].isDisplayed = isChecked;
+		}
+
+		manager.updateSpeciesTab();
 	},
 
 	toggleHotspot: function(e) {
+		var row = $(e.target).closest('tr');
+		var locationID = $(row).attr('id').replace(/location_/, '');
+		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
 
-		console.log(e.target);
-
-		// var hotspotIndex = manager.getHotspotLocationIndex(locationID);
-		// manager.hotspots[hotspotIndex].isDisplayed = true;
+		var isChecked = e.target.checked;
+		manager.hotspots[hotspotIndex].isDisplayed = isChecked;
+		
+		// now update the map and Bird Species tab
+		map.markers[locationID].setVisible(isChecked);
+		manager.updateSpeciesTab();
 	},
 
 
 	// ------------------------------------------
-
 
 	// in a real app, the following would be templated
 
@@ -313,6 +317,7 @@ var manager = {
 					'</tr>';
 		}
 		html += '</tbody></table>';
+
 		return html;
 	},
 
@@ -328,23 +333,40 @@ var manager = {
 				'</tr>' +
 				'</thead><tbody>';
 
-		var counter = 0;
+		var speciesCount = 0;
 		for (var i in manager.species) {
-			var locationsDropdown = manager.generateLocationsDropdown(manager.species[i].obs);
+			var locations = [];
+			var observationsInVisibleLocation = [];
+			for (var j=0; j<manager.species[i].obs.length; j++) {
+				var currLocationID = manager.species[i].obs[j].locID;
+				var hotspotIndex = manager.getHotspotLocationIndex(currLocationID);
+				locations.push(manager.species[i].obs[j].locName);
+
+				if (!manager.hotspots[hotspotIndex].isDisplayed) {
+					continue;
+				}
+				observationsInVisibleLocation.push(manager.species[i].obs[j]);
+			}
+
+			if (observationsInVisibleLocation.length === 0)  {
+				continue;
+			}
+
+			var locationsHTML = locations.join('<br />');
 
 			var howManyCount = null;
-			for (var j=0; j<manager.species[i].obs.length; j++) {
-				var howMany = manager.species[i].obs[j].howMany || "-";
+			for (var k=0; k<observationsInVisibleLocation.length; k++) {
+				var howMany = observationsInVisibleLocation[k].howMany || "-";
 				if (howMany.toString().match(/\D/g)) {
 					howManyCount = "-";
 					break;
 				}
-				howManyCount += parseInt(manager.species[i].obs[j].howMany, 10);
+				howManyCount += parseInt(observationsInVisibleLocation[k].howMany, 10);
 			}
 
 			var lastSeen = null;
-			for (var j=0; j<manager.species[i].obs.length; j++) {
-				var unixtime = moment(manager.species[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm');
+			for (var n=0; n<observationsInVisibleLocation.length; n++) {
+				var unixtime = moment(observationsInVisibleLocation[n].obsDt, 'YYYY-MM-DD HH:mm');
 				if (unixtime > lastSeen) {
 					lastSeen = unixtime;
 				}
@@ -355,24 +377,53 @@ var manager = {
 			html += '<tr>' +
 				'<td>' + manager.species[i].comName + '</td>' +
 				'<td>' + manager.species[i].sciName + '</td>' +
-				'<td>' + locationsDropdown + '</td>' +
+				'<td>' + locationsHTML + '</td>' +
 				'<td>' + formattedDate + '</td>' +
 				'<td>' + howManyCount + '</td>' +
 			'</tr>';
+
+			speciesCount++;
 		}
 		html += '</tbody></table>';
+
+		if (speciesCount === 0) {
+			html = '<p>Yegads, no birds found!</p>';
+		}
+
+		manager.numVisibleSpecies = speciesCount;
 
 		return html;
 	},
 
-	generateLocationsDropdown: function(observationData) {
-		var html = '';
-		for (var i=0; i<observationData.length; i++) {
-			html += '<option value="' + observationData[i].locID + '">' + observationData[i].locName + '</option>';
+	updateSpeciesTab: function() {
+		try {
+			$("#speciesTable").trigger("destroy");
+		} catch (e) {
+
 		}
-		html = '<select><option value="">Seen at ' + observationData.length + ' location(s)</option>' + html + '</select>';
-		return html;
+
+		$('#birdSpeciesTable').html(manager.generateSpeciesTable());
+		$('#birdSpeciesTab').removeClass('disabled').html('Bird Species (' + manager.numVisibleSpecies + ')');
+
+		$("#speciesTable").tablesorter({
+			theme: 'bootstrap',
+			headerTemplate: '{content} {icon}',
+			widgets: ['zebra','columns', 'uitheme']
+		});
+
 	}
+
+
+	// getVisibleObservationLocations: function(observationData) {
+	// 	var html = '';
+	// 	for (var i=0; i<observationData.length; i++) {
+
+
+	// 		html += '<option value="' + observationData[i].locID + '">' + observationData[i].locName + '</option>';
+	// 	}
+	// 	html = '<select><option value="">Seen at ' + observationData.length + ' location(s)</option>' + html + '</select>';
+	// 	return html;
+	// }
 
 };
 
