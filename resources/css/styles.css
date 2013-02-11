@@ -21,6 +21,9 @@ a:link, a:visited {
 	color: #0033cc;
 	text-decoration: none;
 }
+.lightGrey {
+	color: #cccccc;
+}
 
 /* top row */
 #topBar {
@@ -170,4 +173,7 @@ a:link, a:visited {
 }
 #hotspotTable input {
 	margin: -2px 0 0 3px
+}
+#mapTabContent img{
+	max-width: inherit;
 }

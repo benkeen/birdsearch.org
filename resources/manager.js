@@ -57,7 +57,7 @@ var manager = {
 
 	addEventHandlers: function() {
 		$('#observationRecency').bind('change', manager.onChangeObservationRecency);
-		$('#panelTabs').on('click', 'li', manager.selectTab);
+		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
 		$('#searchResults').on('click', '.toggle', manager.toggleCheckedHotspots);
 		$('#searchResults').on('click', 'tbody input', manager.toggleHotspot);
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
@@ -240,24 +240,27 @@ var manager = {
 		}
 	},
 
-	selectTab: function(e) {
+	onClickSelectTab: function(e) {
 		var tab = e.target;
 		if ($(tab).hasClass('disabled')) {
 			return;
 		}
 		var tabID = $(tab).attr("id");
+		manager.selectTab(tabID);
+	},
+
+	selectTab: function(tabID) {
 		if (tabID == manager.currTabID) {
 			return;
 		}
 
 		$('#panelTabs li').removeClass('selected');
-		$(tab).addClass('selected');
+		$('#' + tabID).addClass('selected');
 		$('#' + manager.currTabID + 'Content').addClass('hidden');
 		$('#' + tabID + 'Content').removeClass('hidden');
 
 		manager.currTabID = tabID;
 	},
-
 
 	toggleCheckedHotspots: function(e) {
 		var isChecked = e.target.checked;
@@ -329,31 +332,39 @@ var manager = {
 					'<th>Species Name</th>' +
 					'<th>Scientific Name</th>' +
 					'<th class="{ sorter: false }">Locations seen</th>' +
-					'<th>Last seen</th>' +
-					'<th>How many reported</th>' +
+					'<th width="110" nowrap>Last seen</th>' +
+					'<th nowrap># reported</th>' +
 				'</tr>' +
 				'</thead><tbody>';
 
 		var speciesCount = 0;
 		for (var i in manager.species) {
 			var locations = [];
+			var lastSeen = [];
 			var observationsInVisibleLocation = [];
+
 			for (var j=0; j<manager.species[i].obs.length; j++) {
 				var currLocationID = manager.species[i].obs[j].locID;
 				var hotspotIndex = manager.getHotspotLocationIndex(currLocationID);
-				locations.push(manager.species[i].obs[j].locName);
+
+				var observationTime = moment(manager.species[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 
 				if (!manager.hotspots[hotspotIndex].isDisplayed) {
+					locations.push('<div class="lightGrey">' + manager.species[i].obs[j].locName + '</div>');
+					lastSeen.push('<div class="lightGrey">' + observationTime + '</div>');
 					continue;
 				}
 				observationsInVisibleLocation.push(manager.species[i].obs[j]);
+				locations.push('<div>' + manager.species[i].obs[j].locName + '</div>');
+				lastSeen.push('<div>' + observationTime + '</div>');
 			}
 
 			if (observationsInVisibleLocation.length === 0)  {
 				continue;
 			}
 
-			var locationsHTML = locations.join('<br />');
+			var locationsHTML = locations.join('\n');
+			var lastSeenHTML  = lastSeen.join('\n');
 
 			var howManyCount = null;
 			for (var k=0; k<observationsInVisibleLocation.length; k++) {
@@ -365,21 +376,11 @@ var manager = {
 				howManyCount += parseInt(observationsInVisibleLocation[k].howMany, 10);
 			}
 
-			var lastSeen = null;
-			for (var n=0; n<observationsInVisibleLocation.length; n++) {
-				var unixtime = moment(observationsInVisibleLocation[n].obsDt, 'YYYY-MM-DD HH:mm');
-				if (unixtime > lastSeen) {
-					lastSeen = unixtime;
-				}
-			}
-
-			var formattedDate = lastSeen.format('MMM Do, H:mm a');
-
 			html += '<tr>' +
 				'<td>' + manager.species[i].comName + '</td>' +
 				'<td>' + manager.species[i].sciName + '</td>' +
 				'<td>' + locationsHTML + '</td>' +
-				'<td>' + formattedDate + '</td>' +
+				'<td>' + lastSeenHTML + '</td>' +
 				'<td>' + howManyCount + '</td>' +
 			'</tr>';
 
@@ -415,9 +416,29 @@ var manager = {
 
 
 	displaySingleHotspotBirdSpecies: function(e) {
+		e.preventDefault();
 		var locationID = $(e.target).data('location');
 
-//		manager.updateSpeciesTab();
+		// unselect all hotspot locations except for the one chosen
+		$('#hotspotTable input').removeAttr('checked');
+
+		// should definitely be moved to helper!
+		for (var i in map.markers) {
+			if (locationID != i) {
+				map.markers[i].setVisible(false);
+			}
+		}
+		for (var currLocationID in manager.hotspots) {
+			if (locationID != currLocationID) {
+				manager.hotspots[currLocationID].isDisplayed = false;
+			}
+		}
+
+		$('#location_' + locationID + ' input')[0].checked = true;
+
+		// now update the species tab and redirect the user to it
+		manager.updateSpeciesTab();
+		manager.selectTab('birdSpeciesTab');
 	}
 };
 
