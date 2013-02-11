@@ -1,8 +1,15 @@
 /*jslint browser:true*/
-/*global $:false,map:false,manager:false,console:false*/
+/*global $:false,map:false,console:false*/
 'use strict';
 
-var search = {
+var manager = {
+
+	// hotspots contains ALL the data, grouped by hotspots
+	hotspots: null,
+	numHotspots: null,
+	species: {},
+	numSpecies: 0,
+
 
 	regionType: null,
 	region: null,
@@ -15,25 +22,25 @@ var search = {
 
 
 	init: function() {
-		$(window).resize(search.handleWindowResize);
+		$(window).resize(manager.handleWindowResize);
 
 		// and ensure the page is initialized properly
-		search.handleWindowResize();
+		manager.handleWindowResize();
 
 		// add the appropriate event handlers to detect when the seach settings have changed
-		search.addEventHandlers();
+		manager.addEventHandlers();
 
 		// make a note of some important DOM elements
-		search.searchField = $('#searchTextField')[0];
+		manager.searchField = $('#searchTextField')[0];
 
 		// set the default values
-		search.observationRecency = $('#observationRecency').val();
+		manager.observationRecency = $('#observationRecency').val();
 
 		// initialize the map
 		map.initialize();
 
 		// focus!
-		$(search.searchField).focus();
+		$(manager.searchField).focus();
 	},
 
 	// not the prettiest thing ever, but since flexbox isn't implemented in all browsers yet...
@@ -47,12 +54,12 @@ var search = {
 	},
 
 	addEventHandlers: function() {
-		$('#observationRecency').bind('change', search.onChangeObservationRecency);
+		$('#observationRecency').bind('change', manager.onChangeObservationRecency);
 	},
 
 	onChangeObservationRecency: function(e) {
-		search.observationRecency = $(e.target).val();
-		search.getHotspots();
+		manager.observationRecency = $(e.target).val();
+		manager.getHotspots();
 	},
 
 	/**
@@ -64,11 +71,11 @@ var search = {
 		manager.numHotspots = data.length;
 		$('#numHotspotsFound span').html(manager.numHotspots);
 
-		var html = search.generateHotspotTable(data);
-		$('#searchResults').html(html).removeClass('hidden');
+		var html = manager.generateHotspotTable(data);
+		$('#searchFieldResults').html(html).removeClass('hidden');
 
 		// now start requesting all the observation data for each hotspot
-		search.getAllHotspotObservations();
+		manager.getAllHotspotObservations();
 	},
 
 	// should be templated, of course
@@ -86,14 +93,12 @@ var search = {
 	},
 
 
-	// AJAX methods
-	
 	/**
 	 * Loop through all hotspots returned and fire off Ajax requests for each,
 	 */
 	getAllHotspotObservations: function() {
 		for (var i=0; i<manager.numHotspots; i++) {
-			search.getSingleHotspotObservation(manager.hotspots[i].i);
+			manager.getSingleHotspotObservation(manager.hotspots[i].i);
 		}
 	},
 
@@ -102,19 +107,19 @@ var search = {
 			url: "ajax/getHotspotObservations.php",
 			data: {
 				locationID: locationID,
-				recency: search.observationRecency
+				recency: manager.observationRecency
 			},
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
-				search.onSuccessReturnObservations(locationID, response);
+				manager.onSuccessReturnObservations(locationID, response);
 			},
-			error: search.onErrorReturnObservations
+			error: manager.onErrorReturnObservations
 		});
 	},
 
 	onSuccessReturnObservations: function(locationID, response) {
-		var hotspotIndex = search.getHotspotLocationIndex(locationID);
+		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
 		manager.hotspots[hotspotIndex].observations = {
 			success: true,
 			data: response
@@ -122,20 +127,21 @@ var search = {
 
 		$('#location_' + locationID + ' .notLoaded').removeClass('notLoaded').addClass('loaded');
 
-		if (search.checkAllObservationsLoaded()) {
-			search.stopLoading();
-			manager.init();
+		if (manager.checkAllObservationsLoaded()) {
+			manager.stopLoading();
+			manager.createSpeciesMap();
+			$('#birdSpeciesTab').removeClass('disabled').html('Bird Species (' + manager.numSpecies + ')');
 		}
 	},
 	
 	onErrorReturnObservations: function(locationID, response) {
-		var hotspotIndex = search.getHotspotLocationIndex(locationID);
+		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
 		manager.hotspots[hotspotIndex].observations = {
 			success: false
 		};
 
-		if (search.checkAllObservationsLoaded()) {
-			search.stopLoading();
+		if (manager.checkAllObservationsLoaded()) {
+			manager.stopLoading();
 		}
 	},
 
@@ -149,7 +155,6 @@ var search = {
 		}
 		return index;
 	},
-
 
 	/**
 	 * Called after any observations has been returned. It looks through all of data.hotspots
@@ -168,14 +173,14 @@ var search = {
 	},
 
 	getHotspots: function() {
-		search.activeHotspotRequest = true;
-		search.startLoading();
+		manager.activeHotspotRequest = true;
+		manager.startLoading();
 		$.ajax({
 			url: "ajax/getHotspots.php",
 			data: {
-				regionType: search.regionType,
-				region: search.region,
-				recency: search.observationRecency
+				regionType: manager.regionType,
+				region: manager.region,
+				recency: manager.observationRecency
 			},
 			type: "POST",
 			dataType: "json",
@@ -192,8 +197,34 @@ var search = {
 
 	stopLoading: function() {
 		$('#loadingSpinner').hide();
+	},
+
+
+	createSpeciesMap: function() {
+		manager.species = {};
+		manager.numSpecies = 0;
+		for (var i=0; i<manager.numHotspots; i++) {
+
+			// if this hotspots observations failed to load (for whatever reason), just ignore the row
+			if (!manager.hotspots[i].observations.success) {
+				continue;
+			}
+
+			var numObservations = manager.hotspots[i].observations.data.length;
+			for (var j=0; j<numObservations; j++) {
+				var sciName = manager.hotspots[i].observations.data[j].sciName;
+
+				if (!manager.species.hasOwnProperty(sciName)) {
+					console.log(sciName);
+					manager.species[sciName] = [];
+					manager.numSpecies++;
+				}
+				manager.species[sciName].push(manager.hotspots[i].observations.data[j]);
+			}
+		}
 	}
 };
 
+
 // start 'er up (on DOM ready)
-$(search.init);
+$(manager.init);

@@ -1,5 +1,5 @@
 /*jslint browser:true*/
-/*global $:false,google:false,console:false,search:false*/
+/*global $:false,google:false,console:false,manager:false*/
 'use strict';
 
 
@@ -39,11 +39,11 @@ var map = {
 	 * Called by search's init function.
 	 */
 	initialize: function() {
-		map.mapCanvas = $('#mapCanvas')[0];
+		map.mapCanvas = $('#mapTabContent')[0];
 		map.el        = new google.maps.Map(map.mapCanvas, map.defaultMapOptions);
 		map.geocoder  = new google.maps.Geocoder();
 
-		var autocomplete = new google.maps.places.Autocomplete(search.searchField);
+		var autocomplete = new google.maps.places.Autocomplete(manager.searchField);
 		autocomplete.bindTo('bounds', map.el);
 
 		// executed whenever the user selects a place through the auto-complete function
@@ -92,17 +92,17 @@ var map = {
 			}
 
 			// not terribly pretty, but simple enough for now
-			search.regionType = regionType;
-			search.region = region;
-			search.getHotspots();
+			manager.regionType = regionType;
+			manager.region = region;
+			manager.getHotspots();
 		});
 
-		// called any time the map viewport is changed. This is incomplete: it should re-request all data based on the 
+		// called any time the map viewport is changed. This is incomplete: it should re-request all data based on the
 		// new lat-lng boundaries
 		/*
 		google.maps.event.addListener(map.el, 'center_changed', function() {
 			// if there's already a search underway, do nothing
-			if (search.activeHotspotRequest) {
+			if (manager.activeHotspotRequest) {
 				return;
 			}
 		});*/
@@ -111,7 +111,7 @@ var map = {
 	displayHotspots: function(data) {
 
 		// make a note that the hotspot request has completed
-		search.activeHotspotRequest = false;
+		manager.activeHotspotRequest = false;
 
 		var mapBoundary = map.el.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
@@ -124,7 +124,7 @@ var map = {
 			if (!boundsObj.contains(latlng)) {
 				continue;
 			}
-			if (counter > search.maxNumHotspots) {
+			if (counter > manager.maxNumHotspots) {
 				break;
 			}
 
@@ -160,7 +160,7 @@ var map = {
 		}
 
 		// pass the hotspot data over to the main search
-		search.onDisplayHotspots(foundResults);
+		manager.onDisplayHotspots(foundResults);
 	},
 
 

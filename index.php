@@ -2,11 +2,15 @@
 <html>
 <head>
 	<title>eBird Advanced Search</title>
-	<link href="resources/styles.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/styles.css" rel="stylesheet" type="text/css" />
+	<script src="resources/moment.min.js"></script>
 	<script src="resources/jquery.min.js"></script>
+	<script src="resources/jquery.tablesorter.min.js"></script>
+	<script src="resources/jquery.tablesorter.widgets.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places"></script>
 	<script src="resources/manager.js"></script>
-	<script src="resources/search.js"></script>
 	<script src="resources/map.js"></script>
 </head>
 <body>
@@ -41,14 +45,16 @@
 
 	<section id="mainPanel">
 		<ul id="panelTabs">
-			<li class="selected">Map</li>
-			<li class="disabled">Hotspot Data</li>
+			<li id="mapTab" class="selected">Map</li>
 			<li id="birdSpeciesTab" class="disabled">Bird Species</li>
 		</ul>
 		<div id="panelContent">
-			<div id="mapCanvas"></div>
-			<div id="dataTable" class="hidden"></div>
+			<div id="mapTabContent"></div>
+			<div id="birdSpeciesTabContent" class="hidden">
+				<div id="birdSpeciesTable"></div>
+			</div>
 		</div>
 	</section>
+
 </body>
 </html>

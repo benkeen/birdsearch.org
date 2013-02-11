@@ -37,15 +37,23 @@ a:link, a:visited {
 }
 #observationRecencyGroup {
 	position: absolute;
-	padding: 10px;
+	padding: 6px;
 	color: white;
 	display: inline;
+}
+#observationRecencyGroup label {
+	display: inline;
+	margin: 0px 4px;
+}
+#observationRecencyGroup select {
+	width: 100px;
+	margin-bottom: 0px;
 }
 #loadingSpinner {
 	float: right;
 	width: 32px;
 	height: 32px;
-	background-image: url(images/loading.gif);
+	background-image: url(../images/loading.gif);
 	display: none;
 	margin: 3px;
 }
@@ -60,47 +68,54 @@ a:link, a:visited {
 	font-size: 12pt;
 }
 #searchResults {
-	font-size: 10px;
+	font-size: 10pt;
 	overflow-y: scroll;
+	padding: 0px;
+}
+#searchResults table {
+	margin-bottom: 0px;
 }
 #searchResults td, #searchResults th {
 	vertical-align: top;
 	text-align: left;
 }
-.loadingStatus {
+#searchResults .table-bordered th, #searchResults .table-bordered td {
+	border: 0px;
+}
+.loadingStatus span {
 	background-repeat: no-repeat;
 	display: block;
 	width: 16px;
 	height: 16px;
+	margin-top: 3px;
 }
-.notLoaded {
-	background-image: url(images/tick_grey.png);
+.notLoaded span {
+	background-image: url(../images/tick_grey.png);
 }
-.loaded {
-	background-image: url(images/tick.png);
+.loaded span {
+	background-image: url(../images/tick.png);
 }
 
 /* main body */
-#mapCanvas {
+#mapTabContent {
 	width: 100%;
 	height: 100%;
 }
 #mainPanel {
 	position: absolute;
 	left: 270px;
-	top: 40px;
+	top: 42px;
 	padding: 3px;
-	background: url(images/bg.png);
+	background: url(../images/bg.png);
 }
 #sidebar {
 	position: absolute;
-	top: 40px;
+	top: 42px;
 	left: 0px;
 	width: 269px;
-	background: url(images/sidebar_bg.png);
+	background: url(../images/sidebar_bg.png);
 	border-right: 1px solid #333333;
 }
-
 #panelTabs {
 	list-style-type: none;
 	margin: 0px;
@@ -112,6 +127,7 @@ a:link, a:visited {
 	background-color: #cccccc;
 	border-radius: 5px 5px 0px 0px;
 	margin-right: 1px;
+	cursor: pointer;
 }
 #panelTabs li.selected {
 	background-color: #333333;
@@ -119,10 +135,36 @@ a:link, a:visited {
 }
 #panelTabs li.disabled {
 	color: #999999;
+	cursor: default;
 }
 #panelContent {
 	height:100%;
 	width: 100%;
 	clear: both;
 	border: 2px solid #333333;
+}
+#birdSpeciesTabContent {
+	height: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+#birdSpeciesTable table {
+	width: 100%;
+	margin: 3px;
+}
+#birdSpeciesTable table td {
+	padding: 2px;
+}
+#birdSpeciesTable select {
+	padding: 0px;
+	margin-bottom: 0px;
+	height: 21px;
+	line-height: 21px;
+	font-size: 9pt;
+}
+#hotspotTable th, #hotspotTable td{
+	padding: 2px;
+}
+#hotspotTable input {
+	margin: -2px 0 0 3px
 }
