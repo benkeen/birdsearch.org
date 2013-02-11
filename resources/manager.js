@@ -60,6 +60,7 @@ var manager = {
 		$('#panelTabs').on('click', 'li', manager.selectTab);
 		$('#searchResults').on('click', '.toggle', manager.toggleCheckedHotspots);
 		$('#searchResults').on('click', 'tbody input', manager.toggleHotspot);
+		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
 	},
 
 	onChangeObservationRecency: function(e) {
@@ -410,21 +411,14 @@ var manager = {
 			headerTemplate: '{content} {icon}',
 			widgets: ['zebra','columns', 'uitheme']
 		});
+	},
 
+
+	displaySingleHotspotBirdSpecies: function(e) {
+		var locationID = $(e.target).data('location');
+
+//		manager.updateSpeciesTab();
 	}
-
-
-	// getVisibleObservationLocations: function(observationData) {
-	// 	var html = '';
-	// 	for (var i=0; i<observationData.length; i++) {
-
-
-	// 		html += '<option value="' + observationData[i].locID + '">' + observationData[i].locName + '</option>';
-	// 	}
-	// 	html = '<select><option value="">Seen at ' + observationData.length + ' location(s)</option>' + html + '</select>';
-	// 	return html;
-	// }
-
 };
 
 

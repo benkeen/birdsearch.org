@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>eBird Advanced Search</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/styles.css" rel="stylesheet" type="text/css" />

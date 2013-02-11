@@ -133,32 +133,23 @@ var map = {
 				break;
 			}
 
-			map.markers[data[i].i] = new google.maps.Marker({
+			var currMarker = new google.maps.Marker({
 				position: latlng,
 				map: map.el,
 				title: data[i].n,
 				icon: map.icon,
-				locationID: data[i].i
+				locationID: data[i].i,
+				infoWindowHTML: '<p><b>' + data[i].n + '</b></p><p><a href="#" class="viewLocationBirds" data-location="' + data[i].i + '">View bird species spotted at this location</a></p>'
 			});
 
-			// this sucks - move to helper function & bypass closures
-			// google.maps.event.addListener(marker, 'click', function() {
-			// 	$.ajax({
-			// 		url: "ajax/getHotspotObservations.php",
-			// 		data: {
-			// 			locationID: marker.locationID
-			// 		},
-			// 		type: "POST",
-			// 		dataType: "json",
-			// 		success: map.displayHotspotObservations,
-			// 		error: function(response) {
-			// 			console.log("error: ", response);
-			// 		}
-			// 	});
+			map.markers[data[i].i] = currMarker;
+			var infoWindow = new google.maps.InfoWindow();
 
-			// 	map.el.setZoom(8);
-			// 	map.el.setCenter(marker.getPosition());
-			// });
+			// this sucks - move to helper function & bypass closures
+			google.maps.event.addListener(currMarker, 'click', function() {
+				infoWindow.setContent(this.infoWindowHTML);
+				infoWindow.open(map.el, this);
+			});
 
 			foundResults.push(data[i]);
 			counter++;
