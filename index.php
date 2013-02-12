@@ -43,6 +43,12 @@
 			<div id="numHotspotsFound"><span>0</span> hotspots found</div>
 		</div>
 		<div class="sidebarSection hidden" id="searchResults"></div>
+		<div id="appInfo">
+			<ul>
+				<li><a href="http://ebird.org/content/ebird/" target="_blank"><img src="resources/images/ebird.png" title="eBird" width="56" height="20" border="0"/></a></li>
+				<li><a href="https://github.com/benkeen/eBirdAdvancedSearch/" id="github" target="_blank">Fork on github</a></li>
+			</ul>
+		</div>
 	</section>
 
 	<section id="mainPanel">

@@ -52,7 +52,7 @@ var manager = {
 			height: windowHeight - 76,
 			width: windowWidth - 280
 		});
-		$('#searchResults').css('height', windowHeight - 83);
+		$('#searchResults').css('height', windowHeight - 110);
 	},
 
 	addEventHandlers: function() {
