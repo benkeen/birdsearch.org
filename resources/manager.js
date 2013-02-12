@@ -426,9 +426,13 @@ var manager = {
 				map.markers[i].setVisible(false);
 			}
 		}
-		for (var currLocationID in manager.hotspots) {
-			if (locationID != currLocationID) {
-				manager.hotspots[currLocationID].isDisplayed = false;
+		for (var i=0; i<manager.hotspots.length; i++) {
+			var currLocationID = manager.hotspots[i].i;
+
+			if (locationID == currLocationID) {
+				manager.hotspots[i].isDisplayed = true;
+			} else {
+				manager.hotspots[i].isDisplayed = false;
 			}
 		}
 

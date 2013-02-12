@@ -8,7 +8,7 @@ made within a particular time period (1-30 days), and the option to view the bir
 any subset of those hotspots. 
 
 ### Demo
-http://www.benjaminkeen.com/experiments/eBirdAdvancedSearch/
+http://www.benjaminkeen.com/experiments/eBirdAdvancedSearch/	
 
 Ben Keen
 [@vancouverben](https://twitter.com/#!/vancouverben)
