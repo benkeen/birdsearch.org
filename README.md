@@ -14,8 +14,7 @@ http://www.benjaminkeen.com/experiments/eBirdAdvancedSearch/
 
 ## v1.0.0 
 
-This will be the initial completed version. Coming soon!
-
+The initial version. Coming soon!
 
 Ben Keen
 [@vancouverben](https://twitter.com/#!/vancouverben)

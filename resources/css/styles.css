@@ -25,59 +25,57 @@ a:link, a:visited {
 .lightGrey {
 	color: #cccccc;
 }
-
 section {
 	background: url(../images/bg.png);
 }
+
 /* top row */
-#topBar {
+header {
 	background-color: #333333;
 	position: absolute;
 	top: 0px;
 	width: 100%;
 	height: 42px;
 }
-#topBar h1 {
+header h1 {
 	color: white;
 	margin: 0px 0px 8px 10px;
 	font-family: "lucida grande";
 	font-size: 13pt;
 }
-#topBar h1 span {
+header h1 span {
 	font-size: 13pt;
 	color: #cbd7ff;
 }
+header ul {
+	position: absolute; 
+	top: 0px;
+	right: 10px;
+	list-style-type: none;
+	margin: 0px;
+}
+header ul li {
+	float: left;
+	margin-left: 20px;
+	padding: 10px;
+}
+header a:link, header a:visited {
+	color: #efefef;
+	text-decoration: none;
+	text-shadow: 1px 1px #444444;
+}
+header a:hover {
+	color: #0033cc;
+}
+
+/* sidebar */
 #searchTextField {
-	width: 272px;
-	font-size: 16pt;
+	width: 277px;
+	font-size: 12pt;
 	margin: 3px 3px 8px;
 	height: 26px;
 	padding: 4px;
 }
-#observationRecencyGroup {
-	position: absolute;
-	padding: 6px;
-	color: white;
-	display: inline;
-}
-#observationRecencyGroup label {
-	display: inline;
-	margin: 0px 4px;
-}
-#observationRecencyGroup select {
-	width: 100px;
-	margin-bottom: 0px;
-}
-#loadingSpinner {
-	float: right;
-	width: 32px;
-	height: 32px;
-	background-image: url(../images/loading.gif);
-	display: none;
-	margin: 3px;
-}
-
-/* sidebar */
 #sidebar {
 	position: absolute;
 	top: 42px;
@@ -85,10 +83,19 @@ section {
 	width: 310px;
 	border-bottom: 1px solid #efefef;
 }
+#sidebar label {
+	text-shadow: 1px 1px #ffffff;
+	margin-left: 2px;
+}
 #searchOptions {
 	background: url(../images/sidebar_bg.png);
-	margin-bottom: 5px;
 	border-bottom: 1px solid #ffffff;
+}
+#resultType {
+	width: 100%;
+}
+#observationRecency {
+	width: 150px;
 }
 .sidebarSection {
 	padding: 10px;
@@ -97,6 +104,9 @@ section {
 #numHotspotsFound {
 	color: #999999;
 	font-size: 12pt;
+}
+#searchResultsSection {
+	background-color: #f9f9f9;
 }
 #searchResults {
 	font-size: 10pt;
@@ -122,6 +132,15 @@ section {
 .loaded label {
 	color: #333333;
 }
+#loadingSpinner {
+	float: right;
+	display: none;
+	width: 32px;
+	height: 32px;
+	background-image: url(../images/loading.gif);
+	margin: 3px;
+}
+
 
 /* main body */
 #mapTabContent {
@@ -207,8 +226,8 @@ section {
 /* footer */
 footer {
 	background-color: #ffffff;
-	padding: 5px;
-	width: 100%;
+	padding: 7px;
+	width: 296px;
 	position: absolute;
 	bottom: 0px;
 }
@@ -221,4 +240,34 @@ footer ul li {
 	line-height: 24px;
 	padding-right: 30px;
 	float: left;
+}
+
+
+.mapBtn, .mapBtnSelected{
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	text-align: center;
+	position: relative;
+	font-family: "lucida grande", Arial;
+	font-size: 11px;
+	box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+	color: #000;
+	border: 1px solid #717B87;
+	background-color: #fff; 
+	margin: 5px;
+	padding: 1px 6px;
+	overflow: hidden;
+}
+
+.mapBtn:hover {
+	background: #FEFEFE;
+	background: -moz-linear-gradient(top, #FEFEFE 0%, #F3F3F3 100%);
+	background: -webkit-gradient(linear, left top, left bottom, from(#FEFEFE), to(#F3F3F3));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEFEFE', endColorstr='#F3F3F3', GradientType=0);
+}
+.mapBtnSelected {
+	font-weight: bold;
 }

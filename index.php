@@ -16,43 +16,30 @@
 	<script src="resources/map.js"></script>
 </head>
 <body>
+
 	<header id="topBar">
 		<h1>eBird<span>search</span>.org</h1>
-		<span id="loadingSpinner"></span>
+		<ul>
+			<li><a href="">About</a></li>
+			<li><a href="">Help</a></li>
+		</ul>
 	</header>
 
 	<section id="sidebar">
-
 		<div id="searchOptions" class="sidebarSection">
 			<input type="text" id="searchTextField" />
 
-			<label>Result type:</label>
-			<select>
-				<option value="">All reported species</option>
+			<label for="resultType">Result type:</label>
+			<select id="resultType">
+				<option value="all">All reported sightings</option>
+				<option value="notable">Notable species</option>
+				<option value="specific">Specific species</option>
 			</select>
 
-<!--
-				<ul id="resultType2">
-				<li class="selected">
-					<input type="radio" name="resultType" id="rt1" checked="checked" /><label for="rt1">All</label>
-				</li>
-				<li>
-					<input type="radio" name="resultType" id="rt2" /><label for="rt2">Notable species</label>
-				</li>
-				<li>
-					<input type="radio" name="resultType" id="rt3" /><label for="rt3">Single species</label>
-				</li>
-			</ul>
-			<div class="clear"></div>
+			<div id="specificSpeciesSection">
+			</div>
 
-			<ul id="resultType">
-				<li><input type="radio" name="resultType" id="rt1" checked="checked" /><label for="rt1">All species</label></li>
-				<li><input type="radio" name="resultType" id="rt2" /><label for="rt2">Notable species</label></li>
-				<li><input type="radio" name="resultType" id="rt3" /><label for="rt3">Single species</label></li>
-			</ul>
--->
-
-			<label>Show observations made within last:</label>
+			<label for="observationRecency">Show observations made within last:</label>
 			<select id="observationRecency">
 				<option value="1">1 day</option>
 				<option value="2">2 days</option>
@@ -67,11 +54,12 @@
 				<option value="25">25 days</option>
 				<option value="30">30 days</option>
 			</select>
+			<span id="loadingSpinner"></span>
 		</div>
 
-		<div class="hidden"style="background-color: #f9f9f9">
+		<div id="searchResultsSection" class="hidden">
 			<div class="sidebarSection">
-				<div id="numHotspotsFound"><span>0</span> hotspots found</div>
+				<div id="numVisibleHotspots"><span>0</span> hotspots found</div>
 			</div>
 			<div class="sidebarSection hidden" id="searchResults"></div>
 		</div>
@@ -92,11 +80,7 @@
 	</section>
 
 	<footer>
-		<ul>
-			<li>This site is not affiliated with <a href="http://ebird.org" target="_blank">eBird</a>.</li>
-			<li><a href="">About eBirdSearch.org</a></li>
-			<li><a href="">View on Github</a></li>
-		</ul>
+		This site is not affiliated with <a href="http://ebird.org" target="_blank">eBird</a>.
 	</footer>
 
 </body>

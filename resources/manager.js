@@ -4,9 +4,10 @@
 
 var manager = {
 
-	// hotspots contains ALL the data, grouped by hotspots
-	hotspots: null,
-	numHotspots: null,
+	visibleHotspots: null, // hotspots currently visible in the map viewport
+	allHotspots: null, // all hotspot results for a region
+	numVisibleHotspots: null,
+
 	species: {},
 	numSpecies: 0,
 
@@ -15,8 +16,6 @@ var manager = {
 	observationRecency: null,
 	searchField: null,
 	activeHotspotRequest: false,
-	maxNumHotspots: 50,
-
 	currTabID: 'mapTab',
 
 
@@ -47,11 +46,11 @@ var manager = {
 		var windowWidth = $(window).width();
 		$('#sidebar').css('height', windowHeight - 77);
 		$('#mainPanel').css({
-			height: windowHeight - 88,
+			height: windowHeight - 54,
 			width: windowWidth - 325
 		});
 		$('#panelContent').css({
-			height: windowHeight - 110
+			height: windowHeight - 82
 		});
 		$('#searchResults').css('height', windowHeight - 110);
 	},
@@ -66,7 +65,6 @@ var manager = {
 
 	onChangeObservationRecency: function(e) {
 		manager.observationRecency = $(e.target).val();
-
 		var address = $.trim(manager.searchField.value);
 		if (address !== '') {
 			manager.getHotspots();
@@ -78,11 +76,13 @@ var manager = {
 	 * the sidebar and starts requesting the hotspot observation data.
 	 */
 	onDisplayHotspots: function(data) {
-		manager.hotspots = data;
-		manager.numHotspots = data.length;
-		$('#numHotspotsFound span').html(manager.numHotspots);
+		manager.visibleHotspots = data;
+		manager.numVisibleHotspots = data.length;
 
-		if (manager.numHotspots > 0) {
+		$('#numVisibleHotspots span').html(manager.numVisibleHotspots);
+		$('#searchResultsSection').removeClass('hidden');
+
+		if (manager.numVisibleHotspots > 0) {
 			var html = manager.generateHotspotTable(data);
 			$('#searchResults').html(html).removeClass('hidden');
 
@@ -95,11 +95,17 @@ var manager = {
 	},
 
 	/**
-	 * Loop through all hotspots returned and fire off Ajax requests for each,
+	 * Loop through all hotspots returned and if we don't have data already loaded for it, fire off an Ajax
+	 * requests for it.
 	 */
 	getAllHotspotObservations: function() {
-		for (var i=0; i<manager.numHotspots; i++) {
-			manager.getSingleHotspotObservation(manager.hotspots[i].i);
+		for (var i=0; i<manager.numVisibleHotspots; i++) {
+			var locationID = manager.visibleHotspots[i].i;
+			if (manager.allHotspots.hasOwnProperty(locationID)) {
+				console.log("already loaded for location ID: ", locationID);
+			} else {
+				manager.getSingleHotspotObservation(manager.visibleHotspots[i].i);
+			}
 		}
 	},
 
@@ -121,8 +127,8 @@ var manager = {
 
 	onSuccessReturnObservations: function(locationID, response) {
 		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
-		manager.hotspots[hotspotIndex].isDisplayed = true;
-		manager.hotspots[hotspotIndex].observations = {
+		manager.visibleHotspots[hotspotIndex].isDisplayed = true;
+		manager.visibleHotspots[hotspotIndex].observations = {
 			success: true,
 			data: response
 		};
@@ -133,8 +139,6 @@ var manager = {
 		row.removeClass('notLoaded').addClass('loaded');
 		row.find(".speciesCount").html(response.length).attr("title", title);
 
-
-
 		if (manager.checkAllObservationsLoaded()) {
 			manager.stopLoading();
 			manager.createSpeciesMap();
@@ -144,7 +148,7 @@ var manager = {
 	
 	onErrorReturnObservations: function(locationID, response) {
 		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
-		manager.hotspots[hotspotIndex].observations = {
+		manager.visibleHotspots[hotspotIndex].observations = {
 			success: false
 		};
 
@@ -155,8 +159,8 @@ var manager = {
 
 	getHotspotLocationIndex: function(locationID) {
 		var index = null;
-		for (var i=0; i<manager.numHotspots; i++) {
-			if (manager.hotspots[i].i == locationID) {
+		for (var i=0; i<manager.numVisibleHotspots; i++) {
+			if (manager.visibleHotspots[i].i == locationID) {
 				index = i;
 				break;
 			}
@@ -171,8 +175,8 @@ var manager = {
 	 */
 	checkAllObservationsLoaded: function() {
 		var allLoaded = true;
-		for (var i=0; i<manager.numHotspots; i++) {
-			if (!manager.hotspots[i].hasOwnProperty('observations')) {
+		for (var i=0; i<manager.numVisibleHotspots; i++) {
+			if (!manager.visibleHotspots[i].hasOwnProperty('observations')) {
 				allLoaded = false;
 				break;
 			}
@@ -193,7 +197,14 @@ var manager = {
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
-				map.displayHotspots(response);
+
+				// store the hotspot data. This will probably contain more results than are currently
+				// needed to display, according to the current viewport. That's cool. The map code
+				// figures out what needs to be shown and ignores the rest.
+				manager.allHotspots = response;
+
+				map.clear();
+				map.displayHotspots();
 			},
 			error: function(response) {
 				console.log("error: ", response);
@@ -202,26 +213,26 @@ var manager = {
 	},
 
 	startLoading: function() {
-		$('#loadingSpinner').show();
+		$('#loadingSpinner').fadeIn(200);
 	},
 
 	stopLoading: function() {
-		$('#loadingSpinner').hide();
+		$('#loadingSpinner').fadeOut(200);
 	},
 
 	createSpeciesMap: function() {
 		manager.species = {};
 		manager.numSpecies = 0;
-		for (var i=0; i<manager.numHotspots; i++) {
+		for (var i=0; i<manager.numVisibleHotspots; i++) {
 
 			// if this hotspots observations failed to load (for whatever reason), just ignore the row
-			if (!manager.hotspots[i].observations.success) {
+			if (!manager.visibleHotspots[i].observations.success) {
 				continue;
 			}
 
-			var numObservations = manager.hotspots[i].observations.data.length;
+			var numObservations = manager.visibleHotspots[i].observations.data.length;
 			for (var j=0; j<numObservations; j++) {
-				var currData = manager.hotspots[i].observations.data[j];
+				var currData = manager.visibleHotspots[i].observations.data[j];
 				var sciName = currData.sciName;
 
 				if (!manager.species.hasOwnProperty(sciName)) {
@@ -284,8 +295,8 @@ var manager = {
 			map.markers[i].setVisible(isChecked);
 		}
 
-		for (var locationID in manager.hotspots) {
-			manager.hotspots[locationID].isDisplayed = isChecked;
+		for (var locationID in manager.visibleHotspots) {
+			manager.visibleHotspots[locationID].isDisplayed = isChecked;
 		}
 
 		manager.updateSpeciesTab();
@@ -297,7 +308,7 @@ var manager = {
 		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
 
 		var isChecked = e.target.checked;
-		manager.hotspots[hotspotIndex].isDisplayed = isChecked;
+		manager.visibleHotspots[hotspotIndex].isDisplayed = isChecked;
 		
 		// now update the map and Bird Species tab
 		map.markers[locationID].setVisible(isChecked);
@@ -356,7 +367,7 @@ var manager = {
 
 				var observationTime = moment(manager.species[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 
-				if (!manager.hotspots[hotspotIndex].isDisplayed) {
+				if (!manager.visibleHotspots[hotspotIndex].isDisplayed) {
 					locations.push('<div class="lightGrey">' + manager.species[i].obs[j].locName + '</div>');
 					lastSeen.push('<div class="lightGrey">' + observationTime + '</div>');
 					continue;
