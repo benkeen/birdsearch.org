@@ -95,8 +95,7 @@ var map = {
 		if (manager.activeHotspotRequest) {
 			return;
 		}
-
-		map.displayHotspots();
+		map.addMarkers();
 	},
 
 	addCustomControls: function() {
@@ -140,9 +139,9 @@ var map = {
 		map.markers = {};
 	},
 
-	displayHotspots: function() {
+	addMarkers: function() {
 		var data = manager.allHotspots;
-		if (data == null) {
+		if (data === null) {
 			return;
 		}
 
@@ -151,11 +150,13 @@ var map = {
 
 		var mapBoundary = map.el.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-		var foundResults = [];
+		var foundResults = {};
 
 		var counter = 0;
-		for (var i=0; i<data.length; i++) {
-			var latlng = new google.maps.LatLng(data[i].lt, data[i].lg);
+
+		for (var locationID in data) {
+			var currHotspot = data[locationID];
+			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
 
 			if (!boundsObj.contains(latlng)) {
 				continue;
@@ -164,13 +165,13 @@ var map = {
 			var currMarker = new google.maps.Marker({
 				position: latlng,
 				map: map.el,
-				title: data[i].n,
+				title: currHotspot.n,
 				icon: map.icon,
-				locationID: data[i].i,
-				infoWindowHTML: '<p><b>' + data[i].n + '</b></p><p><a href="#" class="viewLocationBirds" data-location="' + data[i].i + '">View bird species spotted at this location</a></p>'
+				locationID: currHotspot.i,
+				infoWindowHTML: '<p><b>' + currHotspot.n + '</b></p><p><a href="#" class="viewLocationBirds" data-location="' + currHotspot.i + '">View bird species spotted at this location</a></p>'
 			});
 
-			map.markers[data[i].i] = currMarker;
+			map.markers[currHotspot.i] = currMarker;
 			var infoWindow = new google.maps.InfoWindow();
 
 			// this sucks - move to helper function & bypass closures
@@ -179,11 +180,11 @@ var map = {
 				infoWindow.open(map.el, this);
 			});
 
-			foundResults.push(data[i]);
+			foundResults[locationID] = currHotspot;
 			counter++;
 		}
 
-		// pass the hotspot data over to the main search
+		// pass the visible hotspot data over to the main search
 		manager.onDisplayHotspots(foundResults);
 	}
 };

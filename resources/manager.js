@@ -4,9 +4,14 @@
 
 var manager = {
 
-	visibleHotspots: null, // hotspots currently visible in the map viewport
-	allHotspots: null, // all hotspot results for a region
+	// hotspots currently visible in the map viewport
+	visibleHotspots: {},
 	numVisibleHotspots: null,
+
+	// all hotspot results for a region. This just keeps getting appended to as the user does new
+	// searches, drags/zooms the map. Seems unlikely it would get TOO massive in a single session,
+	// plus it lets us be nice to eBirds servers and not re-request the same data multiple times
+	allHotspots: {},
 
 	species: {},
 	numSpecies: 0,
@@ -72,37 +77,48 @@ var manager = {
 	},
 
 	/**
-	 * Gets called by map.js when the markers have been loaded onto the screen. This updates
-	 * the sidebar and starts requesting the hotspot observation data.
-	 */
-	onDisplayHotspots: function(data) {
-		manager.visibleHotspots = data;
-		manager.numVisibleHotspots = data.length;
-
-		$('#numVisibleHotspots span').html(manager.numVisibleHotspots);
-		$('#searchResultsSection').removeClass('hidden');
-
-		if (manager.numVisibleHotspots > 0) {
-			var html = manager.generateHotspotTable(data);
-			$('#searchResults').html(html).removeClass('hidden');
-
-			// now start requesting all the observation data for each hotspot
-			manager.getAllHotspotObservations();
-		} else {
-			$('#searchResults').html('').removeClass('hidden');
-			manager.stopLoading();
-		}
-	},
-
-	/**
 	 * Loop through all hotspots returned and if we don't have data already loaded for it, fire off an Ajax
-	 * requests for it.
+	 * request for it.
 	 */
 	getAllHotspotObservations: function() {
+
+		// TODO couldn't this have been changing in the meantime? 
+		var recencyKey = manager.observationRecency + 'day';
+
+
 		for (var i=0; i<manager.numVisibleHotspots; i++) {
+
 			var locationID = manager.visibleHotspots[i].i;
-			if (manager.allHotspots.hasOwnProperty(locationID)) {
-				console.log("already loaded for location ID: ", locationID);
+
+			// check allHotspots to see if this data has been loaded yet. If not, prep the object. To reduce
+			// server requests, we intelligently categorize all sightings in the appropriate pocket (1day, 2day
+			// etc.) That way, if the user does a search for 30 days then reduces the recency setting, we don't
+			// need any superfluous requests. If a request for 30 days goes through, ALL dataByRecency properties
+			// have their available property set to true
+			if (!manager.allHotspots[locationID].hasOwnProperty('observations')) {
+				manager.allHotspots[locationID].isDisplayed = false;
+				manager.allHotspots[locationID].observations = {
+					success: false,
+					dataByRecency: {
+						'1day': { available: false, data: [] },
+						'2day': { available: false, data: [] },
+						'3day': { available: false, data: [] },
+						'4day': { available: false, data: [] },
+						'5day': { available: false, data: [] },
+						'6day': { available: false, data: [] },
+						'7day': { available: false, data: [] },
+						'10day': { available: false, data: [] },
+						'15day': { available: false, data: [] },
+						'20day': { available: false, data: [] },
+						'25day': { available: false, data: [] },
+						'30day': { available: false, data: [] }
+					}
+				};
+			}
+
+			// if we've already gotten data for this hotspot and recency (e.g. 7 days), do nothing
+			if (manager.allHotspots[locationID].observations.dataByRecency[recencyKey].available) {
+				console.log("Data already loaded for location ID: ", locationID + " and recency: " + manager.observationRecency);
 			} else {
 				manager.getSingleHotspotObservation(manager.visibleHotspots[i].i);
 			}
@@ -126,12 +142,16 @@ var manager = {
 	},
 
 	onSuccessReturnObservations: function(locationID, response) {
-		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
-		manager.visibleHotspots[hotspotIndex].isDisplayed = true;
-		manager.visibleHotspots[hotspotIndex].observations = {
-			success: true,
-			data: response
-		};
+		//var hotspotIndex = manager.getHotspotLocationIndex(locationID);
+
+		manager.visibleHotspots[locationID].isDisplayed = true;
+		manager.visibleHotspots[locationID].observations.success = true;
+
+		// now for the exciting part: loop through all the observations and figure out which pocket to categorize them in:
+		// 1 day ago, 2 days ago etc.
+		console.log(response);
+		return;
+
 
 		var numSpecies = response.length;
 		var title = response.length + " bird species seen at this location in the last " + manager.observationRecency + " days.";
@@ -147,14 +167,14 @@ var manager = {
 	},
 	
 	onErrorReturnObservations: function(locationID, response) {
-		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
-		manager.visibleHotspots[hotspotIndex].observations = {
-			success: false
-		};
+		// var hotspotIndex = manager.getHotspotLocationIndex(locationID);
+		// manager.visibleHotspots[hotspotIndex].observations = {
+		// 	success: false
+		// };
 
-		if (manager.checkAllObservationsLoaded()) {
-			manager.stopLoading();
-		}
+		// if (manager.checkAllObservationsLoaded()) {
+		// 	manager.stopLoading();
+		// }
 	},
 
 	getHotspotLocationIndex: function(locationID) {
@@ -184,6 +204,9 @@ var manager = {
 		return allLoaded;
 	},
 
+	/**
+	 * Retrieves all hotspots for a region.
+	 */
 	getHotspots: function() {
 		manager.activeHotspotRequest = true;
 		manager.startLoading();
@@ -201,15 +224,46 @@ var manager = {
 				// store the hotspot data. This will probably contain more results than are currently
 				// needed to display, according to the current viewport. That's cool. The map code
 				// figures out what needs to be shown and ignores the rest.
-				manager.allHotspots = response;
+				if ($.isArray(response)) {
+					for (var i=0; i<response.length; i++) {
+						var locationID = response[i].i;
+						manager.allHotspots[locationID] = response[i];
+					}
+				}
 
 				map.clear();
-				map.displayHotspots();
+				map.addMarkers();
 			},
 			error: function(response) {
 				console.log("error: ", response);
 			}
 		});
+	},
+
+	/**
+	 * Gets called by map.js after the markers have been added to the map. This updates
+	 * the sidebar and starts requesting the hotspot observation data.
+	 */
+	onDisplayHotspots: function(data) {
+		manager.visibleHotspots    = data;
+
+		//for ()
+		manager.numVisibleHotspots = data.length;
+
+		
+		$('#numVisibleHotspots span').html(manager.numVisibleHotspots);
+		$('#searchResultsSection').removeClass('hidden');
+
+		if (manager.numVisibleHotspots > 0) {
+			var html = manager.generateHotspotTable(data);
+			$('#searchResults').html(html).removeClass('hidden');
+
+			// now start requesting all the observation data for each hotspot
+			manager.getAllHotspotObservations();
+		} else {
+			$('#searchResults').html('').removeClass('hidden');
+			manager.stopLoading();
+		}
 	},
 
 	startLoading: function() {
