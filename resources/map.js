@@ -9,7 +9,7 @@ var map = {
 		center: new google.maps.LatLng(20, 12),
 		zoom: 2,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
-		mapTypeControl: true,
+		/*mapTypeControl: true
 		mapTypeControlOptions: {
 			style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
 			position: google.maps.ControlPosition.TOP_RIGHT
@@ -26,7 +26,7 @@ var map = {
 		scaleControl: true,
 		scaleControlOptions: {
 			position: google.maps.ControlPosition.BOTTOM_LEFT
-		},
+		},*/
 		streetViewControl: false
 	},
 

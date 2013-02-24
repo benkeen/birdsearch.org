@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>eBird Advanced Search</title>
+	<title>eBird Search</title>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
@@ -17,8 +17,20 @@
 </head>
 <body>
 	<header id="topBar">
-		<input type="text" id="searchTextField" />
-		<div id="observationRecencyGroup">
+		<h1>eBird<span>search</span>.org</h1>
+		<span id="loadingSpinner"></span>
+	</header>
+
+	<section id="sidebar">
+		<div class="sidebarSection">
+			<input type="text" id="searchTextField" />
+
+			<ul id="resultType">
+				<li><input type="radio" name="resultType" id="rt1" checked="checked" /><label for="rt1">All species</label></li>
+				<li><input type="radio" name="resultType" id="rt2" /><label for="rt2">Notable species</label></li>
+				<li><input type="radio" name="resultType" id="rt3" /><label for="rt3">Single species</label></li>
+			</ul>
+
 			<label>Show observations made within last:</label>
 			<select id="observationRecency">
 				<option value="1">1 day</option>
@@ -35,17 +47,14 @@
 				<option value="30">30 days</option>
 			</select>
 		</div>
-		<span id="loadingSpinner"></span>
-	</header>
 
-	<section id="sidebar">
 		<div class="sidebarSection">
 			<div id="numHotspotsFound"><span>0</span> hotspots found</div>
 		</div>
 		<div class="sidebarSection hidden" id="searchResults"></div>
 		<div id="appInfo">
 			<ul>
-				<li><a href="http://ebird.org/content/ebird/" target="_blank"><img src="resources/images/ebird.png" title="eBird" width="56" height="20" border="0"/></a></li>
+				<li><a href="http://ebird.org/content/ebird/" target="_blank"><img src="resources/images/ebird.png" title="Go to eBird.org" width="56" height="20" border="0"/></a></li>
 				<li><a href="https://github.com/benkeen/eBirdAdvancedSearch/" id="github" target="_blank">Fork on github</a></li>
 			</ul>
 		</div>

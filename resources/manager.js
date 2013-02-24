@@ -50,7 +50,7 @@ var manager = {
 		$('#sidebar').css('height', windowHeight - 42);
 		$('#mainPanel').css({
 			height: windowHeight - 76,
-			width: windowWidth - 280
+			width: windowWidth - 321
 		});
 		$('#searchResults').css('height', windowHeight - 110);
 	},
@@ -126,7 +126,13 @@ var manager = {
 			data: response
 		};
 
-		$('#location_' + locationID + ' .notLoaded').removeClass('notLoaded').addClass('loaded');
+		var numSpecies = response.length;
+		var title = response.length + " bird species seen at this location in the last " + manager.observationRecency + " days.";
+		var row = $('#location_' + locationID);
+		row.removeClass('notLoaded').addClass('loaded');
+		row.find(".speciesCount").html(response.length).attr("title", title);
+
+
 
 		if (manager.checkAllObservationsLoaded()) {
 			manager.stopLoading();
@@ -308,6 +314,7 @@ var manager = {
 				'<tr>' +
 					'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" /></th>' +
 					'<th>Location</th>' +
+					'<th width="30"></th>' +
 				'</tr>' +
 				'</thead>' +
 				'<tbody>';
@@ -316,6 +323,7 @@ var manager = {
 			html += '<tr id="location_' + data[i].i + '">' +
 						'<td><input type="checkbox" id="row' + i + '" checked="checked" /></td>' +
 						'<td class="loadingStatus notLoaded"><label for="row' + i + '">' + data[i].n + '</label></td>' +
+						'<td align="right"><span class="speciesCount"></span></td>' +
 					'</tr>';
 		}
 		html += '</tbody></table>';
