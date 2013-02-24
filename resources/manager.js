@@ -13,9 +13,7 @@ var manager = {
 	regionType: null,
 	region: null,
 	observationRecency: null,
-
 	searchField: null,
-
 	activeHotspotRequest: false,
 	maxNumHotspots: 50,
 
@@ -47,10 +45,13 @@ var manager = {
 	handleWindowResize: function() {
 		var windowHeight = $(window).height();
 		var windowWidth = $(window).width();
-		$('#sidebar').css('height', windowHeight - 42);
+		$('#sidebar').css('height', windowHeight - 77);
 		$('#mainPanel').css({
-			height: windowHeight - 76,
-			width: windowWidth - 321
+			height: windowHeight - 88,
+			width: windowWidth - 325
+		});
+		$('#panelContent').css({
+			height: windowHeight - 110
 		});
 		$('#searchResults').css('height', windowHeight - 110);
 	},
@@ -85,7 +86,7 @@ var manager = {
 			var html = manager.generateHotspotTable(data);
 			$('#searchResults').html(html).removeClass('hidden');
 
-  			// now start requesting all the observation data for each hotspot
+			// now start requesting all the observation data for each hotspot
 			manager.getAllHotspotObservations();
 		} else {
 			$('#searchResults').html('').removeClass('hidden');

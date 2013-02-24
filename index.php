@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>eBird Search</title>
+	<title>eBirdsearch.org</title>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
@@ -22,14 +22,35 @@
 	</header>
 
 	<section id="sidebar">
-		<div class="sidebarSection">
+
+		<div id="searchOptions" class="sidebarSection">
 			<input type="text" id="searchTextField" />
+
+			<label>Result type:</label>
+			<select>
+				<option value="">All reported species</option>
+			</select>
+
+<!--
+				<ul id="resultType2">
+				<li class="selected">
+					<input type="radio" name="resultType" id="rt1" checked="checked" /><label for="rt1">All</label>
+				</li>
+				<li>
+					<input type="radio" name="resultType" id="rt2" /><label for="rt2">Notable species</label>
+				</li>
+				<li>
+					<input type="radio" name="resultType" id="rt3" /><label for="rt3">Single species</label>
+				</li>
+			</ul>
+			<div class="clear"></div>
 
 			<ul id="resultType">
 				<li><input type="radio" name="resultType" id="rt1" checked="checked" /><label for="rt1">All species</label></li>
 				<li><input type="radio" name="resultType" id="rt2" /><label for="rt2">Notable species</label></li>
 				<li><input type="radio" name="resultType" id="rt3" /><label for="rt3">Single species</label></li>
 			</ul>
+-->
 
 			<label>Show observations made within last:</label>
 			<select id="observationRecency">
@@ -48,16 +69,13 @@
 			</select>
 		</div>
 
-		<div class="sidebarSection">
-			<div id="numHotspotsFound"><span>0</span> hotspots found</div>
+		<div class="hidden"style="background-color: #f9f9f9">
+			<div class="sidebarSection">
+				<div id="numHotspotsFound"><span>0</span> hotspots found</div>
+			</div>
+			<div class="sidebarSection hidden" id="searchResults"></div>
 		</div>
-		<div class="sidebarSection hidden" id="searchResults"></div>
-		<div id="appInfo">
-			<ul>
-				<li><a href="http://ebird.org/content/ebird/" target="_blank"><img src="resources/images/ebird.png" title="Go to eBird.org" width="56" height="20" border="0"/></a></li>
-				<li><a href="https://github.com/benkeen/eBirdAdvancedSearch/" id="github" target="_blank">Fork on github</a></li>
-			</ul>
-		</div>
+
 	</section>
 
 	<section id="mainPanel">
@@ -72,6 +90,14 @@
 			</div>
 		</div>
 	</section>
+
+	<footer>
+		<ul>
+			<li>This site is not affiliated with <a href="http://ebird.org" target="_blank">eBird</a>.</li>
+			<li><a href="">About eBirdSearch.org</a></li>
+			<li><a href="">View on Github</a></li>
+		</ul>
+	</footer>
 
 </body>
 </html>
