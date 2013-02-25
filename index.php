@@ -6,22 +6,22 @@
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/styles.css" rel="stylesheet" type="text/css" />
-	<script src="resources/html5shiv.js"></script>
-	<script src="resources/moment.min.js"></script>
-	<script src="resources/jquery.min.js"></script>
-	<script src="resources/jquery.tablesorter.min.js"></script>
-	<script src="resources/jquery.tablesorter.widgets.js"></script>
+	<script src="resources/js/html5shiv.js"></script>
+	<script src="resources/js/moment.min.js"></script>
+	<script src="resources/js/jquery.min.js"></script>
+	<script src="resources/js/jquery.tablesorter.min.js"></script>
+	<script src="resources/js/jquery.tablesorter.widgets.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places"></script>
-	<script src="resources/manager.js"></script>
-	<script src="resources/map.js"></script>
+	<script src="resources/js/manager.js"></script>
+	<script src="resources/js/map.js"></script>
 </head>
-<body>
+<body data-serverdatetime="<?php echo date('U'); ?>">
 
 	<header id="topBar">
 		<h1>eBird<span>search</span>.org</h1>
 		<ul>
 			<li><a href="">About</a></li>
-			<li><a href="">Help</a></li>
+			<li><a href="">Feature Suggestions</a></li>
 		</ul>
 	</header>
 
@@ -33,7 +33,6 @@
 			<select id="resultType">
 				<option value="all">All reported sightings</option>
 				<option value="notable">Notable species</option>
-				<option value="specific">Specific species</option>
 			</select>
 
 			<div id="specificSpeciesSection">

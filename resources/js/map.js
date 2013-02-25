@@ -41,6 +41,7 @@ var map = {
 		google.maps.event.addListener(map.el, 'dragend', map.onMapDragEnd);
 	},
 
+
 	onAutoComplete: function() {
 		var place = map.autocomplete.getPlace();
 
@@ -110,6 +111,7 @@ var map = {
 		map.el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
 		map.el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
 
+		// add the appropriate event handlers
 		google.maps.event.addDomListener(btn1, 'click', function() {
 			map.el.setMapTypeId(google.maps.MapTypeId.TERRAIN);
 			$(".mapBtn").removeClass('mapBtnSelected');
@@ -139,6 +141,7 @@ var map = {
 		map.markers = {};
 	},
 
+
 	addMarkers: function() {
 		var data = manager.allHotspots;
 		if (data === null) {
@@ -150,10 +153,8 @@ var map = {
 
 		var mapBoundary = map.el.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-		var foundResults = {};
 
-		var counter = 0;
-
+		var visibleHotspots = [];
 		for (var locationID in data) {
 			var currHotspot = data[locationID];
 			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
@@ -174,17 +175,16 @@ var map = {
 			map.markers[currHotspot.i] = currMarker;
 			var infoWindow = new google.maps.InfoWindow();
 
-			// this sucks - move to helper function & bypass closures
+			// this sucks - move to helper function...
 			google.maps.event.addListener(currMarker, 'click', function() {
 				infoWindow.setContent(this.infoWindowHTML);
 				infoWindow.open(map.el, this);
 			});
 
-			foundResults[locationID] = currHotspot;
-			counter++;
+			visibleHotspots.push(locationID);
 		}
 
 		// pass the visible hotspot data over to the main search
-		manager.onDisplayHotspots(foundResults);
+		manager.onDisplayHotspots(visibleHotspots);
 	}
 };

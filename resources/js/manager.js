@@ -4,8 +4,9 @@
 
 var manager = {
 
-	// hotspots currently visible in the map viewport
-	visibleHotspots: {},
+	// hotspots currently visible in the map viewport. Array of location ID. The actual hotspot data
+	// is stored in allHotspots
+	visibleHotspots: [],
 	numVisibleHotspots: null,
 
 	// all hotspot results for a region. This just keeps getting appended to as the user does new
@@ -22,21 +23,30 @@ var manager = {
 	searchField: null,
 	activeHotspotRequest: false,
 	currTabID: 'mapTab',
+	
+	// some constants
+	CURRENT_SERVER_TIME: null,
+	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 
 
 	init: function() {
 		$(window).resize(manager.handleWindowResize);
 
+		// make a note of the current server time. This is used to ensure date calculations don't go
+		// wonky if the user's system clock is off
+		manager.CURRENT_SERVER_TIME = parseInt($('body').data('serverdatetime'), 10);
+
+		// prep the page elements to ensure they're the right size
 		manager.handleWindowResize();
 
-		// add the appropriate event handlers to detect when the seach settings have changed
+		// add the appropriate event handlers to detect when the search settings have changed
 		manager.addEventHandlers();
 
 		// make a note of some important DOM elements
 		manager.searchField = $('#searchTextField')[0];
 
 		// set the default values
-		manager.observationRecency = $('#observationRecency').val();
+		manager.observationRecency = parseInt($('#observationRecency').val(), 10);
 
 		// initialize the map
 		map.initialize();
@@ -69,7 +79,7 @@ var manager = {
 	},
 
 	onChangeObservationRecency: function(e) {
-		manager.observationRecency = $(e.target).val();
+		manager.observationRecency = parseInt($(e.target).val(), 10);
 		var address = $.trim(manager.searchField.value);
 		if (address !== '') {
 			manager.getHotspots();
@@ -82,23 +92,21 @@ var manager = {
 	 */
 	getAllHotspotObservations: function() {
 
-		// TODO couldn't this have been changing in the meantime? 
+		// TODO couldn't this have been changing in the meantime?
 		var recencyKey = manager.observationRecency + 'day';
 
-
 		for (var i=0; i<manager.numVisibleHotspots; i++) {
-
-			var locationID = manager.visibleHotspots[i].i;
+			var currLocationID = manager.visibleHotspots[i];
 
 			// check allHotspots to see if this data has been loaded yet. If not, prep the object. To reduce
 			// server requests, we intelligently categorize all sightings in the appropriate pocket (1day, 2day
 			// etc.) That way, if the user does a search for 30 days then reduces the recency setting, we don't
 			// need any superfluous requests. If a request for 30 days goes through, ALL dataByRecency properties
 			// have their available property set to true
-			if (!manager.allHotspots[locationID].hasOwnProperty('observations')) {
-				manager.allHotspots[locationID].isDisplayed = false;
-				manager.allHotspots[locationID].observations = {
-					success: false,
+			if (!manager.allHotspots[currLocationID].hasOwnProperty('observations')) {
+				manager.allHotspots[currLocationID].isDisplayed = false;
+				manager.allHotspots[currLocationID].observations = {
+					success: null,
 					dataByRecency: {
 						'1day': { available: false, data: [] },
 						'2day': { available: false, data: [] },
@@ -117,10 +125,10 @@ var manager = {
 			}
 
 			// if we've already gotten data for this hotspot and recency (e.g. 7 days), do nothing
-			if (manager.allHotspots[locationID].observations.dataByRecency[recencyKey].available) {
-				console.log("Data already loaded for location ID: ", locationID + " and recency: " + manager.observationRecency);
+			if (manager.allHotspots[currLocationID].observations.dataByRecency[recencyKey].available) {
+				console.log("Data already loaded for location ID: ", currLocationID + " and recency: " + manager.observationRecency);
 			} else {
-				manager.getSingleHotspotObservation(manager.visibleHotspots[i].i);
+				manager.getSingleHotspotObservation(currLocationID);
 			}
 		}
 	},
@@ -130,7 +138,7 @@ var manager = {
 			url: "ajax/getHotspotObservations.php",
 			data: {
 				locationID: locationID,
-				recency: manager.observationRecency
+				recency: manager.observationRecency // TODO again: this value should be frozen
 			},
 			type: "POST",
 			dataType: "json",
@@ -142,16 +150,75 @@ var manager = {
 	},
 
 	onSuccessReturnObservations: function(locationID, response) {
-		//var hotspotIndex = manager.getHotspotLocationIndex(locationID);
+		manager.allHotspots[locationID].isDisplayed = true;
+		manager.allHotspots[locationID].observations.success = true;
 
-		manager.visibleHotspots[locationID].isDisplayed = true;
-		manager.visibleHotspots[locationID].observations.success = true;
+		// erk. bit kruddy... maybe pick a different data structure?
+		switch (manager.observationRecency) {
+			case 30:
+				manager.allHotspots[locationID].observations.dataByRecency['30day'].available = true;
+			case 25:
+				manager.allHotspots[locationID].observations.dataByRecency['25day'].available = true;
+			case 20:
+				manager.allHotspots[locationID].observations.dataByRecency['20day'].available = true;
+			case 15:
+				manager.allHotspots[locationID].observations.dataByRecency['15day'].available = true;
+			case 10:
+				manager.allHotspots[locationID].observations.dataByRecency['10day'].available = true;
+			case 7:
+				manager.allHotspots[locationID].observations.dataByRecency['7day'].available = true;
+			case 6:
+				manager.allHotspots[locationID].observations.dataByRecency['6day'].available = true;
+			case 5:
+				manager.allHotspots[locationID].observations.dataByRecency['5day'].available = true;
+			case 4:
+				manager.allHotspots[locationID].observations.dataByRecency['4day'].available = true;
+			case 3:
+				manager.allHotspots[locationID].observations.dataByRecency['3day'].available = true;
+			case 2:
+				manager.allHotspots[locationID].observations.dataByRecency['2day'].available = true;
+			case 1:
+				manager.allHotspots[locationID].observations.dataByRecency['1day'].available = true;
+				break;
+			default:
+				break;
+		}
 
-		// now for the exciting part: loop through all the observations and figure out which pocket to categorize them in:
-		// 1 day ago, 2 days ago etc.
-		console.log(response);
-		return;
+		// now for the exciting part: loop through all the observations and put them in the appropriate spot
+		// in the data structure
+		for (var i=0; i<response.length; i++) {
+			var observationTime = parseInt(moment(response[i].obsDt, 'YYYY-MM-DD HH:mm').format('X'), 10);
+			var difference = manager.CURRENT_SERVER_TIME - observationTime;
+			var daysAgo = Math.ceil(difference / manager.ONE_DAY_IN_SECONDS);
 
+			if (daysAgo >= 30) {
+				manager.allHotspots[locationID].observations.dataByRecency['30day'].data.push(response[i]);
+			} else if (daysAgo >= 25) {
+				manager.allHotspots[locationID].observations.dataByRecency['25day'].data.push(response[i]);
+			} else if (daysAgo >= 20) {
+				manager.allHotspots[locationID].observations.dataByRecency['20day'].data.push(response[i]);
+			} else if (daysAgo >= 15) {
+				manager.allHotspots[locationID].observations.dataByRecency['15day'].data.push(response[i]);
+			} else if (daysAgo >= 10) {
+				manager.allHotspots[locationID].observations.dataByRecency['10day'].data.push(response[i]);
+			} else if (daysAgo >= 7) {
+				manager.allHotspots[locationID].observations.dataByRecency['7day'].data.push(response[i]);
+			} else if (daysAgo >= 6) {
+				manager.allHotspots[locationID].observations.dataByRecency['6day'].data.push(response[i]);
+			} else if (daysAgo >= 5) {
+				manager.allHotspots[locationID].observations.dataByRecency['5day'].data.push(response[i]);
+			} else if (daysAgo >= 4) {
+				manager.allHotspots[locationID].observations.dataByRecency['4day'].data.push(response[i]);
+			} else if (daysAgo >= 3) {
+				manager.allHotspots[locationID].observations.dataByRecency['3day'].data.push(response[i]);
+			} else if (daysAgo >= 2) {
+				manager.allHotspots[locationID].observations.dataByRecency['2day'].data.push(response[i]);
+			} else if (daysAgo >= 1) {
+				manager.allHotspots[locationID].observations.dataByRecency['1day'].data.push(response[i]);
+			} else {
+				// shouldn't occur
+			}
+		}
 
 		var numSpecies = response.length;
 		var title = response.length + " bird species seen at this location in the last " + manager.observationRecency + " days.";
@@ -167,22 +234,18 @@ var manager = {
 	},
 	
 	onErrorReturnObservations: function(locationID, response) {
-		// var hotspotIndex = manager.getHotspotLocationIndex(locationID);
-		// manager.visibleHotspots[hotspotIndex].observations = {
-		// 	success: false
-		// };
-
-		// if (manager.checkAllObservationsLoaded()) {
-		// 	manager.stopLoading();
-		// }
+		manager.allHotspots[locationID].observations.success = false;
+		if (manager.checkAllObservationsLoaded()) {
+			manager.stopLoading();
+		}
 	},
 
 	getHotspotLocationIndex: function(locationID) {
 		var index = null;
 		for (var i=0; i<manager.numVisibleHotspots; i++) {
-			if (manager.visibleHotspots[i].i == locationID) {
+			if (manager.visibleHotspots[i] === locationID) {
 				index = i;
-				break;
+ 				break;
 			}
 		}
 		return index;
@@ -195,8 +258,12 @@ var manager = {
 	 */
 	checkAllObservationsLoaded: function() {
 		var allLoaded = true;
-		for (var i=0; i<manager.numVisibleHotspots; i++) {
-			if (!manager.visibleHotspots[i].hasOwnProperty('observations')) {
+		for (var i=0; i<manager.visibleHotspots; i++) {
+			var currLocationID = manager.visibleHotspots[i];
+
+			// if any of the visible hotspots haven't had a success/fail message for their observation
+			// list, we ain't done
+			if (manager.allHotspots[currLocationID].observations.success === null) {
 				allLoaded = false;
 				break;
 			}
@@ -244,18 +311,15 @@ var manager = {
 	 * Gets called by map.js after the markers have been added to the map. This updates
 	 * the sidebar and starts requesting the hotspot observation data.
 	 */
-	onDisplayHotspots: function(data) {
-		manager.visibleHotspots    = data;
-
-		//for ()
-		manager.numVisibleHotspots = data.length;
-
+	onDisplayHotspots: function(visibleHotspots) {
+		manager.visibleHotspots    = visibleHotspots; // array of location IDs
+		manager.numVisibleHotspots = visibleHotspots.length;
 		
 		$('#numVisibleHotspots span').html(manager.numVisibleHotspots);
 		$('#searchResultsSection').removeClass('hidden');
 
 		if (manager.numVisibleHotspots > 0) {
-			var html = manager.generateHotspotTable(data);
+			var html = manager.generateHotspotTable(visibleHotspots);
 			$('#searchResults').html(html).removeClass('hidden');
 
 			// now start requesting all the observation data for each hotspot
@@ -277,37 +341,48 @@ var manager = {
 	createSpeciesMap: function() {
 		manager.species = {};
 		manager.numSpecies = 0;
+
 		for (var i=0; i<manager.numVisibleHotspots; i++) {
+			var currLocationID = manager.visibleHotspots[i];
 
 			// if this hotspots observations failed to load (for whatever reason), just ignore the row
-			if (!manager.visibleHotspots[i].observations.success) {
+			if (!manager.allHotspots[currLocationID].observations.success) {
 				continue;
 			}
 
-			var numObservations = manager.visibleHotspots[i].observations.data.length;
-			for (var j=0; j<numObservations; j++) {
-				var currData = manager.visibleHotspots[i].observations.data[j];
-				var sciName = currData.sciName;
+			for (var daysAgo in manager.allHotspots[currLocationID].observations.dataByRecency) {
+				var currGroup = manager.allHotspots[currLocationID].observations.dataByRecency[daysAgo];
 
-				if (!manager.species.hasOwnProperty(sciName)) {
-					manager.species[sciName] = {
-						comName: currData.comName,
-						sciName: currData.sciName,
-						obs: []
-					};
-					manager.numSpecies++;
+				// if the observation data for this recency group (25 days, or whatever) hasn't been loaded
+				// yet, forgedaboudit
+				if (!currGroup.available) {
+					continue;
 				}
 
-				manager.species[sciName].obs.push({
-					howMany: currData.howMany,
-					lat: currData.lat,
-					lng: currData.lng,
-					locID: currData.locID,
-					locName: currData.locName,
-					obsDt: currData.obsDt,
-					obsReviewed: currData.obsReviewed,
-					obsValid: currData.obsValid
-				});
+				for (var j=0; j<currGroup.data.length; j++) {
+					var currData = currGroup.data[j];
+					var sciName  = currData.sciName;
+
+					if (!manager.species.hasOwnProperty(sciName)) {
+						manager.species[sciName] = {
+							comName: currData.comName,
+							sciName: currData.sciName,
+							obs: []
+						};
+						manager.numSpecies++;
+					}
+
+					manager.species[sciName].obs.push({
+						howMany: currData.howMany,
+						lat: currData.lat,
+						lng: currData.lng,
+						locID: currData.locID,
+						locName: currData.locName,
+						obsDt: currData.obsDt,
+						obsReviewed: currData.obsReviewed,
+						obsValid: currData.obsValid
+					});
+				}
 			}
 		}
 	},
@@ -372,23 +447,25 @@ var manager = {
 
 	// ------------------------------------------
 
-	// in a real app, the following would be templated
+	// this should really be templated...!
 
-	generateHotspotTable: function(data) {
+	generateHotspotTable: function(visibleHotspots) {
 		var html = '<table class="tablesorter tablesorter-bootstrap table table-bordered table-striped" id="hotspotTable">' +
 				'<thead>' +
 				'<tr>' +
 					'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" /></th>' +
 					'<th>Location</th>' +
-					'<th width="30"></th>' +
+					'<th>Species</th>' +
 				'</tr>' +
 				'</thead>' +
 				'<tbody>';
 
-		for (var i=0; i<data.length; i++) {
-			html += '<tr id="location_' + data[i].i + '">' +
+		for (var i=0; i<visibleHotspots.length; i++) {
+			var currLocationID = visibleHotspots[i];
+
+			html += '<tr id="location_' + currLocationID + '">' +
 						'<td><input type="checkbox" id="row' + i + '" checked="checked" /></td>' +
-						'<td class="loadingStatus notLoaded"><label for="row' + i + '">' + data[i].n + '</label></td>' +
+						'<td class="loadingStatus notLoaded"><label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
 						'<td align="right"><span class="speciesCount"></span></td>' +
 					'</tr>';
 		}
@@ -417,11 +494,9 @@ var manager = {
 
 			for (var j=0; j<manager.species[i].obs.length; j++) {
 				var currLocationID = manager.species[i].obs[j].locID;
-				var hotspotIndex = manager.getHotspotLocationIndex(currLocationID);
-
 				var observationTime = moment(manager.species[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 
-				if (!manager.visibleHotspots[hotspotIndex].isDisplayed) {
+				if (!manager.allHotspots[currLocationID].isDisplayed) {
 					locations.push('<div class="lightGrey">' + manager.species[i].obs[j].locName + '</div>');
 					lastSeen.push('<div class="lightGrey">' + observationTime + '</div>');
 					continue;
@@ -500,13 +575,12 @@ var manager = {
 				map.markers[i].setVisible(false);
 			}
 		}
-		for (var i=0; i<manager.hotspots.length; i++) {
-			var currLocationID = manager.hotspots[i].i;
 
-			if (locationID == currLocationID) {
-				manager.hotspots[i].isDisplayed = true;
+		for (var currLocationID in manager.allHotspots) {
+			if (currLocationID === locationID) {
+				manager.allHotspots[currLocationID].isDisplayed = true;
 			} else {
-				manager.hotspots[i].isDisplayed = false;
+				manager.allHotspots[currLocationID].isDisplayed = false;
 			}
 		}
 
