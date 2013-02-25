@@ -17,7 +17,6 @@ var map = {
 	el: null,
 	icon: 'resources/images/marker.png',
 	geocoder: null,
-
 	markers: {},
 
 
@@ -37,8 +36,9 @@ var map = {
 		// executed whenever the user selects a place through the auto-complete function
 		google.maps.event.addListener(map.autocomplete, 'place_changed', map.onAutoComplete);
 
-		// called any time the map has just been dragged
-		google.maps.event.addListener(map.el, 'dragend', map.onMapDragEnd);
+		// called any time the map has had it's bounds changed
+		google.maps.event.addListener(map.el, 'dragend', map.onMapBoundsChange);
+		google.maps.event.addListener(map.el, 'zoom_changed', map.onMapBoundsChange);
 	},
 
 
@@ -62,12 +62,18 @@ var map = {
 		var subNational1Code = null;
 		var subNational2Code = null;
 
+
+		// TODO - for now, just a bit of safety
+		if (numAddressComponents < 3) {
+			return;
+		}
+
 		if (numAddressComponents > 1) {
 			subNational1Code = place.address_components[numAddressComponents-2].short_name;
 		}
-		if (numAddressComponents > 2) {
-			subNational2Code = place.address_components[numAddressComponents-2].short_name;
-		}
+		// if (numAddressComponents > 2) {
+		// 	subNational2Code = place.address_components[numAddressComponents-2].short_name;
+		// }
 
 		var regionType = null;
 		var region = null;
@@ -92,7 +98,7 @@ var map = {
 		manager.getHotspots();
 	},
 
-	onMapDragEnd: function() {
+	onMapBoundsChange: function() {
 		if (manager.activeHotspotRequest) {
 			return;
 		}
@@ -141,7 +147,6 @@ var map = {
 		map.markers = {};
 	},
 
-
 	addMarkers: function() {
 		var data = manager.allHotspots;
 		if (data === null) {
@@ -157,29 +162,32 @@ var map = {
 		var visibleHotspots = [];
 		for (var locationID in data) {
 			var currHotspot = data[locationID];
-			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
 
+			// if this marker was already added previously, don't bother doing it again
+			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
 			if (!boundsObj.contains(latlng)) {
 				continue;
 			}
 
-			var currMarker = new google.maps.Marker({
-				position: latlng,
-				map: map.el,
-				title: currHotspot.n,
-				icon: map.icon,
-				locationID: currHotspot.i,
-				infoWindowHTML: '<p><b>' + currHotspot.n + '</b></p><p><a href="#" class="viewLocationBirds" data-location="' + currHotspot.i + '">View bird species spotted at this location</a></p>'
-			});
+			if (!data[locationID].hasOwnProperty('observations')) {
+				var currMarker = new google.maps.Marker({
+					position: latlng,
+					map: map.el,
+					title: currHotspot.n,
+					icon: map.icon,
+					locationID: currHotspot.i,
+					infoWindowHTML: '<p><b>' + currHotspot.n + '</b></p><p><a href="#" class="viewLocationBirds" data-location="' + currHotspot.i + '">View bird species spotted at this location</a></p>'
+				});
 
-			map.markers[currHotspot.i] = currMarker;
-			var infoWindow = new google.maps.InfoWindow();
+				map.markers[currHotspot.i] = currMarker;
+				var infoWindow = new google.maps.InfoWindow();
 
-			// this sucks - move to helper function...
-			google.maps.event.addListener(currMarker, 'click', function() {
-				infoWindow.setContent(this.infoWindowHTML);
-				infoWindow.open(map.el, this);
-			});
+				// this sucks - move to helper function...
+				google.maps.event.addListener(currMarker, 'click', function() {
+					infoWindow.setContent(this.infoWindowHTML);
+					infoWindow.open(map.el, this);
+				});
+			}
 
 			visibleHotspots.push(locationID);
 		}

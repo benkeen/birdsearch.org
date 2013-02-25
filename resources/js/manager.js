@@ -125,9 +125,7 @@ var manager = {
 			}
 
 			// if we've already gotten data for this hotspot and recency (e.g. 7 days), do nothing
-			if (manager.allHotspots[currLocationID].observations.dataByRecency[recencyKey].available) {
-				console.log("Data already loaded for location ID: ", currLocationID + " and recency: " + manager.observationRecency);
-			} else {
+			if (!manager.allHotspots[currLocationID].observations.dataByRecency[recencyKey].available) {
 				manager.getSingleHotspotObservation(currLocationID);
 			}
 		}
@@ -245,7 +243,7 @@ var manager = {
 		for (var i=0; i<manager.numVisibleHotspots; i++) {
 			if (manager.visibleHotspots[i] === locationID) {
 				index = i;
- 				break;
+				break;
 			}
 		}
 		return index;
@@ -297,7 +295,6 @@ var manager = {
 						manager.allHotspots[locationID] = response[i];
 					}
 				}
-
 				map.clear();
 				map.addMarkers();
 			},
@@ -308,8 +305,8 @@ var manager = {
 	},
 
 	/**
-	 * Gets called by map.js after the markers have been added to the map. This updates
-	 * the sidebar and starts requesting the hotspot observation data.
+	 * Gets called by map.js after the markers have been added to the map. This updates the sidebar and 
+	 * starts requesting the hotspot observation data. This is called any time the map bounds change.
 	 */
 	onDisplayHotspots: function(visibleHotspots) {
 		manager.visibleHotspots    = visibleHotspots; // array of location IDs
@@ -424,8 +421,9 @@ var manager = {
 			map.markers[i].setVisible(isChecked);
 		}
 
-		for (var locationID in manager.visibleHotspots) {
-			manager.visibleHotspots[locationID].isDisplayed = isChecked;
+		for (var j=0; j<manager.numVisibleHotspots; j++) {
+			var currLocationID = manager.visibleHotspots[j];
+			manager.allHotspots[currLocationID].isDisplayed = isChecked;
 		}
 
 		manager.updateSpeciesTab();
@@ -434,11 +432,10 @@ var manager = {
 	toggleHotspot: function(e) {
 		var row = $(e.target).closest('tr');
 		var locationID = $(row).attr('id').replace(/location_/, '');
-		var hotspotIndex = manager.getHotspotLocationIndex(locationID);
 
 		var isChecked = e.target.checked;
-		manager.visibleHotspots[hotspotIndex].isDisplayed = isChecked;
-		
+		manager.allHotspots[locationID].isDisplayed = isChecked;
+
 		// now update the map and Bird Species tab
 		map.markers[locationID].setVisible(isChecked);
 		manager.updateSpeciesTab();
@@ -462,10 +459,23 @@ var manager = {
 
 		for (var i=0; i<visibleHotspots.length; i++) {
 			var currLocationID = visibleHotspots[i];
+			var rowClass = '';
+			var checkedAttr = '';
+
+//			console.log(manager.allHotspots[currLocationID]);
+
+			if (manager.allHotspots[currLocationID].isDisplayed) {
+				rowClass = '';
+				checkedAttr = 'checked="checked"';
+			}
+			if (!manager.allHotspots[currLocationID].hasOwnProperty('observations')) {
+				rowClass = ' notLoaded';
+				checkedAttr = 'checked="checked"';
+			}
 
 			html += '<tr id="location_' + currLocationID + '">' +
-						'<td><input type="checkbox" id="row' + i + '" checked="checked" /></td>' +
-						'<td class="loadingStatus notLoaded"><label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
+						'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
+						'<td class="loadingStatus' + rowClass + '"><label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
 						'<td align="right"><span class="speciesCount"></span></td>' +
 					'</tr>';
 		}

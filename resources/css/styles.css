@@ -235,8 +235,10 @@ header a:hover {
 	background-color: #333333;
 	color: white;
 	font-size: 7pt;
-	padding: 5px;
 	border-radius: 5px;
+	text-align: center;
+	display: block;
+	width: 30px;
 }
 
 /* footer */
@@ -257,8 +259,6 @@ footer ul li {
 	padding-right: 30px;
 	float: left;
 }
-
-
 .mapBtn, .mapBtnSelected{
 	cursor: pointer;
 	-webkit-user-select: none;
@@ -277,7 +277,6 @@ footer ul li {
 	padding: 1px 6px;
 	overflow: hidden;
 }
-
 .mapBtn:hover {
 	background: #FEFEFE;
 	background: -moz-linear-gradient(top, #FEFEFE 0%, #F3F3F3 100%);
