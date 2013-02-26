@@ -35,8 +35,7 @@
 				<option value="notable">Notable species</option>
 			</select>
 
-			<div id="specificSpeciesSection">
-			</div>
+			<div id="specificSpeciesSection"></div>
 
 			<label for="observationRecency">Show observations made within last:</label>
 			<select id="observationRecency">
@@ -56,12 +55,9 @@
 			<span id="loadingSpinner"></span>
 		</div>
 
-		<div id="searchResultsSection" class="hidden">
-			<div class="sidebarSection">
-				<div id="numVisibleHotspots"><span>0</span> hotspots found</div>
-			</div>
-			<div class="sidebarSection hidden" id="searchResults"></div>
-		</div>
+		<div id="messageBar" style="display:none"></div>
+
+		<div id="searchResults" class="sidebarSection"></div>
 
 	</section>
 

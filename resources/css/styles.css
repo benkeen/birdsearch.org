@@ -54,7 +54,7 @@ header h1 {
 }
 header h1 span {
 	font-size: 13pt;
-	color: #cbd7ff;
+	color: #a4c2ff;
 }
 header ul {
 	position: absolute; 
@@ -240,12 +240,42 @@ header a:hover {
 	display: block;
 	width: 30px;
 }
+#messageBar {
+	margin: 10px;
+	color: #ffffff;
+	padding: 8px;
+	font-size: 11pt;
+	text-align: center;
+	text-shadow: 1px 0px #666666;
+	border-radius: 5px 5px 5px 5px;
+	box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+	clear: both;
+	display: block;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 20px;
+	min-height: 20px;
+}
+.error {
+	background-color: #cd2f2f;
+	background-image: linear-gradient(#cd2f2f, #e54444);
+	border: 1px solid #e54444;
+}
+.notification {
+	background-color: #8ACED6;
+	background-image: linear-gradient(#83ACFF, #82ABFF);
+	border: 1px solid #A0BFFF;	
+}
+#searchResults .sp {
+	text-align: center;
+}
+
 
 /* footer */
 footer {
 	background-color: #ffffff;
-	padding: 7px;
-	width: 296px;
+	padding: 7px 0px 7px 15px;
+	width: 294px;
 	position: absolute;
 	bottom: 0px;
 }
@@ -285,4 +315,14 @@ footer ul li {
 }
 .mapBtnSelected {
 	font-weight: bold;
+}
+
+#searchResults tr:nth-child(2n) {
+	background-color: #efefef;
+}
+#searchResults tr:nth-child(2n+1) {
+	background-color: #ffffff;
+}
+#searchResults table thead tr:nth-child(n) {
+	background-color: #e1e1e1;
 }

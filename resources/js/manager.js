@@ -105,6 +105,7 @@ var manager = {
 			// have their available property set to true
 			if (!manager.allHotspots[currLocationID].hasOwnProperty('observations')) {
 				manager.allHotspots[currLocationID].isDisplayed = false;
+				manager.allHotspots[currLocationID].numSpecies = 0;
 				manager.allHotspots[currLocationID].observations = {
 					success: null,
 					dataByRecency: {
@@ -124,8 +125,13 @@ var manager = {
 				};
 			}
 
-			// if we've already gotten data for this hotspot and recency (e.g. 7 days), do nothing
-			if (!manager.allHotspots[currLocationID].observations.dataByRecency[recencyKey].available) {
+			// if we've already retrieved the hotspot data, just update the
+			if (manager.allHotspots[currLocationID].observations.dataByRecency[recencyKey].available) {
+				var numSpecies = manager.allHotspots[currLocationID].numSpecies;
+				var title = numSpecies + " bird species seen at this location in the last " + manager.observationRecency + " days.";
+				var row = $('#location_' + currLocationID);
+				row.removeClass('notLoaded').addClass('loaded').find(".speciesCount").html(numSpecies).attr("title", title);
+			} else {
 				manager.getSingleHotspotObservation(currLocationID);
 			}
 		}
@@ -150,6 +156,7 @@ var manager = {
 	onSuccessReturnObservations: function(locationID, response) {
 		manager.allHotspots[locationID].isDisplayed = true;
 		manager.allHotspots[locationID].observations.success = true;
+		manager.allHotspots[locationID].numSpecies = response.length;
 
 		// erk. bit kruddy... maybe pick a different data structure?
 		switch (manager.observationRecency) {
@@ -285,6 +292,7 @@ var manager = {
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
+				manager.activeHotspotRequest = false;
 
 				// store the hotspot data. This will probably contain more results than are currently
 				// needed to display, according to the current viewport. That's cool. The map code
@@ -294,35 +302,42 @@ var manager = {
 						var locationID = response[i].i;
 						manager.allHotspots[locationID] = response[i];
 					}
+					manager.updatePage();
 				}
-				map.clear();
-				map.addMarkers();
 			},
 			error: function(response) {
+				manager.activeHotspotRequest = false;
 				console.log("error: ", response);
 			}
 		});
 	},
 
+	updatePage: function() {
+		map.clear();
+		manager.visibleHotspots = map.addMarkersAndReturnVisible();
+		manager.numVisibleHotspots = manager.visibleHotspots.length;
+		manager.displayHotspots();
+	},
+
 	/**
-	 * Gets called by map.js after the markers have been added to the map. This updates the sidebar and 
+	 * Gets called by map.js after the markers have been added to the map. This updates the sidebar and
 	 * starts requesting the hotspot observation data. This is called any time the map bounds change.
 	 */
-	onDisplayHotspots: function(visibleHotspots) {
-		manager.visibleHotspots    = visibleHotspots; // array of location IDs
-		manager.numVisibleHotspots = visibleHotspots.length;
-		
-		$('#numVisibleHotspots span').html(manager.numVisibleHotspots);
-		$('#searchResultsSection').removeClass('hidden');
-
+	displayHotspots: function() {
 		if (manager.numVisibleHotspots > 0) {
-			var html = manager.generateHotspotTable(visibleHotspots);
-			$('#searchResults').html(html).removeClass('hidden');
+			var html = manager.generateHotspotTable(manager.visibleHotspots);
+			var locationStr = 'location';
+			if (manager.numVisibleHotspots > 1) {
+				locationStr  = 'locations';
+			}
+			$('#messageBar').addClass('notification').removeClass('hidden error').html('<b>' + manager.numVisibleHotspots + '</b> ' + locationStr + ' found').fadeIn(300);
+			$('#searchResults').html(html).fadeIn(300);
 
 			// now start requesting all the observation data for each hotspot
 			manager.getAllHotspotObservations();
 		} else {
-			$('#searchResults').html('').removeClass('hidden');
+			$('#messageBar').addClass('notification').removeClass('hidden error').html('No birding locations found').fadeIn(300);
+			$('#searchResults').fadeOut(300);
 			manager.stopLoading();
 		}
 	},
@@ -351,7 +366,7 @@ var manager = {
 				var currGroup = manager.allHotspots[currLocationID].observations.dataByRecency[daysAgo];
 
 				// if the observation data for this recency group (25 days, or whatever) hasn't been loaded
-				// yet, forgedaboudit
+				// yet, forgetaboudit!
 				if (!currGroup.available) {
 					continue;
 				}
@@ -451,8 +466,8 @@ var manager = {
 				'<thead>' +
 				'<tr>' +
 					'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" /></th>' +
-					'<th>Location</th>' +
-					'<th>Species</th>' +
+					'<th>LOCATION</th>' +
+					'<th width="40">SPECIES</th>' +
 				'</tr>' +
 				'</thead>' +
 				'<tbody>';
@@ -461,8 +476,6 @@ var manager = {
 			var currLocationID = visibleHotspots[i];
 			var rowClass = '';
 			var checkedAttr = '';
-
-//			console.log(manager.allHotspots[currLocationID]);
 
 			if (manager.allHotspots[currLocationID].isDisplayed) {
 				rowClass = '';
@@ -476,7 +489,7 @@ var manager = {
 			html += '<tr id="location_' + currLocationID + '">' +
 						'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
 						'<td class="loadingStatus' + rowClass + '"><label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
-						'<td align="right"><span class="speciesCount"></span></td>' +
+						'<td class="sp"><span class="speciesCount"></span></td>' +
 					'</tr>';
 		}
 		html += '</tbody></table>';

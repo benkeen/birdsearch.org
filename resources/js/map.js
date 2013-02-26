@@ -29,7 +29,6 @@ var map = {
 		map.geocoder  = new google.maps.Geocoder();
 
 		map.addCustomControls();
-
 		map.autocomplete = new google.maps.places.Autocomplete(manager.searchField);
 		map.autocomplete.bindTo('bounds', map.el);
 
@@ -60,37 +59,20 @@ var map = {
 		var numAddressComponents = place.address_components.length;
 		var countryCode = place.address_components[numAddressComponents-1].short_name;
 		var subNational1Code = null;
-		var subNational2Code = null;
 
-
-		// TODO - for now, just a bit of safety
+		// if the address isn't specific enough, let the user know to provide a more details
 		if (numAddressComponents < 3) {
+			$('#messageBar').addClass('error').removeClass('hidden notification').html('Please enter a more specific location.').fadeIn(300);
 			return;
 		}
+		$('#messageBar').addClass('hidden');
 
 		if (numAddressComponents > 1) {
 			subNational1Code = place.address_components[numAddressComponents-2].short_name;
 		}
-		// if (numAddressComponents > 2) {
-		// 	subNational2Code = place.address_components[numAddressComponents-2].short_name;
-		// }
 
-		var regionType = null;
-		var region = null;
-		switch (numAddressComponents) {
-			case 1:
-				regionType = "country";
-				region = countryCode;
-				break;
-			case 2:
-				regionType = "subnational1";
-				region = countryCode + "-" + subNational1Code;
-				break;
-			default:
-				regionType = "subnational1";
-				region = countryCode + "-" + subNational1Code;
-				break;
-		}
+		var regionType = 'subnational1';
+		var region = countryCode + "-" + subNational1Code;
 
 		// not terribly pretty, but simple enough for now
 		manager.regionType = regionType;
@@ -102,7 +84,7 @@ var map = {
 		if (manager.activeHotspotRequest) {
 			return;
 		}
-		map.addMarkers();
+		manager.updatePage();
 	},
 
 	addCustomControls: function() {
@@ -147,14 +129,13 @@ var map = {
 		map.markers = {};
 	},
 
-	addMarkers: function() {
-		var data = manager.allHotspots;
-		if (data === null) {
-			return;
-		}
 
-		// make a note that the hotspot request has completed
-		manager.activeHotspotRequest = false;
+	addMarkersAndReturnVisible: function() {
+		var data = manager.allHotspots;
+		if ($.isEmptyObject(data)) {
+			manager.stopLoading();
+			return [];
+		}
 
 		var mapBoundary = map.el.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
@@ -188,11 +169,9 @@ var map = {
 					infoWindow.open(map.el, this);
 				});
 			}
-
 			visibleHotspots.push(locationID);
 		}
 
-		// pass the visible hotspot data over to the main search
-		manager.onDisplayHotspots(visibleHotspots);
+		return visibleHotspots;
 	}
 };
