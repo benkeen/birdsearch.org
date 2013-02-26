@@ -302,6 +302,7 @@ var manager = {
 						var locationID = response[i].i;
 						manager.allHotspots[locationID] = response[i];
 					}
+					map.clear();
 					manager.updatePage();
 				}
 			},
@@ -313,7 +314,6 @@ var manager = {
 	},
 
 	updatePage: function() {
-		map.clear();
 		manager.visibleHotspots = map.addMarkersAndReturnVisible();
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
 		manager.displayHotspots();
