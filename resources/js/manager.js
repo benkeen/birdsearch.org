@@ -23,6 +23,7 @@ var manager = {
 	searchField: null,
 	activeHotspotRequest: false,
 	currTabID: 'mapTab',
+	currentHoveredRowLocationID: null,
 	
 	// some constants
 	CURRENT_SERVER_TIME: null,
@@ -68,6 +69,7 @@ var manager = {
 			height: windowHeight - 82
 		});
 		$('#searchResults').css('height', windowHeight - 110);
+		manager.updatePage();
 	},
 
 	addEventHandlers: function() {
@@ -75,6 +77,8 @@ var manager = {
 		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
 		$('#searchResults').on('click', '.toggle', manager.toggleCheckedHotspots);
 		$('#searchResults').on('click', 'tbody input', manager.toggleHotspot);
+		$('#searchResults').on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
+		$('#searchResults').on('mouseout', 'tbody tr', manager.onHoverOutHotspotRow);
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
 	},
 
@@ -84,6 +88,22 @@ var manager = {
 		if (address !== '') {
 			manager.getHotspots();
 		}
+	},
+
+	onHoverHotspotRow: function(e) {
+		var id = $(e.currentTarget).attr('id');
+		if (id) {
+			var locationID = id.replace(/^location_/, '');
+			map.markers[locationID].setIcon('resources/images/marker2.png');
+			manager.currentHoveredRowLocationID = locationID;
+		}
+	},
+
+	onHoverOutHotspotRow: function() {
+		if (manager.currentHoveredRowLocationID != null && map.markers.hasOwnProperty(manager.currentHoveredRowLocationID)) {
+			map.markers[manager.currentHoveredRowLocationID].setIcon('resources/images/marker.png');
+		}
+		manager.currentHoveredRowLocationID = null;
 	},
 
 	/**

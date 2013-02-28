@@ -218,7 +218,7 @@ header a:hover {
 	line-height: 21px;
 	font-size: 9pt;
 }
-#hotspotTable th, #hotspotTable td{
+#hotspotTable th, #hotspotTable td {
 	padding: 2px;
 }
 #hotspotTable input {
@@ -242,6 +242,7 @@ header a:hover {
 	margin-left: 7px;
 }
 #messageBar {
+	display: none;
 	margin: 10px;
 	color: #ffffff;
 	padding: 8px;
@@ -277,7 +278,6 @@ header a:hover {
 #searchResults .sp {
 	text-align: center;
 }
-
 
 /* footer */
 footer {
@@ -324,7 +324,6 @@ footer ul li {
 .mapBtnSelected {
 	font-weight: bold;
 }
-
 #searchResults thead tr {
 	background-color: #e1e1e1;
 }
