@@ -33,6 +33,9 @@ var manager = {
 	init: function() {
 		$(window).resize(manager.handleWindowResize);
 
+		// make a note of some important DOM elements
+		manager.searchField = $('#searchTextField')[0];
+
 		// make a note of the current server time. This is used to ensure date calculations don't go
 		// wonky if the user's system clock is off
 		manager.CURRENT_SERVER_TIME = parseInt($('body').data('serverdatetime'), 10);
@@ -42,9 +45,6 @@ var manager = {
 
 		// add the appropriate event handlers to detect when the search settings have changed
 		manager.addEventHandlers();
-
-		// make a note of some important DOM elements
-		manager.searchField = $('#searchTextField')[0];
 
 		// set the default values
 		manager.observationRecency = parseInt($('#observationRecency').val(), 10);
@@ -68,8 +68,12 @@ var manager = {
 		$('#panelContent').css({
 			height: windowHeight - 82
 		});
-		$('#searchResults').css('height', windowHeight - 110);
-		manager.updatePage();
+		$('#searchResults').css('height', windowHeight - 330);
+
+		var address = $.trim(manager.searchField.value);
+		if (address !== '') {
+			manager.updatePage();
+		}
 	},
 
 	addEventHandlers: function() {
@@ -95,12 +99,14 @@ var manager = {
 		if (id) {
 			var locationID = id.replace(/^location_/, '');
 			map.markers[locationID].setIcon('resources/images/marker2.png');
+			//var zIndex = map.markers[locationID].getZIndex();
+			map.markers[locationID].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
 			manager.currentHoveredRowLocationID = locationID;
 		}
 	},
 
 	onHoverOutHotspotRow: function() {
-		if (manager.currentHoveredRowLocationID != null && map.markers.hasOwnProperty(manager.currentHoveredRowLocationID)) {
+		if (manager.currentHoveredRowLocationID !== null && map.markers.hasOwnProperty(manager.currentHoveredRowLocationID)) {
 			map.markers[manager.currentHoveredRowLocationID].setIcon('resources/images/marker.png');
 		}
 		manager.currentHoveredRowLocationID = null;
@@ -252,9 +258,10 @@ var manager = {
 		row.find(".speciesCount").html(response.length).attr("title", title);
 
 		if (manager.checkAllObservationsLoaded()) {
-			manager.stopLoading();
 			manager.createSpeciesMap();
 			manager.updateSpeciesTab();
+			$('#hotspotTable').trigger("update").trigger("appendCache");
+			manager.stopLoading();
 		}
 	},
 	
@@ -328,7 +335,6 @@ var manager = {
 			},
 			error: function(response) {
 				manager.activeHotspotRequest = false;
-
 				manager.stopLoading();
 			}
 		});
@@ -351,27 +357,21 @@ var manager = {
 			if (manager.numVisibleHotspots > 1) {
 				locationStr  = 'locations';
 			}
-<<<<<<< HEAD
 
 			try {
-				$("#hotspotTable").trigger("destroy");
+				$('#hotspotTable').trigger("destroy");
 			} catch (e) { }
 
-			$('#messageBar').addClass('notification').removeClass('hidden error').html('<b>' + manager.numVisibleHotspots + '</b> ' + locationStr + ' found').fadeIn(300);
-=======
 			manager.showMessage('<b>' + manager.numVisibleHotspots + '</b> ' + locationStr + ' found', 'notification');
->>>>>>> Merge
 			$('#searchResults').html(html).fadeIn(300);
-
-			$("#hotspotTable").tablesorter({
-				//theme: 'bootstrap',
-//				headerTemplate: '{content} {icon}',
-				//widgets: ['zebra','columns', 'uitheme']
+			$('#hotspotTable').tablesorter({
+				headers: { 2: { sorter: 'species' } }
 			});
 
 			// now start requesting all the observation data for each hotspot
 			manager.getAllHotspotObservations();
 		} else {
+
 			manager.showMessage('No birding locations found', 'notification');
 
 			$('#searchResults').fadeOut(300);
@@ -508,7 +508,7 @@ var manager = {
 				'<tr>' +
 					'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" title="Select / Unselect all" /></th>' +
 					'<th>LOCATION</th>' +
-					'<th width="40">SPECIES</th>' +
+					'<th class="sorter-species" width="40">SPECIES</th>' +
 				'</tr>' +
 				'</thead>' +
 				'<tbody>';
@@ -655,6 +655,21 @@ var manager = {
 		manager.selectTab('birdSpeciesTab');
 	}
 };
+
+
+// add parser through the tablesorter addParser method
+$.tablesorter.addParser({
+	id: 'species',
+	is: function(s) { 
+		return false;
+	},
+	format: function(s, table, cell, cellIndex) {
+		return $(cell).find('span').text();
+	},
+
+	type: 'numeric'
+});
+
 
 
 // start 'er up (on DOM ready)

@@ -54,12 +54,7 @@
 			</select>
 			<span id="loadingSpinner"></span>
 		</div>
-<<<<<<< HEAD
-
 		<div id="messageBar"></div>
-=======
-		<div id="messageBar" style="display:none"></div>
->>>>>>> Merge
 		<div id="searchResults" class="sidebarSection"></div>
 	</section>
 
