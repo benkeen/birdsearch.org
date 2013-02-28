@@ -350,8 +350,19 @@ var manager = {
 			if (manager.numVisibleHotspots > 1) {
 				locationStr  = 'locations';
 			}
+
+			try {
+				$("#hotspotTable").trigger("destroy");
+			} catch (e) { }
+
 			$('#messageBar').addClass('notification').removeClass('hidden error').html('<b>' + manager.numVisibleHotspots + '</b> ' + locationStr + ' found').fadeIn(300);
 			$('#searchResults').html(html).fadeIn(300);
+
+			$("#hotspotTable").tablesorter({
+				//theme: 'bootstrap',
+//				headerTemplate: '{content} {icon}',
+				//widgets: ['zebra','columns', 'uitheme']
+			});
 
 			// now start requesting all the observation data for each hotspot
 			manager.getAllHotspotObservations();
@@ -485,7 +496,7 @@ var manager = {
 		var html = '<table class="tablesorter tablesorter-bootstrap table table-bordered table-striped" id="hotspotTable">' +
 				'<thead>' +
 				'<tr>' +
-					'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" /></th>' +
+					'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" title="Select / Unselect all" /></th>' +
 					'<th>LOCATION</th>' +
 					'<th width="40">SPECIES</th>' +
 				'</tr>' +

@@ -278,6 +278,10 @@ header a:hover {
 #searchResults .sp {
 	text-align: center;
 }
+.hotspotDialog {
+	min-height: 80px;
+	min-width: 300px;
+}
 
 /* footer */
 footer {

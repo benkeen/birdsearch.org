@@ -157,7 +157,7 @@ var map = {
 					title: currHotspot.n,
 					icon: map.icon,
 					locationID: currHotspot.i,
-					infoWindowHTML: '<p><b>' + currHotspot.n + '</b></p><p><a href="#" class="viewLocationBirds" data-location="' + currHotspot.i + '">View bird species spotted at this location</a></p>'
+					infoWindowHTML: '<div class="hotspotDialog"><p><b>' + currHotspot.n + '</b></p><p><a href="#" class="viewLocationBirds" data-location="' + currHotspot.i + '">View bird species spotted at this location</a></p></div>'
 				});
 
 				map.markers[currHotspot.i] = currMarker;
