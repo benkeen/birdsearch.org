@@ -22,13 +22,13 @@
 		<ul>
 			<li><a href="">About</a></li>
 			<li><a href="">Feature Suggestions</a></li>
+			<li><a href="http://ebird.org">eBird.org</a></li>
 		</ul>
 	</header>
 
 	<section id="sidebar">
 		<div id="searchOptions" class="sidebarSection">
 			<input type="text" id="searchTextField" />
-
 			<label for="resultType">Result type:</label>
 			<select id="resultType">
 				<option value="all">All reported sightings</option>
@@ -54,8 +54,12 @@
 			</select>
 			<span id="loadingSpinner"></span>
 		</div>
+<<<<<<< HEAD
 
 		<div id="messageBar"></div>
+=======
+		<div id="messageBar" style="display:none"></div>
+>>>>>>> Merge
 		<div id="searchResults" class="sidebarSection"></div>
 	</section>
 
@@ -73,6 +77,7 @@
 	</section>
 
 	<footer>
+		<span><a href="https://github.com/benkeen/eBirdAdvancedSearch">v1.0.0</a></span>
 		This site is not affiliated with <a href="http://ebird.org" target="_blank">eBird</a>.
 	</footer>
 

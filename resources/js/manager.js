@@ -328,7 +328,8 @@ var manager = {
 			},
 			error: function(response) {
 				manager.activeHotspotRequest = false;
-				console.log("error: ", response);
+
+				manager.stopLoading();
 			}
 		});
 	},
@@ -350,12 +351,16 @@ var manager = {
 			if (manager.numVisibleHotspots > 1) {
 				locationStr  = 'locations';
 			}
+<<<<<<< HEAD
 
 			try {
 				$("#hotspotTable").trigger("destroy");
 			} catch (e) { }
 
 			$('#messageBar').addClass('notification').removeClass('hidden error').html('<b>' + manager.numVisibleHotspots + '</b> ' + locationStr + ' found').fadeIn(300);
+=======
+			manager.showMessage('<b>' + manager.numVisibleHotspots + '</b> ' + locationStr + ' found', 'notification');
+>>>>>>> Merge
 			$('#searchResults').html(html).fadeIn(300);
 
 			$("#hotspotTable").tablesorter({
@@ -367,10 +372,15 @@ var manager = {
 			// now start requesting all the observation data for each hotspot
 			manager.getAllHotspotObservations();
 		} else {
-			$('#messageBar').addClass('notification').removeClass('hidden error').html('No birding locations found').fadeIn(300);
+			manager.showMessage('No birding locations found', 'notification');
+
 			$('#searchResults').fadeOut(300);
 			manager.stopLoading();
 		}
+	},
+
+	showMessage: function(message, messageType) {
+		$('#messageBar').css('display', 'none').removeClass().addClass(messageType).html(message).fadeIn(300);
 	},
 
 	startLoading: function() {
