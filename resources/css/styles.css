@@ -352,9 +352,13 @@ footer span a:hover {
 #searchResults tbody tr:nth-child(even) {
 	background-color: #efefef;
 }
+#searchResults tbody tr:nth-child(odd) {
+	background-color: #ffffff;	
+}
 #hotspotTable {
 	background-color: #ffffff;
 }
-#searchResults tbody tr:hover {
+#searchResults tbody tr:hover td {
 	background-color: #e0eaff !important;
 }
+

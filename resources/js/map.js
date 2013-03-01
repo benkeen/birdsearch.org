@@ -18,6 +18,7 @@ var map = {
 	icon: 'resources/images/marker.png',
 	geocoder: null,
 	markers: {},
+	infoWindows: {},
 
 
 	/**
@@ -122,13 +123,13 @@ var map = {
 		});
 	},
 
+	// clears the map. Note that we DON'T reset map.markers. That retains the information loaded for as long as the user's
+	// session so we don't re-request the same info from eBird
 	clear: function() {
 		for (var locationID in map.markers) {
 			map.markers[locationID].setMap(null);
 		}
-		map.markers = {};
 	},
-
 
 	addMarkersAndReturnVisible: function() {
 		var data = manager.allHotspots;
@@ -139,9 +140,15 @@ var map = {
 
 		var mapBoundary = map.el.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-
 		var visibleHotspots = [];
+		var counter = 1;
+
 		for (var locationID in data) {
+			if (counter > manager.MAX_HOTSPOTS) {
+				manager.maxHotspotsReached = true;
+				continue;
+			}
+
 			var currHotspot = data[locationID];
 
 			// if this marker was already added previously, don't bother doing it again
@@ -151,25 +158,26 @@ var map = {
 			}
 
 			if (!data[locationID].hasOwnProperty('observations')) {
-				var currMarker = new google.maps.Marker({
+				map.markers[currHotspot.i] = new google.maps.Marker({
 					position: latlng,
 					map: map.el,
 					title: currHotspot.n,
 					icon: map.icon,
 					locationID: currHotspot.i,
-					infoWindowHTML: '<div class="hotspotDialog"><p><b>' + currHotspot.n + '</b></p><p><a href="#" class="viewLocationBirds" data-location="' + currHotspot.i + '">View bird species spotted at this location</a></p></div>'
+					infoWindowHTML: '<div class="hotspotDialog" id="iw_' + currHotspot.i + '"><p><b>' + currHotspot.n + '</b></p>' +
+						'<p><a href="#" class="viewLocationBirds" data-location="' + currHotspot.i + '">View bird species spotted at this location</a></p></div>'
 				});
+				map.infoWindows[currHotspot.i] = new google.maps.InfoWindow();
 
-				map.markers[currHotspot.i] = currMarker;
-				var infoWindow = new google.maps.InfoWindow();
-
-				// this sucks - move to helper function...
-				google.maps.event.addListener(currMarker, 'click', function() {
-					infoWindow.setContent(this.infoWindowHTML);
-					infoWindow.open(map.el, this);
-				});
+				(function(marker, infowindow) {
+					google.maps.event.addListener(marker, 'click', function() {
+						infowindow.setContent(this.infoWindowHTML);
+						infowindow.open(map.el, this);
+					});
+				})(map.markers[currHotspot.i], map.infoWindows[currHotspot.i]);
 			}
 			visibleHotspots.push(locationID);
+			counter++;
 		}
 
 		return visibleHotspots;

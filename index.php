@@ -55,7 +55,7 @@
 			<span id="loadingSpinner"></span>
 		</div>
 		<div id="messageBar"></div>
-		<div id="searchResults" class="sidebarSection"></div>
+		<div id="searchResults" class="sidebarSection hidden"></div>
 	</section>
 
 	<section id="mainPanel">
