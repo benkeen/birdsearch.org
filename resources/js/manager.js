@@ -1,5 +1,5 @@
 /*jslint browser:true*/
-/*global $:false,map:false,console:false,moment:false*/
+/*global $:false,map:false,google:false,console:false,moment:false*/
 'use strict';
 
 var manager = {
@@ -28,7 +28,7 @@ var manager = {
 	currTabID: 'mapTab',
 	currentHoveredRowLocationID: null,
 	maxHotspotsReached: false,
-	
+
 	// some constants
 	CURRENT_SERVER_TIME: null,
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
@@ -60,26 +60,6 @@ var manager = {
 
 		// focus!
 		$(manager.searchField).focus();
-	},
-
-	// not the prettiest thing ever, but since flexbox isn't implemented in all browsers yet...
-	handleWindowResize: function() {
-		var windowHeight = $(window).height();
-		var windowWidth = $(window).width();
-		$('#sidebar').css('height', windowHeight - 77);
-		$('#mainPanel').css({
-			height: windowHeight - 54,
-			width: windowWidth - 325
-		});
-		$('#panelContent').css({
-			height: windowHeight - 82
-		});
-		$('#searchResults').css('height', windowHeight - 330);
-
-		var address = $.trim(manager.searchField.value);
-		if (address !== '') {
-			manager.updatePage();
-		}
 	},
 
 	addEventHandlers: function() {
@@ -117,6 +97,61 @@ var manager = {
 			map.markers[manager.currentHoveredRowLocationID].setIcon('resources/images/marker.png');
 		}
 		manager.currentHoveredRowLocationID = null;
+	},
+
+
+	/**
+	 * Retrieves all hotspots for a region.
+	 */
+	getHotspots: function() {
+		manager.activeHotspotRequest = true;
+		manager.startLoading();
+		$.ajax({
+			url: "ajax/getHotspots.php",
+			data: {
+				regionType: manager.regionType,
+				region: manager.region,
+				recency: manager.observationRecency
+			},
+			type: "POST",
+			dataType: "json",
+			success: function(response) {
+				manager.activeHotspotRequest = false;
+
+				// store the hotspot data. This will probably contain more results than are currently
+				// needed to display, according to the current viewport. That's cool. The map code
+				// figures out what needs to be shown and ignores the rest.
+				if ($.isArray(response)) {
+					for (var i=0; i<response.length; i++) {
+						var locationID = response[i].i;
+						if (!manager.allHotspots.hasOwnProperty(locationID)) {
+							manager.allHotspots[locationID] = response[i];
+						}
+					}
+					map.clear();
+					manager.updatePage();
+				} else {
+					manager.stopLoading();
+				}
+			},
+			error: function(response) {
+				manager.activeHotspotRequest = false;
+				manager.stopLoading();
+			}
+		});
+	},
+
+	/**
+	 * Called after the hotspot locations have been loaded. This adds them to the Google Map and
+	 * starts initiating the observation requests.
+	 */
+	updatePage: function() {
+
+		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
+		manager.visibleHotspots = map.addMarkersAndReturnVisible();
+
+		manager.numVisibleHotspots = manager.visibleHotspots.length;
+		manager.displayHotspots();
 	},
 
 	/**
@@ -175,12 +210,12 @@ var manager = {
 			if (manager.allHotspots[currLocationID].observations[manager.searchType][recencyKey].available) {
 				manager.updateLocationInfo(currLocationID);
 			} else {
-				manager.getSingleHotspotObservation(currLocationID);
+				manager.getSingleHotspotObservations(currLocationID);
 			}
 		}
 	},
 
-	getSingleHotspotObservation: function(locationID) {
+	getSingleHotspotObservations: function(locationID) {
 		$.ajax({
 			url: "ajax/getHotspotObservations.php",
 			data: {
@@ -190,42 +225,53 @@ var manager = {
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
-				manager.onSuccessReturnObservations(locationID, response);
+				manager.onSuccessReturnLocationObservations(locationID, response);
 			},
-			error: manager.onErrorReturnObservations
+			error: function(response) {
+				manager.onErrorReturnLocationObservations(locationID, response);
+			}
 		});
 	},
 
-	onSuccessReturnObservations: function(locationID, response) {
-		var locationObj = manager.allHotspots[locationID].observations;
+	/**
+	 * Returns the observations reports for a single location at a given interval (last 2 days, last 30 days 
+	 * etc). This can be called multiple times for a single location if the user keeps increasing the recency 
+	 * range upwards. Once the user's returned data for a location for 30 days, it contains everything it needs
+	 * so no new requests are required.
+	 */
+	onSuccessReturnLocationObservations: function(locationID, response) {
 		manager.allHotspots[locationID].isDisplayed = true;
+
+		var locationObj = manager.allHotspots[locationID].observations;
 		locationObj.success = true;
 
+		// mark the information as now available for this observation recency + and anything below,
+		// and reset the observation data (it's about to be updated below)
 		switch (manager.observationRecency) {
 			case 30:
-				locationObj[manager.searchType]['30day'].available = true;
+				locationObj[manager.searchType]['30day'] = { available: true, data: [], numSpecies: 0 };
 			case 25:
-				locationObj[manager.searchType]['25day'].available = true;
+				locationObj[manager.searchType]['25day'] = { available: true, data: [], numSpecies: 0 };
 			case 20:
-				locationObj[manager.searchType]['20day'].available = true;
+				locationObj[manager.searchType]['20day'] = { available: true, data: [], numSpecies: 0 };
 			case 15:
-				locationObj[manager.searchType]['15day'].available = true;
+				locationObj[manager.searchType]['15day'] = { available: true, data: [], numSpecies: 0 };
 			case 10:
-				locationObj[manager.searchType]['10day'].available = true;
+				locationObj[manager.searchType]['10day'] = { available: true, data: [], numSpecies: 0 };
 			case 7:
-				locationObj[manager.searchType]['7day'].available = true;
+				locationObj[manager.searchType]['7day'] = { available: true, data: [], numSpecies: 0 };
 			case 6:
-				locationObj[manager.searchType]['6day'].available = true;
+				locationObj[manager.searchType]['6day'] = { available: true, data: [], numSpecies: 0 };
 			case 5:
-				locationObj[manager.searchType]['5day'].available = true;
+				locationObj[manager.searchType]['5day'] = { available: true, data: [], numSpecies: 0 };
 			case 4:
-				locationObj[manager.searchType]['4day'].available = true;
+				locationObj[manager.searchType]['4day'] = { available: true, data: [], numSpecies: 0 };
 			case 3:
-				locationObj[manager.searchType]['3day'].available = true;
+				locationObj[manager.searchType]['3day'] = { available: true, data: [], numSpecies: 0 };
 			case 2:
-				locationObj[manager.searchType]['2day'].available = true;
+				locationObj[manager.searchType]['2day'] = { available: true, data: [], numSpecies: 0 };
 			case 1:
-				locationObj[manager.searchType]['1day'].available = true;
+				locationObj[manager.searchType]['1day'] = { available: true, data: [], numSpecies: 0 };
 				break;
 			default:
 				break;
@@ -238,8 +284,6 @@ var manager = {
 			var observationTime = parseInt(moment(response[i].obsDt, 'YYYY-MM-DD HH:mm').format('X'), 10);
 			var difference = manager.CURRENT_SERVER_TIME - observationTime;
 			var daysAgo = Math.ceil(difference / manager.ONE_DAY_IN_SECONDS);
-
-			// 
 
 			if (daysAgo >= 30) {
 				locationObj[manager.searchType]['30day'].data.push(response[i]);
@@ -268,126 +312,44 @@ var manager = {
 			}
 		}
 
-		manager.updateLocationInfo(locationID);
+		// we've added all the observation data, set the numSpecies counts
+		for (var key in locationObj[manager.searchType]) {
+			locationObj[manager.searchType][key].numSpecies = locationObj[manager.searchType][key].data.length;
+		}
+
+		manager.updateVisibleLocationInfo(locationID, response.length);
 
 		if (manager.checkAllObservationsLoaded()) {
 			manager.updateSpeciesData();
 			manager.updateSpeciesTab();
+
+			// let the tablesort know to re-parse the hotspot table
 			$('#hotspotTable').trigger("update").trigger("appendCache");
 			manager.stopLoading();
 		}
 	},
 
-	onErrorReturnObservations: function(locationID, response) {
+	onErrorReturnLocationObservations: function(locationID, response) {
 		manager.allHotspots[locationID].observations.success = false;
 		if (manager.checkAllObservationsLoaded()) {
 			manager.stopLoading();
 		}
 	},
 
-	updateLocationInfo: function(locationID) {
-		var numSpecies = manager.allHotspots[locationID].observations[manager.searchType].numSpecies;
+	/**
+	 * Helper function to update the location's row in the sidebar table and the map modal.
+	 */
+	updateVisibleLocationInfo: function(locationID, numSpecies) {
 		var title = numSpecies + ' bird species seen at this location in the last ' + manager.observationRecency + ' days.';
 		var row = $('#location_' + locationID);
 		row.removeClass('notLoaded').addClass('loaded');
 
 		if (numSpecies > 0) {
 			row.find('.speciesCount').html(numSpecies).attr('title', title);
-			$('#iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
+			//$('#iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
+
+			map.infoWindows[locationID].setContent("chicken");
 		}
-	},
-
-	getSpeciesCountForRecency: function(locationID, recency, searchType) {
-		var numSpecies = 0;
-		if (manager.allHotspots.hasOwnProperty(locationID)) {
-			var info = manager.allHotspots[locationID].observations[searchType];
-
-/*			switch (recency) {
-				case 30:
-					numSpecies += info['30day'].numSpecies;
-				case 25:
-					numSpecies += info['25day'].numSpecies;
-				case 20:
-					numSpecies += info['20day'].numSpecies;
-				case 15:
-					numSpecies += info['15day'].numSpecies;
-				case 10:
-					numSpecies += info['10day'].numSpecies;
-				case 7:
-					numSpecies += info['7day'].numSpecies;
-				case 6:
-					numSpecies += info['6day'].numSpecies;
-				case 5:
-					numSpecies += info['5day'].numSpecies;
-				case 4:
-					numSpecies += info['4day'].numSpecies;
-				case 3:
-					numSpecies += info['3day'].numSpecies;
-				case 2:
-					numSpecies += info['2day'].numSpecies;
-				case 1:
-					numSpecies += info['1day'].numSpecies;
-					break;
-				default:
-					break;
-			}
-*/
-		}
-		return numSpecies;
-	},
-
-	/**
-	 * Retrieves all hotspots for a region.
-	 */
-	getHotspots: function() {
-		manager.activeHotspotRequest = true;
-		manager.startLoading();
-		$.ajax({
-			url: "ajax/getHotspots.php",
-			data: {
-				regionType: manager.regionType,
-				region: manager.region,
-				recency: manager.observationRecency
-			},
-			type: "POST",
-			dataType: "json",
-			success: function(response) {
-				manager.activeHotspotRequest = false;
-
-				// store the hotspot data. This will probably contain more results than are currently
-				// needed to display, according to the current viewport. That's cool. The map code
-				// figures out what needs to be shown and ignores the rest.
-				if ($.isArray(response)) {
-					for (var i=0; i<response.length; i++) {
-						var locationID = response[i].i;
-						if (!manager.allHotspots.hasOwnProperty(locationID)) {
-							manager.allHotspots[locationID] = response[i];
-						}
-					}
-					map.clear();
-					manager.updatePage();
-				} else {
-					manager.stopLoading();
-				}
-			},
-			error: function(response) {
-				manager.activeHotspotRequest = false;
-				manager.stopLoading();
-			}
-		});
-	},
-
-	/**
-	 * Called after the hotspot locations have been loaded. This adds them to the Google Map and
-	 * starts initiating the observation requests.
-	 */
-	updatePage: function() {
-
-		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
-		manager.visibleHotspots = map.addMarkersAndReturnVisible();
-
-		manager.numVisibleHotspots = manager.visibleHotspots.length;
-		manager.displayHotspots();
 	},
 
 	/**
@@ -430,14 +392,6 @@ var manager = {
 
 	showMessage: function(message, messageType) {
 		$('#messageBar').css('display', 'none').removeClass().addClass(messageType).html(message).fadeIn(300);
-	},
-
-	startLoading: function() {
-		$('#loadingSpinner').fadeIn(200);
-	},
-
-	stopLoading: function() {
-		$('#loadingSpinner').fadeOut(200);
 	},
 
 	updateSpeciesData: function() {
@@ -720,9 +674,37 @@ var manager = {
 				break;
 			}
 		}
-		return allLoaded;
-	}
 
+		return allLoaded;
+	},
+
+	// not the prettiest thing ever, but since flexbox isn't standardized yet...
+	handleWindowResize: function() {
+		var windowHeight = $(window).height();
+		var windowWidth = $(window).width();
+		$('#sidebar').css('height', windowHeight - 77);
+		$('#mainPanel').css({
+			height: windowHeight - 54,
+			width: windowWidth - 325
+		});
+		$('#panelContent').css({
+			height: windowHeight - 82
+		});
+		$('#searchResults').css('height', windowHeight - 330);
+
+		var address = $.trim(manager.searchField.value);
+		if (address !== '') {
+			manager.updatePage();
+		}
+	},
+
+	startLoading: function() {
+		$('#loadingSpinner').fadeIn(200);
+	},
+
+	stopLoading: function() {
+		$('#loadingSpinner').fadeOut(200);
+	}
 };
 
 

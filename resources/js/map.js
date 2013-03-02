@@ -163,23 +163,29 @@ var map = {
 					map: map.el,
 					title: currHotspot.n,
 					icon: map.icon,
-					locationID: currHotspot.i,
-					infoWindowHTML: '<div class="hotspotDialog" id="iw_' + currHotspot.i + '"><p><b>' + currHotspot.n + '</b></p>' +
-						'<p><a href="#" class="viewLocationBirds" data-location="' + currHotspot.i + '">View bird species spotted at this location</a></p></div>'
+					locationID: currHotspot.i
 				});
 				map.infoWindows[currHotspot.i] = new google.maps.InfoWindow();
 
-				(function(marker, infowindow) {
+				(function(marker, infowindow, locationID) {
 					google.maps.event.addListener(marker, 'click', function() {
-						infowindow.setContent(this.infoWindowHTML);
+						infowindow.setContent(map.getInfoWindowHTML(locationID));
 						infowindow.open(map.el, this);
 					});
-				})(map.markers[currHotspot.i], map.infoWindows[currHotspot.i]);
+				})(map.markers[currHotspot.i], map.infoWindows[currHotspot.i], currHotspot.i);
 			}
 			visibleHotspots.push(locationID);
 			counter++;
 		}
 
 		return visibleHotspots;
+	},
+
+
+	getInfoWindowHTML: function(locationID) {
+		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
+			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(X)</b></a></p></div>';
+
+		return html;
 	}
 };
