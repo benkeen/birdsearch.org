@@ -14,8 +14,10 @@ var manager = {
 	// plus it lets us be nice to eBirds servers and not re-request the same data multiple times
 	allHotspots: {},
 
-	species: {},
-	numSpecies: 0,
+	// keeps track of all species currently in the visible subset of hotspots
+	speciesInVisibleHotspots: {},
+	numSpeciesInVisibleHotspots: 0,
+
 
 	regionType: null,
 	region: null,
@@ -130,7 +132,7 @@ var manager = {
 			// check allHotspots to see if this data has been loaded yet. If not, prep the object. To reduce
 			// server requests, we intelligently categorize all sightings in the appropriate pocket (1day, 2day
 			// etc.) That way, if the user does a search for 30 days then reduces the recency setting, we don't
-			// need any superfluous requests. If a request for 30 days goes through, ALL dataByRecency properties
+			// need any superfluous requests. If a request for 30 days goes through, ALL properties
 			// have their available property set to true
 			if (!manager.allHotspots[currLocationID].hasOwnProperty('observations')) {
 				manager.allHotspots[currLocationID] = {
@@ -138,45 +140,39 @@ var manager = {
 					observations: {
 						success: null,
 						all: {
-							numSpecies: 0,
-							dataByRecency: {
-								'1day': { available: false, data: [] },
-								'2day': { available: false, data: [] },
-								'3day': { available: false, data: [] },
-								'4day': { available: false, data: [] },
-								'5day': { available: false, data: [] },
-								'6day': { available: false, data: [] },
-								'7day': { available: false, data: [] },
-								'10day': { available: false, data: [] },
-								'15day': { available: false, data: [] },
-								'20day': { available: false, data: [] },
-								'25day': { available: false, data: [] },
-								'30day': { available: false, data: [] }
-							}
+							'1day': { available: false, data: [], numSpecies: 0 },
+							'2day': { available: false, data: [], numSpecies: 0 },
+							'3day': { available: false, data: [], numSpecies: 0 },
+							'4day': { available: false, data: [], numSpecies: 0 },
+							'5day': { available: false, data: [], numSpecies: 0 },
+							'6day': { available: false, data: [], numSpecies: 0 },
+							'7day': { available: false, data: [], numSpecies: 0 },
+							'10day': { available: false, data: [], numSpecies: 0 },
+							'15day': { available: false, data: [], numSpecies: 0 },
+							'20day': { available: false, data: [], numSpecies: 0 },
+							'25day': { available: false, data: [], numSpecies: 0 },
+							'30day': { available: false, data: [], numSpecies: 0 }
 						},
 						notable: {
-							numSpecies: 0,
-							dataByRecency: {
-								'1day': { available: false, data: [] },
-								'2day': { available: false, data: [] },
-								'3day': { available: false, data: [] },
-								'4day': { available: false, data: [] },
-								'5day': { available: false, data: [] },
-								'6day': { available: false, data: [] },
-								'7day': { available: false, data: [] },
-								'10day': { available: false, data: [] },
-								'15day': { available: false, data: [] },
-								'20day': { available: false, data: [] },
-								'25day': { available: false, data: [] },
-								'30day': { available: false, data: [] }
-							}
+							'1day': { available: false, data: [], numSpecies: 0 },
+							'2day': { available: false, data: [], numSpecies: 0 },
+							'3day': { available: false, data: [], numSpecies: 0 },
+							'4day': { available: false, data: [], numSpecies: 0 },
+							'5day': { available: false, data: [], numSpecies: 0 },
+							'6day': { available: false, data: [], numSpecies: 0 },
+							'7day': { available: false, data: [], numSpecies: 0 },
+							'10day': { available: false, data: [], numSpecies: 0 },
+							'15day': { available: false, data: [], numSpecies: 0 },
+							'20day': { available: false, data: [], numSpecies: 0 },
+							'25day': { available: false, data: [], numSpecies: 0 },
+							'30day': { available: false, data: [], numSpecies: 0 }
 						}
 					}
 				};
 			}
 
 			// if we already have the hotspot data available, just update the table
-			if (manager.allHotspots[currLocationID].observations[manager.searchType].dataByRecency[recencyKey].available) {
+			if (manager.allHotspots[currLocationID].observations[manager.searchType][recencyKey].available) {
 				manager.updateLocationInfo(currLocationID);
 			} else {
 				manager.getSingleHotspotObservation(currLocationID);
@@ -202,37 +198,34 @@ var manager = {
 
 	onSuccessReturnObservations: function(locationID, response) {
 		var locationObj = manager.allHotspots[locationID].observations;
-
 		manager.allHotspots[locationID].isDisplayed = true;
 		locationObj.success = true;
-		locationObj[manager.searchType].numSpecies = response.length;
 
-		// erk. bit kruddy... maybe pick a different data structure?
 		switch (manager.observationRecency) {
 			case 30:
-				locationObj[manager.searchType].dataByRecency['30day'].available = true;
+				locationObj[manager.searchType]['30day'].available = true;
 			case 25:
-				locationObj[manager.searchType].dataByRecency['25day'].available = true;
+				locationObj[manager.searchType]['25day'].available = true;
 			case 20:
-				locationObj[manager.searchType].dataByRecency['20day'].available = true;
+				locationObj[manager.searchType]['20day'].available = true;
 			case 15:
-				locationObj[manager.searchType].dataByRecency['15day'].available = true;
+				locationObj[manager.searchType]['15day'].available = true;
 			case 10:
-				locationObj[manager.searchType].dataByRecency['10day'].available = true;
+				locationObj[manager.searchType]['10day'].available = true;
 			case 7:
-				locationObj[manager.searchType].dataByRecency['7day'].available = true;
+				locationObj[manager.searchType]['7day'].available = true;
 			case 6:
-				locationObj[manager.searchType].dataByRecency['6day'].available = true;
+				locationObj[manager.searchType]['6day'].available = true;
 			case 5:
-				locationObj[manager.searchType].dataByRecency['5day'].available = true;
+				locationObj[manager.searchType]['5day'].available = true;
 			case 4:
-				locationObj[manager.searchType].dataByRecency['4day'].available = true;
+				locationObj[manager.searchType]['4day'].available = true;
 			case 3:
-				locationObj[manager.searchType].dataByRecency['3day'].available = true;
+				locationObj[manager.searchType]['3day'].available = true;
 			case 2:
-				locationObj[manager.searchType].dataByRecency['2day'].available = true;
+				locationObj[manager.searchType]['2day'].available = true;
 			case 1:
-				locationObj[manager.searchType].dataByRecency['1day'].available = true;
+				locationObj[manager.searchType]['1day'].available = true;
 				break;
 			default:
 				break;
@@ -240,50 +233,51 @@ var manager = {
 
 		// now for the exciting part: loop through the observations and put them in the appropriate spot
 		// in the data structure
-		for (var i=0; i<response.length; i++) {
+		var speciesCount = response.length;
+		for (var i=0; i<speciesCount; i++) {
 			var observationTime = parseInt(moment(response[i].obsDt, 'YYYY-MM-DD HH:mm').format('X'), 10);
 			var difference = manager.CURRENT_SERVER_TIME - observationTime;
 			var daysAgo = Math.ceil(difference / manager.ONE_DAY_IN_SECONDS);
 
+			// 
+
 			if (daysAgo >= 30) {
-				locationObj[manager.searchType].dataByRecency['30day'].data.push(response[i]);
+				locationObj[manager.searchType]['30day'].data.push(response[i]);
 			} else if (daysAgo >= 25) {
-				locationObj[manager.searchType].dataByRecency['25day'].data.push(response[i]);
+				locationObj[manager.searchType]['25day'].data.push(response[i]);
 			} else if (daysAgo >= 20) {
-				locationObj[manager.searchType].dataByRecency['20day'].data.push(response[i]);
+				locationObj[manager.searchType]['20day'].data.push(response[i]);
 			} else if (daysAgo >= 15) {
-				locationObj[manager.searchType].dataByRecency['15day'].data.push(response[i]);
+				locationObj[manager.searchType]['15day'].data.push(response[i]);
 			} else if (daysAgo >= 10) {
-				locationObj[manager.searchType].dataByRecency['10day'].data.push(response[i]);
+				locationObj[manager.searchType]['10day'].data.push(response[i]);
 			} else if (daysAgo >= 7) {
-				locationObj[manager.searchType].dataByRecency['7day'].data.push(response[i]);
+				locationObj[manager.searchType]['7day'].data.push(response[i]);
 			} else if (daysAgo >= 6) {
-				locationObj[manager.searchType].dataByRecency['6day'].data.push(response[i]);
+				locationObj[manager.searchType]['6day'].data.push(response[i]);
 			} else if (daysAgo >= 5) {
-				locationObj[manager.searchType].dataByRecency['5day'].data.push(response[i]);
+				locationObj[manager.searchType]['5day'].data.push(response[i]);
 			} else if (daysAgo >= 4) {
-				locationObj[manager.searchType].dataByRecency['4day'].data.push(response[i]);
+				locationObj[manager.searchType]['4day'].data.push(response[i]);
 			} else if (daysAgo >= 3) {
-				locationObj[manager.searchType].dataByRecency['3day'].data.push(response[i]);
+				locationObj[manager.searchType]['3day'].data.push(response[i]);
 			} else if (daysAgo >= 2) {
-				locationObj[manager.searchType].dataByRecency['2day'].data.push(response[i]);
-			} else if (daysAgo >= 1) {
-				locationObj[manager.searchType].dataByRecency['1day'].data.push(response[i]);
+				locationObj[manager.searchType]['2day'].data.push(response[i]);
 			} else {
-				// shouldn't occur
+				locationObj[manager.searchType]['1day'].data.push(response[i]);
 			}
 		}
 
 		manager.updateLocationInfo(locationID);
 
 		if (manager.checkAllObservationsLoaded()) {
-			manager.createSpeciesMap();
+			manager.updateSpeciesData();
 			manager.updateSpeciesTab();
 			$('#hotspotTable').trigger("update").trigger("appendCache");
 			manager.stopLoading();
 		}
 	},
-	
+
 	onErrorReturnObservations: function(locationID, response) {
 		manager.allHotspots[locationID].observations.success = false;
 		if (manager.checkAllObservationsLoaded()) {
@@ -299,39 +293,47 @@ var manager = {
 
 		if (numSpecies > 0) {
 			row.find('.speciesCount').html(numSpecies).attr('title', title);
-			$('iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
+			$('#iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
 		}
 	},
 
-	getHotspotLocationIndex: function(locationID) {
-		var index = null;
-		for (var i=0; i<manager.numVisibleHotspots; i++) {
-			if (manager.visibleHotspots[i] === locationID) {
-				index = i;
-				break;
-			}
-		}
-		return index;
-	},
+	getSpeciesCountForRecency: function(locationID, recency, searchType) {
+		var numSpecies = 0;
+		if (manager.allHotspots.hasOwnProperty(locationID)) {
+			var info = manager.allHotspots[locationID].observations[searchType];
 
-	/**
-	 * Called after any observations has been returned. It looks through all of data.hotspots
-	 * and confirms every one has an observations property (they are added after a response - success
-	 * or failure).
-	 */
-	checkAllObservationsLoaded: function() {
-		var allLoaded = true;
-		for (var i=0; i<manager.numVisibleHotspots; i++) {
-			var currLocationID = manager.visibleHotspots[i];
-
-			// if any of the visible hotspots haven't had a success/fail message for their observation
-			// list, we ain't done
-			if (manager.allHotspots[currLocationID].observations.success === null) {
-				allLoaded = false;
-				break;
+/*			switch (recency) {
+				case 30:
+					numSpecies += info['30day'].numSpecies;
+				case 25:
+					numSpecies += info['25day'].numSpecies;
+				case 20:
+					numSpecies += info['20day'].numSpecies;
+				case 15:
+					numSpecies += info['15day'].numSpecies;
+				case 10:
+					numSpecies += info['10day'].numSpecies;
+				case 7:
+					numSpecies += info['7day'].numSpecies;
+				case 6:
+					numSpecies += info['6day'].numSpecies;
+				case 5:
+					numSpecies += info['5day'].numSpecies;
+				case 4:
+					numSpecies += info['4day'].numSpecies;
+				case 3:
+					numSpecies += info['3day'].numSpecies;
+				case 2:
+					numSpecies += info['2day'].numSpecies;
+				case 1:
+					numSpecies += info['1day'].numSpecies;
+					break;
+				default:
+					break;
 			}
+*/
 		}
-		return allLoaded;
+		return numSpecies;
 	},
 
 	/**
@@ -358,7 +360,9 @@ var manager = {
 				if ($.isArray(response)) {
 					for (var i=0; i<response.length; i++) {
 						var locationID = response[i].i;
-						manager.allHotspots[locationID] = response[i]; // TODO
+						if (!manager.allHotspots.hasOwnProperty(locationID)) {
+							manager.allHotspots[locationID] = response[i];
+						}
 					}
 					map.clear();
 					manager.updatePage();
@@ -436,9 +440,8 @@ var manager = {
 		$('#loadingSpinner').fadeOut(200);
 	},
 
-	createSpeciesMap: function() {
-		manager.species = {};
-		manager.numSpecies = 0;
+	updateSpeciesData: function() {
+		manager.numSpeciesInVisibleHotspots = 0;
 
 		for (var i=0; i<manager.numVisibleHotspots; i++) {
 			var currLocationID = manager.visibleHotspots[i];
@@ -448,8 +451,8 @@ var manager = {
 				continue;
 			}
 
-			for (var daysAgo in manager.allHotspots[currLocationID].observations.dataByRecency) {
-				var currGroup = manager.allHotspots[currLocationID].observations.dataByRecency[daysAgo];
+			for (var daysAgo in manager.allHotspots[currLocationID].observations) {
+				var currGroup = manager.allHotspots[currLocationID].observations[daysAgo];
 
 				// if the observation data for this recency group (25 days, or whatever) hasn't been loaded
 				// yet, forgetaboudit!
@@ -461,16 +464,16 @@ var manager = {
 					var currData = currGroup.data[j];
 					var sciName  = currData.sciName;
 
-					if (!manager.species.hasOwnProperty(sciName)) {
-						manager.species[sciName] = {
+					if (!manager.allSpecies.hasOwnProperty(sciName)) {
+						manager.allSpecies[sciName] = {
 							comName: currData.comName,
 							sciName: currData.sciName,
 							obs: []
 						};
-						manager.numSpecies++;
+						manager.numSpeciesInVisibleHotspots++;
 					}
 
-					manager.species[sciName].obs.push({
+					manager.allSpecies[sciName].obs.push({
 						howMany: currData.howMany,
 						lat: currData.lat,
 						lng: currData.lng,
@@ -666,7 +669,7 @@ var manager = {
 		$("#speciesTable").tablesorter({
 			theme: 'bootstrap',
 			headerTemplate: '{content} {icon}',
-			widgets: ['zebra','columns', 'uitheme']
+			widgets: ['zebra', 'columns', 'uitheme']
 		});
 	},
 
@@ -698,14 +701,35 @@ var manager = {
 		// now update the species tab and redirect the user to it
 		manager.updateSpeciesTab();
 		manager.selectTab('birdSpeciesTab');
+	},
+
+	/**
+	 * Called after any observations has been returned. It looks through all of data.hotspots
+	 * and confirms every one has an observations property (they are added after a response - success
+	 * or failure).
+	 */
+	checkAllObservationsLoaded: function() {
+		var allLoaded = true;
+		for (var i=0; i<manager.numVisibleHotspots; i++) {
+			var currLocationID = manager.visibleHotspots[i];
+
+			// if any of the visible hotspots haven't had a success/fail message for their observation
+			// list, we ain't done
+			if (manager.allHotspots[currLocationID].observations.success === null) {
+				allLoaded = false;
+				break;
+			}
+		}
+		return allLoaded;
 	}
+
 };
 
 
 // add parser through the tablesorter addParser method
 $.tablesorter.addParser({
 	id: 'species',
-	is: function(s) { 
+	is: function(s) {
 		return false;
 	},
 	format: function(s, table, cell, cellIndex) {
