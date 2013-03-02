@@ -4,6 +4,9 @@
 
 var manager = {
 
+	// tracks the main hotspot searches to prevent unnecessary duplicates
+	hotspotSearches: {},
+
 	// hotspots currently visible in the map viewport. Array of location ID. The actual hotspot data
 	// is stored in allHotspots
 	visibleHotspots: [],
@@ -22,7 +25,7 @@ var manager = {
 	regionType: null,
 	region: null,
 	observationRecency: null,
-	searchType: null,
+	searchType: null, // all, notable
 	searchField: null,
 	activeHotspotRequest: false,
 	currTabID: 'mapTab',
@@ -104,8 +107,33 @@ var manager = {
 	 * Retrieves all hotspots for a region.
 	 */
 	getHotspots: function() {
+
+		// if a hotspot search for this regionType, region and <= recency has already been made, don't bother doing another.
+		// We can safely do this because the original request will retrieve ALL locations, just not request their observations
+		// (a far more weighty request load) if they're not in the viewport
+		var searchKey = manager.regionType + '--' + manager.region;
+		if (manager.hotspotSearches.hasOwnProperty(searchKey)) {
+			if (manager.observationRecency <= manager.hotspotSearches[searchKey].recency) {
+				console.log("not doing THIS search again...!");
+
+				// update the map with whatever markers should appear in this 
+				map.clear();
+
+				// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
+				manager.visibleHotspots = map.getHotspotsInRangeAndRecency();
+
+				manager.numVisibleHotspots = manager.visibleHotspots.length;
+
+				manager.displayHotspots();
+
+
+				return;
+			}
+		}
+
 		manager.activeHotspotRequest = true;
 		manager.startLoading();
+
 		$.ajax({
 			url: "ajax/getHotspots.php",
 			data: {
@@ -122,6 +150,12 @@ var manager = {
 				// needed to display, according to the current viewport. That's cool. The map code
 				// figures out what needs to be shown and ignores the rest.
 				if ($.isArray(response)) {
+
+					// make a note that we've performed a search on this region
+					manager.hotspotSearches[searchKey] = {
+						recency: manager.observationRecency
+					};
+
 					for (var i=0; i<response.length; i++) {
 						var locationID = response[i].i;
 						if (!manager.allHotspots.hasOwnProperty(locationID)) {
@@ -149,8 +183,8 @@ var manager = {
 
 		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
 		manager.visibleHotspots = map.addMarkersAndReturnVisible();
-
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
+
 		manager.displayHotspots();
 	},
 
@@ -170,45 +204,43 @@ var manager = {
 			// need any superfluous requests. If a request for 30 days goes through, ALL properties
 			// have their available property set to true
 			if (!manager.allHotspots[currLocationID].hasOwnProperty('observations')) {
-				manager.allHotspots[currLocationID] = {
-					isDisplayed: false,
-					observations: {
-						success: null,
-						all: {
-							'1day': { available: false, data: [], numSpecies: 0 },
-							'2day': { available: false, data: [], numSpecies: 0 },
-							'3day': { available: false, data: [], numSpecies: 0 },
-							'4day': { available: false, data: [], numSpecies: 0 },
-							'5day': { available: false, data: [], numSpecies: 0 },
-							'6day': { available: false, data: [], numSpecies: 0 },
-							'7day': { available: false, data: [], numSpecies: 0 },
-							'10day': { available: false, data: [], numSpecies: 0 },
-							'15day': { available: false, data: [], numSpecies: 0 },
-							'20day': { available: false, data: [], numSpecies: 0 },
-							'25day': { available: false, data: [], numSpecies: 0 },
-							'30day': { available: false, data: [], numSpecies: 0 }
-						},
-						notable: {
-							'1day': { available: false, data: [], numSpecies: 0 },
-							'2day': { available: false, data: [], numSpecies: 0 },
-							'3day': { available: false, data: [], numSpecies: 0 },
-							'4day': { available: false, data: [], numSpecies: 0 },
-							'5day': { available: false, data: [], numSpecies: 0 },
-							'6day': { available: false, data: [], numSpecies: 0 },
-							'7day': { available: false, data: [], numSpecies: 0 },
-							'10day': { available: false, data: [], numSpecies: 0 },
-							'15day': { available: false, data: [], numSpecies: 0 },
-							'20day': { available: false, data: [], numSpecies: 0 },
-							'25day': { available: false, data: [], numSpecies: 0 },
-							'30day': { available: false, data: [], numSpecies: 0 }
-						}
+				manager.allHotspots[currLocationID].isDisplayed = false;
+				manager.allHotspots[currLocationID].observations = {
+					success: null,
+					all: {
+						'1day': { available: false, data: [], numSpecies: 0 },
+						'2day': { available: false, data: [], numSpecies: 0 },
+						'3day': { available: false, data: [], numSpecies: 0 },
+						'4day': { available: false, data: [], numSpecies: 0 },
+						'5day': { available: false, data: [], numSpecies: 0 },
+						'6day': { available: false, data: [], numSpecies: 0 },
+						'7day': { available: false, data: [], numSpecies: 0 },
+						'10day': { available: false, data: [], numSpecies: 0 },
+						'15day': { available: false, data: [], numSpecies: 0 },
+						'20day': { available: false, data: [], numSpecies: 0 },
+						'25day': { available: false, data: [], numSpecies: 0 },
+						'30day': { available: false, data: [], numSpecies: 0 }
+					},
+					notable: {
+						'1day': { available: false, data: [], numSpecies: 0 },
+						'2day': { available: false, data: [], numSpecies: 0 },
+						'3day': { available: false, data: [], numSpecies: 0 },
+						'4day': { available: false, data: [], numSpecies: 0 },
+						'5day': { available: false, data: [], numSpecies: 0 },
+						'6day': { available: false, data: [], numSpecies: 0 },
+						'7day': { available: false, data: [], numSpecies: 0 },
+						'10day': { available: false, data: [], numSpecies: 0 },
+						'15day': { available: false, data: [], numSpecies: 0 },
+						'20day': { available: false, data: [], numSpecies: 0 },
+						'25day': { available: false, data: [], numSpecies: 0 },
+						'30day': { available: false, data: [], numSpecies: 0 }
 					}
 				};
 			}
 
 			// if we already have the hotspot data available, just update the table
 			if (manager.allHotspots[currLocationID].observations[manager.searchType][recencyKey].available) {
-				manager.updateLocationInfo(currLocationID);
+				manager.updateVisibleLocationInfo(currLocationID);
 			} else {
 				manager.getSingleHotspotObservations(currLocationID);
 			}
@@ -234,44 +266,46 @@ var manager = {
 	},
 
 	/**
-	 * Returns the observations reports for a single location at a given interval (last 2 days, last 30 days 
-	 * etc). This can be called multiple times for a single location if the user keeps increasing the recency 
+	 * Returns the observations reports for a single location at a given interval (last 2 days, last 30 days
+	 * etc). This can be called multiple times for a single location if the user keeps increasing the recency
 	 * range upwards. Once the user's returned data for a location for 30 days, it contains everything it needs
 	 * so no new requests are required.
 	 */
 	onSuccessReturnLocationObservations: function(locationID, response) {
 		manager.allHotspots[locationID].isDisplayed = true;
+		manager.allHotspots[locationID].observations.success = true;
 
-		var locationObj = manager.allHotspots[locationID].observations;
-		locationObj.success = true;
+		// by reference, of course. Changes to this actually change manager.allHotspots. This is just for brevity
+		var locationObj = manager.allHotspots[locationID].observations[manager.searchType];
+
 
 		// mark the information as now available for this observation recency + and anything below,
 		// and reset the observation data (it's about to be updated below)
 		switch (manager.observationRecency) {
 			case 30:
-				locationObj[manager.searchType]['30day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['30day'] = { available: true, data: [], numSpecies: 0 };
 			case 25:
-				locationObj[manager.searchType]['25day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['25day'] = { available: true, data: [], numSpecies: 0 };
 			case 20:
-				locationObj[manager.searchType]['20day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['20day'] = { available: true, data: [], numSpecies: 0 };
 			case 15:
-				locationObj[manager.searchType]['15day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['15day'] = { available: true, data: [], numSpecies: 0 };
 			case 10:
-				locationObj[manager.searchType]['10day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['10day'] = { available: true, data: [], numSpecies: 0 };
 			case 7:
-				locationObj[manager.searchType]['7day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['7day'] = { available: true, data: [], numSpecies: 0 };
 			case 6:
-				locationObj[manager.searchType]['6day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['6day'] = { available: true, data: [], numSpecies: 0 };
 			case 5:
-				locationObj[manager.searchType]['5day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['5day'] = { available: true, data: [], numSpecies: 0 };
 			case 4:
-				locationObj[manager.searchType]['4day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['4day'] = { available: true, data: [], numSpecies: 0 };
 			case 3:
-				locationObj[manager.searchType]['3day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['3day'] = { available: true, data: [], numSpecies: 0 };
 			case 2:
-				locationObj[manager.searchType]['2day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['2day'] = { available: true, data: [], numSpecies: 0 };
 			case 1:
-				locationObj[manager.searchType]['1day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['1day'] = { available: true, data: [], numSpecies: 0 };
 				break;
 			default:
 				break;
@@ -286,35 +320,35 @@ var manager = {
 			var daysAgo = Math.ceil(difference / manager.ONE_DAY_IN_SECONDS);
 
 			if (daysAgo >= 30) {
-				locationObj[manager.searchType]['30day'].data.push(response[i]);
+				locationObj['30day'].data.push(response[i]);
 			} else if (daysAgo >= 25) {
-				locationObj[manager.searchType]['25day'].data.push(response[i]);
+				locationObj['25day'].data.push(response[i]);
 			} else if (daysAgo >= 20) {
-				locationObj[manager.searchType]['20day'].data.push(response[i]);
+				locationObj['20day'].data.push(response[i]);
 			} else if (daysAgo >= 15) {
-				locationObj[manager.searchType]['15day'].data.push(response[i]);
+				locationObj['15day'].data.push(response[i]);
 			} else if (daysAgo >= 10) {
-				locationObj[manager.searchType]['10day'].data.push(response[i]);
+				locationObj['10day'].data.push(response[i]);
 			} else if (daysAgo >= 7) {
-				locationObj[manager.searchType]['7day'].data.push(response[i]);
+				locationObj['7day'].data.push(response[i]);
 			} else if (daysAgo >= 6) {
-				locationObj[manager.searchType]['6day'].data.push(response[i]);
+				locationObj['6day'].data.push(response[i]);
 			} else if (daysAgo >= 5) {
-				locationObj[manager.searchType]['5day'].data.push(response[i]);
+				locationObj['5day'].data.push(response[i]);
 			} else if (daysAgo >= 4) {
-				locationObj[manager.searchType]['4day'].data.push(response[i]);
+				locationObj['4day'].data.push(response[i]);
 			} else if (daysAgo >= 3) {
-				locationObj[manager.searchType]['3day'].data.push(response[i]);
+				locationObj['3day'].data.push(response[i]);
 			} else if (daysAgo >= 2) {
-				locationObj[manager.searchType]['2day'].data.push(response[i]);
+				locationObj['2day'].data.push(response[i]);
 			} else {
-				locationObj[manager.searchType]['1day'].data.push(response[i]);
+				locationObj['1day'].data.push(response[i]);
 			}
 		}
 
 		// we've added all the observation data, set the numSpecies counts
-		for (var key in locationObj[manager.searchType]) {
-			locationObj[manager.searchType][key].numSpecies = locationObj[manager.searchType][key].data.length;
+		for (var key in locationObj) {
+			locationObj[key].numSpecies = locationObj[key].data.length;
 		}
 
 		manager.updateVisibleLocationInfo(locationID, response.length);
@@ -357,6 +391,7 @@ var manager = {
 	 * starts requesting the hotspot observation data. This is called any time the map bounds change.
 	 */
 	displayHotspots: function() {
+
 		if (manager.numVisibleHotspots > 0) {
 			var html = manager.generateHotspotTable(manager.visibleHotspots);
 			var locationStr = 'location';
@@ -711,13 +746,12 @@ var manager = {
 // add parser through the tablesorter addParser method
 $.tablesorter.addParser({
 	id: 'species',
-	is: function(s) {
+	is: function() {
 		return false;
 	},
-	format: function(s, table, cell, cellIndex) {
+	format: function(s, table, cell) {
 		return $(cell).find('span').text();
 	},
-
 	type: 'numeric'
 });
 

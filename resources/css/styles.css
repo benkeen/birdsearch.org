@@ -119,7 +119,7 @@ header a:hover {
 }
 #searchResults {
 	font-size: 10pt;
-	overflow-y: scroll;
+	overflow-y: auto;
 	padding: 0px;
 }
 #searchResults table {
