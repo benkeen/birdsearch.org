@@ -11,17 +11,19 @@
 	<script src="resources/js/jquery.min.js"></script>
 	<script src="resources/js/jquery.tablesorter.min.js"></script>
 	<script src="resources/js/jquery.tablesorter.widgets.js"></script>
+	<script src="resources/js/jquery.simplemodal.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places"></script>
 	<script src="resources/js/manager.js"></script>
 	<script src="resources/js/map.js"></script>
 </head>
+
 <body data-serverdatetime="<?php echo date('U'); ?>">
 
 	<header id="topBar">
 		<h1>eBird<span>search</span>.org</h1>
 		<ul>
-			<li><a href="">About</a></li>
-			<li><a href="">Feature Suggestions</a></li>
+			<li><a href="#" id="aboutLink">About</a></li>
+			<li><a href="#" id="featureSuggestionsLink">Feature Suggestions</a></li>
 			<li><a href="http://ebird.org">eBird.org</a></li>
 		</ul>
 	</header>
@@ -76,5 +78,53 @@
 		This site is not affiliated with <a href="http://ebird.org" target="_blank">eBird</a>.
 	</footer>
 
+	<div class="hidden">
+		<div id="about">
+			<h2>About eBirdsearch.org</h2>
+			<p>
+				I created eBirdsearch.org to fill what I regard as a rather conspicuous gap in the functionality of the amazing 
+				<a href="http://ebird.org" target="_blank">eBird.org</a> site.
+			</p>
+			<p>
+				If you haven't checked eBird, do so now. It's an incredible resource and tool for birders, ornithologists, educators - anyone 
+				interested in birds. Birders around the world submit millions of observations a year to eBird, which acts as a giant database 
+				for people to view and analyze that data. The more people use it: the better it becomes!
+			</p>
+			<p>
+				The problem is, the search functionality currently available through eBird is fairly limited. Speaking practically, as a 
+				birder I want a clear and simple overview of a region: where are the popular hotspots? What locations yield the most 
+				birds, and which ones are common? Where are the rarer birds spotted? This site attempts to help plug that gap.
+			</p>
+
+			<p>
+				All the code for this site is open source and <a href="https://github.com/benkeen/eBirdAdvancedSearch" target="_blank">free for 
+				anyone to download and play with</a>. I've endeavoured to keep the number of HTTP requests being sent to eBird's API to a minimum 
+				so it doesn't put too much of a stress on their servers, but do bear in mind this is very much an experiment. I very much hope 
+				that one day this sort of functionality will be available directly through eBird, but in the meantime I hope this site is allowed 
+				to stay up and running. We'll see!
+			</p>
+
+			<p>
+				Enjoy!
+			</p>
+
+			<p>
+				- <a href="http://www.benjaminkeen.com" target="_blank">Ben Keen</a>, March 2013
+			</p>
+		</div>
+
+		<div id="featureSuggestions">
+			<h2>About eBirdsearch.org</h2>
+			<p>
+				Got an idea on how to improve this site? Let me know!
+			</p>
+			<p>
+				All the actual bird data reported on this site is pulled from eBird using their API. As such, a lot of the functionality
+				that can be provided is limited to what is offered. Nevertheless, I'll be very interest
+			</p>
+			<p>
+			</p>
+		</div>
+	</div>
 </body>
 </html>

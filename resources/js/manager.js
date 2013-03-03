@@ -13,8 +13,9 @@ var manager = {
 	numVisibleHotspots: null,
 
 	// all hotspot results for a region. This just keeps getting appended to as the user does new
-	// searches, drags/zooms the map. Seems unlikely it would get TOO massive in a single session,
-	// plus it lets us be nice to eBirds servers and not re-request the same data multiple times
+	// searches, drags/zooms the map. Unlikely it would get TOO massive in a single session,
+	// plus it lets us be nice to eBird's servers and not re-request the same data multiple times.
+	// This is cached in local storage to again minimize requests
 	allHotspots: {},
 
 	// keeps track of all species currently in the visible subset of hotspots
@@ -36,10 +37,21 @@ var manager = {
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 	MAX_HOTSPOTS: 50,
 	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
+	LOCAL_STORAGE_DURATION: 60 * 60 * 12, // 12 hours
 
 
 	init: function() {
 		$(window).resize(manager.handleWindowResize);
+
+		$('#aboutLink').on('click', function(e) {
+			e.preventDefault();
+			$('#about').modal();
+		});
+		$('#featureSuggestionsLink').on('click', function(e) {
+			e.preventDefault();
+			$('#featureSuggestions').modal();
+		});
+
 
 		// make a note of some important DOM elements
 		manager.searchField = $('#searchTextField')[0];
@@ -102,7 +114,6 @@ var manager = {
 		manager.currentHoveredRowLocationID = null;
 	},
 
-
 	/**
 	 * Retrieves all hotspots for a region.
 	 */
@@ -116,7 +127,7 @@ var manager = {
 			if (manager.observationRecency <= manager.hotspotSearches[searchKey].recency) {
 				map.clear();
 
-				// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
+				// this function does the job of trimming the list for us, if there are > MAX_HOTSPOTS
 				manager.visibleHotspots = map.addMarkersInRangeAndRecency();
 				manager.numVisibleHotspots = manager.visibleHotspots.length;
 				manager.displayHotspots();
@@ -155,8 +166,8 @@ var manager = {
 							manager.allHotspots[locationID] = response[i];
 						}
 					}
-					map.clear();
-					manager.updatePage();
+
+					manager.updatePage(true);
 				} else {
 					manager.stopLoading();
 				}
@@ -172,10 +183,10 @@ var manager = {
 	 * Called after the hotspot locations have been loaded. This adds them to the Google Map and
 	 * starts initiating the observation requests.
 	 */
-	updatePage: function() {
+	updatePage: function(clearMarkers) {
 
 		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
-		manager.visibleHotspots = map.addMarkersAndReturnVisible();
+		manager.visibleHotspots = map.addMarkersAndReturnVisible(clearMarkers);
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
 
 		manager.displayHotspots();
@@ -791,7 +802,7 @@ var manager = {
 
 		var address = $.trim(manager.searchField.value);
 		if (address !== '') {
-			manager.updatePage();
+			manager.updatePage(false);
 		}
 	},
 

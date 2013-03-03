@@ -86,7 +86,7 @@ var map = {
 		if (manager.activeHotspotRequest || !map.lastAddressSearchValid) {
 			return;
 		}
-		manager.updatePage();
+		manager.updatePage(false);
 	},
 
 	addCustomControls: function() {
@@ -139,7 +139,11 @@ var map = {
 	 * included the recency, so there's at least one observation) but in other cases - like when the user is selecting
 	 * a shorter observation recency for an already-loaded hotspot, the location may well not show up.
 	 */
-	addMarkersAndReturnVisible: function() {
+	addMarkersAndReturnVisible: function(clearMarkers) {
+		if (clearMarkers) {
+			map.clear();
+		}
+
 		if ($.isEmptyObject(manager.allHotspots)) {
 			manager.stopLoading();
 			return [];
@@ -159,21 +163,25 @@ var map = {
 
 			var currHotspot = manager.allHotspots[locationID];
 
-			// if this marker was already added previously, don't bother doing it again
 			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
 			if (!boundsObj.contains(latlng)) {
 				continue;
 			}
 
-			if (!manager.allHotspots[locationID].hasOwnProperty('observations')) {
-				map.markers[currHotspot.i] = new google.maps.Marker({
+			if (map.markers.hasOwnProperty(locationID)) {
+				if (map.markers[locationID].map === null) {
+					console.log("adding back formerly hidden marker: ", locationID);
+					map.markers[locationID].setMap(map.el);
+				}
+			} else {
+				map.markers[locationID] = new google.maps.Marker({
 					position: latlng,
 					map: map.el,
 					title: currHotspot.n,
 					icon: map.icon,
-					locationID: currHotspot.i
+					locationID: locationID
 				});
-				map.infoWindows[currHotspot.i] = new google.maps.InfoWindow();
+				map.infoWindows[locationID] = new google.maps.InfoWindow();
 
 				(function(marker, infowindow, locationID) {
 					google.maps.event.addListener(marker, 'click', function() {
@@ -182,6 +190,7 @@ var map = {
 					});
 				})(map.markers[currHotspot.i], map.infoWindows[currHotspot.i], currHotspot.i);
 			}
+
 			visibleHotspots.push(locationID);
 			counter++;
 		}
