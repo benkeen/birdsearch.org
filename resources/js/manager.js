@@ -36,8 +36,8 @@ var manager = {
 	CURRENT_SERVER_TIME: null,
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 	MAX_HOTSPOTS: 50,
-	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
-	LOCAL_STORAGE_DURATION: 60 * 60 * 12, // 12 hours
+ 	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
+//	LOCAL_STORAGE_DURATION: 60 * 60 * 12, // 12 hours
 
 
 	init: function() {
@@ -68,7 +68,7 @@ var manager = {
 
 		// set the default values
 		manager.observationRecency = parseInt($('#observationRecency').val(), 10);
-		manager.searchType         = $('#resultType').val();
+		manager.searchType = $('#resultType').val();
 
 		// initialize the map
 		map.initialize();
@@ -188,7 +188,6 @@ var manager = {
 		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
 		manager.visibleHotspots = map.addMarkersAndReturnVisible(clearMarkers);
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
-
 		manager.displayHotspots();
 	},
 
@@ -638,7 +637,6 @@ var manager = {
 			if (observationsInVisibleLocation.length === 0)  {
 				continue;
 			}
-
 			var locationsHTML = locations.join('\n');
 			var lastSeenHTML  = lastSeen.join('\n');
 
