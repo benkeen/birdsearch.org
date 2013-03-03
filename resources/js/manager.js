@@ -21,7 +21,6 @@ var manager = {
 	speciesInVisibleHotspots: {},
 	numSpeciesInVisibleHotspots: 0,
 
-
 	regionType: null,
 	region: null,
 	observationRecency: null,
@@ -36,6 +35,7 @@ var manager = {
 	CURRENT_SERVER_TIME: null,
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 	MAX_HOTSPOTS: 50,
+	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
 
 
 	init: function() {
@@ -114,19 +114,12 @@ var manager = {
 		var searchKey = manager.regionType + '--' + manager.region;
 		if (manager.hotspotSearches.hasOwnProperty(searchKey)) {
 			if (manager.observationRecency <= manager.hotspotSearches[searchKey].recency) {
-				console.log("not doing THIS search again...!");
-
-				// update the map with whatever markers should appear in this 
 				map.clear();
 
 				// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
-				manager.visibleHotspots = map.getHotspotsInRangeAndRecency();
-
+				manager.visibleHotspots = map.addMarkersInRangeAndRecency();
 				manager.numVisibleHotspots = manager.visibleHotspots.length;
-
 				manager.displayHotspots();
-
-
 				return;
 			}
 		}
@@ -283,29 +276,29 @@ var manager = {
 		// and reset the observation data (it's about to be updated below)
 		switch (manager.observationRecency) {
 			case 30:
-				locationObj['30day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['30day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 25:
-				locationObj['25day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['25day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 20:
-				locationObj['20day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['20day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 15:
-				locationObj['15day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['15day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 10:
-				locationObj['10day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['10day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 7:
-				locationObj['7day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['7day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 6:
-				locationObj['6day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['6day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 5:
-				locationObj['5day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['5day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 4:
-				locationObj['4day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['4day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 3:
-				locationObj['3day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['3day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 2:
-				locationObj['2day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['2day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 			case 1:
-				locationObj['1day'] = { available: true, data: [], numSpecies: 0 };
+				locationObj['1day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 				break;
 			default:
 				break;
@@ -351,6 +344,24 @@ var manager = {
 			locationObj[key].numSpecies = locationObj[key].data.length;
 		}
 
+		// now add the numSpeciesRunningTotal property. This is the running total seen in that time 
+		// range: e.g. 3 days would include the total species seen in that day, and 2 days and 1 day
+
+		var days = manager.SEARCH_DAYS.length;
+		var uniqueSpecies = {};
+		var numUniqueSpecies = 0;
+		for (var i=0; i<days; i++) {
+			var currDay = manager.SEARCH_DAYS[i];
+			var observations = manager.allHotspots[locationID].observations[manager.searchType][currDay + 'day'].data;
+			for (var j=0; j<observations.length; j++) {
+				if (!uniqueSpecies.hasOwnProperty(observations[j].sciName)) {
+					uniqueSpecies[observations[j].sciName] = null;
+					numUniqueSpecies++;
+				}
+			}
+			manager.allHotspots[locationID].observations[manager.searchType][currDay + 'day'].numSpeciesRunningTotal = numUniqueSpecies;
+		}
+
 		manager.updateVisibleLocationInfo(locationID, response.length);
 
 		if (manager.checkAllObservationsLoaded()) {
@@ -391,7 +402,6 @@ var manager = {
 	 * starts requesting the hotspot observation data. This is called any time the map bounds change.
 	 */
 	displayHotspots: function() {
-
 		if (manager.numVisibleHotspots > 0) {
 			var html = manager.generateHotspotTable(manager.visibleHotspots);
 			var locationStr = 'location';
@@ -426,7 +436,11 @@ var manager = {
 	},
 
 	showMessage: function(message, messageType) {
-		$('#messageBar').css('display', 'none').removeClass().addClass(messageType).html(message).fadeIn(300);
+		if ($('#messageBar').hasClass('visible')) {
+			$('#messageBar').removeClass().addClass(messageType + ' visible').html(message); // be nice to add an effect here...
+		} else {
+			$('#messageBar').css('display', 'none').removeClass().addClass(messageType + ' visible').html(message).fadeIn(300);
+		}
 	},
 
 	updateSpeciesData: function() {
@@ -559,15 +573,18 @@ var manager = {
 				rowClass = '';
 				checkedAttr = 'checked="checked"';
 			}
+			var numSpeciesWithinRange = '';
 			if (!manager.allHotspots[currLocationID].hasOwnProperty('observations')) {
 				rowClass = ' notLoaded';
 				checkedAttr = 'checked="checked"';
+			} else {
+				numSpeciesWithinRange = manager.allHotspots[currLocationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal;
 			}
 
 			html += '<tr id="location_' + currLocationID + '">' +
 						'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
 						'<td class="loadingStatus' + rowClass + '"><label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
-						'<td class="sp"><span class="speciesCount"></span></td>' +
+						'<td class="sp"><span class="speciesCount">' + numSpeciesWithinRange + '</span></td>' +
 					'</tr>';
 		}
 		html += '</tbody></table>';
@@ -712,6 +729,51 @@ var manager = {
 
 		return allLoaded;
 	},
+
+	hasAtLeastOneObservationWithinRecency: function(locationID, searchType, recency) {
+		if (!manager.allHotspots.hasOwnProperty(locationID)) {
+			return false;
+		}
+
+		var startIndex = manager.SEARCH_DAYS.indexOf(recency);
+
+		var found = false;
+		for (var i=startIndex; i>=0; i--) {
+			var currDay = manager.SEARCH_DAYS[i];
+			if (manager.allHotspots[locationID].observations[searchType][currDay + 'day'].numSpecies > 0) {
+				found = true;
+				break;
+			}
+		}
+
+		return found;
+	},
+
+	// sod this. Add a "rangeSpeciesCount" property, which is populated when the data is first returned. No 
+	// point wasting CPU cycles recalculating the same damn thing each time
+	getNumSpeciesWithinRange: function(locationID, searchType, recency) {
+		if (!manager.allHotspots.hasOwnProperty(locationID)) {
+			return false;
+		}
+		var startIndex = manager.SEARCH_DAYS.indexOf(recency);
+
+		var uniqueSpecies = {};
+		var numUniqueSpecies = 0;
+		for (var i=startIndex; i>=0; i--) {
+			var currDay = manager.SEARCH_DAYS[i];
+			var observations = manager.allHotspots[locationID].observations[searchType][currDay + 'day'].data;
+
+			for (var j=0; j<observations.length; j++) {
+				if (!uniqueSpecies.hasOwnProperty(observations[j].sciName)) {
+					uniqueSpecies[observations[j].sciName] = null;
+					numUniqueSpecies++;
+				}
+			}
+		}
+
+		return numUniqueSpecies;
+	},
+
 
 	// not the prettiest thing ever, but since flexbox isn't standardized yet...
 	handleWindowResize: function() {

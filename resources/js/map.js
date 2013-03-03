@@ -19,6 +19,7 @@ var map = {
 	geocoder: null,
 	markers: {},
 	infoWindows: {},
+	lastAddressSearchValid: null,
 
 
 	/**
@@ -43,6 +44,10 @@ var map = {
 
 
 	onAutoComplete: function() {
+
+		// assume the worst
+		map.lastAddressSearchValid = false;
+
 		var place = map.autocomplete.getPlace();
 
 		// inform the user that the place was not found and return
@@ -59,30 +64,26 @@ var map = {
 
 		var numAddressComponents = place.address_components.length;
 		var countryCode = place.address_components[numAddressComponents-1].short_name;
-		var subNational1Code = null;
+
 
 		// if the address isn't specific enough, let the user know to provide a more details
 		if (numAddressComponents < 3) {
-			$('#messageBar').addClass('error').removeClass('hidden notification').html('Please enter a more specific location.').fadeIn(300);
+			manager.showMessage('Please enter a more specific location.', 'error');
 			return;
 		}
+
+		// alrighty, the search was valid. Make a note!
+		map.lastAddressSearchValid = true;
+
 		$('#messageBar').addClass('hidden');
-
-		if (numAddressComponents > 1) {
-			subNational1Code = place.address_components[numAddressComponents-2].short_name;
-		}
-
-		var regionType = 'subnational1';
-		var region = countryCode + "-" + subNational1Code;
-
-		// not terribly pretty, but simple enough for now
-		manager.regionType = regionType;
-		manager.region = region;
+		var subNational1Code = place.address_components[numAddressComponents-2].short_name;
+		manager.regionType = 'subnational1';
+		manager.region = countryCode + "-" + subNational1Code;
 		manager.getHotspots();
 	},
 
 	onMapBoundsChange: function() {
-		if (manager.activeHotspotRequest) {
+		if (manager.activeHotspotRequest || !map.lastAddressSearchValid) {
 			return;
 		}
 		manager.updatePage();
@@ -164,7 +165,6 @@ var map = {
 				continue;
 			}
 
-			// we only add the marker to the map ONCE
 			if (!manager.allHotspots[locationID].hasOwnProperty('observations')) {
 				map.markers[currHotspot.i] = new google.maps.Marker({
 					position: latlng,
@@ -192,7 +192,7 @@ var map = {
 	/**
 	 * This function is called after a change to the receny
 	 */
-	getHotspotsInRangeAndRecency: function() {
+	addMarkersInRangeAndRecency: function() {
 		if ($.isEmptyObject(manager.allHotspots)) {
 			manager.stopLoading();
 			return [];
@@ -209,43 +209,47 @@ var map = {
 				manager.maxHotspotsReached = true;
 				continue;
 			}
+			var currHotspot = manager.allHotspots[locationID];
 
 			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
 			if (!boundsObj.contains(latlng)) {
 				continue;
 			}
 
-			var currHotspot = manager.allHotspots[locationID];
-			if (currHotspot.observations[manager.]) {
-
+			var recencyKey = manager.observationRecency + 'day';
+			if (!currHotspot.observations[manager.searchType][recencyKey].available) {
+				continue;
 			}
 
+			// nope! Need another test here. It needs to look through this entry and all 
+			// with a lower observation frequency to confirm there's at least ONE species seen. Otherwise
+			// there's no point displaying this/
+			if (!manager.hasAtLeastOneObservationWithinRecency(locationID, manager.searchType, manager.observationRecency)) {
+				continue;
+			}
 
-			// we only add the marker to the map ONCE
-			if (!manager.allHotspots[locationID].hasOwnProperty('observations')) {
-				map.markers[currHotspot.i] = new google.maps.Marker({
-					position: latlng,
-					map: map.el,
-					title: currHotspot.n,
-					icon: map.icon,
-					locationID: currHotspot.i
+			map.markers[currHotspot.i] = new google.maps.Marker({
+				position: latlng,
+				map: map.el,
+				title: currHotspot.n,
+				icon: map.icon,
+				locationID: currHotspot.i
+			});
+			map.infoWindows[currHotspot.i] = new google.maps.InfoWindow();
+
+			(function(marker, infowindow, locationID) {
+				google.maps.event.addListener(marker, 'click', function() {
+					infowindow.setContent(map.getInfoWindowHTML(locationID));
+					infowindow.open(map.el, this);
 				});
-				map.infoWindows[currHotspot.i] = new google.maps.InfoWindow();
+			})(map.markers[locationID], map.infoWindows[locationID], locationID);
 
-				(function(marker, infowindow, locationID) {
-					google.maps.event.addListener(marker, 'click', function() {
-						infowindow.setContent(map.getInfoWindowHTML(locationID));
-						infowindow.open(map.el, this);
-					});
-				})(map.markers[currHotspot.i], map.infoWindows[currHotspot.i], currHotspot.i);
-			}
-			visibleHotspots.push(locationID);
+			foundHotspots.push(locationID);
 			counter++;
 		}
 
-		return visibleHotspots;
-	}
-
+		return foundHotspots;
+	},
 
 	getInfoWindowHTML: function(locationID) {
 		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
