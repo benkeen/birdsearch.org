@@ -741,25 +741,6 @@ var manager = {
 		return allLoaded;
 	},
 
-	hasAtLeastOneObservationWithinRecency: function(locationID, searchType, recency) {
-		if (!manager.allHotspots.hasOwnProperty(locationID)) {
-			return false;
-		}
-
-		var startIndex = manager.SEARCH_DAYS.indexOf(recency);
-
-		var found = false;
-		for (var i=startIndex; i>=0; i--) {
-			var currDay = manager.SEARCH_DAYS[i];
-			if (manager.allHotspots[locationID].observations[searchType][currDay + 'day'].numSpecies > 0) {
-				found = true;
-				break;
-			}
-		}
-
-		return found;
-	},
-
 	// sod this. Add a "rangeSpeciesCount" property, which is populated when the data is first returned. No 
 	// point wasting CPU cycles recalculating the same damn thing each time
 	getNumSpeciesWithinRange: function(locationID, searchType, recency) {

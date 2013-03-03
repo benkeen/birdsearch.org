@@ -86,7 +86,9 @@ var map = {
 		if (manager.activeHotspotRequest || !map.lastAddressSearchValid) {
 			return;
 		}
-		manager.updatePage(false);
+		manager.visibleHotspots = map.addMarkersInRangeAndRecency();
+		manager.numVisibleHotspots = manager.visibleHotspots.length;
+		manager.displayHotspots();
 	},
 
 	addCustomControls: function() {
@@ -170,7 +172,6 @@ var map = {
 
 			if (map.markers.hasOwnProperty(locationID)) {
 				if (map.markers[locationID].map === null) {
-					console.log("adding back formerly hidden marker: ", locationID);
 					map.markers[locationID].setMap(map.el);
 				}
 			} else {
@@ -232,26 +233,32 @@ var map = {
 
 			// nope! Need another test here. It needs to look through this entry and all 
 			// with a lower observation frequency to confirm there's at least ONE species seen. Otherwise
-			// there's no point displaying this/
-			if (!manager.hasAtLeastOneObservationWithinRecency(locationID, manager.searchType, manager.observationRecency)) {
+			// there's no point displaying this
+			if (manager.allHotspots[locationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal === 0) {
 				continue;
 			}
 
-			map.markers[currHotspot.i] = new google.maps.Marker({
-				position: latlng,
-				map: map.el,
-				title: currHotspot.n,
-				icon: map.icon,
-				locationID: currHotspot.i
-			});
-			map.infoWindows[currHotspot.i] = new google.maps.InfoWindow();
-
-			(function(marker, infowindow, locationID) {
-				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent(map.getInfoWindowHTML(locationID));
-					infowindow.open(map.el, this);
+			if (map.markers.hasOwnProperty(locationID)) {
+				if (map.markers[locationID].map === null) {
+					map.markers[locationID].setMap(map.el);
+				}
+			} else {
+				map.markers[currHotspot.i] = new google.maps.Marker({
+					position: latlng,
+					map: map.el,
+					title: currHotspot.n,
+					icon: map.icon,
+					locationID: currHotspot.i
 				});
-			})(map.markers[locationID], map.infoWindows[locationID], locationID);
+				map.infoWindows[currHotspot.i] = new google.maps.InfoWindow();
+
+				(function(marker, infowindow, locationID) {
+					google.maps.event.addListener(marker, 'click', function() {
+						infowindow.setContent(map.getInfoWindowHTML(locationID));
+						infowindow.open(map.el, this);
+					});
+				})(map.markers[locationID], map.infoWindows[locationID], locationID);
+			}
 
 			foundHotspots.push(locationID);
 			counter++;
@@ -261,8 +268,10 @@ var map = {
 	},
 
 	getInfoWindowHTML: function(locationID) {
+		var numSpecies = manager.allHotspots[locationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal;
 		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
-			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(X)</b></a></p></div>';
+			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
+			numSpecies + ')</b></a></p></div>';
 
 		return html;
 	}
