@@ -23,7 +23,7 @@
 		<h1>eBird<span>search</span>.org</h1>
 		<ul>
 			<li><a href="#" id="aboutLink">About</a></li>
-			<li><a href="#" id="featureSuggestionsLink">Feature Suggestions</a></li>
+			<li><a href="#" id="contactLink">Contact</a></li>
 			<li><a href="http://ebird.org">eBird.org</a></li>
 		</ul>
 	</header>
@@ -91,9 +91,9 @@
 				database for people to view and analyze that data. The more people use it, the better it becomes!
 			</p>
 			<p>
-				The problem is, the search functionality currently available through eBird is fairly limited. Speaking practically, as a 
-				birder I want a clear and simple overview of a region: where are the popular hotspots? What locations yield the most 
-				birds, and which ones are common? Where are the rarer birds spotted? This site attempts to help plug that gap.
+				The problem is, the search functionality currently available through eBird is fairly limited. As a 
+				birder, I wanted a clear and high-level overview of a region: where are the popular hotspots? What locations yield the most 
+				birds? Which ones are common? What rare/out of season birds have been spotted and where? This site attempts to help plug that gap.
 			</p>
 			<p>
 				All the code for this site is open source and <a href="https://github.com/benkeen/eBirdAdvancedSearch" target="_blank">free for 
@@ -110,11 +110,11 @@
 			</p>
 		</div>
 
-		<div id="featureSuggestions">
-			<h2>Feature Suggestions</h2>
+		<div id="contact">
+			<h2>Contact</h2>
+
 			<p>
-				Got an idea on how to improve this site? Let me know! I myself have a long list of features I'd like to see, 
-				but I'd love to hear from you.
+				Got an idea on how to improve this site? Feature suggestion? Found a bug? I'd love to hear from you.
 			</p>
 			<p>
 				Make a comment on <a href="">this post on my site</a>, or you can always reach me at 
@@ -125,5 +125,7 @@
 			</p>
 		</div>
 	</div>
+	<?php @include_once("tracking.html"); ?>
+
 </body>
 </html>

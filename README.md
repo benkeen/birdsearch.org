@@ -10,7 +10,7 @@ Map-based UI to show hotspots that have had bird reports made within a particula
 option to view the bird species data made within any subset of those hotspots. 
 
 ### Demo
-http://www.benjaminkeen.com/experiments/eBirdAdvancedSearch/	
+http://www.benjaminkeen.com/experiments/eBirdAdvancedSearch/
 
 ## v1.0.0 
 

@@ -14,8 +14,7 @@ var manager = {
 
 	// all hotspot results for a region. This just keeps getting appended to as the user does new
 	// searches, drags/zooms the map. Unlikely it would get TOO massive in a single session,
-	// plus it lets us be nice to eBird's servers and not re-request the same data multiple times.
-	// This is cached in local storage to again minimize requests
+	// plus it lets us be nice to eBird's servers and not re-request the same data multiple times
 	allHotspots: {},
 
 	// keeps track of all species currently in the visible subset of hotspots
@@ -36,8 +35,7 @@ var manager = {
 	CURRENT_SERVER_TIME: null,
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 	MAX_HOTSPOTS: 50,
- 	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
-//	LOCAL_STORAGE_DURATION: 60 * 60 * 12, // 12 hours
+	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
 
 
 	init: function() {
@@ -47,11 +45,10 @@ var manager = {
 			e.preventDefault();
 			$('#about').modal();
 		});
-		$('#featureSuggestionsLink').on('click', function(e) {
+		$('#contactLink').on('click', function(e) {
 			e.preventDefault();
-			$('#featureSuggestions').modal();
+			$('#contact').modal();
 		});
-
 
 		// make a note of some important DOM elements
 		manager.searchField = $('#searchTextField')[0];
@@ -198,6 +195,7 @@ var manager = {
 	getAllHotspotObservations: function() {
 		var recencyKey = manager.observationRecency + 'day';
 
+		var hasAtLeastOneRequest = false;
 		for (var i=0; i<manager.numVisibleHotspots; i++) {
 			var currLocationID = manager.visibleHotspots[i];
 
@@ -241,12 +239,24 @@ var manager = {
 				};
 			}
 
-			// if we already have the hotspot data available, just update the table
+			// if we already have the hotspot data available, just update the sidebar table
 			if (manager.allHotspots[currLocationID].observations[manager.searchType][recencyKey].available) {
 				manager.updateVisibleLocationInfo(currLocationID);
 			} else {
 				manager.getSingleHotspotObservations(currLocationID);
+				hasAtLeastOneRequest = true;
 			}
+		}
+
+		// if we didn't just put through a new request, the user just searched a subset of what's already been loaded.
+		// update the 
+		if (!hasAtLeastOneRequest) {
+			manager.updateSpeciesData();
+			manager.updateSpeciesTab();
+
+			// let the tablesort know to re-parse the hotspot table
+			$('#hotspotTable').trigger("update").trigger("appendCache");
+			manager.stopLoading();
 		}
 	},
 
@@ -280,7 +290,6 @@ var manager = {
 
 		// by reference, of course. Changes to this actually change manager.allHotspots. This is just for brevity
 		var locationObj = manager.allHotspots[locationID].observations[manager.searchType];
-
 
 		// mark the information as now available for this observation recency + and anything below,
 		// and reset the observation data (it's about to be updated below)
@@ -412,6 +421,11 @@ var manager = {
 	 * starts requesting the hotspot observation data. This is called any time the map bounds change.
 	 */
 	displayHotspots: function() {
+
+		// manager.updateSpeciesData();
+		// manager.updateSpeciesTab();
+
+
 		if (manager.numVisibleHotspots > 0) {
 			var html = manager.generateHotspotTable(manager.visibleHotspots);
 			var locationStr = 'location';
@@ -453,7 +467,12 @@ var manager = {
 		}
 	},
 
+
+	/**
+	 * Called any time the selected data changes. This updates the Bird Species tab and tab content.
+	 */
 	updateSpeciesData: function() {
+		manager.speciesInVisibleHotspots = {};
 		manager.numSpeciesInVisibleHotspots = 0;
 
 		for (var i=0; i<manager.numVisibleHotspots; i++) {
@@ -464,39 +483,28 @@ var manager = {
 				continue;
 			}
 
-			for (var daysAgo in manager.allHotspots[currLocationID].observations) {
-				var currGroup = manager.allHotspots[currLocationID].observations[daysAgo];
-
-				// if the observation data for this recency group (25 days, or whatever) hasn't been loaded
-				// yet, forgetaboudit!
-				if (!currGroup.available) {
-					continue;
+			var currLocationSpeciesInfo = manager.getLocationSpeciesList(currLocationID, manager.searchType, manager.observationRecency);
+			for (var speciesSciName in currLocationSpeciesInfo.species) {
+				var currData = currLocationSpeciesInfo.species[speciesSciName];
+				if (!manager.speciesInVisibleHotspots.hasOwnProperty(speciesSciName)) {
+					manager.speciesInVisibleHotspots[speciesSciName] = {
+						comName: currData.comName,
+						sciName: speciesSciName,
+						obs: []
+					};
+					manager.numSpeciesInVisibleHotspots++;
 				}
 
-				for (var j=0; j<currGroup.data.length; j++) {
-					var currData = currGroup.data[j];
-					var sciName  = currData.sciName;
-
-					if (!manager.allSpecies.hasOwnProperty(sciName)) {
-						manager.allSpecies[sciName] = {
-							comName: currData.comName,
-							sciName: currData.sciName,
-							obs: []
-						};
-						manager.numSpeciesInVisibleHotspots++;
-					}
-
-					manager.allSpecies[sciName].obs.push({
-						howMany: currData.howMany,
-						lat: currData.lat,
-						lng: currData.lng,
-						locID: currData.locID,
-						locName: currData.locName,
-						obsDt: currData.obsDt,
-						obsReviewed: currData.obsReviewed,
-						obsValid: currData.obsValid
-					});
-				}
+				manager.speciesInVisibleHotspots[speciesSciName].obs.push({
+					howMany: currData.howMany,
+					lat: currData.lat,
+					lng: currData.lng,
+					locID: currData.locID,
+					locName: currData.locName,
+					obsDt: currData.obsDt,
+					obsReviewed: currData.obsReviewed,
+					obsValid: currData.obsValid
+				});
 			}
 		}
 	},
@@ -519,6 +527,10 @@ var manager = {
 		$('#' + tabID).addClass('selected');
 		$('#' + manager.currTabID + 'Content').addClass('hidden');
 		$('#' + tabID + 'Content').removeClass('hidden');
+
+		if (tabID == 'mapTab') {
+			google.maps.event.trigger(map.el, 'resize');
+		}
 
 		manager.currTabID = tabID;
 	},
@@ -615,22 +627,22 @@ var manager = {
 				'</thead><tbody>';
 
 		var speciesCount = 0;
-		for (var i in manager.species) {
+		for (var i in manager.speciesInVisibleHotspots) {
 			var locations = [];
 			var lastSeen = [];
 			var observationsInVisibleLocation = [];
 
-			for (var j=0; j<manager.species[i].obs.length; j++) {
-				var currLocationID = manager.species[i].obs[j].locID;
-				var observationTime = moment(manager.species[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
+			for (var j=0; j<manager.speciesInVisibleHotspots[i].obs.length; j++) {
+				var currLocationID = manager.speciesInVisibleHotspots[i].obs[j].locID;
+				var observationTime = moment(manager.speciesInVisibleHotspots[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 
 				if (!manager.allHotspots[currLocationID].isDisplayed) {
-					locations.push('<div class="lightGrey">' + manager.species[i].obs[j].locName + '</div>');
+					locations.push('<div class="lightGrey">' + manager.speciesInVisibleHotspots[i].obs[j].locName + '</div>');
 					lastSeen.push('<div class="lightGrey">' + observationTime + '</div>');
 					continue;
 				}
-				observationsInVisibleLocation.push(manager.species[i].obs[j]);
-				locations.push('<div>' + manager.species[i].obs[j].locName + '</div>');
+				observationsInVisibleLocation.push(manager.speciesInVisibleHotspots[i].obs[j]);
+				locations.push('<div>' + manager.speciesInVisibleHotspots[i].obs[j].locName + '</div>');
 				lastSeen.push('<div>' + observationTime + '</div>');
 			}
 
@@ -651,8 +663,8 @@ var manager = {
 			}
 
 			html += '<tr>' +
-				'<td>' + manager.species[i].comName + '</td>' +
-				'<td>' + manager.species[i].sciName + '</td>' +
+				'<td>' + manager.speciesInVisibleHotspots[i].comName + '</td>' +
+				'<td>' + manager.speciesInVisibleHotspots[i].sciName + '</td>' +
 				'<td>' + locationsHTML + '</td>' +
 				'<td>' + lastSeenHTML + '</td>' +
 				'<td>' + howManyCount + '</td>' +
@@ -687,7 +699,6 @@ var manager = {
 			widgets: ['zebra', 'columns', 'uitheme']
 		});
 	},
-
 
 	displaySingleHotspotBirdSpecies: function(e) {
 		e.preventDefault();
@@ -739,29 +750,30 @@ var manager = {
 		return allLoaded;
 	},
 
-	// sod this. Add a "rangeSpeciesCount" property, which is populated when the data is first returned. No 
-	// point wasting CPU cycles recalculating the same damn thing each time
-	getNumSpeciesWithinRange: function(locationID, searchType, recency) {
+	getLocationSpeciesList: function(locationID, searchType, recency) {
 		if (!manager.allHotspots.hasOwnProperty(locationID)) {
 			return false;
 		}
 		var startIndex = manager.SEARCH_DAYS.indexOf(recency);
 
-		var uniqueSpecies = {};
-		var numUniqueSpecies = 0;
+		var species = {};
+		var numSpecies = 0;
 		for (var i=startIndex; i>=0; i--) {
 			var currDay = manager.SEARCH_DAYS[i];
 			var observations = manager.allHotspots[locationID].observations[searchType][currDay + 'day'].data;
 
 			for (var j=0; j<observations.length; j++) {
-				if (!uniqueSpecies.hasOwnProperty(observations[j].sciName)) {
-					uniqueSpecies[observations[j].sciName] = null;
-					numUniqueSpecies++;
+				if (!species.hasOwnProperty(observations[j].sciName)) {
+					species[observations[j].sciName] = observations[j];
+					numSpecies++;
 				}
 			}
 		}
 
-		return numUniqueSpecies;
+		return {
+			numSpecies: numSpecies,
+			species: species
+		};
 	},
 
 
@@ -779,9 +791,11 @@ var manager = {
 		});
 		$('#searchResults').css('height', windowHeight - 330);
 
-		var address = $.trim(manager.searchField.value);
-		if (address !== '') {
-			manager.updatePage(false);
+		if (manager.currTabID == 'mapTab') {
+			var address = $.trim(manager.searchField.value);
+			if (address !== '') {
+				manager.updatePage(false);
+			}
 		}
 	},
 
@@ -808,6 +822,5 @@ $.tablesorter.addParser({
 });
 
 
-
-// start 'er up (on DOM ready)
+// start 'er up
 $(manager.init);

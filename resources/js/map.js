@@ -220,6 +220,9 @@ var map = {
 				continue;
 			}
 			var currHotspot = manager.allHotspots[locationID];
+			if (!currHotspot.hasOwnProperty('observations')) {
+				continue;
+			}
 
 			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
 			if (!boundsObj.contains(latlng)) {
