@@ -203,6 +203,10 @@ header a:hover {
 }
 #birdSpeciesTable p {
 	padding: 10px;
+	margin-bottom: 0px;
+}
+#birdSpeciesTable hr {
+	margin: 0px 0px 3px;
 }
 #birdSpeciesTable table {
 	width: 100%;
@@ -231,7 +235,6 @@ header a:hover {
 #hotspotTable .tablesorter-bootstrap, #hotspotTable .tablesorter-header-inner {
 	padding: 2px 6px 2px 2px;
 }
-
 #mapTabContent img{
 	max-width: inherit;
 }

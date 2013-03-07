@@ -42,12 +42,10 @@ var map = {
 		google.maps.event.addListener(map.el, 'zoom_changed', map.onMapBoundsChange);
 	},
 
-
 	onAutoComplete: function() {
 
 		// assume the worst
 		map.lastAddressSearchValid = false;
-
 		var place = map.autocomplete.getPlace();
 
 		// inform the user that the place was not found and return
@@ -61,10 +59,8 @@ var map = {
 			map.el.setCenter(place.geometry.location);
 			map.el.setZoom(17);
 		}
-
 		var numAddressComponents = place.address_components.length;
 		var countryCode = place.address_components[numAddressComponents-1].short_name;
-
 
 		// if the address isn't specific enough, let the user know to provide a more details
 		if (numAddressComponents < 3) {
@@ -86,10 +82,93 @@ var map = {
 		if (manager.activeHotspotRequest || !map.lastAddressSearchValid) {
 			return;
 		}
-		manager.visibleHotspots = map.addMarkersInRangeAndRecency();
+		manager.visibleHotspots = map.addMarkers(false);
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
 		manager.displayHotspots();
 	},
+
+	// clears the map. Note that we DON'T reset map.markers. That retains the information loaded for as long as the user's
+	// session so we don't re-request the same info from eBird
+	clear: function() {
+		for (var locationID in map.markers) {
+			map.markers[locationID].setMap(null);
+		}
+	},
+
+	/**
+	 * Called after the hotspot locations are available, but not necessarily the observations. It intelligently 
+	 * adds the markers, depending on the following:
+	 *   - the location's lat/lng is within the viewport
+	 *   - 
+	 * Note: it only actually CREATES the marker once, adding it to map.markers. 
+	 */
+	addMarkers: function(clearMarkers) {
+		if (clearMarkers) {
+			map.clear();
+		}
+
+		if ($.isEmptyObject(manager.allHotspots)) {
+			manager.stopLoading();
+			return [];
+		}
+
+		var mapBoundary = map.el.getBounds();
+		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
+		var visibleHotspots = [];
+		var counter = 1;
+		manager.maxHotspotsReached = false;
+
+		for (var locationID in manager.allHotspots) {
+			if (counter > manager.MAX_HOTSPOTS) {
+				manager.maxHotspotsReached = true;
+				continue;
+			}
+
+			var currHotspot = manager.allHotspots[locationID];
+			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
+			if (!boundsObj.contains(latlng)) {
+				continue;
+			}
+
+			if (map.markers.hasOwnProperty(locationID)) {
+				if (map.markers[locationID].map === null) {
+					map.markers[locationID].setMap(map.el);
+				}
+			} else {
+				map.markers[locationID] = new google.maps.Marker({
+					position: latlng,
+					map: map.el,
+					title: currHotspot.n,
+					icon: map.icon,
+					locationID: locationID
+				});
+				map.infoWindows[locationID] = new google.maps.InfoWindow();
+
+				(function(marker, infowindow, locationID) {
+					google.maps.event.addListener(marker, 'click', function() {
+						infowindow.setContent(map.getInfoWindowHTML(locationID));
+						infowindow.open(map.el, this);
+					});
+				})(map.markers[currHotspot.i], map.infoWindows[currHotspot.i], currHotspot.i);
+			}
+
+			visibleHotspots.push(locationID);
+			counter++;
+		}
+
+		return visibleHotspots;
+	},
+
+
+	getInfoWindowHTML: function(locationID) {
+		var numSpecies = manager.allHotspots[locationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal;
+		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
+			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
+			numSpecies + ')</b></a></p></div>';
+
+		return html;
+	},
+
 
 	addCustomControls: function() {
 		var btn1 = $('<div class="mapBtn mapBtnSelected">Terrain</div>')[0];
@@ -126,156 +205,4 @@ var map = {
 		});
 	},
 
-	// clears the map. Note that we DON'T reset map.markers. That retains the information loaded for as long as the user's
-	// session so we don't re-request the same info from eBird
-	clear: function() {
-		for (var locationID in map.markers) {
-			map.markers[locationID].setMap(null);
-		}
-	},
-
-	/**
-	 * Called after the hotspot locations are available, but not necessarily the observations. As such, it returns
-	 * an array of hotspots that fit within the current map viewport. Whether or not they're actually shown depends on
-	 * their observation data. For new searches, it's guaranteed they'll show up (because the original hotspot search
-	 * included the recency, so there's at least one observation) but in other cases - like when the user is selecting
-	 * a shorter observation recency for an already-loaded hotspot, the location may well not show up.
-	 */
-	addMarkersAndReturnVisible: function(clearMarkers) {
-		if (clearMarkers) {
-			map.clear();
-		}
-
-		if ($.isEmptyObject(manager.allHotspots)) {
-			manager.stopLoading();
-			return [];
-		}
-
-		var mapBoundary = map.el.getBounds();
-		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-		var visibleHotspots = [];
-		var counter = 1;
-		manager.maxHotspotsReached = false;
-
-		for (var locationID in manager.allHotspots) {
-			if (counter > manager.MAX_HOTSPOTS) {
-				manager.maxHotspotsReached = true;
-				continue;
-			}
-
-			var currHotspot = manager.allHotspots[locationID];
-
-			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
-			if (!boundsObj.contains(latlng)) {
-				continue;
-			}
-
-			if (map.markers.hasOwnProperty(locationID)) {
-				if (map.markers[locationID].map === null) {
-					map.markers[locationID].setMap(map.el);
-				}
-			} else {
-				map.markers[locationID] = new google.maps.Marker({
-					position: latlng,
-					map: map.el,
-					title: currHotspot.n,
-					icon: map.icon,
-					locationID: locationID
-				});
-				map.infoWindows[locationID] = new google.maps.InfoWindow();
-
-				(function(marker, infowindow, locationID) {
-					google.maps.event.addListener(marker, 'click', function() {
-						infowindow.setContent(map.getInfoWindowHTML(locationID));
-						infowindow.open(map.el, this);
-					});
-				})(map.markers[currHotspot.i], map.infoWindows[currHotspot.i], currHotspot.i);
-			}
-
-			visibleHotspots.push(locationID);
-			counter++;
-		}
-
-		return visibleHotspots;
-	},
-
-	/**
-	 * This function is called after a change to the receny
-	 */
-	addMarkersInRangeAndRecency: function() {
-		if ($.isEmptyObject(manager.allHotspots)) {
-			manager.stopLoading();
-			return [];
-		}
-
-		var mapBoundary = map.el.getBounds();
-		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-		var foundHotspots = [];
-		var counter = 1;
-		manager.maxHotspotsReached = false;
-
-		for (var locationID in manager.allHotspots) {
-			if (counter > manager.MAX_HOTSPOTS) {
-				manager.maxHotspotsReached = true;
-				continue;
-			}
-			var currHotspot = manager.allHotspots[locationID];
-			if (!currHotspot.hasOwnProperty('observations')) {
-				continue;
-			}
-
-			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
-			if (!boundsObj.contains(latlng)) {
-				continue;
-			}
-
-			var recencyKey = manager.observationRecency + 'day';
-			if (!currHotspot.observations[manager.searchType][recencyKey].available) {
-				continue;
-			}
-
-			// nope! Need another test here. It needs to look through this entry and all 
-			// with a lower observation frequency to confirm there's at least ONE species seen. Otherwise
-			// there's no point displaying this
-			if (manager.allHotspots[locationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal === 0) {
-				continue;
-			}
-
-			if (map.markers.hasOwnProperty(locationID)) {
-				if (map.markers[locationID].map === null) {
-					map.markers[locationID].setMap(map.el);
-				}
-			} else {
-				map.markers[currHotspot.i] = new google.maps.Marker({
-					position: latlng,
-					map: map.el,
-					title: currHotspot.n,
-					icon: map.icon,
-					locationID: currHotspot.i
-				});
-				map.infoWindows[currHotspot.i] = new google.maps.InfoWindow();
-
-				(function(marker, infowindow, locationID) {
-					google.maps.event.addListener(marker, 'click', function() {
-						infowindow.setContent(map.getInfoWindowHTML(locationID));
-						infowindow.open(map.el, this);
-					});
-				})(map.markers[locationID], map.infoWindows[locationID], locationID);
-			}
-
-			foundHotspots.push(locationID);
-			counter++;
-		}
-
-		return foundHotspots;
-	},
-
-	getInfoWindowHTML: function(locationID) {
-		var numSpecies = manager.allHotspots[locationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal;
-		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
-			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
-			numSpecies + ')</b></a></p></div>';
-
-		return html;
-	}
 };

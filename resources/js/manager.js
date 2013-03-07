@@ -77,8 +77,8 @@ var manager = {
 	addEventHandlers: function() {
 		$('#observationRecency').bind('change', manager.onChangeObservationRecency);
 		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
-		$('#searchResults').on('click', '.toggle', manager.toggleCheckedHotspots);
-		$('#searchResults').on('click', 'tbody input', manager.toggleHotspot);
+		$('#searchResults').on('click', '.toggle', manager.toggleAllCheckedHotspots);
+		$('#searchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
 		$('#searchResults').on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
 		$('#searchResults').on('mouseout', 'tbody tr', manager.onHoverOutHotspotRow);
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
@@ -122,10 +122,9 @@ var manager = {
 		var searchKey = manager.regionType + '--' + manager.region;
 		if (manager.hotspotSearches.hasOwnProperty(searchKey)) {
 			if (manager.observationRecency <= manager.hotspotSearches[searchKey].recency) {
-				map.clear();
 
 				// this function does the job of trimming the list for us, if there are > MAX_HOTSPOTS
-				manager.visibleHotspots = map.addMarkersInRangeAndRecency();
+				manager.visibleHotspots = map.addMarkers(true);
 				manager.numVisibleHotspots = manager.visibleHotspots.length;
 				manager.displayHotspots();
 				return;
@@ -183,7 +182,7 @@ var manager = {
 	updatePage: function(clearMarkers) {
 
 		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
-		manager.visibleHotspots = map.addMarkersAndReturnVisible(clearMarkers);
+		manager.visibleHotspots = map.addMarkers(clearMarkers);
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
 		manager.displayHotspots();
 	},
@@ -421,11 +420,6 @@ var manager = {
 	 * starts requesting the hotspot observation data. This is called any time the map bounds change.
 	 */
 	displayHotspots: function() {
-
-		// manager.updateSpeciesData();
-		// manager.updateSpeciesTab();
-
-
 		if (manager.numVisibleHotspots > 0) {
 			var html = manager.generateHotspotTable(manager.visibleHotspots);
 			var locationStr = 'location';
@@ -535,7 +529,8 @@ var manager = {
 		manager.currTabID = tabID;
 	},
 
-	toggleCheckedHotspots: function(e) {
+
+	toggleAllCheckedHotspots: function(e) {
 		var isChecked = e.target.checked;
 		if (isChecked) {
 			$('#hotspotTable tbody input').each(function() {
@@ -558,12 +553,34 @@ var manager = {
 		manager.updateSpeciesTab();
 	},
 
-	toggleHotspot: function(e) {
+	/**
+	 * Called when the user checks/unchecks a single hotspot location table in the left sidebar.
+	 */
+	toggleSingleCheckedHotspot: function(e) {
 		var row = $(e.target).closest('tr');
 		var locationID = $(row).attr('id').replace(/location_/, '');
 
 		var isChecked = e.target.checked;
 		manager.allHotspots[locationID].isDisplayed = isChecked;
+
+		// a bit fussy, but ensure the top "toggle all" checkbox is checked/unchecked, depending on what's there
+		if (!isChecked) {
+			$('#hotspotTable thead .toggle').removeAttr('checked');
+		} else {
+			var allLocationsChecked = true;
+			var cbs = $('#hotspotTable tbody input');
+			for (var i=0; i<cbs.length; i++) {
+				if (!cbs[i].checked) {
+					allLocationsChecked = false;
+					break;
+				}
+			}
+			if (allLocationsChecked) {
+				$('#hotspotTable thead .toggle')[0].checked = true;
+			} else {
+				$('#hotspotTable thead .toggle').removeAttr('checked');
+			}
+		}
 
 		// now update the map and Bird Species tab
 		map.markers[locationID].setVisible(isChecked);
@@ -615,12 +632,13 @@ var manager = {
 	},
 
 	generateSpeciesTable: function() {
+
 		var html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
 				'<thead>' +
 				'<tr>' +
 					'<th>Species Name</th>' +
 					'<th>Scientific Name</th>' +
-					'<th class="{ sorter: false }">Locations seen</th>' +
+					'<th class="{ sorter: false }">Locations seen <a href="">(+)</a></th>' +
 					'<th width="110" nowrap>Last seen</th>' +
 					'<th nowrap># reported</th>' +
 				'</tr>' +
@@ -674,8 +692,28 @@ var manager = {
 		}
 		html += '</tbody></table>';
 
+
 		if (speciesCount === 0) {
 			html = '<p>Yegads, no birds found!</p>';
+		} else {
+			var selectedHotspots = manager.getSelectedHotspots();
+			var introPara = '';
+
+			var durationStr = '';
+			if (manager.observationRecency == 1) {
+				durationStr = 'day';
+			} else {
+				durationStr = manager.observationRecency + ' days';
+			}
+			if (selectedHotspots.length == 1) {
+				var locationName = manager.allHotspots[selectedHotspots[0]].n;
+				introPara = '<p>In the last <b>' + durationStr + '</b>, there have been <b>' + speciesCount + '</b> species reported at <b>' + locationName + '</b>.</p>';
+			} else {
+				var numLocations = selectedHotspots.length;
+				introPara = '<p>in the last <b>' + durationStr + '</b>, there have been <b>' + speciesCount + '</b> species sighted at the <b>' + numLocations + '</b> locations selected.</p>';
+			}
+
+			html = introPara + '<hr size="1" />' + html;
 		}
 
 		manager.numVisibleSpecies = speciesCount;
@@ -777,6 +815,18 @@ var manager = {
 	},
 
 
+	// blurgh. Why parse the DOM when we could pull from allHotspots?
+	getSelectedHotspots: function() {
+		var selectedHotspots = [];
+		var cbs = $('#hotspotTable tbody input');
+		for (var i=0; i<cbs.length; i++) {
+			if (cbs[i].checked) {
+				selectedHotspots.push($(cbs[i]).closest('tr').attr('id').replace(/^location_/, ''));
+			}
+		}
+		return selectedHotspots;
+	},
+
 	// not the prettiest thing ever, but since flexbox isn't standardized yet...
 	handleWindowResize: function() {
 		var windowHeight = $(window).height();
@@ -809,7 +859,6 @@ var manager = {
 };
 
 
-// add parser through the tablesorter addParser method
 $.tablesorter.addParser({
 	id: 'species',
 	is: function() {

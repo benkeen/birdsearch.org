@@ -87,8 +87,8 @@
 			</p>
 			<p>
 				If you haven't discovered eBird yet, do so now. It's an incredible resource and tool for birders, ornithologists, educators - 
-				anyone interested in birds. Birders around the world submit millions of observations a year to eBird, which acts as a giant 
-				database for people to view and analyze that data. The more people use it, the better it becomes!
+				anyone interested in birds. Birders around the world submit millions of observations a year to eBird, providing a wealth of
+				information for viewing and analysis. The more people use it, the better it becomes.
 			</p>
 			<p>
 				The problem is, the search functionality currently available through eBird is fairly limited. As a 
@@ -98,9 +98,9 @@
 			<p>
 				All the code for this site is open source and <a href="https://github.com/benkeen/eBirdAdvancedSearch" target="_blank">free for 
 				anyone to download and play with</a>. I've endeavoured to keep the number of data requests to eBird's site to a minimum
-				so it doesn't put too much of a stress on their servers, but do bear in mind this is very much an experiment. I very much hope 
-				that one day this sort of functionality will be available directly through eBird, but in the meantim
-				I'll try to keep the site going.
+				so it doesn't put too much of a stress on their servers, but if it does they're entirely within their rights to ask me to 
+				take it down. Hopefully it won't come to that. I very much hope that one day this sort of functionality will be available 
+				directly through eBird, but in the meantime I'll try to keep the site up and running.
 			</p>
 			<p>
 				Have fun! 
@@ -114,11 +114,10 @@
 			<h2>Contact</h2>
 
 			<p>
-				Got an idea on how to improve this site? Feature suggestion? Found a bug? I'd love to hear from you.
+				Found a bug? Got an idea on how to improve this site? I'd love to hear from you.
 			</p>
 			<p>
-				Make a comment on <a href="">this post on my site</a>, or you can always reach me at 
-				<a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>.
+				Make a comment on <a href="">this post</a>, or email me at <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>.
 			</p>
 			<p>
 				Thanks!
