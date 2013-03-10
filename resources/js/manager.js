@@ -736,15 +736,21 @@ var manager = {
 			}
 			var locationsHTML = 'Seen at ' + locations.length + ' ' + locationStr + ' <a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a>';
 			if (manager.birdSpeciesLocationDetailsExpanded) {
-				locationsHTML += '<div class="hidden birdLocations">' + locations.join('\n') + '</div>';
+				locationsHTML += '<div class="birdLocations">' + locations.join('\n') + '</div>';
 			} else {
 				locationsHTML += '<div class="hidden birdLocations">' + locations.join('\n') + '</div>';
 			}
 
 			// generate the Last Seen cell content
 			var lastObservationFormatted = moment.unix(lastObservation).format('MMM Do, H:mm a');
-			var lastSeenHTML = '<div class="lastSeenSingle">' + lastObservationFormatted + '</div>';
-			lastSeenHTML += '<div class="hidden lastSeenDetails">' + lastSeen.join('\n') + '</div>';
+			var lastSeenHTML = '';
+			if (manager.birdSpeciesLocationDetailsExpanded) {
+				lastSeenHTML = '<div class="lastSeenSingle" style="visibility: hidden">' + lastObservationFormatted + '</div>' +
+					'<div class="lastSeenDetails">' + lastSeen.join('\n') + '</div>';
+			} else {
+				lastSeenHTML = '<div class="lastSeenSingle">' + lastObservationFormatted + '</div>' +
+					'<div class="hidden lastSeenDetails">' + lastSeen.join('\n') + '</div>';
+			}
 
 			var howManyCount = null;
 			for (var k=0; k<observationsInVisibleLocation.length; k++) {
@@ -872,7 +878,7 @@ var manager = {
 		if (!manager.allHotspots.hasOwnProperty(locationID)) {
 			return false;
 		}
-		var startIndex = manager.SEARCH_DAYS.indexOf(recency);
+		var startIndex = $.inArray(recency, manager.SEARCH_DAYS);
 
 		var species = {};
 		var numSpecies = 0;
