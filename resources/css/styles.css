@@ -364,7 +364,16 @@ footer span a:hover {
 #searchResults tbody tr:hover td {
 	background-color: #e0eaff !important;
 }
-
+.birdLocations {
+	font-size: 8pt;
+	padding-left: 10px;
+}
+.lastSeenDetails {
+	font-size: 8pt;
+}
+.toggleBirdSpeciesLocations {
+	font-weight: bold;
+}
 
 /*
  * SimpleModal Basic Modal Dialog

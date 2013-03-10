@@ -31,6 +31,9 @@ var manager = {
 	currentHoveredRowLocationID: null,
 	maxHotspotsReached: false,
 
+	// keeps track of whether the Location column in the Bird Species tab should be expanded or not
+	birdSpeciesLocationDetailsExpanded: false,
+
 	// some constants
 	CURRENT_SERVER_TIME: null,
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
@@ -65,7 +68,7 @@ var manager = {
 
 		// set the default values
 		manager.observationRecency = parseInt($('#observationRecency').val(), 10);
-		manager.searchType = $('#resultType').val();
+		manager.searchType = 'all'; // $('#resultType').val();
 
 		// initialize the map
 		map.initialize();
@@ -81,6 +84,7 @@ var manager = {
 		$('#searchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
 		$('#searchResults').on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
 		$('#searchResults').on('mouseout', 'tbody tr', manager.onHoverOutHotspotRow);
+		$('#birdSpeciesTable').on('click', '.toggleBirdSpeciesLocations', manager.onClickToggleBirdSpeciesLocations);
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
 	},
 
@@ -109,6 +113,50 @@ var manager = {
 			map.markers[manager.currentHoveredRowLocationID].setIcon('resources/images/marker.png');
 		}
 		manager.currentHoveredRowLocationID = null;
+	},
+
+	/**
+	 * Called whenever the user clicks the (+) or (-) in the Bird Species tab to expand/contract the list of Locations Seen
+	 * for either a single bird, or all birds in the tab.
+	 */
+	onClickToggleBirdSpeciesLocations: function(e) {
+		e.preventDefault();
+
+		var tr = $(e.target).closest('tr');
+
+		// find out if this is the header or just a table row
+		if ($(e.target).html() == '(-)') {
+			$(e.target).html('(+)');
+			$(e.target).parent().find('.birdLocations').addClass('hidden');
+			tr.find('.lastSeenSingle').css('visibility', 'visible');
+			tr.find('.lastSeenDetails').addClass('hidden');
+		} else {
+			$(e.target).html('(-)');
+			$(e.target).parent().find('.birdLocations').removeClass('hidden');
+			tr.find('.lastSeenSingle').css('visibility', 'hidden');
+			tr.find('.lastSeenDetails').removeClass('hidden');
+		}
+	},
+
+	/**
+	 * Separate from the previous method because we don't want to fire the tablesort events when the user clicks the
+	 * (+), so we can event delegate it on the top level table.
+	 */
+	onMouseUpToggleAllBirdSpeciesLocation: function(e) {
+		e.stopImmediatePropagation();
+
+		if (manager.birdSpeciesLocationDetailsExpanded) {
+			$('#speciesTable tbody .toggleBirdSpeciesLocations').html('(+)');
+			$('#speciesTable tbody .birdLocations').addClass('hidden');
+			$('#speciesTable tbody .lastSeenSingle').css('visibility', 'visible');
+			$('#speciesTable tbody .lastSeenDetails').addClass('hidden');
+		} else {
+			$('#speciesTable tbody .toggleBirdSpeciesLocations').html('(-)');
+			$('#speciesTable tbody .birdLocations').removeClass('hidden');
+			$('#speciesTable tbody .lastSeenSingle').css('visibility', 'hidden');
+			$('#speciesTable tbody .lastSeenDetails').removeClass('hidden');
+		}
+		manager.birdSpeciesLocationDetailsExpanded = !manager.birdSpeciesLocationDetailsExpanded;
 	},
 
 	/**
@@ -633,14 +681,21 @@ var manager = {
 
 	generateSpeciesTable: function() {
 
+		var chr = '';
+		if (manager.birdSpeciesLocationDetailsExpanded) {
+			chr = '-';
+		} else {
+			chr = '+';
+		}
+
 		var html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
 				'<thead>' +
 				'<tr>' +
 					'<th>Species Name</th>' +
 					'<th>Scientific Name</th>' +
-					'<th class="{ sorter: false }">Locations seen <a href="">(+)</a></th>' +
-					'<th width="110" nowrap>Last seen</th>' +
-					'<th nowrap># reported</th>' +
+					'<th class="{ sorter: false }">Locations Seen <a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
+					'<th width="110" nowrap>Last Seen</th>' +
+					'<th nowrap># Reported</th>' +
 				'</tr>' +
 				'</thead><tbody>';
 
@@ -650,9 +705,15 @@ var manager = {
 			var lastSeen = [];
 			var observationsInVisibleLocation = [];
 
+			var lastObservation = 0;
 			for (var j=0; j<manager.speciesInVisibleHotspots[i].obs.length; j++) {
 				var currLocationID = manager.speciesInVisibleHotspots[i].obs[j].locID;
 				var observationTime = moment(manager.speciesInVisibleHotspots[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
+
+				var observationTimeUnix = parseInt(moment(manager.speciesInVisibleHotspots[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('X'), 10);
+				if (observationTimeUnix > lastObservation) {
+					lastObservation = observationTimeUnix;
+				}
 
 				if (!manager.allHotspots[currLocationID].isDisplayed) {
 					locations.push('<div class="lightGrey">' + manager.speciesInVisibleHotspots[i].obs[j].locName + '</div>');
@@ -667,8 +728,23 @@ var manager = {
 			if (observationsInVisibleLocation.length === 0)  {
 				continue;
 			}
-			var locationsHTML = locations.join('\n');
-			var lastSeenHTML  = lastSeen.join('\n');
+
+			// generate the Locations cell content
+			var locationStr = 'locations';
+			if (locations.length == 1) {
+				locationStr = 'location';
+			}
+			var locationsHTML = 'Seen at ' + locations.length + ' ' + locationStr + ' <a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a>';
+			if (manager.birdSpeciesLocationDetailsExpanded) {
+				locationsHTML += '<div class="hidden birdLocations">' + locations.join('\n') + '</div>';
+			} else {
+				locationsHTML += '<div class="hidden birdLocations">' + locations.join('\n') + '</div>';
+			}
+
+			// generate the Last Seen cell content
+			var lastObservationFormatted = moment.unix(lastObservation).format('MMM Do, H:mm a');
+			var lastSeenHTML = '<div class="lastSeenSingle">' + lastObservationFormatted + '</div>';
+			lastSeenHTML += '<div class="hidden lastSeenDetails">' + lastSeen.join('\n') + '</div>';
 
 			var howManyCount = null;
 			for (var k=0; k<observationsInVisibleLocation.length; k++) {
@@ -736,6 +812,10 @@ var manager = {
 			headerTemplate: '{content} {icon}',
 			widgets: ['zebra', 'columns', 'uitheme']
 		});
+
+		// now assign the evernt handler for the header's (-) / (+) option. We need to do directly target the element 
+		// instead of event delegating it because we want to prevent the tablesort event
+		$('#birdSpeciesTable th .toggleBirdSpeciesLocations').on('mouseup', manager.onMouseUpToggleAllBirdSpeciesLocation);
 	},
 
 	displaySingleHotspotBirdSpecies: function(e) {
@@ -839,7 +919,7 @@ var manager = {
 		$('#panelContent').css({
 			height: windowHeight - 82
 		});
-		$('#searchResults').css('height', windowHeight - 330);
+		$('#searchResults').css('height', windowHeight - 267);
 
 		if (manager.currTabID == 'mapTab') {
 			var address = $.trim(manager.searchField.value);

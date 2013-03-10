@@ -31,11 +31,13 @@
 	<section id="sidebar">
 		<div id="searchOptions" class="sidebarSection">
 			<input type="text" id="searchTextField" />
+			<!--
 			<label for="resultType">Result type:</label>
 			<select id="resultType">
 				<option value="all">All reported sightings</option>
 				<option value="notable">Notable species</option>
 			</select>
+			-->
 
 			<div id="specificSpeciesSection"></div>
 
@@ -91,15 +93,15 @@
 				information for viewing and analysis. The more people use it, the better it becomes.
 			</p>
 			<p>
-				The problem is, the search functionality currently available through eBird is fairly limited. As a 
-				birder, I wanted a clear and high-level overview of a region: where are the popular hotspots? What locations yield the most 
-				birds? Which ones are common? What rare/out of season birds have been spotted and where? This site attempts to help plug that gap.
+				The problem is, the search functionality currently available through eBird is fairly limited. As a birder, I wanted a clear 
+				and high-level overview of a region: where are the popular hotspots? What locations yield the most birds? Which are most 
+				common? This site attempts to help plug that gap.
 			</p>
 			<p>
 				All the code for this site is open source and <a href="https://github.com/benkeen/eBirdAdvancedSearch" target="_blank">free for 
 				anyone to download and play with</a>. I've endeavoured to keep the number of data requests to eBird's site to a minimum
-				so it doesn't put too much of a stress on their servers, but if it does they're entirely within their rights to ask me to 
-				take it down. Hopefully it won't come to that. I very much hope that one day this sort of functionality will be available 
+				so it doesn't put too much of a stress on their servers, but if it does, they're entirely within their rights to ask me to 
+				take the site down. Hopefully it won't come to that. I very much hope that one day this sort of functionality will be available 
 				directly through eBird, but in the meantime I'll try to keep the site up and running.
 			</p>
 			<p>
@@ -124,7 +126,7 @@
 			</p>
 		</div>
 	</div>
-	<?php @include_once("tracking.html"); ?>
+	<?php @include_once("tracking.php"); ?>
 
 </body>
 </html>
