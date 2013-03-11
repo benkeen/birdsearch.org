@@ -1,0 +1,33 @@
+@media only screen and (max-width: 550px) {
+	header ul {
+		display: none;
+	}
+	#searchTextField {
+		width: 97%;
+	}
+	#sidebar {
+		width: 100%;
+		position: relative;
+		top: auto;
+		float: left;
+		height: auto;
+		border-bottom: none;
+	}
+	/* rename to fullPageSearchResults - tabbedSearchResults */
+	#searchResults {
+		display: none;
+	}
+	#mainPanel {
+		clear: both;
+		position: relative;
+		top: auto;
+		float: left;
+		left: auto;
+		height: 100px;
+		width: 100%;
+		padding: 0px;
+	}
+	footer {
+		width: 100%;
+	}
+}

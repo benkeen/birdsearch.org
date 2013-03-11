@@ -34,15 +34,20 @@ var manager = {
 	// keeps track of whether the Location column in the Bird Species tab should be expanded or not
 	birdSpeciesLocationDetailsExpanded: false,
 
+	// keeps track of which page viewport mode we're in (mobile / desktop)
+	pageViewportMode: null,
+
 	// some constants
 	CURRENT_SERVER_TIME: null,
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 	MAX_HOTSPOTS: 50,
 	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
+	VIEWPORT_WIDTH_BREAKPOINT: 550,
 
 
 	init: function() {
 		$(window).resize(manager.handleWindowResize);
+
 
 		$('#aboutLink').on('click', function(e) {
 			e.preventDefault();
@@ -917,15 +922,30 @@ var manager = {
 	handleWindowResize: function() {
 		var windowHeight = $(window).height();
 		var windowWidth = $(window).width();
-		$('#sidebar').css('height', windowHeight - 77);
-		$('#mainPanel').css({
-			height: windowHeight - 54,
-			width: windowWidth - 325
-		});
-		$('#panelContent').css({
-			height: windowHeight - 82
-		});
-		$('#searchResults').css('height', windowHeight - 267);
+
+		if (windowWidth < manager.VIEWPORT_WIDTH_BREAKPOINT) {
+			manager.pageViewportMode = 'mobile';
+		} else {
+			manager.pageViewportMode = 'desktop';
+		}
+
+		if (manager.pageViewportMode == 'desktop') {
+			$('#locationsTab').addClass('hidden');
+			$('#sidebar').css('height', windowHeight - 77);
+			$('#mainPanel').css({
+				height: windowHeight - 54,
+				width: windowWidth - 325
+			});
+			$('#panelContent').css({
+				height: windowHeight - 82
+			});
+			$('#searchResults').css('height', windowHeight - 267);
+		} else {
+			$('#locationsTab').removeClass('hidden');
+			$('#sidebar').css('height', 'auto');
+			console.log("now");
+			$('#mainPanel').css({ height: 'auto', width: '100%' });
+		}
 
 		if (manager.currTabID == 'mapTab') {
 			var address = $.trim(manager.searchField.value);

@@ -6,6 +6,7 @@
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/styles.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/mobile.css" rel="stylesheet" type="text/css" />
 	<script src="resources/js/html5shiv.js"></script>
 	<script src="resources/js/moment.min.js"></script>
 	<script src="resources/js/jquery.min.js"></script>
@@ -65,6 +66,7 @@
 	<section id="mainPanel">
 		<ul id="panelTabs">
 			<li id="mapTab" class="selected">Map</li>
+			<li id="locationsTab" class="hidden disabled">Locations</li>
 			<li id="birdSpeciesTab" class="disabled">Bird Species</li>
 		</ul>
 		<div id="panelContent">
@@ -76,7 +78,7 @@
 	</section>
 
 	<footer>
-		<span><a href="https://github.com/benkeen/eBirdAdvancedSearch">v1.0.0</a></span>
+		<span><a href="https://github.com/benkeen/eBirdAdvancedSearch">v1.0.1</a></span>
 		This site is not affiliated with <a href="http://ebird.org" target="_blank">eBird</a>.
 	</footer>
 
@@ -127,6 +129,7 @@
 			</p>
 		</div>
 	</div>
+
 	<?php @include_once("tracking.php"); ?>
 
 </body>

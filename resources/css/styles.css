@@ -264,7 +264,6 @@ header a:hover {
 	-webkit-box-shadow:0 1px 0 0 rgba(255,255,255,0.5) inset;
 	-o-box-shadow:0 1px 0 0 rgba(255,255,255,0.5) inset;
 	clear: both;
-	display: block;
 	font-size: 12px;
 	font-weight: normal;
 	line-height: 20px;
