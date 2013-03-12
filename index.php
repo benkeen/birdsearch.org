@@ -39,7 +39,6 @@
 				<option value="notable">Notable species</option>
 			</select>
 			-->
-
 			<div id="specificSpeciesSection"></div>
 
 			<label for="observationRecency">Show observations made within last:</label>
@@ -60,7 +59,7 @@
 			<span id="loadingSpinner"></span>
 		</div>
 		<div id="messageBar"></div>
-		<div id="searchResults" class="sidebarSection hidden"></div>
+		<div id="fullPageSearchResults" class="sidebarSection hidden"></div>
 	</section>
 
 	<section id="mainPanel">
@@ -71,6 +70,7 @@
 		</ul>
 		<div id="panelContent">
 			<div id="mapTabContent"></div>
+			<div id="locationsTabContent" class="hidden"></div>
 			<div id="birdSpeciesTabContent" class="hidden">
 				<div id="birdSpeciesTable"></div>
 			</div>

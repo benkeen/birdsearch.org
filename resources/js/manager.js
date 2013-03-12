@@ -42,12 +42,11 @@ var manager = {
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 	MAX_HOTSPOTS: 50,
 	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
-	VIEWPORT_WIDTH_BREAKPOINT: 550,
+	VIEWPORT_WIDTH_BREAKPOINT: 600,
 
 
 	init: function() {
 		$(window).resize(manager.handleWindowResize);
-
 
 		$('#aboutLink').on('click', function(e) {
 			e.preventDefault();
@@ -85,10 +84,10 @@ var manager = {
 	addEventHandlers: function() {
 		$('#observationRecency').bind('change', manager.onChangeObservationRecency);
 		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
-		$('#searchResults').on('click', '.toggle', manager.toggleAllCheckedHotspots);
-		$('#searchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
-		$('#searchResults').on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
-		$('#searchResults').on('mouseout', 'tbody tr', manager.onHoverOutHotspotRow);
+		$('#fullPageSearchResults').on('click', '.toggle', manager.toggleAllCheckedHotspots);
+		$('#fullPageSearchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
+		$('#fullPageSearchResults').on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
+		$('#fullPageSearchResults').on('mouseout', 'tbody tr', manager.onHoverOutHotspotRow);
 		$('#birdSpeciesTable').on('click', '.toggleBirdSpeciesLocations', manager.onClickToggleBirdSpeciesLocations);
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
 	},
@@ -492,7 +491,13 @@ var manager = {
 			}
 
 			manager.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
-			$('#searchResults').html(html).removeClass('hidden').fadeIn(300);
+
+			if (manager.pageViewportMode === 'desktop') {
+				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
+			} else {
+				$('#locationsTabContent').html(html).removeClass('hidden').fadeIn(300);
+				$('#locationsTab').removeClass('disabled').html('Locations (' + manager.numVisibleHotspots + ')');
+			}
 			$('#hotspotTable').tablesorter({
 				headers: { 2: { sorter: 'species' } }
 			});
@@ -501,7 +506,7 @@ var manager = {
 			manager.getAllHotspotObservations();
 		} else {
 			manager.showMessage('No birding locations found', 'notification');
-			$('#searchResults').fadeOut(300);
+			$('#fullPageSearchResults').fadeOut(300);
 			manager.stopLoading();
 		}
 	},
@@ -685,7 +690,6 @@ var manager = {
 	},
 
 	generateSpeciesTable: function() {
-
 		var chr = '';
 		if (manager.birdSpeciesLocationDetailsExpanded) {
 			chr = '-';
@@ -693,16 +697,28 @@ var manager = {
 			chr = '+';
 		}
 
-		var html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
-				'<thead>' +
-				'<tr>' +
-					'<th>Species Name</th>' +
-					'<th>Scientific Name</th>' +
-					'<th class="{ sorter: false }">Locations Seen <a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
-					'<th width="110" nowrap>Last Seen</th>' +
-					'<th nowrap># Reported</th>' +
-				'</tr>' +
-				'</thead><tbody>';
+		var html = '';
+		if (manager.pageViewportMode === 'desktop') {
+			html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
+					'<thead>' +
+					'<tr>' +
+						'<th>Species Name</th>' +
+						'<th>Scientific Name</th>' +
+						'<th class="{ sorter: false }">Locations&nbsp;Seen&nbsp;<a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
+						'<th width="110" nowrap>Last Seen</th>' +
+						'<th nowrap># Reported</th>' +
+					'</tr>' +
+					'</thead><tbody>';
+		} else {
+			html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
+					'<thead>' +
+					'<tr>' +
+						'<th>Species Name</th>' +
+						'<th>Locations&nbsp;<a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
+						'<th nowrap>Last Seen</th>' +
+					'</tr>' +
+					'</thead><tbody>';
+		}
 
 		var speciesCount = 0;
 		for (var i in manager.speciesInVisibleHotspots) {
@@ -767,13 +783,21 @@ var manager = {
 				howManyCount += parseInt(observationsInVisibleLocation[k].howMany, 10);
 			}
 
-			html += '<tr>' +
-				'<td>' + manager.speciesInVisibleHotspots[i].comName + '</td>' +
-				'<td>' + manager.speciesInVisibleHotspots[i].sciName + '</td>' +
-				'<td>' + locationsHTML + '</td>' +
-				'<td>' + lastSeenHTML + '</td>' +
-				'<td>' + howManyCount + '</td>' +
-			'</tr>';
+			if (manager.pageViewportMode === 'desktop') {
+				html += '<tr>' +
+					'<td>' + manager.speciesInVisibleHotspots[i].comName + '</td>' +
+					'<td>' + manager.speciesInVisibleHotspots[i].sciName + '</td>' +
+					'<td>' + locationsHTML + '</td>' +
+					'<td>' + lastSeenHTML + '</td>' +
+					'<td>' + howManyCount + '</td>' +
+				'</tr>';
+			} else {
+				html += '<tr>' +
+					'<td>' + manager.speciesInVisibleHotspots[i].comName + '</td>' +
+					'<td>' + locationsHTML + '</td>' +
+					'<td>' + lastSeenHTML + '</td>' +
+				'</tr>';				
+			}
 
 			speciesCount++;
 		}
@@ -939,12 +963,13 @@ var manager = {
 			$('#panelContent').css({
 				height: windowHeight - 82
 			});
-			$('#searchResults').css('height', windowHeight - 267);
+			$('#fullPageSearchResults').css('height', windowHeight - 267);
 		} else {
 			$('#locationsTab').removeClass('hidden');
 			$('#sidebar').css('height', 'auto');
-			console.log("now");
-			$('#mainPanel').css({ height: 'auto', width: '100%' });
+
+			var panelHeight = windowHeight - 230;
+			$('#mainPanel').css({ height: panelHeight + 'px', width: '100%' });
 		}
 
 		if (manager.currTabID == 'mapTab') {

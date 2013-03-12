@@ -1,4 +1,4 @@
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 600px) {
 	header ul {
 		display: none;
 	}
@@ -13,9 +13,15 @@
 		height: auto;
 		border-bottom: none;
 	}
-	/* rename to fullPageSearchResults - tabbedSearchResults */
-	#searchResults {
+	#fullPageSearchResults {
 		display: none;
+	}
+	#panelTabs {
+		width: 500px;
+		overflow: hidden;
+	}
+	#panelTabs li {
+		padding: 3px 15px;
 	}
 	#mainPanel {
 		clear: both;
@@ -26,6 +32,15 @@
 		height: 100px;
 		width: 100%;
 		padding: 0px;
+	}
+	#messageBar {
+		display: none !important;
+	}
+	#hotspotTable {
+		border-top: none;
+	}
+	#birdSpeciesTable td {
+		font-size: 8pt;
 	}
 	footer {
 		width: 100%;
