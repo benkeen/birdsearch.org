@@ -698,6 +698,7 @@ var manager = {
 		}
 
 		var html = '';
+		var dateFormat = '';
 		if (manager.pageViewportMode === 'desktop') {
 			html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
 					'<thead>' +
@@ -709,6 +710,7 @@ var manager = {
 						'<th nowrap># Reported</th>' +
 					'</tr>' +
 					'</thead><tbody>';
+			dateFormat = 'MMM Do, h:mm a';
 		} else {
 			html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
 					'<thead>' +
@@ -718,6 +720,7 @@ var manager = {
 						'<th nowrap>Last Seen</th>' +
 					'</tr>' +
 					'</thead><tbody>';
+			dateFormat = 'MMM D, h:mma';
 		}
 
 		var speciesCount = 0;
@@ -729,7 +732,7 @@ var manager = {
 			var lastObservation = 0;
 			for (var j=0; j<manager.speciesInVisibleHotspots[i].obs.length; j++) {
 				var currLocationID = manager.speciesInVisibleHotspots[i].obs[j].locID;
-				var observationTime = moment(manager.speciesInVisibleHotspots[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
+				var observationTime = moment(manager.speciesInVisibleHotspots[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format(dateFormat);
 
 				var observationTimeUnix = parseInt(moment(manager.speciesInVisibleHotspots[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('X'), 10);
 				if (observationTimeUnix > lastObservation) {
@@ -763,7 +766,7 @@ var manager = {
 			}
 
 			// generate the Last Seen cell content
-			var lastObservationFormatted = moment.unix(lastObservation).format('MMM Do, H:mm a');
+			var lastObservationFormatted = moment.unix(lastObservation).format(dateFormat);
 			var lastSeenHTML = '';
 			if (manager.birdSpeciesLocationDetailsExpanded) {
 				lastSeenHTML = '<div class="lastSeenSingle" style="visibility: hidden">' + lastObservationFormatted + '</div>' +
@@ -796,7 +799,7 @@ var manager = {
 					'<td>' + manager.speciesInVisibleHotspots[i].comName + '</td>' +
 					'<td>' + locationsHTML + '</td>' +
 					'<td>' + lastSeenHTML + '</td>' +
-				'</tr>';				
+				'</tr>';
 			}
 
 			speciesCount++;
@@ -960,15 +963,14 @@ var manager = {
 				height: windowHeight - 54,
 				width: windowWidth - 325
 			});
-			$('#panelContent').css({
-				height: windowHeight - 82
-			});
+			$('#panelContent').css('height', windowHeight - 82);
 			$('#fullPageSearchResults').css('height', windowHeight - 267);
 		} else {
 			$('#locationsTab').removeClass('hidden');
 			$('#sidebar').css('height', 'auto');
+			$('#panelContent').css('height', windowHeight - 40);
 
-			var panelHeight = windowHeight - 230;
+			var panelHeight = windowHeight - 210;
 			$('#mainPanel').css({ height: panelHeight + 'px', width: '100%' });
 		}
 

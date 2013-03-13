@@ -2,8 +2,9 @@
 	header ul {
 		display: none;
 	}
+
 	#searchTextField {
-		width: 97%;
+		width: 98%;
 	}
 	#sidebar {
 		width: 100%;
@@ -13,8 +14,17 @@
 		height: auto;
 		border-bottom: none;
 	}
+	#sidebar label {
+		display: inline;
+	}
+	.sidebarSection {
+		padding: 2px;
+	}
 	#fullPageSearchResults {
 		display: none;
+	}
+	#observationRecency {
+		margin-bottom: 0px;
 	}
 	#panelTabs {
 		width: 500px;
@@ -22,6 +32,7 @@
 	}
 	#panelTabs li {
 		padding: 3px 15px;
+		margin-top: 4px;
 	}
 	#mainPanel {
 		clear: both;
@@ -41,6 +52,10 @@
 	}
 	#birdSpeciesTable td {
 		font-size: 8pt;
+	}
+	#locationsTabContent, #birdSpeciesTabContent {
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 	footer {
 		width: 100%;
