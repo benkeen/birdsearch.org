@@ -34,15 +34,16 @@ var manager = {
 	// keeps track of whether the Location column in the Bird Species tab should be expanded or not
 	birdSpeciesLocationDetailsExpanded: false,
 
-	// keeps track of which page viewport mode we're in (mobile / desktop)
-	pageViewportMode: null,
+	// keeps track of which page viewport mode we're in
+	pageViewportMode: null, // mobilePortrait / mobileLandscape / desktop
+	currMobilePage: 'search', // search / results
 
 	// some constants
 	CURRENT_SERVER_TIME: null,
 	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 	MAX_HOTSPOTS: 50,
 	SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30],
-	VIEWPORT_WIDTH_BREAKPOINT: 600,
+	VIEWPORT_WIDTH_BREAKPOINT: 640,
 
 
 	init: function() {
@@ -511,7 +512,14 @@ var manager = {
 		}
 	},
 
+	/**
+	 * Shows the large message section in the left sidebar (desktop only).
+	 */
 	showMessage: function(message, messageType) {
+		if (manager.pageViewportMode == 'mobile') {
+			return;
+		}
+
 		if ($('#messageBar').hasClass('visible')) {
 			$('#messageBar').removeClass().addClass(messageType + ' visible').html(message); // be nice to add an effect here...
 		} else {
@@ -978,6 +986,23 @@ var manager = {
 			var address = $.trim(manager.searchField.value);
 			if (address !== '') {
 				manager.updatePage(false);
+			}
+		}
+	},
+
+	/**
+	 * Called when the user switches from one mode (desktop / mobile) to another. It ensures the 
+	 * appropriate page elements are re-created. 
+	 */
+	convertPagetoMode: function(mode) {
+		if (mode == 'desktop') {
+
+		} else {
+			if (manager.currMobilePage == 'search') {
+				// currMobilePage: 'search', // search / results
+
+			} else {
+
 			}
 		}
 	},

@@ -6,7 +6,6 @@
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/styles.css" rel="stylesheet" type="text/css" />
-	<link href="resources/css/mobile.css" rel="stylesheet" type="text/css" />
 	<script src="resources/js/html5shiv.js"></script>
 	<script src="resources/js/moment.min.js"></script>
 	<script src="resources/js/jquery.min.js"></script>
@@ -28,19 +27,13 @@
 			<li><a href="http://ebird.org">eBird.org</a></li>
 		</ul>
 	</header>
+	<div id="backLeft">
 
+	</div>
 	<section id="sidebar">
 		<div id="searchOptions" class="sidebarSection">
 			<input type="text" id="searchTextField" />
-			<!--
-			<label for="resultType">Result type:</label>
-			<select id="resultType">
-				<option value="all">All reported sightings</option>
-				<option value="notable">Notable species</option>
-			</select>
-			-->
 			<div id="specificSpeciesSection"></div>
-
 			<label for="observationRecency">Show observations made within last:</label>
 			<select id="observationRecency">
 				<option value="1">1 day</option>
@@ -63,6 +56,9 @@
 	</section>
 
 	<section id="mainPanel">
+		<div id="backTop">
+			<a href="#">&laquo; back to search</a>
+		</div>
 		<ul id="panelTabs">
 			<li id="mapTab" class="selected">Map</li>
 			<li id="locationsTab" class="hidden disabled">Locations</li>

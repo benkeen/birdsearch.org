@@ -149,7 +149,21 @@ header a:hover {
 	background-image: url(../images/loading.gif);
 	margin: 3px;
 }
-
+#backTop {
+	display: none;
+	padding: 6px 6px 6px 12px;
+}
+#backTop a {
+	padding: 8px;
+}
+#backLeft {
+	display: none;
+	width: 50px;
+	background-color: #cdcdcd;
+	position: absolute;
+	left: 0px;
+	height: 1000px;
+}
 
 /* main body */
 #mapTabContent {
@@ -405,3 +419,97 @@ footer span a:hover {
 	margin: 0px 0px 10px;
 	font-size: 24px;
 }
+
+
+/* Mobile phones: portrait */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+	#backTop {
+		display: block;
+	}
+	#backLeft {
+		display: none;
+	}
+}
+
+/* Mobile phones: landscape */
+@media screen and (max-width: 640px) and (orientation: landscape) {
+	#backTop {
+		display: none;
+	}
+	#backLeft {
+		display: block;
+	}
+	#mainPanel {
+		margin-left: 50px;
+	}
+	footer {
+		display: none;
+	}
+}
+
+/* Mobile phones: portrait or landscape */
+@media screen and (max-width: 640px) {
+	header ul {
+		display: none;
+	}
+	#searchTextField {
+		width: 98%;
+	}
+	#sidebar {
+		width: 100%;
+		display: none;
+		position: relative;
+		top: auto;
+		float: left;
+		height: auto;
+		border-bottom: none;
+	}
+	#sidebar label {
+		display: inline;
+	}
+	.sidebarSection {
+		padding: 2px;
+	}
+	#fullPageSearchResults {
+		display: none;
+	}
+	#observationRecency {
+		margin-bottom: 0px;
+	}
+	#panelTabs {
+		width: 500px;
+		overflow: hidden;
+	}
+	#panelTabs li {
+		padding: 5px 15px;
+		margin-top: 2px;
+	}
+	#mainPanel {
+		clear: both;
+		position: relative;
+		top: auto;
+		float: left;
+		left: auto;
+		height: 100px;
+		width: 100%;
+		padding: 0px;
+	}
+	#messageBar {
+		display: none !important;
+	}
+	#hotspotTable {
+		border-top: none;
+	}
+	#birdSpeciesTable td {
+		font-size: 8pt;
+	}
+	#locationsTabContent, #birdSpeciesTabContent {
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+	footer {
+		width: 100%;
+	}
+}
+
+
