@@ -35,7 +35,7 @@ var manager = {
 	birdSpeciesLocationDetailsExpanded: false,
 
 	// keeps track of which page viewport mode we're in
-	pageViewportMode: null, // mobilePortrait / mobileLandscape / desktop
+	currViewportMode: null, // mobilePortrait / mobileLandscape / desktop
 	currMobilePage: 'search', // search / results
 
 	// some constants
@@ -83,7 +83,7 @@ var manager = {
 	},
 
 	addEventHandlers: function() {
-		$('#observationRecency').bind('change', manager.onChangeObservationRecency);
+		$('#search').bind('click', manager.submitSearch);
 		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
 		$('#fullPageSearchResults').on('click', '.toggle', manager.toggleAllCheckedHotspots);
 		$('#fullPageSearchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
@@ -93,10 +93,18 @@ var manager = {
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
 	},
 
-	onChangeObservationRecency: function(e) {
-		manager.observationRecency = parseInt($(e.target).val(), 10);
+	submitSearch: function() {
+		manager.observationRecency = parseInt($('#observationRecency').val(), 10);
 		var address = $.trim(manager.searchField.value);
 		if (address !== '') {
+
+			if (map.currPlace.geometry.viewport) {
+				map.el.fitBounds(map.currPlace.geometry.viewport);
+			} else {
+				map.el.setCenter(map.currPlace.geometry.location);
+				map.el.setZoom(17);
+			}
+
 			manager.getHotspots();
 		}
 	},
@@ -233,6 +241,9 @@ var manager = {
 	 * starts initiating the observation requests.
 	 */
 	updatePage: function(clearMarkers) {
+
+		$('body').addClass('viewingResults');
+		manager.redrawMap();
 
 		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
 		manager.visibleHotspots = map.addMarkers(clearMarkers);
@@ -494,7 +505,7 @@ var manager = {
 
 			manager.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
 
-			if (manager.pageViewportMode === 'desktop') {
+			if (manager.currViewportMode === 'desktop') {
 				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
 			} else {
 				$('#locationsTabContent').html(html).removeClass('hidden').fadeIn(300);
@@ -517,7 +528,7 @@ var manager = {
 	 * Shows the large message section in the left sidebar (desktop only).
 	 */
 	showMessage: function(message, messageType) {
-		if (manager.pageViewportMode == 'mobile') {
+		if (manager.currViewportMode == 'mobile') {
 			return;
 		}
 
@@ -590,7 +601,7 @@ var manager = {
 		$('#' + tabID + 'Content').removeClass('hidden');
 
 		if (tabID == 'mapTab') {
-			google.maps.event.trigger(map.el, 'resize');
+			manager.redrawMap();
 		}
 
 		manager.currTabID = tabID;
@@ -708,7 +719,7 @@ var manager = {
 
 		var html = '';
 		var dateFormat = '';
-		if (manager.pageViewportMode === 'desktop') {
+		if (manager.currViewportMode === 'desktop') {
 			html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
 					'<thead>' +
 					'<tr>' +
@@ -795,7 +806,7 @@ var manager = {
 				howManyCount += parseInt(observationsInVisibleLocation[k].howMany, 10);
 			}
 
-			if (manager.pageViewportMode === 'desktop') {
+			if (manager.currViewportMode === 'desktop') {
 				html += '<tr>' +
 					'<td>' + manager.speciesInVisibleHotspots[i].comName + '</td>' +
 					'<td>' + manager.speciesInVisibleHotspots[i].sciName + '</td>' +
@@ -954,18 +965,23 @@ var manager = {
 		return selectedHotspots;
 	},
 
-	// not the prettiest thing ever, but since flexbox isn't standardized yet...
+	// boy I can't wait for flexbox.
 	handleWindowResize: function() {
 		var windowHeight = $(window).height();
 		var windowWidth = $(window).width();
 
+		manager.currViewportMode = 'desktop';
 		if (windowWidth < manager.VIEWPORT_WIDTH_BREAKPOINT) {
-			manager.pageViewportMode = 'mobile';
-		} else {
-			manager.pageViewportMode = 'desktop';
+			if (windowHeight < windowWidth) {
+				manager.currViewportMode = 'mobilePortrait';
+			} else {
+				manager.currViewportMode = 'mobileLandscape';
+			}
 		}
 
-		if (manager.pageViewportMode == 'desktop') {
+		// for desktop-sized interfaces, we show everything, with the search and results in the left
+		// sidebar
+		if (manager.currViewportMode == 'desktop') {
 			$('#locationsTab').addClass('hidden');
 			$('#sidebar').css('height', windowHeight - 77);
 			$('#mainPanel').css({
@@ -974,7 +990,11 @@ var manager = {
 			});
 			$('#panelContent').css('height', windowHeight - 82);
 			$('#fullPageSearchResults').css('height', windowHeight - 267);
+
+		// for mobile, due to limited real-estate, we put the search form on a separate page and
+		// show a "back" link/button, whose location depends on the current orientation of the device
 		} else {
+
 			$('#locationsTab').removeClass('hidden');
 			$('#sidebar').css('height', 'auto');
 			$('#panelContent').css('height', windowHeight - 40);
@@ -1006,6 +1026,10 @@ var manager = {
 
 			}
 		}
+	},
+
+	redrawMap: function() {
+		google.maps.event.trigger(map.el, 'resize');
 	},
 
 	startLoading: function() {

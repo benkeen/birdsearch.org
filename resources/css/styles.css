@@ -11,6 +11,7 @@ body {
 	line-height: 20px;
 	overflow: hidden;
 	font-family: "lucida grande";
+	background: url("../images/bg.png");
 }
 .hidden {
 	display: none;
@@ -25,9 +26,9 @@ a:link, a:visited {
 .lightGrey {
 	color: #cccccc;
 }
-section {
+/*section {
 	background: url(../images/bg.png);
-}
+}*/
 
 /* top row */
 header {
@@ -436,7 +437,7 @@ footer span a:hover {
 	#backTop {
 		display: none;
 	}
-	#backLeft {
+	body.viewingResults #backLeft {
 		display: block;
 	}
 	#mainPanel {
@@ -453,22 +454,16 @@ footer span a:hover {
 		display: none;
 	}
 	#searchTextField {
-		width: 98%;
+		width: 97%;
 	}
 	#sidebar {
 		width: 100%;
-		display: none;
 		position: relative;
 		top: auto;
-		float: left;
-		height: auto;
 		border-bottom: none;
 	}
 	#sidebar label {
 		display: inline;
-	}
-	.sidebarSection {
-		padding: 2px;
 	}
 	#fullPageSearchResults {
 		display: none;
@@ -485,6 +480,7 @@ footer span a:hover {
 		margin-top: 2px;
 	}
 	#mainPanel {
+		display: none;
 		clear: both;
 		position: relative;
 		top: auto;
@@ -493,6 +489,12 @@ footer span a:hover {
 		height: 100px;
 		width: 100%;
 		padding: 0px;
+	}
+	body.viewingResults #sidebar {
+		display: none;
+	}
+	body.viewingResults #mainPanel {
+		display: block;
 	}
 	#messageBar {
 		display: none !important;
@@ -511,5 +513,3 @@ footer span a:hover {
 		width: 100%;
 	}
 }
-
-

@@ -15,6 +15,7 @@ var map = {
 
 	mapCanvas: null,
 	el: null,
+	currPlace: null,
 	icon: 'resources/images/marker.png',
 	geocoder: null,
 	markers: {},
@@ -46,21 +47,12 @@ var map = {
 
 		// assume the worst
 		map.lastAddressSearchValid = false;
-		var place = map.autocomplete.getPlace();
-
-		// inform the user that the place was not found and return
-		if (!place.geometry) {
+		map.currPlace = map.autocomplete.getPlace();
+		if (!map.currPlace.geometry) {
 			return;
 		}
-
-		if (place.geometry.viewport) {
-			map.el.fitBounds(place.geometry.viewport);
-		} else {
-			map.el.setCenter(place.geometry.location);
-			map.el.setZoom(17);
-		}
-		var numAddressComponents = place.address_components.length;
-		var countryCode = place.address_components[numAddressComponents-1].short_name;
+		var numAddressComponents = map.currPlace.address_components.length;
+		var countryCode = map.currPlace.address_components[numAddressComponents-1].short_name;
 
 		// if the address isn't specific enough, let the user know to provide a more details
 		if (numAddressComponents < 3) {
@@ -72,10 +64,9 @@ var map = {
 		map.lastAddressSearchValid = true;
 
 		$('#messageBar').addClass('hidden');
-		var subNational1Code = place.address_components[numAddressComponents-2].short_name;
+		var subNational1Code = map.currPlace.address_components[numAddressComponents-2].short_name;
 		manager.regionType = 'subnational1';
 		manager.region = countryCode + "-" + subNational1Code;
-		manager.getHotspots();
 	},
 
 	onMapBoundsChange: function() {
