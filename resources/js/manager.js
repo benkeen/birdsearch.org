@@ -464,7 +464,8 @@ var manager = {
 			row.find('.speciesCount').html(numSpecies).attr('title', title);
 			//$('#iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
 
-			map.infoWindows[locationID].setContent("chicken");
+// TODO
+//			map.infoWindows[locationID].setContent("chicken");
 		}
 	},
 
