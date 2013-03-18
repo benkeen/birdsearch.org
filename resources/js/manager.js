@@ -83,7 +83,8 @@ var manager = {
 	},
 
 	addEventHandlers: function() {
-		$('#search').bind('click', manager.submitSearch);
+		$('#sidebar form').bind('submit', manager.search);
+		$('#backLeft,#backTop').bind('click', manager.showSearchPage);
 		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
 		$('#fullPageSearchResults').on('click', '.toggle', manager.toggleAllCheckedHotspots);
 		$('#fullPageSearchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
@@ -93,18 +94,36 @@ var manager = {
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
 	},
 
-	submitSearch: function() {
+	search: function(e) {
+		e.preventDefault();
+
+		// if the focus is on the location field, don't submit the form - they just did the auto complete
+		if ($('#searchTextField').is(':focus')) {
+			return;
+		}
+
 		manager.observationRecency = parseInt($('#observationRecency').val(), 10);
 		var address = $.trim(manager.searchField.value);
-		if (address !== '') {
+		if (address !== '' && map.currPlace !== null) {
+			if (!map.currPlace.geometry) {
+				return;
+			}
+			var numAddressComponents = map.currPlace.address_components.length;
+			var countryCode = map.currPlace.address_components[numAddressComponents-1].short_name;
 
-			if (map.currPlace.geometry.viewport) {
-				map.el.fitBounds(map.currPlace.geometry.viewport);
-			} else {
-				map.el.setCenter(map.currPlace.geometry.location);
-				map.el.setZoom(17);
+			// if the address isn't specific enough, let the user know to provide a more details
+			if (numAddressComponents < 3) {
+				manager.showMessage('Please enter a more specific location.', 'error');
+				return;
 			}
 
+			// alrighty, the search was valid. Make a note!
+			map.lastAddressSearchValid = true;
+
+			$('#messageBar').addClass('hidden');
+			var subNational1Code = map.currPlace.address_components[numAddressComponents-2].short_name;
+			manager.regionType = 'subnational1';
+			manager.region = countryCode + "-" + subNational1Code;
 			manager.getHotspots();
 		}
 	},
@@ -184,6 +203,9 @@ var manager = {
 		if (manager.hotspotSearches.hasOwnProperty(searchKey)) {
 			if (manager.observationRecency <= manager.hotspotSearches[searchKey].recency) {
 
+				manager.showMobileResults();
+				manager.redrawMap();
+
 				// this function does the job of trimming the list for us, if there are > MAX_HOTSPOTS
 				manager.visibleHotspots = map.addMarkers(true);
 				manager.numVisibleHotspots = manager.visibleHotspots.length;
@@ -241,13 +263,27 @@ var manager = {
 	 * starts initiating the observation requests.
 	 */
 	updatePage: function(clearMarkers) {
-
-		$('body').addClass('viewingResults');
+		manager.showMobileResults();
 		manager.redrawMap();
+
+		// now set the map to show the appropriate location
+		if (map.currPlace.geometry.viewport) {
+			map.el.fitBounds(map.currPlace.geometry.viewport);
+			// map.el.setCenter(map.currPlace.geometry.location);
+			// map.el.setZoom(10);
+		} else {
+			map.el.setCenter(map.currPlace.geometry.location);
+			map.el.setZoom(17);
+		}
+
+		map.enableDetectZoomBoundsChange();
 
 		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
 		manager.visibleHotspots = map.addMarkers(clearMarkers);
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
+		if (manager.numVisibleHotspots > 0) {
+			manager.currMobilePage = 'results';
+		}
 		manager.displayHotspots();
 	},
 
@@ -471,13 +507,10 @@ var manager = {
 		var row = $('#location_' + locationID);
 		row.removeClass('notLoaded').addClass('loaded');
 
-		if (numSpecies > 0) {
-			row.find('.speciesCount').html(numSpecies).attr('title', title);
-			//$('#iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
-
-// TODO
-//			map.infoWindows[locationID].setContent("chicken");
-		}
+//		if (numSpecies > 0) {
+//			row.find('.speciesCount').html(numSpecies).attr('title', title);
+//			$('#iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
+//		}
 	},
 
 	/**
@@ -508,8 +541,8 @@ var manager = {
 			if (manager.currViewportMode === 'desktop') {
 				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
 			} else {
-				$('#locationsTabContent').html(html).removeClass('hidden').fadeIn(300);
-				$('#locationsTab').removeClass('disabled').html('Locations (' + manager.numVisibleHotspots + ')');
+				$('#locationsTabContent').html(html); //.removeClass('hidden').fadeIn(300);
+				$('#locationsTab').removeClass('disabled').html('Locations <span>(' + manager.numVisibleHotspots + ')</span>');
 			}
 			$('#hotspotTable').tablesorter({
 				headers: { 2: { sorter: 'species' } }
@@ -528,10 +561,6 @@ var manager = {
 	 * Shows the large message section in the left sidebar (desktop only).
 	 */
 	showMessage: function(message, messageType) {
-		if (manager.currViewportMode == 'mobile') {
-			return;
-		}
-
 		if ($('#messageBar').hasClass('visible')) {
 			$('#messageBar').removeClass().addClass(messageType + ' visible').html(message); // be nice to add an effect here...
 		} else {
@@ -607,7 +636,6 @@ var manager = {
 		manager.currTabID = tabID;
 	},
 
-
 	toggleAllCheckedHotspots: function(e) {
 		var isChecked = e.target.checked;
 		if (isChecked) {
@@ -666,10 +694,7 @@ var manager = {
 	},
 
 
-	// ------------------------------------------
-
 	// this should really be templated...!
-
 	generateHotspotTable: function(visibleHotspots) {
 		var html = '<table class="tablesorter tablesorter-bootstrap table table-bordered table-striped" id="hotspotTable">' +
 				'<thead>' +
@@ -699,9 +724,9 @@ var manager = {
 			}
 
 			html += '<tr id="location_' + currLocationID + '">' +
-						'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
-						'<td class="loadingStatus' + rowClass + '"><label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
-						'<td class="sp"><span class="speciesCount">' + numSpeciesWithinRange + '</span></td>' +
+					'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
+					'<td class="loadingStatus' + rowClass + '">' + '<label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
+					'<td class="sp"><span class="speciesCount">' + numSpeciesWithinRange + '</span></td>' +
 					'</tr>';
 		}
 		html += '</tbody></table>';
@@ -735,7 +760,7 @@ var manager = {
 			html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
 					'<thead>' +
 					'<tr>' +
-						'<th>Species Name</th>' +
+						'<th>Species</th>' +
 						'<th>Locations&nbsp;<a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
 						'<th nowrap>Last Seen</th>' +
 					'</tr>' +
@@ -778,7 +803,15 @@ var manager = {
 			if (locations.length == 1) {
 				locationStr = 'location';
 			}
-			var locationsHTML = 'Seen at ' + locations.length + ' ' + locationStr + ' <a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a>';
+
+
+			var locationsHTML = '';
+			if (manager.currViewportMode == 'desktop') {
+				locationsHTML = 'Seen at ' + locations.length + ' ' + locationStr + ' <a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a>';
+			} else {
+				locationsHTML = locations.length + ' ' + locationStr + ' <a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a>';
+			}
+
 			if (manager.birdSpeciesLocationDetailsExpanded) {
 				locationsHTML += '<div class="birdLocations">' + locations.join('\n') + '</div>';
 			} else {
@@ -844,7 +877,12 @@ var manager = {
 				introPara = '<p>In the last <b>' + durationStr + '</b>, there have been <b>' + speciesCount + '</b> species reported at <b>' + locationName + '</b>.</p>';
 			} else {
 				var numLocations = selectedHotspots.length;
-				introPara = '<p>in the last <b>' + durationStr + '</b>, there have been <b>' + speciesCount + '</b> species sighted at the <b>' + numLocations + '</b> locations selected.</p>';
+
+				if (manager.currViewportMode == "desktop") {
+					introPara = '<p>In the last <b>' + durationStr + '</b>, there have been <b>' + speciesCount + '</b> species sighted at the <b>' + numLocations + '</b> locations selected.</p>';
+				} else {
+					introPara = '<p>In the last <b>' + durationStr + '</b>, there have been <b>' + speciesCount + '</b> species sighted at the <b>' + numLocations + '</b> visible locations.</p>';
+				}
 			}
 
 			html = introPara + '<hr size="1" />' + html;
@@ -863,7 +901,7 @@ var manager = {
 		}
 
 		$('#birdSpeciesTable').html(manager.generateSpeciesTable());
-		$('#birdSpeciesTab').removeClass('disabled').html('Bird Species (' + manager.numVisibleSpecies + ')');
+		$('#birdSpeciesTab').removeClass('disabled').html('Bird Species <span>(' + manager.numVisibleSpecies + ')</span>');
 
 		$("#speciesTable").tablesorter({
 			theme: 'bootstrap',
@@ -973,9 +1011,9 @@ var manager = {
 		manager.currViewportMode = 'desktop';
 		if (windowWidth < manager.VIEWPORT_WIDTH_BREAKPOINT) {
 			if (windowHeight < windowWidth) {
-				manager.currViewportMode = 'mobilePortrait';
-			} else {
 				manager.currViewportMode = 'mobileLandscape';
+			} else {
+				manager.currViewportMode = 'mobilePortrait';
 			}
 		}
 
@@ -986,29 +1024,59 @@ var manager = {
 			$('#sidebar').css('height', windowHeight - 77);
 			$('#mainPanel').css({
 				height: windowHeight - 54,
-				width: windowWidth - 325
+				width: windowWidth - 323
 			});
-			$('#panelContent').css('height', windowHeight - 82);
+			$('#panelContent').css({
+				height: windowHeight - 82,
+				width: 'auto'
+			});
 			$('#fullPageSearchResults').css('height', windowHeight - 267);
 
-		// for mobile, due to limited real-estate, we put the search form on a separate page and
+		// for mobile, due to limited real-estate we put the search form on a separate page and
 		// show a "back" link/button, whose location depends on the current orientation of the device
 		} else {
 
 			$('#locationsTab').removeClass('hidden');
 			$('#sidebar').css('height', 'auto');
-			$('#panelContent').css('height', windowHeight - 40);
+
+			if (manager.currViewportMode == 'mobileLandscape') {
+				$('#panelContent').css({
+					height: windowHeight - 75,
+					width: windowWidth - 50
+				});
+				var top = (windowHeight / 2) - 42;
+				$('#backLeft div').css({ top: top });
+			} else {
+				$('#panelContent').css({
+					height: windowHeight - 140,
+					width: 'auto'
+				});
+			}
 
 			var panelHeight = windowHeight - 210;
-			$('#mainPanel').css({ height: panelHeight + 'px', width: '100%' });
+			$('#mainPanel').css({
+				height: panelHeight + 'px', 
+				width: '100%'
+			});
 		}
 
-		if (manager.currTabID == 'mapTab') {
+		if (manager.currTabID == 'mapTab' && (manager.currViewportMode != 'desktop' && manager.currMobilePage == 'results')) {
 			var address = $.trim(manager.searchField.value);
 			if (address !== '') {
 				manager.updatePage(false);
 			}
 		}
+	},
+
+	showSearchPage: function() {
+		$('#messageBar').addClass('hidden');
+		$('body').removeClass('viewingResults');
+		manager.currMobilePage = 'search';
+	},
+
+	showMobileResults: function() {
+		$('body').addClass('viewingResults');
+		manager.currMobilePage = 'results';
 	},
 
 	/**
@@ -1018,13 +1086,11 @@ var manager = {
 	convertPagetoMode: function(mode) {
 		if (mode == 'desktop') {
 
-		} else {
-			if (manager.currMobilePage == 'search') {
+		} else if (mode == 'mobilePortrait') {
 				// currMobilePage: 'search', // search / results
 
-			} else {
+		} else if (mode == 'mobileLandscape') {
 
-			}
 		}
 	},
 

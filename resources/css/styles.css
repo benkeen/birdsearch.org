@@ -4,7 +4,7 @@ html {
 	font-family: "lucida grande";
 }
 body {
-	height: 100%;
+/*	height: 100%; */
 	margin: 0px;
 	padding: 0px;
 	font-size: 9pt;
@@ -97,6 +97,9 @@ header a:hover {
 	text-shadow: 1px 1px #ffffff;
 	margin-left: 2px;
 }
+#sidebar form {
+	margin: 0px;
+}
 #searchOptions {
 	background: url(../images/sidebar_bg.png);
 	border-bottom: 1px solid #ffffff;
@@ -154,16 +157,23 @@ header a:hover {
 	display: none;
 	padding: 6px 6px 6px 12px;
 }
-#backTop a {
-	padding: 8px;
-}
 #backLeft {
 	display: none;
 	width: 50px;
-	background-color: #cdcdcd;
+	background-color: #efefef;
 	position: absolute;
 	left: 0px;
 	height: 1000px;
+	cursor: pointer;
+}
+#backLeft div {
+	width: 0; 
+	height: 0; 
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent; 
+	border-right: 20px solid #666666; 
+	margin-left: 12px;
+	position: absolute;
 }
 
 /* main body */
@@ -190,6 +200,9 @@ header a:hover {
 	margin-right: 1px;
 	cursor: pointer;
 }
+#panelTabs li span {
+	color: #777777;
+}
 #panelTabs li.selected {
 	background: #333333;
 	background: -moz-linear-gradient(top,  #333333 0%, #212121 100%);
@@ -200,6 +213,9 @@ header a:hover {
 	background: linear-gradient(to bottom,  #333333 0%,#212121 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#333333', endColorstr='#212121',GradientType=0 );
 	color: white;
+}
+#panelTabs li.selected span {
+	color: #d5e3ff;
 }
 #panelTabs li.disabled {
 	color: #999999;
@@ -215,6 +231,9 @@ header a:hover {
 	height: 100%;
 	overflow-y: scroll;
 	overflow-x: hidden;
+}
+#locationsTabContent {
+	height: 100%;
 }
 #birdSpeciesTable p {
 	padding: 10px;
@@ -443,6 +462,10 @@ footer span a:hover {
 	#mainPanel {
 		margin-left: 50px;
 	}
+	#simplemodal-container {
+		height: 80%;
+		width: 80%;
+	}
 	footer {
 		display: none;
 	}
@@ -468,9 +491,6 @@ footer span a:hover {
 	#fullPageSearchResults {
 		display: none;
 	}
-	#observationRecency {
-		margin-bottom: 0px;
-	}
 	#panelTabs {
 		width: 500px;
 		overflow: hidden;
@@ -484,7 +504,6 @@ footer span a:hover {
 		clear: both;
 		position: relative;
 		top: auto;
-		float: left;
 		left: auto;
 		height: 100px;
 		width: 100%;
@@ -496,20 +515,28 @@ footer span a:hover {
 	body.viewingResults #mainPanel {
 		display: block;
 	}
-	#messageBar {
-		display: none !important;
-	}
 	#hotspotTable {
 		border-top: none;
 	}
 	#birdSpeciesTable td {
 		font-size: 8pt;
 	}
+	#birdSpeciesTable p {
+		font-size: 8pt;
+	}
 	#locationsTabContent, #birdSpeciesTabContent {
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
+	body .tablesorter-header-inner {
+		font-size: 9pt;
+	}
+	body .tablesorter-bootstrap .tablesorter-header {
+		padding: 0px;
+	}
+
 	footer {
 		width: 100%;
+		padding: 7px 0px 7px 10px;
 	}
 }

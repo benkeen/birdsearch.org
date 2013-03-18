@@ -19,31 +19,33 @@
 			<li><a href="http://ebird.org">eBird.org</a></li>
 		</ul>
 	</header>
-	<div id="backLeft"></div>
+	<div id="backLeft">
+		<div></div>
+	</div>
 	<section id="sidebar">
 		<div id="searchOptions" class="sidebarSection">
-			<input type="text" id="searchTextField" />
-			<label for="observationRecency">Show observations made within last:</label>
-			<select id="observationRecency">
-				<option value="1">1 day</option>
-				<option value="2">2 days</option>
-				<option value="3">3 days</option>
-				<option value="4">4 days</option>
-				<option value="5">5 days</option>
-				<option value="6">6 days</option>
-				<option value="7" selected="selected">7 days</option>
-				<option value="10">10 days</option>
-				<option value="15">15 days</option>
-				<option value="20">20 days</option>
-				<option value="25">25 days</option>
-				<option value="30">30 days</option>
-			</select>
-
-			<div>
-				<input type="button" id="search" value="Search" />
-				<span id="loadingSpinner"></span>
-			</div>
-			
+			<form>
+				<input type="text" id="searchTextField" />
+				<label for="observationRecency">Show observations made within last:</label>
+				<select id="observationRecency">
+					<option value="1">1 day</option>
+					<option value="2">2 days</option>
+					<option value="3">3 days</option>
+					<option value="4">4 days</option>
+					<option value="5">5 days</option>
+					<option value="6">6 days</option>
+					<option value="7" selected="selected">7 days</option>
+					<option value="10">10 days</option>
+					<option value="15">15 days</option>
+					<option value="20">20 days</option>
+					<option value="25">25 days</option>
+					<option value="30">30 days</option>
+				</select>
+				<div>
+					<input type="submit" class="btn" id="search" value="Search &raquo;" />
+					<span id="loadingSpinner"></span>
+				</div>
+			</form>
 		</div>
 		<div id="messageBar"></div>
 		<div id="fullPageSearchResults" class="sidebarSection hidden"></div>

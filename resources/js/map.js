@@ -21,6 +21,7 @@ var map = {
 	markers: {},
 	infoWindows: {},
 	lastAddressSearchValid: null,
+	zoomBoundsChangeEnabled: false,
 
 
 	/**
@@ -40,33 +41,19 @@ var map = {
 
 		// called any time the map has had it's bounds changed
 		google.maps.event.addListener(map.el, 'dragend', map.onMapBoundsChange);
-		google.maps.event.addListener(map.el, 'zoom_changed', map.onMapBoundsChange);
+	},
+
+	enableDetectZoomBoundsChange: function() {
+		if (!map.zoomBoundsChangeEnabled) {
+			google.maps.event.addListener(map.el, 'zoom_changed', map.onMapBoundsChange);
+			map.zoomBoundsChangeEnabled = true;
+		}
 	},
 
 	onAutoComplete: function() {
-
-		// assume the worst
+		// assume the worst. When the user submits the search form, we'll check it was valid or not
 		map.lastAddressSearchValid = false;
 		map.currPlace = map.autocomplete.getPlace();
-		if (!map.currPlace.geometry) {
-			return;
-		}
-		var numAddressComponents = map.currPlace.address_components.length;
-		var countryCode = map.currPlace.address_components[numAddressComponents-1].short_name;
-
-		// if the address isn't specific enough, let the user know to provide a more details
-		if (numAddressComponents < 3) {
-			manager.showMessage('Please enter a more specific location.', 'error');
-			return;
-		}
-
-		// alrighty, the search was valid. Make a note!
-		map.lastAddressSearchValid = true;
-
-		$('#messageBar').addClass('hidden');
-		var subNational1Code = map.currPlace.address_components[numAddressComponents-2].short_name;
-		manager.regionType = 'subnational1';
-		manager.region = countryCode + "-" + subNational1Code;
 	},
 
 	onMapBoundsChange: function() {
