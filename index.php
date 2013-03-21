@@ -120,6 +120,13 @@
 				Thanks!
 			</p>
 		</div>
+
+		<div id="mobileNoResultsFound">
+			<h4>No results found</h4>
+			<p>
+				<a href="#" class="returnToSearch">&laquo; return to search</a>
+			</p>
+		</div>
 	</div>
 
 	<script src="resources/js/html5shiv.js"></script>

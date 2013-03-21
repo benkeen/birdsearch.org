@@ -23,17 +23,22 @@ function getHotspots($regionType, $region, $recency) {
 	$response = curl_exec($ch);
 	curl_close($ch);      
 
-	// no error checking yet...! 
-	$xml = new SimpleXMLElement($response);
-
-	$hotspots = array();
-	foreach ($xml->result[0]->location as $hotspotInfo) {
-		$hotspots[] = array(
-			"i"  => (string) $hotspotInfo->{"loc-id"},
-			"lt" => (float) $hotspotInfo->lat,
-			"lg" => (float) $hotspotInfo->lng,
-			"n"  => (string) $hotspotInfo->{"loc-name"}
-		);
+	$json = "";
+	try {
+		$xml = new SimpleXMLElement($response);
+		$hotspots = array();
+		foreach ($xml->result[0]->location as $hotspotInfo) {
+			$hotspots[] = array(
+				"i"  => (string) $hotspotInfo->{"loc-id"},
+				"lt" => (float) $hotspotInfo->lat,
+				"lg" => (float) $hotspotInfo->lng,
+				"n"  => (string) $hotspotInfo->{"loc-name"}
+			);
+		}
+		$json = json_encode($hotspots);
+	} catch (Exception $e) {
+		$json = "[]";
 	}
-	return json_encode($hotspots);
+
+	return $json;
 }

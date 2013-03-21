@@ -181,6 +181,6 @@ var map = {
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn4).addClass('mapBtnSelected');
 		});
-	},
+	}
 
 };

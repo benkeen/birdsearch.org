@@ -4,12 +4,10 @@ html {
 	font-family: "lucida grande";
 }
 body {
-/*	height: 100%; */
 	margin: 0px;
 	padding: 0px;
 	font-size: 9pt;
 	line-height: 20px;
-	overflow: hidden;
 	font-family: "lucida grande";
 	background: url("../images/bg.png");
 }

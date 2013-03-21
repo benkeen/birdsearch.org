@@ -65,10 +65,7 @@ var manager = {
 		// wonky if the user's system clock is off
 		manager.CURRENT_SERVER_TIME = parseInt($('body').data('serverdatetime'), 10);
 
-		// prep the page elements to ensure they're the right size
 		manager.handleWindowResize();
-
-		// add the appropriate event handlers to detect when the search settings have changed
 		manager.addEventHandlers();
 
 		// set the default values
@@ -77,8 +74,6 @@ var manager = {
 
 		// initialize the map
 		map.initialize();
-
-		// focus!
 		$(manager.searchField).focus();
 	},
 
@@ -86,12 +81,16 @@ var manager = {
 		$('#sidebar form').bind('submit', manager.search);
 		$('#backLeft,#backTop').bind('click', manager.showSearchPage);
 		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
-		$('#fullPageSearchResults').on('click', '.toggle', manager.toggleAllCheckedHotspots);
+		$('#fullPageSearchResults,#locationsTabContent').on('click', '.toggle', manager.toggleAllCheckedHotspots);
 		$('#fullPageSearchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
 		$('#fullPageSearchResults').on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
 		$('#fullPageSearchResults').on('mouseout', 'tbody tr', manager.onHoverOutHotspotRow);
 		$('#birdSpeciesTable').on('click', '.toggleBirdSpeciesLocations', manager.onClickToggleBirdSpeciesLocations);
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
+		$(document).on('click', '.returnToSearch', function() {
+			manager.showSearchPage();
+			$.modal.close();
+		});
 	},
 
 	search: function(e) {
@@ -283,8 +282,11 @@ var manager = {
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
 		if (manager.numVisibleHotspots > 0) {
 			manager.currMobilePage = 'results';
+			manager.displayHotspots();
+		} else {
+			$('#mobileNoResultsFound').modal();
 		}
-		manager.displayHotspots();
+
 	},
 
 	/**
@@ -1055,7 +1057,7 @@ var manager = {
 
 			var panelHeight = windowHeight - 210;
 			$('#mainPanel').css({
-				height: panelHeight + 'px', 
+				height: panelHeight + 'px',
 				width: '100%'
 			});
 		}
