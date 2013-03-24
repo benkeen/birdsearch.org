@@ -10,6 +10,7 @@ body {
 	line-height: 20px;
 	font-family: "lucida grande";
 	background: url("../images/bg.png");
+	overflow: hidden;
 }
 .hidden {
 	display: none;
@@ -149,7 +150,7 @@ header a:hover {
 	width: 32px;
 	height: 32px;
 	background-image: url(../images/loading.gif);
-	margin: 3px;
+	margin: -2px;
 }
 #backTop {
 	display: none;
@@ -538,3 +539,5 @@ footer span a:hover {
 		padding: 7px 0px 7px 10px;
 	}
 }
+
+

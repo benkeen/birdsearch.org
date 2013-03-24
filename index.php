@@ -3,8 +3,14 @@
 <html>
 <head>
 	<title>eBirdsearch.org</title>
-	<meta name="description" content="eBirdsearch.org - browse birding locations and sightings worldwide" />
-	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta name="description" content="eBirdsearch.org - browse birding locations and sightings worldwide" />	
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+
+<!--
+	<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=no" />
+-->
+
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/styles.css" rel="stylesheet" type="text/css" />
@@ -26,21 +32,31 @@
 		<div id="searchOptions" class="sidebarSection">
 			<form>
 				<input type="text" id="searchTextField" />
-				<label for="observationRecency">Show observations made within last:</label>
-				<select id="observationRecency">
-					<option value="1">1 day</option>
-					<option value="2">2 days</option>
-					<option value="3">3 days</option>
-					<option value="4">4 days</option>
-					<option value="5">5 days</option>
-					<option value="6">6 days</option>
-					<option value="7" selected="selected">7 days</option>
-					<option value="10">10 days</option>
-					<option value="15">15 days</option>
-					<option value="20">20 days</option>
-					<option value="25">25 days</option>
-					<option value="30">30 days</option>
-				</select>
+
+				<div>
+					<label for="searchType">Result type:</label>
+					<select id="searchType">
+						<option value="all">All observations</option>
+						<option value="notable">Notable observations</option>
+					</select>
+				</div>
+				<div>
+					<label for="observationRecency">Show observations made within last:</label>
+					<select id="observationRecency">
+						<option value="1">1 day</option>
+						<option value="2">2 days</option>
+						<option value="3">3 days</option>
+						<option value="4">4 days</option>
+						<option value="5">5 days</option>
+						<option value="6">6 days</option>
+						<option value="7" selected="selected">7 days</option>
+						<option value="10">10 days</option>
+						<option value="15">15 days</option>
+						<option value="20">20 days</option>
+						<option value="25">25 days</option>
+						<option value="30">30 days</option>
+					</select>
+				</div>
 				<div>
 					<input type="submit" class="btn" id="search" value="Search &raquo;" />
 					<span id="loadingSpinner"></span>

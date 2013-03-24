@@ -12,10 +12,10 @@ $recency    = $_POST["recency"];
 
 echo getHotspots($regionType, $region, $recency);
 
-
 function getHotspots($regionType, $region, $recency) {
 
-	$url = "http://ebird.org/ws1.1/ref/hotspot/region?rtype=$regionType&r=$region&fmt=xml&back=$recency";
+    $url = "http://ebird.org/ws1.1/ref/hotspot/region?rtype=$regionType&r=$region&fmt=xml&back=$recency";
+//    $url = "http://ebird.org/ws1.1/data/notable/region/recent?rtype=$regionType&r=$region&fmt=xml&back=$recency";
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

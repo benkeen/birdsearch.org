@@ -70,7 +70,7 @@ var manager = {
 
 		// set the default values
 		manager.observationRecency = parseInt($('#observationRecency').val(), 10);
-		manager.searchType = 'all'; // $('#resultType').val();
+		manager.searchType = $('#searchType').val();
 
 		// initialize the map
 		map.initialize();
@@ -81,6 +81,7 @@ var manager = {
 		$('#sidebar form').bind('submit', manager.search);
 		$('#backLeft,#backTop').bind('click', manager.showSearchPage);
 		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
+		$('#searchType').on('change', manager.onChangeSearchType);
 		$('#fullPageSearchResults,#locationsTabContent').on('click', '.toggle', manager.toggleAllCheckedHotspots);
 		$('#fullPageSearchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
 		$('#fullPageSearchResults').on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
@@ -109,21 +110,32 @@ var manager = {
 			}
 			var numAddressComponents = map.currPlace.address_components.length;
 			var countryCode = map.currPlace.address_components[numAddressComponents-1].short_name;
+			var subNational1Code;
 
-			// if the address isn't specific enough, let the user know to provide a more details
-			if (numAddressComponents < 3) {
-				manager.showMessage('Please enter a more specific location.', 'error');
-				return;
+			if (manager.searchType === 'all') {
+
+				// if the address isn't specific enough, let the user know to provide a more details
+				if (numAddressComponents < 3) {
+					manager.showMessage('Please enter a more specific location.', 'error');
+					return;
+				}
+
+				// alrighty, the search was valid. Make a note!
+				map.lastAddressSearchValid = true;
+
+				$('#messageBar').addClass('hidden');
+				subNational1Code = map.currPlace.address_components[numAddressComponents-2].short_name;
+				manager.regionType = 'subnational1';
+				manager.region = countryCode + "-" + subNational1Code;
+				manager.getHotspots();
+			} else {
+				map.lastAddressSearchValid = true;
+				$('#messageBar').addClass('hidden');
+				subNational1Code = map.currPlace.address_components[numAddressComponents-2].short_name;
+				manager.regionType = 'subnational1';
+				manager.region = countryCode + "-" + subNational1Code;
+				manager.getNotableObservations();
 			}
-
-			// alrighty, the search was valid. Make a note!
-			map.lastAddressSearchValid = true;
-
-			$('#messageBar').addClass('hidden');
-			var subNational1Code = map.currPlace.address_components[numAddressComponents-2].short_name;
-			manager.regionType = 'subnational1';
-			manager.region = countryCode + "-" + subNational1Code;
-			manager.getHotspots();
 		}
 	},
 
@@ -132,8 +144,6 @@ var manager = {
 		if (id) {
 			var locationID = id.replace(/^location_/, '');
 			map.markers[locationID].setIcon('resources/images/marker2.png');
-
-			//var zIndex = map.markers[locationID].getZIndex();
 			map.markers[locationID].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
 			manager.currentHoveredRowLocationID = locationID;
 		}
@@ -152,7 +162,6 @@ var manager = {
 	 */
 	onClickToggleBirdSpeciesLocations: function(e) {
 		e.preventDefault();
-
 		var tr = $(e.target).closest('tr');
 
 		// find out if this is the header or just a table row
@@ -167,6 +176,10 @@ var manager = {
 			tr.find('.lastSeenSingle').css('visibility', 'hidden');
 			tr.find('.lastSeenDetails').removeClass('hidden');
 		}
+	},
+
+	onChangeSearchType: function(e) {
+		manager.searchType = $(e.target).val();
 	},
 
 	/**
@@ -212,7 +225,6 @@ var manager = {
 				return;
 			}
 		}
-
 		manager.activeHotspotRequest = true;
 		manager.startLoading();
 
@@ -257,6 +269,52 @@ var manager = {
 		});
 	},
 
+	getNotableObservations: function() {
+		manager.activeHotspotRequest = true;
+		manager.startLoading();
+
+		$.ajax({
+			url: "ajax/getNotableObservations.php",
+			data: {
+				regionType: manager.regionType,
+				region: manager.region,
+				recency: manager.observationRecency
+			},
+			type: "POST",
+			dataType: "json",
+			success: function(response) {
+				// manager.activeHotspotRequest = false;
+
+				// // store the hotspot data. This will probably contain more results than are currently
+				// // needed to display, according to the current viewport. That's cool. The map code
+				// // figures out what needs to be shown and ignores the rest.
+				// if ($.isArray(response)) {
+
+				// 	// make a note that we've performed a search on this region
+				// 	manager.hotspotSearches[searchKey] = {
+				// 		recency: manager.observationRecency
+				// 	};
+
+				// 	for (var i=0; i<response.length; i++) {
+				// 		var locationID = response[i].i;
+				// 		if (!manager.allHotspots.hasOwnProperty(locationID)) {
+				// 			manager.allHotspots[locationID] = response[i];
+				// 		}
+				// 	}
+
+				// 	manager.updatePage(true);
+				// } else {
+				// 	manager.stopLoading();
+				// }
+			},
+			error: function(response) {
+				manager.activeHotspotRequest = false;
+				manager.stopLoading();
+			}
+		});
+
+	},
+
 	/**
 	 * Called after the hotspot locations have been loaded. This adds them to the Google Map and
 	 * starts initiating the observation requests.
@@ -280,13 +338,17 @@ var manager = {
 		// this function does the job of trimming the list for us, if there's > MAX_HOTSPOTS
 		manager.visibleHotspots = map.addMarkers(clearMarkers);
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
-		if (manager.numVisibleHotspots > 0) {
-			manager.currMobilePage = 'results';
+
+		if (manager.currViewportMode === 'desktop') {
 			manager.displayHotspots();
 		} else {
-			$('#mobileNoResultsFound').modal();
+			if (manager.numVisibleHotspots > 0) {
+				manager.currMobilePage = 'results';
+				manager.displayHotspots();
+			} else {
+				$('#mobileNoResultsFound').modal();
+			}
 		}
-
 	},
 
 	/**
