@@ -5,12 +5,6 @@
 	<title>eBirdsearch.org</title>
 	<meta name="description" content="eBirdsearch.org - browse birding locations and sightings worldwide" />	
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
-
-<!--
-	<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-	<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=no" />
--->
-
 	<link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/styles.css" rel="stylesheet" type="text/css" />
@@ -32,7 +26,6 @@
 		<div id="searchOptions" class="sidebarSection">
 			<form>
 				<input type="text" id="searchTextField" />
-
 				<div>
 					<label for="searchType">Result type:</label>
 					<select id="searchType">
@@ -145,15 +138,19 @@
 		</div>
 	</div>
 
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places"></script>
+	<script data-main="resources/js/main" src="resources/js/libs/require-jquery.js"></script>
+
+<!--
 	<script src="resources/js/html5shiv.js"></script>
 	<script src="resources/js/moment.min.js"></script>
 	<script src="resources/js/jquery.min.js"></script>
 	<script src="resources/js/jquery.tablesorter.min.js"></script>
 	<script src="resources/js/jquery.tablesorter.widgets.js"></script>
 	<script src="resources/js/jquery.simplemodal.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places"></script>
 	<script src="resources/js/manager.js"></script>
 	<script src="resources/js/map.js"></script>
+-->
 
 	<?php @include_once("tracking.php"); ?>
 

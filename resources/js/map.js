@@ -1,88 +1,93 @@
 /*jslint browser:true*/
 /*global $:false,google:false,console:false,manager:false*/
-'use strict';
+define([
+	"jquery"
+], function($) {
+	'use strict';
 
+console.log(manager);
 
-var map = {
-
-	defaultMapOptions: {
+	var _defaultMapOptions = {
 		center: new google.maps.LatLng(20, 12),
 		zoom: 2,
 		mapTypeId: google.maps.MapTypeId.TERRAIN,
 		mapTypeControlOptions: { mapTypeIds: [] },
 		streetViewControl: false
-	},
-
-	mapCanvas: null,
-	el: null,
-	currPlace: null,
-	icon: 'resources/images/marker.png',
-	geocoder: null,
-	markers: {},
-	infoWindows: {},
-	lastAddressSearchValid: null,
-	zoomBoundsChangeEnabled: false,
+	};
+	var _mapCanvas = null;
+	var _el = null;
+	var _currPlace = null;
+	var _icon = 'resources/images/marker.png';
+	var _geocoder = null;
+	var _markers = {};
+	var _infoWindows = {};
+	var _lastAddressSearchValid = null;
+	var _zoomBoundsChangeEnabled = false;
 
 
 	/**
 	 * Called by search's init function.
 	 */
-	initialize: function() {
-		map.mapCanvas = $('#mapTabContent')[0];
-		map.el        = new google.maps.Map(map.mapCanvas, map.defaultMapOptions);
-		map.geocoder  = new google.maps.Geocoder();
+	var _init = function() {
+		_mapCanvas = $('#mapTabContent')[0];
+		_el        = new google.maps.Map(_mapCanvas, _defaultMapOptions);
+		_geocoder  = new google.maps.Geocoder();
 
-		map.addCustomControls();
-		map.autocomplete = new google.maps.places.Autocomplete(manager.searchField);
-		map.autocomplete.bindTo('bounds', map.el);
+		_addCustomControls();
+		_autocomplete = new google.maps.places.Autocomplete(manager.searchField);
+		_autocomplete.bindTo('bounds', _el);
 
 		// executed whenever the user selects a place through the auto-complete function
-		google.maps.event.addListener(map.autocomplete, 'place_changed', map.onAutoComplete);
+		google.maps.event.addListener(_autocomplete, 'place_changed', _onAutoComplete);
 
 		// called any time the map has had it's bounds changed
-		google.maps.event.addListener(map.el, 'dragend', map.onMapBoundsChange);
-	},
+		google.maps.event.addListener(_el, 'dragend', _onMapBoundsChange);
+	};
 
-	enableDetectZoomBoundsChange: function() {
-		if (!map.zoomBoundsChangeEnabled) {
-			google.maps.event.addListener(map.el, 'zoom_changed', map.onMapBoundsChange);
-			map.zoomBoundsChangeEnabled = true;
+	var _enableDetectZoomBoundsChange = function() {
+		if (!_zoomBoundsChangeEnabled) {
+			google.maps.event.addListener(_el, 'zoom_changed', _onMapBoundsChange);
+			_zoomBoundsChangeEnabled = true;
 		}
-	},
+	};
 
-	onAutoComplete: function() {
+	var _onAutoComplete = function() {
 		// assume the worst. When the user submits the search form, we'll check it was valid or not
-		map.lastAddressSearchValid = false;
-		map.currPlace = map.autocomplete.getPlace();
-	},
+		_lastAddressSearchValid = false;
+		_currPlace = _autocomplete.getPlace();
+	};
 
-	onMapBoundsChange: function() {
-		if (manager.activeHotspotRequest || !map.lastAddressSearchValid) {
+	var _onMapBoundsChange = function() {
+		if (manager.activeHotspotRequest || !_lastAddressSearchValid) {
 			return;
 		}
-		manager.visibleHotspots = map.addMarkers(false);
+
+		manager.visibleHotspots = _addMarkers({ searchType: manager.searchType, clearMarkers: false });
 		manager.numVisibleHotspots = manager.visibleHotspots.length;
 		manager.displayHotspots();
-	},
+		manager.getAllHotspotObservations();
+	};
 
-	// clears the map. Note that we DON'T reset map.markers. That retains the information loaded for as long as the user's
+	// clears the map. Note that we DON'T reset _markers. That retains the information loaded for as long as the user's
 	// session so we don't re-request the same info from eBird
-	clear: function() {
-		for (var locationID in map.markers) {
-			map.markers[locationID].setMap(null);
+	var _clear = function() {
+		for (var locationID in _markers) {
+			_markers[locationID].setMap(null);
 		}
-	},
+	};
 
 	/**
-	 * Called after the hotspot locations are available, but not necessarily the observations. It intelligently 
-	 * adds the markers, depending on the following:
-	 *   - the location's lat/lng is within the viewport
-	 *   - 
-	 * Note: it only actually CREATES the marker once, adding it to map.markers. 
+	 * Called after the hotspot locations from an "all" or "notable" search. The hotspot data is thus
+	 * available, but not necessarily the observations. It intelligently adds the markers, depending on
+	 * whether the location's lat/lng is within the viewport. Note: it only actually CREATES the marker once, 
+	 * adding it to _markers. Future searches / updates that don't need the marker just hide it.
 	 */
-	addMarkers: function(clearMarkers) {
+	var _addMarkers = function(settings) {
+		var searchType   = settings.searchType;
+		var clearMarkers = settings.clearMarkers;
+
 		if (clearMarkers) {
-			map.clear();
+			_clear();
 		}
 
 		if ($.isEmptyObject(manager.allHotspots)) {
@@ -90,7 +95,8 @@ var map = {
 			return [];
 		}
 
-		var mapBoundary = map.el.getBounds();
+		var hotspotSearchTypeKey = (searchType === 'all') ? 'fromAllObservationSearch' : 'fromNotableObservationSearch';
+		var mapBoundary = _el.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
 		var visibleHotspots = [];
 		var counter = 1;
@@ -108,26 +114,31 @@ var map = {
 				continue;
 			}
 
-			if (map.markers.hasOwnProperty(locationID)) {
-				if (map.markers[locationID].map === null) {
-					map.markers[locationID].setMap(map.el);
+			// check data has been loaded for this particular search (all / notable)
+			if (!manager.allHotspots[locationID][hotspotSearchTypeKey]) {
+				continue;
+			}
+
+			if (_markers.hasOwnProperty(locationID)) {
+				if (_markers[locationID].map === null) {
+					_markers[locationID].setMap(_el);
 				}
 			} else {
-				map.markers[locationID] = new google.maps.Marker({
+				_markers[locationID] = new google.maps.Marker({
 					position: latlng,
-					map: map.el,
+					map: _el,
 					title: currHotspot.n,
-					icon: map.icon,
+					icon: _icon,
 					locationID: locationID
 				});
-				map.infoWindows[locationID] = new google.maps.InfoWindow();
+				_infoWindows[locationID] = new google.maps.InfoWindow();
 
 				(function(marker, infowindow, locationID) {
 					google.maps.event.addListener(marker, 'click', function() {
-						infowindow.setContent(map.getInfoWindowHTML(locationID));
-						infowindow.open(map.el, this);
+						infowindow.setContent(_getInfoWindowHTML(locationID));
+						infowindow.open(_el, this);
 					});
-				})(map.markers[currHotspot.i], map.infoWindows[currHotspot.i], currHotspot.i);
+				})(_markers[currHotspot.i], _infoWindows[currHotspot.i], currHotspot.i);
 			}
 
 			visibleHotspots.push(locationID);
@@ -135,52 +146,55 @@ var map = {
 		}
 
 		return visibleHotspots;
-	},
+	};
 
-
-	getInfoWindowHTML: function(locationID) {
+	var _getInfoWindowHTML = function(locationID) {
 		var numSpecies = manager.allHotspots[locationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal;
 		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
 			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
 			numSpecies + ')</b></a></p></div>';
 
 		return html;
-	},
+	};
 
-
-	addCustomControls: function() {
+	var _addCustomControls = function() {
 		var btn1 = $('<div class="mapBtn mapBtnSelected">Terrain</div>')[0];
 		var btn2 = $('<div class="mapBtn">Road Map</div>')[0];
 		var btn3 = $('<div class="mapBtn">Satellite</div>')[0];
 		var btn4 = $('<div class="mapBtn">Hybrid</div>')[0];
 
 		// add the controls to the map
-		map.el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
-		map.el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
-		map.el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
-		map.el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
+		_el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
+		_el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
+		_el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
+		_el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
 
 		// add the appropriate event handlers
 		google.maps.event.addDomListener(btn1, 'click', function() {
-			map.el.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+			_el.setMapTypeId(google.maps.MapTypeId.TERRAIN);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn1).addClass('mapBtnSelected');
 		});
 		google.maps.event.addDomListener(btn2, 'click', function() {
-			map.el.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+			_el.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn2).addClass('mapBtnSelected');
 		});
 		google.maps.event.addDomListener(btn3, 'click', function() {
-			map.el.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+			_el.setMapTypeId(google.maps.MapTypeId.SATELLITE);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn3).addClass('mapBtnSelected');
 		});
 		google.maps.event.addDomListener(btn4, 'click', function() {
-			map.el.setMapTypeId(google.maps.MapTypeId.HYBRID);
+			_el.setMapTypeId(google.maps.MapTypeId.HYBRID);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn4).addClass('mapBtnSelected');
 		});
-	}
+	};
 
-};
+	return {
+		init: _init,
+		addMarkers: _addMarkers,
+		enableDetectZoomBoundsChange: _enableDetectZoomBoundsChange
+	};
+});
