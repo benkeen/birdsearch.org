@@ -5,8 +5,7 @@ define([
 ], function($) {
 	'use strict';
 
-console.log(manager);
-
+	var _manager = null;
 	var _defaultMapOptions = {
 		center: new google.maps.LatLng(20, 12),
 		zoom: 2,
@@ -23,24 +22,32 @@ console.log(manager);
 	var _infoWindows = {};
 	var _lastAddressSearchValid = null;
 	var _zoomBoundsChangeEnabled = false;
+	var _autocomplete = null;
+
+	// manager helper functions
+	var _hasActiveHotspotRequest = null;
 
 
 	/**
 	 * Called by search's init function.
 	 */
-	var _init = function() {
+	var _init = function(params) {
+		var searchField          = params.searchField;
+		_hasActiveHotspotRequest = params.hasActiveHotspotRequest;
+		_hasActiveHotspotRequest = params.hasActiveHotspotRequest;
+
 		_mapCanvas = $('#mapTabContent')[0];
 		_el        = new google.maps.Map(_mapCanvas, _defaultMapOptions);
 		_geocoder  = new google.maps.Geocoder();
 
 		_addCustomControls();
-		_autocomplete = new google.maps.places.Autocomplete(manager.searchField);
+		_autocomplete = new google.maps.places.Autocomplete(searchField);
 		_autocomplete.bindTo('bounds', _el);
 
 		// executed whenever the user selects a place through the auto-complete function
 		google.maps.event.addListener(_autocomplete, 'place_changed', _onAutoComplete);
 
-		// called any time the map has had it's bounds changed
+		// called any time the map has had its bounds changed
 		google.maps.event.addListener(_el, 'dragend', _onMapBoundsChange);
 	};
 
@@ -58,14 +65,15 @@ console.log(manager);
 	};
 
 	var _onMapBoundsChange = function() {
-		if (manager.activeHotspotRequest || !_lastAddressSearchValid) {
+		if (_hasActiveHotspotRequest() || !_lastAddressSearchValid) {
 			return;
 		}
 
-		manager.visibleHotspots = _addMarkers({ searchType: manager.searchType, clearMarkers: false });
-		manager.numVisibleHotspots = manager.visibleHotspots.length;
-		manager.displayHotspots();
-		manager.getAllHotspotObservations();
+		var visibileHotspots = _addMarkers({
+			searchType: _manager.getSearchType(),
+			clearMarkers: false
+		});
+		_manager.onMapBoundaryUpdate(visibleHotspots);
 	};
 
 	// clears the map. Note that we DON'T reset _markers. That retains the information loaded for as long as the user's
@@ -90,8 +98,8 @@ console.log(manager);
 			_clear();
 		}
 
-		if ($.isEmptyObject(manager.allHotspots)) {
-			manager.stopLoading();
+		if ($.isEmptyObject(_manager.allHotspots)) {
+			_manager.stopLoading();
 			return [];
 		}
 
@@ -100,22 +108,22 @@ console.log(manager);
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
 		var visibleHotspots = [];
 		var counter = 1;
-		manager.maxHotspotsReached = false;
+		_manager.maxHotspotsReached = false;
 
-		for (var locationID in manager.allHotspots) {
-			if (counter > manager.MAX_HOTSPOTS) {
-				manager.maxHotspotsReached = true;
+		for (var locationID in _manager.allHotspots) {
+			if (counter > _manager.MAX_HOTSPOTS) {
+				_manager.maxHotspotsReached = true;
 				continue;
 			}
 
-			var currHotspot = manager.allHotspots[locationID];
+			var currHotspot = _manager.allHotspots[locationID];
 			var latlng = new google.maps.LatLng(currHotspot.lt, currHotspot.lg);
 			if (!boundsObj.contains(latlng)) {
 				continue;
 			}
 
 			// check data has been loaded for this particular search (all / notable)
-			if (!manager.allHotspots[locationID][hotspotSearchTypeKey]) {
+			if (!_manager.allHotspots[locationID][hotspotSearchTypeKey]) {
 				continue;
 			}
 
@@ -149,7 +157,7 @@ console.log(manager);
 	};
 
 	var _getInfoWindowHTML = function(locationID) {
-		var numSpecies = manager.allHotspots[locationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal;
+		var numSpecies = _manager.allHotspots[locationID].observations[_manager.searchType][_manager.observationRecency + 'day'].numSpeciesRunningTotal;
 		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
 			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
 			numSpecies + ')</b></a></p></div>';

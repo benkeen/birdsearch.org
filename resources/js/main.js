@@ -7,12 +7,12 @@ requirejs.config({
 		'tablesorter': 'jquery'
     }
 });
+
 require([
 	'jquery',
-	'manager',
-	'map',
-	'tablesorter'
-], function($, manager, map) {
+	'manager'
+], function($, manager) {
+	'use strict';
+
 	manager.init();
-	map.init();
 });

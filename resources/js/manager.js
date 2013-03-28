@@ -2,8 +2,9 @@
 /*global $:false,map:false,google:false,console:false,moment:false*/
 define([
 	"jquery",
+	"map",
 	"tablesorter"
-], function($) {
+], function($, map) {
 
 	'use strict';
 
@@ -24,10 +25,11 @@ define([
 	var _speciesInVisibleHotspots = {};
 	var _numSpeciesInVisibleHotspots = 0;
 
-	
+	// DOM fields
 	var _searchField = null;
 
-var _regionType = null;
+
+	var _regionType = null;
 	var _region = null;
 	var _observationRecency = null;
 	var _searchType = null; // all, notable
@@ -44,6 +46,7 @@ var _regionType = null;
 	var _currViewportMode = null; // mobilePortrait / mobileLandscape / desktop
 	var _currMobilePage = 'search'; // search / results
 
+	// constants
 	var _CURRENT_SERVER_TIME = null;
 	var _ONE_DAY_IN_SECONDS = 24 * 60 * 60;
 	var _MAX_HOTSPOTS = 50;
@@ -66,6 +69,9 @@ var _regionType = null;
 		_observationRecency = parseInt($('#observationRecency').val(), 10);
 		_searchType = $('#searchType').val();
 		$(manager.searchField).focus();
+
+		// initialize the map
+		map.init();
 	};
 
 
@@ -163,10 +169,6 @@ var _regionType = null;
 		}
 	};
 
-
-	var _getSearchType = function() {
-		return _searchType;
-	};
 
 	var search = function(e) {
 		e.preventDefault();
@@ -1211,6 +1213,28 @@ var _regionType = null;
 		}
 	};
 
+
+	var _getSearchType = function() {
+		return _searchType;
+	};
+
+	var _getSearchFieldElement = function() {
+		return _searchField;
+	};
+
+	var _hasActiveHotspotRequest = function() {
+		return _activeHotspotRequest;
+	};
+
+	var _onMapBoundaryUpdate = function(visibleHotspots) {
+		manager.visibleHotspots = visibleHotspots;
+		manager.numVisibleHotspots = manager.visibleHotspots.length;
+		manager.displayHotspots();
+		manager.getAllHotspotObservations();
+	};
+
+
+	// move to separate file
 	$.tablesorter.addParser({
 		id: 'species',
 		is: function() {
@@ -1222,13 +1246,13 @@ var _regionType = null;
 		type: 'numeric'
 	});
 
+
 	// our public API
 	return {
-
-		// called once by main.js
 		init: _init,
-
-		getSearchType: _getSearchType
-
+		getSearchType: _getSearchType,
+		getSearchFieldElement: _getSearchFieldElement,
+		hasActiveHotspotRequest: _hasActiveHotspotRequest,
+		onMapBoundaryUpdate: _onMapBoundaryUpdate
 	};
 });
