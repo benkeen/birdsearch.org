@@ -25,15 +25,18 @@ define([
 	var _speciesInVisibleHotspots = {};
 	var _numSpeciesInVisibleHotspots = 0;
 
+<<<<<<< HEAD
 	// DOM fields
 	var _searchField = null;
 
 
+=======
+>>>>>>> sync
 	var _regionType = null;
 	var _region = null;
 	var _observationRecency = null;
 	var _searchType = null; // all, notable
-
+	
 	var _activeHotspotRequest = false;
 	var _currTabID = 'mapTab';
 	var _currentHoveredRowLocationID = null;
