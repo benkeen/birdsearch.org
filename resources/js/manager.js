@@ -18,27 +18,6 @@ var manager = {
 	allHotspots: {},
 
 	// keeps track of all species currently in the visible subset of hotspots
-<<<<<<< HEAD
-	var _speciesInVisibleHotspots = {};
-	var _numSpeciesInVisibleHotspots = 0;
-
-<<<<<<< HEAD
-	// DOM fields
-	var _searchField = null;
-
-
-=======
->>>>>>> sync
-	var _regionType = null;
-	var _region = null;
-	var _observationRecency = null;
-	var _searchType = null; // all, notable
-	
-	var _activeHotspotRequest = false;
-	var _currTabID = 'mapTab';
-	var _currentHoveredRowLocationID = null;
-	var _maxHotspotsReached = false;
-=======
 	speciesInVisibleHotspots: {},
 	numSpeciesInVisibleHotspots: 0,
 
@@ -51,7 +30,6 @@ var manager = {
 	currTabID: 'mapTab',
 	currentHoveredRowLocationID: null,
 	maxHotspotsReached: false,
->>>>>>> Failed to figure out how to properly revert trunk, so manually reset to 1.0.0 state
 
 	// keeps track of whether the Location column in the Bird Species tab should be expanded or not
 	birdSpeciesLocationDetailsExpanded: false,
