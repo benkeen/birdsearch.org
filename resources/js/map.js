@@ -60,7 +60,6 @@ var map = {
 			map.el.setZoom(17);
 		}
 		var numAddressComponents = place.address_components.length;
-		var countryCode = place.address_components[numAddressComponents-1].short_name;
 
 		// if the address isn't specific enough, let the user know to provide a more details
 		if (numAddressComponents < 3) {
@@ -71,11 +70,12 @@ var map = {
 		// alrighty, the search was valid. Make a note!
 		map.lastAddressSearchValid = true;
 
+		var currLatLng = map.el.getCenter();
+
 		$('#messageBar').addClass('hidden');
-		var subNational1Code = place.address_components[numAddressComponents-2].short_name;
-		manager.regionType = 'subnational1';
-		manager.region = countryCode + "-" + subNational1Code;
-		manager.getHotspots();
+		manager.lat = currLatLng.lat();
+		manager.lng = currLatLng.lng();
+		manager.getObservations();
 	},
 
 	onMapBoundsChange: function() {

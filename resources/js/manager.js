@@ -21,8 +21,8 @@ var manager = {
 	speciesInVisibleHotspots: {},
 	numSpeciesInVisibleHotspots: 0,
 
-	regionType: null,
-	region: null,
+	lat: null,
+	lng: null,
 	observationRecency: null,
 	searchType: null, // all, notable
 	searchField: null,
@@ -80,10 +80,12 @@ var manager = {
 	addEventHandlers: function() {
 		$('#observationRecency').bind('change', manager.onChangeObservationRecency);
 		$('#panelTabs').on('click', 'li', manager.onClickSelectTab);
-		$('#searchResults').on('click', '.toggle', manager.toggleAllCheckedHotspots);
-		$('#searchResults').on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
-		$('#searchResults').on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
-		$('#searchResults').on('mouseout', 'tbody tr', manager.onHoverOutHotspotRow);
+
+		var searchResults = $('#searchResults');
+		searchResults.on('click', '.toggle', manager.toggleAllCheckedHotspots);
+		searchResults.on('click', 'tbody input', manager.toggleSingleCheckedHotspot);
+		searchResults.on('mouseover', 'tbody tr', manager.onHoverHotspotRow);
+		searchResults.on('mouseout', 'tbody tr', manager.onHoverOutHotspotRow);
 		$('#birdSpeciesTable').on('click', '.toggleBirdSpeciesLocations', manager.onClickToggleBirdSpeciesLocations);
 		$(document).on('click', '.viewLocationBirds', manager.displaySingleHotspotBirdSpecies);
 	},
@@ -92,7 +94,7 @@ var manager = {
 		manager.observationRecency = parseInt($(e.target).val(), 10);
 		var address = $.trim(manager.searchField.value);
 		if (address !== '') {
-			manager.getHotspots();
+			manager.getObservations();
 		}
 	},
 
@@ -162,7 +164,7 @@ var manager = {
 	/**
 	 * Retrieves all hotspots for a region.
 	 */
-	getHotspots: function() {
+	getObservations: function() {
 
 		// if a hotspot search for this regionType, region and <= recency has already been made, don't bother doing another.
 		// We can safely do this because the original request will retrieve ALL locations, just not request their observations
@@ -183,11 +185,10 @@ var manager = {
 		manager.startLoading();
 
 		$.ajax({
-			url: "ajax/getHotspots.php",
+			url: "ajax/getHotspotsByLatLng.php",
 			data: {
-				regionType: manager.regionType,
-				region: manager.region,
-				recency: manager.observationRecency
+				lat: manager.lat,
+				lng: manager.lng
 			},
 			type: "POST",
 			dataType: "json",

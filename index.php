@@ -31,13 +31,12 @@
 	<section id="sidebar">
 		<div id="searchOptions" class="sidebarSection">
 			<input type="text" id="searchTextField" />
-			<!--
+
 			<label for="resultType">Result type:</label>
 			<select id="resultType">
 				<option value="all">All reported sightings</option>
 				<option value="notable">Notable species</option>
 			</select>
-			-->
 
 			<div id="specificSpeciesSection"></div>
 
@@ -56,7 +55,16 @@
 				<option value="25">25 days</option>
 				<option value="30">30 days</option>
 			</select>
-			<span id="loadingSpinner"></span>
+
+			<div>
+				<input type="checkbox" id="hotspotsOnly" />
+				<label for="hotspotsOnly">Show hotspots only</label>
+			</div>
+
+			<div>
+				<input type="submit" class="btn" id="search" value="Search &raquo;" />
+				<span id="loadingSpinner"></span>
+			</div>
 		</div>
 		<div id="messageBar"></div>
 		<div id="searchResults" class="sidebarSection hidden"></div>

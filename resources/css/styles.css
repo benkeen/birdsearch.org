@@ -375,6 +375,12 @@ footer span a:hover {
 	font-weight: bold;
 }
 
+#hotspotsOnly {
+    float: left;
+    margin-right: 8px;
+}
+
+
 /*
  * SimpleModal Basic Modal Dialog
  * http://simplemodal.com
