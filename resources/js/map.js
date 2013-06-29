@@ -40,6 +40,8 @@ var map = {
 		// called any time the map has had it's bounds changed
 		google.maps.event.addListener(map.el, 'dragend', map.onMapBoundsChange);
 		google.maps.event.addListener(map.el, 'zoom_changed', map.onMapBoundsChange);
+
+		maps.RadiusWidget.prototype = new google.maps.MVCObject();
 	},
 
 	onAutoComplete: function() {
@@ -204,5 +206,18 @@ var map = {
 			$(btn4).addClass('mapBtnSelected');
 		});
 	},
+
+	RadiusWidget: function() {
+		var circle = new google.maps.Circle({
+			strokeWeight: 1
+		});
+
+		// Set the distance property value, default to 50km.
+		this.set('distance', 50);
+		this.bindTo('bounds', circle);
+		circle.bindTo('center', this);
+		circle.bindTo('map', this);
+		circle.bindTo('radius', this);
+	}
 
 };

@@ -16,14 +16,9 @@ echo getHotspots($regionType, $region, $recency);
 function getHotspots($regionType, $region, $recency) {
 	$url = "http://ebird.org/ws1.1/ref/hotspot/region?rtype=$regionType&r=$region&fmt=xml&back=$recency";
 
-
-
-
 	// http://ebird.org/ws1.1/data/obs/geo/recent
 
-
 	// http://ebird.org/ws1.1/ref/hotspot/geo -> be nice...! 50KM radius
-
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
