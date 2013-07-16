@@ -225,9 +225,9 @@ define([
 						for (var i=0; i<response.length; i++) {
 							var locationID = response[i].i;
 							if (!manager.allHotspots.hasOwnProperty(locationID)) {
-								
+
 								//response[i].fromAllObservationSearch = true;
-								
+
 								manager.allHotspots[locationID] = response[i];
 								manager.prepareHotspotDataStructure(locationID);
 							}
@@ -354,7 +354,7 @@ define([
 		},
 
 		/**
-		 * Loop through all hotspots returned and if we don't have the 'all observation' data already loaded for it, 
+		 * Loop through all hotspots returned and if we don't have the 'all observation' data already loaded for it,
 		 * fire off an Ajax request for it.
 		 */
 		getAllHotspotObservations: function() {
@@ -383,7 +383,7 @@ define([
 			}
 
 			// if we didn't just put through a new request, the user just searched a subset of what's already been loaded.
-			// update the 
+			// update the
 			if (!hasAtLeastOneRequest) {
 				manager.updateSpeciesData();
 				manager.updateSpeciesTab();
@@ -497,7 +497,7 @@ define([
 				locationObj[key].numSpecies = locationObj[key].data.length;
 			}
 
-			// now add the numSpeciesRunningTotal property. This is the running total seen in that time 
+			// now add the numSpeciesRunningTotal property. This is the running total seen in that time
 			// range: e.g. 3 days would include the total species seen in that day, and 2 days and 1 day
 
 			var days = manager.SEARCH_DAYS.length;
@@ -576,7 +576,7 @@ define([
 				}
 				$('#hotspotTable').tablesorter({
 					headers: { 2: { sorter: 'species' } }
-				});			
+				});
 			} else {
 				manager.showMessage('No birding locations found', 'notification');
 				$('#fullPageSearchResults').fadeOut(300);
@@ -724,14 +724,14 @@ define([
 		// this should really be templated...!
 		generateHotspotTable: function(visibleHotspots) {
 			var html = '<table class="tablesorter tablesorter-bootstrap table table-bordered table-striped" id="hotspotTable">' +
-					'<thead>' +
-					'<tr>' +
-						'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" title="Select / Unselect all" /></th>' +
-						'<th>LOCATION</th>' +
-						'<th class="sorter-species" width="40">SPECIES</th>' +
-					'</tr>' +
-					'</thead>' +
-					'<tbody>';
+				'<thead>' +
+				'<tr>' +
+				'<th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" title="Select / Unselect all" /></th>' +
+				'<th>LOCATION</th>' +
+				'<th class="sorter-species" width="40">SPECIES</th>' +
+				'</tr>' +
+				'</thead>' +
+				'<tbody>';
 
 			for (var i=0; i<visibleHotspots.length; i++) {
 				var currLocationID = visibleHotspots[i];
@@ -751,10 +751,10 @@ define([
 				}
 
 				html += '<tr id="location_' + currLocationID + '">' +
-						'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
-						'<td class="loadingStatus' + rowClass + '">' + '<label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
-						'<td class="sp"><span class="speciesCount">' + numSpeciesWithinRange + '</span></td>' +
-						'</tr>';
+					'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
+					'<td class="loadingStatus' + rowClass + '">' + '<label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
+					'<td class="sp"><span class="speciesCount">' + numSpeciesWithinRange + '</span></td>' +
+					'</tr>';
 			}
 			html += '</tbody></table>';
 
@@ -773,25 +773,25 @@ define([
 			var dateFormat = '';
 			if (manager.currViewportMode === 'desktop') {
 				html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
-						'<thead>' +
-						'<tr>' +
-							'<th>Species Name</th>' +
-							'<th>Scientific Name</th>' +
-							'<th class="{ sorter: false }">Locations&nbsp;Seen&nbsp;<a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
-							'<th width="110" nowrap>Last Seen</th>' +
-							'<th nowrap># Reported</th>' +
-						'</tr>' +
-						'</thead><tbody>';
+					'<thead>' +
+					'<tr>' +
+					'<th>Species Name</th>' +
+					'<th>Scientific Name</th>' +
+					'<th class="{ sorter: false }">Locations&nbsp;Seen&nbsp;<a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
+					'<th width="110" nowrap>Last Seen</th>' +
+					'<th nowrap># Reported</th>' +
+					'</tr>' +
+					'</thead><tbody>';
 				dateFormat = 'MMM Do, h:mm a';
 			} else {
 				html = '<table class="tablesorter-bootstrap" cellpadding="2" cellspacing="0" id="speciesTable">' +
-						'<thead>' +
-						'<tr>' +
-							'<th>Species</th>' +
-							'<th>Locations&nbsp;<a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
-							'<th nowrap>Last Seen</th>' +
-						'</tr>' +
-						'</thead><tbody>';
+					'<thead>' +
+					'<tr>' +
+					'<th>Species</th>' +
+					'<th>Locations&nbsp;<a href="#" class="toggleBirdSpeciesLocations">(' + chr + ')</a></th>' +
+					'<th nowrap>Last Seen</th>' +
+					'</tr>' +
+					'</thead><tbody>';
 				dateFormat = 'MMM D, h:mma';
 			}
 
@@ -873,13 +873,13 @@ define([
 						'<td>' + locationsHTML + '</td>' +
 						'<td>' + lastSeenHTML + '</td>' +
 						'<td>' + howManyCount + '</td>' +
-					'</tr>';
+						'</tr>';
 				} else {
 					html += '<tr>' +
 						'<td>' + manager.speciesInVisibleHotspots[i].comName + '</td>' +
 						'<td>' + locationsHTML + '</td>' +
 						'<td>' + lastSeenHTML + '</td>' +
-					'</tr>';
+						'</tr>';
 				}
 
 				speciesCount++;
@@ -936,7 +936,7 @@ define([
 				widgets: ['zebra', 'columns', 'uitheme']
 			});
 
-			// now assign the evernt handler for the header's (-) / (+) option. We need to do directly target the element 
+			// now assign the evernt handler for the header's (-) / (+) option. We need to do directly target the element
 			// instead of event delegating it because we want to prevent the tablesort event
 			$('#birdSpeciesTable th .toggleBirdSpeciesLocations').on('mouseup', manager.onMouseUpToggleAllBirdSpeciesLocation);
 		},
@@ -1043,14 +1043,14 @@ define([
 		},
 
 		/**
-		 * Called when the user switches from one mode (desktop / mobile) to another. It ensures the 
-		 * appropriate page elements are re-created. 
+		 * Called when the user switches from one mode (desktop / mobile) to another. It ensures the
+		 * appropriate page elements are re-created.
 		 */
 		convertPagetoMode: function(mode) {
 			if (mode == 'desktop') {
 
 			} else if (mode == 'mobilePortrait') {
-					// currMobilePage: 'search', // search / results
+				// currMobilePage: 'search', // search / results
 
 			} else if (mode == 'mobileLandscape') {
 

@@ -4,13 +4,13 @@ html {
 	font-family: "lucida grande";
 }
 body {
-	height: 100%;
 	margin: 0px;
 	padding: 0px;
 	font-size: 9pt;
 	line-height: 20px;
-	overflow: hidden;
 	font-family: "lucida grande";
+	background: url("../images/bg.png");
+	overflow: hidden;
 }
 .hidden {
 	display: none;
@@ -25,9 +25,9 @@ a:link, a:visited {
 .lightGrey {
 	color: #cccccc;
 }
-section {
+/*section {
 	background: url(../images/bg.png);
-}
+}*/
 
 /* top row */
 header {
@@ -96,6 +96,9 @@ header a:hover {
 	text-shadow: 1px 1px #ffffff;
 	margin-left: 2px;
 }
+#sidebar form {
+	margin: 0px;
+}
 #searchOptions {
 	background: url(../images/sidebar_bg.png);
 	border-bottom: 1px solid #ffffff;
@@ -117,19 +120,19 @@ header a:hover {
 #searchResultsSection {
 	background-color: #f9f9f9;
 }
-#searchResults {
+#fullPageSearchResults {
 	font-size: 10pt;
 	overflow-y: auto;
 	padding: 0px;
 }
-#searchResults table {
+#fullPageSearchResults table {
 	margin-bottom: 0px;
 }
-#searchResults td, #searchResults th {
+#fullPageSearchResults td, #fullPageSearchResults th {
 	vertical-align: top;
 	text-align: left;
 }
-#searchResults .table-bordered th, #searchResults .table-bordered td {
+#fullPageSearchResults .table-bordered th, #fullPageSearchResults .table-bordered td {
 	border: 0px;
 }
 .loadingStatus {
@@ -147,9 +150,30 @@ header a:hover {
 	width: 32px;
 	height: 32px;
 	background-image: url(../images/loading.gif);
-	margin: 3px;
+	margin: -2px;
 }
-
+#backTop {
+	display: none;
+	padding: 6px 6px 6px 12px;
+}
+#backLeft {
+	display: none;
+	width: 50px;
+	background-color: #efefef;
+	position: absolute;
+	left: 0px;
+	height: 1000px;
+	cursor: pointer;
+}
+#backLeft div {
+	width: 0; 
+	height: 0; 
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent; 
+	border-right: 20px solid #666666; 
+	margin-left: 12px;
+	position: absolute;
+}
 
 /* main body */
 #mapTabContent {
@@ -175,6 +199,9 @@ header a:hover {
 	margin-right: 1px;
 	cursor: pointer;
 }
+#panelTabs li span {
+	color: #777777;
+}
 #panelTabs li.selected {
 	background: #333333;
 	background: -moz-linear-gradient(top,  #333333 0%, #212121 100%);
@@ -185,6 +212,9 @@ header a:hover {
 	background: linear-gradient(to bottom,  #333333 0%,#212121 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#333333', endColorstr='#212121',GradientType=0 );
 	color: white;
+}
+#panelTabs li.selected span {
+	color: #d5e3ff;
 }
 #panelTabs li.disabled {
 	color: #999999;
@@ -200,6 +230,9 @@ header a:hover {
 	height: 100%;
 	overflow-y: scroll;
 	overflow-x: hidden;
+}
+#locationsTabContent {
+	height: 100%;
 }
 #birdSpeciesTable p {
 	padding: 10px;
@@ -264,7 +297,6 @@ header a:hover {
 	-webkit-box-shadow:0 1px 0 0 rgba(255,255,255,0.5) inset;
 	-o-box-shadow:0 1px 0 0 rgba(255,255,255,0.5) inset;
 	clear: both;
-	display: block;
 	font-size: 12px;
 	font-weight: normal;
 	line-height: 20px;
@@ -375,12 +407,6 @@ footer span a:hover {
 	font-weight: bold;
 }
 
-#hotspotsOnly {
-    float: left;
-    margin-right: 8px;
-}
-
-
 /*
  * SimpleModal Basic Modal Dialog
  * http://simplemodal.com
@@ -390,7 +416,6 @@ footer span a:hover {
  * Licensed under the MIT license:
  *   http://www.opensource.org/licenses/mit-license.php
  */
-
 #basic-modal-content {display:none;}
 
 /* Overlay */
@@ -413,3 +438,106 @@ footer span a:hover {
 	margin: 0px 0px 10px;
 	font-size: 24px;
 }
+
+
+/* Mobile phones: portrait */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+	#backTop {
+		display: block;
+	}
+	#backLeft {
+		display: none;
+	}
+}
+
+/* Mobile phones: landscape */
+@media screen and (max-width: 640px) and (orientation: landscape) {
+	#backTop {
+		display: none;
+	}
+	body.viewingResults #backLeft {
+		display: block;
+	}
+	#mainPanel {
+		margin-left: 50px;
+	}
+	#simplemodal-container {
+		height: 80%;
+		width: 80%;
+	}
+	footer {
+		display: none;
+	}
+}
+
+/* Mobile phones: portrait or landscape */
+@media screen and (max-width: 640px) {
+	header ul {
+		display: none;
+	}
+	#searchTextField {
+		width: 97%;
+	}
+	#sidebar {
+		width: 100%;
+		position: relative;
+		top: auto;
+		border-bottom: none;
+	}
+	#sidebar label {
+		display: inline;
+	}
+	#fullPageSearchResults {
+		display: none;
+	}
+	#panelTabs {
+		width: 500px;
+		overflow: hidden;
+	}
+	#panelTabs li {
+		padding: 5px 15px;
+		margin-top: 2px;
+	}
+	#mainPanel {
+		display: none;
+		clear: both;
+		position: relative;
+		top: auto;
+		left: auto;
+		height: 100px;
+		width: 100%;
+		padding: 0px;
+	}
+	body.viewingResults #sidebar {
+		display: none;
+	}
+	body.viewingResults #mainPanel {
+		display: block;
+	}
+	#hotspotTable {
+		border-top: none;
+	}
+	#birdSpeciesTable td {
+		font-size: 8pt;
+	}
+	#birdSpeciesTable p {
+		font-size: 8pt;
+	}
+	#locationsTabContent, #birdSpeciesTabContent {
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+	body .tablesorter-header-inner {
+		font-size: 9pt;
+	}
+	body .tablesorter-bootstrap .tablesorter-header {
+		padding: 0px;
+	}
+
+	footer {
+		width: 100%;
+		padding: 7px 0px 7px 10px;
+	}
+}
+
+

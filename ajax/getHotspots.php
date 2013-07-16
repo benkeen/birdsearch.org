@@ -12,13 +12,10 @@ $recency    = $_POST["recency"];
 
 echo getHotspots($regionType, $region, $recency);
 
-
 function getHotspots($regionType, $region, $recency) {
-	$url = "http://ebird.org/ws1.1/ref/hotspot/region?rtype=$regionType&r=$region&fmt=xml&back=$recency";
 
-	// http://ebird.org/ws1.1/data/obs/geo/recent
-
-	// http://ebird.org/ws1.1/ref/hotspot/geo -> be nice...! 50KM radius
+    $url = "http://ebird.org/ws1.1/ref/hotspot/region?rtype=$regionType&r=$region&fmt=xml&back=$recency";
+//    $url = "http://ebird.org/ws1.1/data/notable/region/recent?rtype=$regionType&r=$region&fmt=xml&back=$recency";
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
@@ -26,17 +23,22 @@ function getHotspots($regionType, $region, $recency) {
 	$response = curl_exec($ch);
 	curl_close($ch);      
 
-	// no error checking yet...! 
-	$xml = new SimpleXMLElement($response);
-
-	$hotspots = array();
-	foreach ($xml->result[0]->location as $hotspotInfo) {
-		$hotspots[] = array(
-			"i"  => (string) $hotspotInfo->{"loc-id"},
-			"lt" => (float) $hotspotInfo->lat,
-			"lg" => (float) $hotspotInfo->lng,
-			"n"  => (string) $hotspotInfo->{"loc-name"}
-		);
+	$json = "";
+	try {
+		$xml = new SimpleXMLElement($response);
+		$hotspots = array();
+		foreach ($xml->result[0]->location as $hotspotInfo) {
+			$hotspots[] = array(
+				"i"  => (string) $hotspotInfo->{"loc-id"},
+				"lt" => (float) $hotspotInfo->lat,
+				"lg" => (float) $hotspotInfo->lng,
+				"n"  => (string) $hotspotInfo->{"loc-name"}
+			);
+		}
+		$json = json_encode($hotspots);
+	} catch (Exception $e) {
+		$json = "[]";
 	}
-	return json_encode($hotspots);
+
+	return $json;
 }
