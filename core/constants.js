@@ -8,5 +8,10 @@ define([], function() {
 		GITHUB_URL:   "https://github.com/benkeen/eBirdsearch.org"
 	};
 
+	_CONSTANTS.EVENT = {
+		ABOUT_LINK_CLICK: "about-link-click",
+		CONTACT_LINK_CLICK: "contact-link-click"
+	};
+
 	return _CONSTANTS;
 });
