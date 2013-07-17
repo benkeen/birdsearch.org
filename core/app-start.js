@@ -5,7 +5,7 @@ require([
 	"sidebar",
 	"about"
 ], function(manager) {
-	'use strict';
+	"use strict";
 
 	manager.start();
 });

@@ -18,7 +18,12 @@ define([
 
 	var _runAll = function() {
 		for (var i in _modules) {
-			_modules[i].run();
+			try {
+				console.log("run: ", i);
+				_modules[i].run();
+			} catch(e) {
+				console.log("error:", i);
+			}
 		}
 	};
 
@@ -30,6 +35,8 @@ define([
 		}, settings);
 
 		_modules[moduleID] = moduleConfig;
+
+		console.log("registered: ",moduleID);
 	};
 
 	var _publish = function() {

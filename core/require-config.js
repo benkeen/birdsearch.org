@@ -6,11 +6,13 @@ requirejs.config({
 		"constants": "core/constants",
 		"header": "modules/header/header",
 		"headerTemplate": "modules/header/header.html",
+		"footer": "modules/footer/footer",
+		"footerTemplate": "modules/footer/footer.html",
 		"sidebar": "modules/sidebar/sidebar",
 		"sidebarTemplate": "modules/sidebar/sidebar.html",
 
 		"about": "modules/about/about",
-		"aboutTemplate": "modules/about/aboutTemplate",
+		"aboutTemplate": "modules/about/about.html",
 
 		'tablesorter': "libs/jquery.tablesorter.min",
 		'simplemodal': "libs/jquery.simplemodal.min",

@@ -8,8 +8,11 @@ define([
 
 
 	var _run = function() {
+		console.log("!")
+
 		$("header").html(template);
-		_addEventHandlers();
+
+		//_addEventHandlers();
 	};
 
 	var _addEventHandlers = function() {
