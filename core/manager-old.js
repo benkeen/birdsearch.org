@@ -544,7 +544,7 @@ define([
 		},
 
 		/**
-		 * Gets called by map.js after the markers have been added to the map. This updates the sidebar and
+		 * Gets called by map-old.js after the markers have been added to the map. This updates the sidebar and
 		 * starts requesting the hotspot observation data. This is called any time the map bounds change.
 		 */
 		displayHotspots: function() {

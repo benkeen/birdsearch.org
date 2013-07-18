@@ -3,6 +3,7 @@ define([
 	"constants",
 	"text!footerTemplate"
 ], function(manager, C, template) {
+	"use strict";
 
 	var MODULE_ID = "footer";
 

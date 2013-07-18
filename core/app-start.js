@@ -1,11 +1,12 @@
 require([
 	"manager",
-	"header",
-	"footer",
-	"sidebar",
-	"about"
+	"simplemodal"
 ], function(manager) {
 	"use strict";
 
-	manager.start();
+	// load all page components, then start up the app
+	var pageComponents = ["header", "footer", "sidebar", "mainPanel", "about", "contact"];
+	require(pageComponents, function() {
+		manager.start();
+	});
 });

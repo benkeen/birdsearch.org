@@ -3,16 +3,14 @@ define([
 	"constants",
 	"text!headerTemplate"
 ], function(manager, C, template) {
+	"use strict";
 
 	var MODULE_ID = "header";
 
 
 	var _run = function() {
-		console.log("!")
-
 		$("header").html(template);
-
-		//_addEventHandlers();
+		_addEventHandlers();
 	};
 
 	var _addEventHandlers = function() {

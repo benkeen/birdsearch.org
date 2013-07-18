@@ -13,7 +13,7 @@ define([
 	};
 
 	var _openAboutModal = function() {
-		console.log("open modal!");
+		$.modal(template);
 	};
 
 	manager.register(MODULE_ID, {

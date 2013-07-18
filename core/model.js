@@ -26,7 +26,6 @@ define([
 	var _numSpeciesInVisibleHotspots = 0;
 
 
-
 	var _regionType = null;
 	var _region = null;
 	var _observationRecency = null;
@@ -544,7 +543,7 @@ define([
 		},
 
 		/**
-		 * Gets called by map.js after the markers have been added to the map. This updates the sidebar and
+		 * Gets called by map-old.js after the markers have been added to the map. This updates the sidebar and
 		 * starts requesting the hotspot observation data. This is called any time the map bounds change.
 		 */
 		displayHotspots: function() {
@@ -637,31 +636,6 @@ define([
 			}
 		},
 
-		onClickSelectTab: function(e) {
-			var tab = e.target;
-			if ($(tab).hasClass('disabled')) {
-				return;
-			}
-			var tabID = $(tab).attr("id");
-			manager.selectTab(tabID);
-		},
-
-		selectTab: function(tabID) {
-			if (tabID == manager.currTabID) {
-				return;
-			}
-
-			$('#panelTabs li').removeClass('selected');
-			$('#' + tabID).addClass('selected');
-			$('#' + manager.currTabID + 'Content').addClass('hidden');
-			$('#' + tabID + 'Content').removeClass('hidden');
-
-			if (tabID == 'mapTab') {
-				manager.redrawMap();
-			}
-
-			manager.currTabID = tabID;
-		},
 
 		toggleAllCheckedHotspots: function(e) {
 			var isChecked = e.target.checked;

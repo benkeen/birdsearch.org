@@ -10,12 +10,17 @@ requirejs.config({
 		"footerTemplate": "modules/footer/footer.html",
 		"sidebar": "modules/sidebar/sidebar",
 		"sidebarTemplate": "modules/sidebar/sidebar.html",
-
 		"about": "modules/about/about",
 		"aboutTemplate": "modules/about/about.html",
+		"contact": "modules/contact/contact",
+		"contactTemplate": "modules/contact/contact.html",
+		"mainPanel": "modules/mainPanel/mainPanel",
+		"mainPanelTemplate": "modules/mainPanel/mainPanel.html",
+
+		"map": "modules/map/map",
 
 		'tablesorter': "libs/jquery.tablesorter.min",
-		'simplemodal': "libs/jquery.simplemodal.min",
+		'simplemodal': "libs/jquery.simplemodal",
 		"underscore": "libs/underscore.min"
 	},
 	shim: {
