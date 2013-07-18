@@ -1,5 +1,6 @@
 require([
 	"manager",
+	"page",
 	"simplemodal"
 ], function(manager) {
 	"use strict";

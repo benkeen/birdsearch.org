@@ -12,7 +12,8 @@ define([], function() {
 
 	_CONSTANTS.EVENT = {
 		ABOUT_LINK_CLICK: "about-link-click",
-		CONTACT_LINK_CLICK: "contact-link-click"
+		CONTACT_LINK_CLICK: "contact-link-click",
+		SELECT_TAB: "select-tab"
 	};
 
 	return _CONSTANTS;

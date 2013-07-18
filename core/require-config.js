@@ -1,9 +1,14 @@
 requirejs.config({
 	baseUrl: '',
 	paths: {
+
+		// core stuff
 		"app-start": "core/app-start",
 		"manager": "core/manager",
+		"page": "core/page",
 		"constants": "core/constants",
+
+		// page components
 		"header": "modules/header/header",
 		"headerTemplate": "modules/header/header.html",
 		"footer": "modules/footer/footer",
@@ -16,9 +21,9 @@ requirejs.config({
 		"contactTemplate": "modules/contact/contact.html",
 		"mainPanel": "modules/mainPanel/mainPanel",
 		"mainPanelTemplate": "modules/mainPanel/mainPanel.html",
-
 		"map": "modules/map/map",
 
+		// helpers
 		'tablesorter': "libs/jquery.tablesorter.min",
 		'simplemodal': "libs/jquery.simplemodal",
 		"underscore": "libs/underscore.min"

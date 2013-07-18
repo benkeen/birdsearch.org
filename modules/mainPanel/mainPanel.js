@@ -19,9 +19,11 @@ define([
 		map.create();
 	};
 
+
 	var _addMainPanelEvents = function() {
 		$("#panelTabs").on("click", "li", _onClickSelectTab);
 	};
+
 
 	var _onClickSelectTab = function(e) {
 		var tab = e.target;
@@ -31,6 +33,7 @@ define([
 		var tabID = $(tab).attr("id");
 		_selectTab(tabID);
 	};
+
 
 	var _selectTab = function(tabID) {
 		if (tabID == _currTabID) {
@@ -48,9 +51,14 @@ define([
 //			manager.redrawMap();
 //		}
 
-		_currTabID = tabID;
-	};
 
+		_currTabID = tabID;
+
+		manager.publish({
+			type: C.EVENT.SELECT_TAB,
+			tab: tabID
+		})
+	};
 
 	manager.register(MODULE_ID, {
 		init: _init

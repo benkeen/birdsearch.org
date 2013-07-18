@@ -1,10 +1,15 @@
 define([
 	"manager"
 ], function(manager) {
+	"use strict";
+
 
 	var MODULE_ID = "map";
-	var _mapCanvas = null;
-	var _geocoder = null;
+
+	var _mapCanvas;
+	var _geocoder;
+	var _el;
+
 	var _defaultMapOptions = {
 		center: new google.maps.LatLng(20, 12),
 		zoom: 2,
@@ -14,6 +19,10 @@ define([
 	};
 
 
+	/**
+	 * Called manually by mainPanel.js after the panel has been created.
+	 * @private
+	 */
 	var _create = function() {
 		_mapCanvas = $('#mapTabContent')[0];
 		_el        = new google.maps.Map(_mapCanvas, _defaultMapOptions);
@@ -22,6 +31,7 @@ define([
 		_addCustomControls();
 
 		// called any time the map has had its bounds changed
+		google.maps.visualRefresh = true;
 		google.maps.event.addListener(_el, 'dragend', _onMapBoundsChange);
 	};
 
@@ -66,7 +76,9 @@ define([
 	};
 
 
-	manager.register(MODULE_ID, { });
+	manager.register(MODULE_ID, {
+
+	});
 
 	return {
 		create: _create

@@ -50,11 +50,6 @@ define([
 		}
 	};
 
-	var _onAutoComplete = function() {
-		// assume the worst. When the user submits the search form, we'll check it was valid or not
-		_lastAddressSearchValid = false;
-		_currPlace = _autocomplete.getPlace();
-	};
 
 	var _onMapBoundsChange = function() {
 		if (_hasActiveHotspotRequest() || !_lastAddressSearchValid) {

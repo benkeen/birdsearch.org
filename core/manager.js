@@ -59,9 +59,11 @@ define([
 		}
 	};
 
+
 	var _subscribe = function(MODULE_ID, subscriptions) {
 		_modules[MODULE_ID].subscriptions = subscriptions;
 	};
+
 
 	return {
 		start: _start,
