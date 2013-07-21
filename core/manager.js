@@ -59,7 +59,10 @@ define([
 
 			// if this module has subscribed to this event, call the callback function
 			if (subscriptions.hasOwnProperty(message)) {
-				subscriptions[message](moduleID, data);
+				subscriptions[message]({
+					sender: moduleID,
+					data: data
+				});
 			}
 		}
 	};

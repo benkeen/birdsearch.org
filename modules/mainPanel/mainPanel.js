@@ -11,6 +11,10 @@ define([
 
 	var _init = function() {
 
+		var subscriptions = {};
+		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMainPanel;
+		manager.subscribe(_MODULE_ID, subscriptions);
+
 		// insert the main panel
 		$("#mainPanel").html(template);
 		_addMainPanelEvents();
@@ -19,11 +23,9 @@ define([
 		map.create();
 	};
 
-
 	var _addMainPanelEvents = function() {
 		$("#panelTabs").on("click", "li", _onClickSelectTab);
 	};
-
 
 	var _onClickSelectTab = function(e) {
 		var tab = e.target;
@@ -33,7 +35,6 @@ define([
 		var tabID = $(tab).attr("id");
 		_selectTab(tabID);
 	};
-
 
 	var _selectTab = function(tabID) {
 		if (tabID == _currTabID) {
@@ -45,16 +46,23 @@ define([
 		$('#' + manager.currTabID + 'Content').addClass("hidden");
 		$('#' + tabID + 'Content').removeClass("hidden");
 
-		// publish an event
-
-//		if (tabID == "mapTab") {
-//			manager.redrawMap();
-//		}
-
-
 		_currTabID = tabID;
 
-		manager.publish(_MODULE_ID, C.EVENT.SELECT_TAB);
+		manager.publish(_MODULE_ID, C.EVENT.SELECT_TAB, { tab: _currTabID });
+	};
+
+	var _resizeMainPanel = function(msg) {
+		if (msg.data.viewportMode === "desktop") {
+			$('#locationsTab').addClass('hidden');
+			$('#mainPanel').css({
+				height: msg.data.height - 54,
+				width: msg.data.width - 325
+			});
+		} else {
+			$('#locationsTab').removeClass("hidden");
+			var panelHeight = msg.data.height - 210;
+			$('#mainPanel').css({ height: panelHeight + 'px', width: '100%' });
+		}
 	};
 
 	manager.register(_MODULE_ID, {

@@ -1057,10 +1057,6 @@ define([
 			}
 		},
 
-		redrawMap: function() {
-			google.maps.event.trigger(map.el, 'resize');
-		},
-
 		/**
 		 * Helper function. Called after a new hotspot has been returned from an all/notable search. It updates
 		 * the data structure to be ready for storage of the upcoming observation data.

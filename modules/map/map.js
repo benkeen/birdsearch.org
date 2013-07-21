@@ -6,13 +6,12 @@ define([
 
 	var _MODULE_ID = "map";
 	var _mapCanvas;
-	var _geocoder;
-	var _el;
+	var _map;
 
 	var _defaultMapOptions = {
 		center: new google.maps.LatLng(20, 12),
 		zoom: 2,
-		mapTypeId: google.maps.MapTypeId.TERRAIN,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		mapTypeControlOptions: { mapTypeIds: [] },
 		streetViewControl: false
 	};
@@ -21,6 +20,7 @@ define([
 	var _init = function() {
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
+		subscriptions[C.EVENT.SELECT_TAB] = _onSelectTab;
 		manager.subscribe(_MODULE_ID, subscriptions);
 	};
 
@@ -29,15 +29,17 @@ define([
 	 * @private
 	 */
 	var _create = function() {
+		google.maps.visualRefresh = true;
+
 		_mapCanvas = $('#mapTabContent')[0];
-		_el        = new google.maps.Map(_mapCanvas, _defaultMapOptions);
-		_geocoder  = new google.maps.Geocoder();
+		_map       = new google.maps.Map(_mapCanvas, _defaultMapOptions);
 
 		_addCustomControls();
 
 		// called any time the map has had its bounds changed
-		google.maps.visualRefresh = true;
-		google.maps.event.addListener(_el, 'dragend', _onMapBoundsChange);
+		google.maps.event.addListener(_map, 'dragend', _onMapBoundsChange);
+
+		manager.publish(_MODULE_ID, C.EVENT.TRIGGER_WINDOW_RESIZE);
 	};
 
 
@@ -48,29 +50,29 @@ define([
 		var btn4 = $('<div class="mapBtn">Hybrid</div>')[0];
 
 		// add the controls to the map
-		_el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
-		_el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
-		_el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
-		_el.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
+		_map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
+		_map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
+		_map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
+		_map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
 
 		// add the appropriate event handlers
 		google.maps.event.addDomListener(btn1, 'click', function() {
-			_el.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+			_map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn1).addClass('mapBtnSelected');
 		});
 		google.maps.event.addDomListener(btn2, 'click', function() {
-			_el.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+			_map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn2).addClass('mapBtnSelected');
 		});
 		google.maps.event.addDomListener(btn3, 'click', function() {
-			_el.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+			_map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn3).addClass('mapBtnSelected');
 		});
 		google.maps.event.addDomListener(btn4, 'click', function() {
-			_el.setMapTypeId(google.maps.MapTypeId.HYBRID);
+			_map.setMapTypeId(google.maps.MapTypeId.HYBRID);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn4).addClass('mapBtnSelected');
 		});
@@ -80,8 +82,31 @@ define([
 
 	};
 
-	var _resizeMap = function(data) {
-		console.log("!", data);
+	var _resizeMap = function(msg) {
+		var data = msg.data;
+
+		if (data.viewportMode == "desktop") {
+			$('#panelContent').css('height', data.height - 82);
+		} else {
+			$('#panelContent').css('height', data.height - 40);
+		}
+
+//		if (manager.currTabID == 'mapTab') {
+//			var address = $.trim(manager.searchField.value);
+//			if (address !== '') {
+//				manager.updatePage(false);
+//			}
+//		}
+	};
+
+	var _onSelectTab = function(msg) {
+		if (msg.data.tab === "mapTab") {
+			_redrawMap();
+		}
+	};
+
+	var _redrawMap = function() {
+		google.maps.event.trigger(_map, 'resize');
 	};
 
 

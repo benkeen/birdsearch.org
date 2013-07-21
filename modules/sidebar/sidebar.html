@@ -1,9 +1,9 @@
 <div id="searchOptions" class="sidebarSection">
 	<form>
-		<input type="text" id="searchTextField" />
-		<div>
-			<label for="searchType">Result type:</label>
-			<select id="searchType">
+		<input type="text" id="location" />
+		<div style="background-color: #dddddd">
+			<label for="resultType">Result type:</label>
+			<select id="resultType">
 				<option value="all">All observations</option>
 				<option value="notable">Notable observations</option>
 			</select>
@@ -26,7 +26,7 @@
 			</select>
 		</div>
 		<div>
-			<input type="submit" class="btn" id="search" value="Search &raquo;" />
+			<input type="submit" class="btn" id="searchBtn" value="Search &raquo;" />
 			<span id="loadingSpinner"></span>
 		</div>
 	</form>
