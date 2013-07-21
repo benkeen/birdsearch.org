@@ -4,19 +4,19 @@ define([
 	"text!contactTemplate"
 ], function(manager, C, template) {
 
-	var MODULE_ID = "contact";
+	var _MODULE_ID = "contact";
 
 	var _init = function() {
 		var subscriptions = {};
 		subscriptions[C.EVENT.CONTACT_LINK_CLICK] = _openContactModal;
-		manager.subscribe(MODULE_ID, subscriptions)
+		manager.subscribe(_MODULE_ID, subscriptions)
 	};
 
 	var _openContactModal = function() {
 		$.modal(template);
 	};
 
-	manager.register(MODULE_ID, {
+	manager.register(_MODULE_ID, {
 		init: _init
 	});
 });

@@ -5,7 +5,7 @@ define([
 ], function(manager, C, template) {
 	"use strict";
 
-	var MODULE_ID = "header";
+	var _MODULE_ID = "header";
 
 
 	var _run = function() {
@@ -16,20 +16,16 @@ define([
 	var _addEventHandlers = function() {
 		$(document).on("click", "#aboutLink", function(e) {
 			e.preventDefault();
-			manager.publish({
-				type: C.EVENT.ABOUT_LINK_CLICK
-			});
+			manager.publish(_MODULE_ID, C.EVENT.ABOUT_LINK_CLICK);
 		});
 
 		$(document).on("click", "#contactLink", function(e) {
 			e.preventDefault();
-			manager.publish({
-				type: C.EVENT.CONTACT_LINK_CLICK
-			});
+			manager.publish(_MODULE_ID, C.EVENT.CONTACT_LINK_CLICK);
 		});
 	};
 
-	manager.register(MODULE_ID, {
+	manager.register(_MODULE_ID, {
 		run: _run
 	});
 });

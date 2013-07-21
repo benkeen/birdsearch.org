@@ -6,10 +6,8 @@ define([
 ], function(manager, C, _, template) {
 	"use strict";
 
+	var _MODULE_ID = "footer";
 	var _template;
-
-
-	var MODULE_ID = "footer";
 
 	var _run = function() {
 		_template = _.template(template, {
@@ -19,7 +17,7 @@ define([
 		$("footer").html(_template);
 	};
 
-	manager.register(MODULE_ID, {
+	manager.register(_MODULE_ID, {
 		run: _run
 	});
 });

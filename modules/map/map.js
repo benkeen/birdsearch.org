@@ -1,11 +1,10 @@
 define([
-	"manager"
-], function(manager) {
+	"manager",
+	"constants"
+], function(manager, C) {
 	"use strict";
 
-
-	var MODULE_ID = "map";
-
+	var _MODULE_ID = "map";
 	var _mapCanvas;
 	var _geocoder;
 	var _el;
@@ -18,6 +17,12 @@ define([
 		streetViewControl: false
 	};
 
+
+	var _init = function() {
+		var subscriptions = {};
+		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
+		manager.subscribe(_MODULE_ID, subscriptions);
+	};
 
 	/**
 	 * Called manually by mainPanel.js after the panel has been created.
@@ -75,9 +80,13 @@ define([
 
 	};
 
+	var _resizeMap = function(data) {
+		console.log("!", data);
+	};
 
-	manager.register(MODULE_ID, {
 
+	manager.register(_MODULE_ID, {
+		init: _init
 	});
 
 	return {

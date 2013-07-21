@@ -4,8 +4,8 @@ define([
 	"text!sidebarTemplate"
 ], function(manager, C, template) {
 
-	var MODULE_ID = "sidebar";
-	var _autocomplete;
+	var _MODULE_ID = "sidebar";
+	var _autoComplete;
 
 	// DOM nodes
 	var _searchField;
@@ -29,11 +29,11 @@ define([
 
 	var _addEventHandlers = function() {
 
-		_autocomplete = new google.maps.places.Autocomplete(_searchField);
+		_autoComplete = new google.maps.places.Autocomplete(_searchField);
 		//_autocomplete.bindTo('bounds', _el);
 
 		// executed whenever the user selects a place through the auto-complete function
-		google.maps.event.addListener(_autocomplete, 'place_changed', _onAutoComplete);
+		google.maps.event.addListener(_autoComplete, 'place_changed', _onAutoComplete);
 
 	};
 
@@ -42,10 +42,11 @@ define([
 		// assume the worst. When the user submits the search form, we'll check it was valid or not
 		//_lastAddressSearchValid = false;
 		//_currPlace = _autocomplete.getPlace();
+
 	};
 
 
-	manager.register(MODULE_ID, {
+	manager.register(_MODULE_ID, {
 		init: _init
 	});
 });

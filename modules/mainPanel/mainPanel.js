@@ -5,7 +5,7 @@ define([
 	"map"
 ], function(manager, C, template, map) {
 
-	var MODULE_ID = "mainPanel";
+	var _MODULE_ID = "mainPanel";
 	var _currTabID = "mapTab";
 
 
@@ -54,13 +54,10 @@ define([
 
 		_currTabID = tabID;
 
-		manager.publish({
-			type: C.EVENT.SELECT_TAB,
-			tab: tabID
-		})
+		manager.publish(_MODULE_ID, C.EVENT.SELECT_TAB);
 	};
 
-	manager.register(MODULE_ID, {
+	manager.register(_MODULE_ID, {
 		init: _init
 	});
 });

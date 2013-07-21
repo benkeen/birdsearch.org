@@ -42,28 +42,31 @@ define([
 		}
 	};
 
-	var _publish = function(data) {
-		var type = data.type;
-
+	/**
+	 * Publishes a message to anyone who's subscribed to it.
+	 * @param moduleID
+	 * @param message
+	 * @param data
+	 * @private
+	 */
+	var _publish = function(moduleID, message, data) {
 		if (C.DEBUG) {
-			console.log("publish event: ", type);
+			console.log(moduleID + " published event: ", message);
 		}
 
 		for (var i in _modules) {
 			var subscriptions = _modules[i].subscriptions;
 
 			// if this module has subscribed to this event, call the callback function
-			if (subscriptions.hasOwnProperty(type)) {
-				subscriptions[type]();
+			if (subscriptions.hasOwnProperty(message)) {
+				subscriptions[message](moduleID, data);
 			}
 		}
 	};
 
-
 	var _subscribe = function(MODULE_ID, subscriptions) {
 		_modules[MODULE_ID].subscriptions = subscriptions;
 	};
-
 
 	return {
 		start: _start,
