@@ -14,6 +14,9 @@ define([
 	var _observationRecencyField;
 	var _searchBtn;
 
+	var _lat;
+	var _lng;
+
 
 	var _init = function() {
 
@@ -29,29 +32,40 @@ define([
 		_geocoder  = new google.maps.Geocoder();
 
 		// make a note of the DOM nodes
-		_locationField           = $("#location")[0];
-		_resultTypeField         = $("#resultType")[0];
-		_observationRecencyField = $("#observationRecency")[0];
-		_searchBtn               = $("#searchBtn")[0];
+		_locationField           = $("#location");
+		_resultTypeField         = $("#resultType");
+		_observationRecencyField = $("#observationRecency");
+		_searchBtn               = $("#searchBtn");
 
 		_addEventHandlers();
 	};
 
 	var _addEventHandlers = function() {
-
-		_autoComplete = new google.maps.places.Autocomplete(_locationField);
-		//_autocomplete.bindTo('bounds', _el);
+		_autoComplete = new google.maps.places.Autocomplete(_locationField[0]);
 
 		// executed whenever the user selects a place through the auto-complete function
 		google.maps.event.addListener(_autoComplete, 'place_changed', _onAutoComplete);
+		$("#searchBtn").on("click", _submitForm);
 	};
 
 	var _onAutoComplete = function() {
-
 		// assume the worst. When the user submits the search form, we'll check it was valid or not
 		//_lastAddressSearchValid = false;
-		//_currPlace = _autocomplete.getPlace();
+		var currPlace = _autoComplete.getPlace();
+		_lat = currPlace.geometry.location.lat();
+		_lng = currPlace.geometry.location.lng();
+	};
 
+	var _submitForm = function(e) {
+		e.preventDefault();
+
+		manager.publish(_MODULE_ID, C.EVENT.SEARCH, {
+			location: _locationField.val(),
+			resultType: _resultTypeField.val(),
+			observationRecencyField: _observationRecencyField.val(),
+			lat: _lat,
+			lng: _lng
+		});
 	};
 
 	var _resizeSidebar = function(msg) {
@@ -61,6 +75,7 @@ define([
 			$('#sidebar').css('height', 'auto');
 		}
 	};
+
 
 	manager.register(_MODULE_ID, {
 		init: _init

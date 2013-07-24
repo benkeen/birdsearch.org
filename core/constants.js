@@ -15,7 +15,8 @@ define([], function() {
 		CONTACT_LINK_CLICK: "contact-link-click",
 		SELECT_TAB: "select-tab",
 		WINDOW_RESIZE: "window-resize",
-		TRIGGER_WINDOW_RESIZE: "trigger-window-resize"
+		TRIGGER_WINDOW_RESIZE: "trigger-window-resize",
+		SEARCH: "search"
 	};
 
 	return _CONSTANTS;
