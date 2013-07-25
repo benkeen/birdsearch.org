@@ -7,6 +7,7 @@ define([
 	var _MODULE_ID = "sidebar";
 	var _autoComplete;
 	var _geocoder;
+	var _lastSearchNumAddressComponents;
 
 	// DOM nodes
 	var _locationField;
@@ -45,27 +46,54 @@ define([
 
 		// executed whenever the user selects a place through the auto-complete function
 		google.maps.event.addListener(_autoComplete, 'place_changed', _onAutoComplete);
-		$("#searchBtn").on("click", _submitForm);
+		_searchBtn.on("click", _submitForm);
 	};
 
 	var _onAutoComplete = function() {
-		// assume the worst. When the user submits the search form, we'll check it was valid or not
-		//_lastAddressSearchValid = false;
 		var currPlace = _autoComplete.getPlace();
 		_lat = currPlace.geometry.location.lat();
 		_lng = currPlace.geometry.location.lng();
+
+		// keep track of the specificity of the last search. Depending on the search type (all, notable, hotspots)
+		// it may not be valid
+		_lastSearchNumAddressComponents = null;
+		if (_locationField[0].value !== '' && currPlace !== null) {
+			if (!currPlace.geometry) {
+				return;
+			}
+			_lastSearchNumAddressComponents = currPlace.address_components.length;
+		}
 	};
 
 	var _submitForm = function(e) {
 		e.preventDefault();
 
-		manager.publish(_MODULE_ID, C.EVENT.SEARCH, {
-			location: _locationField.val(),
-			resultType: _resultTypeField.val(),
-			observationRecencyField: _observationRecencyField.val(),
-			lat: _lat,
-			lng: _lng
-		});
+		if (_validateSearchForm()) {
+			manager.startLoading();
+			manager.publish(_MODULE_ID, C.EVENT.SEARCH, {
+				location: _locationField.val(),
+				resultType: _resultTypeField.val(),
+				observationRecencyField: _observationRecencyField.val(),
+				lat: _lat,
+				lng: _lng
+			});
+		}
+	};
+
+	var _validateSearchForm = function() {
+		if (_locationField[0].value === '') {
+			manager.showMessage('Please enter a location.', 'error');
+			return false;
+		}
+		if (_resultTypeField[0].value === "all" && _lastSearchNumAddressComponents < 3) {
+			manager.showMessage('Please enter a more specific location.', 'error');
+			return false;
+		}
+		if ($.inArray(_resultTypeField[0].value, ["notable", "hotspots"]) !== -1 && _lastSearchNumAddressComponents < 2) {
+			manager.showMessage('Please enter a more specific location.', 'error');
+			return false;
+		}
+		return true;
 	};
 
 	var _resizeSidebar = function(msg) {
@@ -75,7 +103,6 @@ define([
 			$('#sidebar').css('height', 'auto');
 		}
 	};
-
 
 	manager.register(_MODULE_ID, {
 		init: _init

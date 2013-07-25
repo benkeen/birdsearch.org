@@ -11,7 +11,7 @@ define([
 	var _defaultMapOptions = {
 		center: new google.maps.LatLng(20, 12),
 		zoom: 2,
-		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		mapTypeId: google.maps.MapTypeId.TERRAIN,
 		mapTypeControlOptions: { mapTypeIds: [] },
 		streetViewControl: false
 	};
@@ -21,6 +21,7 @@ define([
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
 		subscriptions[C.EVENT.SELECT_TAB] = _onSelectTab;
+		subscriptions[C.EVENT.SEARCH] = _onSearch;
 		manager.subscribe(_MODULE_ID, subscriptions);
 	};
 
@@ -82,6 +83,16 @@ define([
 
 	};
 
+	var _onSearch = function(msg) {
+		if (msg.data.resultType === "all") {
+			//manager.getHotspots();
+		} else if (msg.data.resultType === "notable") {
+			//manager.getNotableObservations();
+		} else if (msg.data.resultType === "hotspots") {
+			_getHotspots(msg.data.lat, msg.data.lng);
+		}
+	}
+
 	var _resizeMap = function(msg) {
 		var data = msg.data;
 
@@ -97,6 +108,54 @@ define([
 //				manager.updatePage(false);
 //			}
 //		}
+	};
+
+
+	/**
+	 * Retrieves all hotspots for a region.
+	 */
+	var _getHotspots = function(lat, lng) {
+
+		/*
+		// if a hotspot search for this searchType, regionType, region and <= recency has already been made, don't bother doing another.
+		// We can safely do this because the original request will retrieve ALL locations, just not request their observations
+		// (a far more weighty request load) if they're not in the viewport
+		var searchKey = 'all-' + manager.regionType + '--' + manager.region;
+		if (manager.hotspotSearches.hasOwnProperty(searchKey)) {
+			if (manager.observationRecency <= manager.hotspotSearches[searchKey].recency) {
+
+				manager.showMobileResults();
+				manager.redrawMap();
+
+				// this function does the job of trimming the list for us, if there are > MAX_HOTSPOTS
+				manager.visibleHotspots = map.addMarkers({ searchType: 'all', clearMarkers: true });
+				manager.numVisibleHotspots = manager.visibleHotspots.length;
+				manager.displayHotspots();
+				manager.getAllHotspotObservations();
+				return;
+			}
+		}
+		manager.activeHotspotRequest = true;
+		manager.startLoading();
+		*/
+
+		$.ajax({
+			url: "ajax/getHotspotLocations.php",
+			data: {
+				lat: lat,
+				lng: lng
+			},
+			type: "POST",
+			dataType: "json",
+			success: function(response) {
+				console.log(response);
+				manager.stopLoading();
+			},
+			error: function(response) {
+				console.log("error", arguments, response);
+				manager.stopLoading();
+			}
+		});
 	};
 
 	var _onSelectTab = function(msg) {
