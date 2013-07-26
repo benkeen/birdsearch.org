@@ -110,34 +110,12 @@ define([
 //		}
 	};
 
-
 	/**
 	 * Retrieves all hotspots for a region.
 	 */
 	var _getHotspots = function(lat, lng) {
 
-		/*
-		// if a hotspot search for this searchType, regionType, region and <= recency has already been made, don't bother doing another.
-		// We can safely do this because the original request will retrieve ALL locations, just not request their observations
-		// (a far more weighty request load) if they're not in the viewport
-		var searchKey = 'all-' + manager.regionType + '--' + manager.region;
-		if (manager.hotspotSearches.hasOwnProperty(searchKey)) {
-			if (manager.observationRecency <= manager.hotspotSearches[searchKey].recency) {
-
-				manager.showMobileResults();
-				manager.redrawMap();
-
-				// this function does the job of trimming the list for us, if there are > MAX_HOTSPOTS
-				manager.visibleHotspots = map.addMarkers({ searchType: 'all', clearMarkers: true });
-				manager.numVisibleHotspots = manager.visibleHotspots.length;
-				manager.displayHotspots();
-				manager.getAllHotspotObservations();
-				return;
-			}
-		}
-		manager.activeHotspotRequest = true;
-		manager.startLoading();
-		*/
+		// check cache here
 
 		$.ajax({
 			url: "ajax/getHotspotLocations.php",
@@ -148,7 +126,7 @@ define([
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
-				console.log(response);
+
 				manager.stopLoading();
 			},
 			error: function(response) {

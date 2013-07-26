@@ -14,7 +14,6 @@ echo getHotspotObservations($locationID, $recency);
 
 function getHotspotObservations($locationID, $recency) {
 	$url = "http://ebird.org/ws1.1/data/obs/loc/recent?r=$locationID&fmt=json&back=$recency";
-			//http://ebird.org/ws1.1/data/obs/hotspot/recent
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

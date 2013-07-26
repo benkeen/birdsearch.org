@@ -5,6 +5,7 @@ requirejs.config({
 		// core stuff
 		"app-start": "core/app-start",
 		"manager": "core/manager",
+		"dataCache": "core/dataCache",
 		"page": "core/page",
 		"constants": "core/constants",
 

@@ -4,6 +4,7 @@ define([
 	"use strict";
 
 	var _modules = {};
+	var _SEARCH_DAYS = [1,2,3,4,5,6,7,10,15,20,25,30];
 
 
 	var _start = function() {
@@ -82,6 +83,10 @@ define([
 		}
 	};
 
+	var _getSearchDays = function() {
+		return _SEARCH_DAYS;
+	}
+
 	var _startLoading = function() {
 		$('#loadingSpinner').fadeIn(200);
 	};
@@ -96,6 +101,7 @@ define([
 		register: _register,
 		publish: _publish,
 		subscribe: _subscribe,
+		getSearchDays: _getSearchDays,
 		startLoading: _startLoading,
 		stopLoading: _stopLoading,
 		showMessage: _showMessage

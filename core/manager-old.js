@@ -24,9 +24,6 @@ define([
 	// keeps track of all species currently in the visible subset of hotspots
 	var _speciesInVisibleHotspots = {};
 	var _numSpeciesInVisibleHotspots = 0;
-
-
-
 	var _regionType = null;
 	var _region = null;
 	var _observationRecency = null;
@@ -44,7 +41,7 @@ define([
 	var _CURRENT_SERVER_TIME = null;
 	var _ONE_DAY_IN_SECONDS = 24 * 60 * 60;
 	var _MAX_HOTSPOTS = 50;
-	var _SEARCH_DAYS = [1,2,3,4,5,6,7,10,15,20,25,30];
+
 
 
 	var _init = function() {
@@ -174,7 +171,75 @@ define([
 			manager.birdSpeciesLocationDetailsExpanded = !manager.birdSpeciesLocationDetailsExpanded;
 		},
 
+		/**
+		 * Retrieves all hotspots for a region.
+		 */
+		getHotspots: function() {
 
+			// if a hotspot search for this searchType, regionType, region and <= recency has already been made, don't bother doing another.
+			// We can safely do this because the original request will retrieve ALL locations, just not request their observations
+			// (a far more weighty request load) if they're not in the viewport
+			var searchKey = 'all-' + manager.regionType + '--' + manager.region;
+			if (manager.hotspotSearches.hasOwnProperty(searchKey)) {
+				if (manager.observationRecency <= manager.hotspotSearches[searchKey].recency) {
+					manager.showMobileResults();
+					manager.redrawMap();
+
+					// this function does the job of trimming the list for us, if there are > MAX_HOTSPOTS
+					manager.visibleHotspots = map.addMarkers({ searchType: 'all', clearMarkers: true });
+					manager.numVisibleHotspots = manager.visibleHotspots.length;
+					manager.displayHotspots();
+					manager.getAllHotspotObservations();
+					return;
+				}
+			}
+			manager.activeHotspotRequest = true;
+			manager.startLoading();
+
+			$.ajax({
+				url: "ajax/getHotspots.php",
+				data: {
+					regionType: manager.regionType,
+					region: manager.region,
+					recency: manager.observationRecency
+				},
+				type: "POST",
+				dataType: "json",
+				success: function(response) {
+					manager.activeHotspotRequest = false;
+
+					// store the hotspot data. This will probably contain more results than are currently
+					// needed to display, according to the current viewport. That's cool. The map code
+					// figures out what needs to be shown and ignores the rest.
+					if ($.isArray(response)) {
+
+						// make a note that we've performed a search on this region
+						manager.hotspotSearches[searchKey] = {
+							recency: manager.observationRecency
+						};
+
+						for (var i=0; i<response.length; i++) {
+							var locationID = response[i].i;
+							if (!manager.allHotspots.hasOwnProperty(locationID)) {
+
+								//response[i].fromAllObservationSearch = true;
+
+								manager.allHotspots[locationID] = response[i];
+								manager.prepareHotspotDataStructure(locationID);
+							}
+						}
+
+						manager.updatePage(true);
+					} else {
+						manager.stopLoading();
+					}
+				},
+				error: function(response) {
+					manager.activeHotspotRequest = false;
+					manager.stopLoading();
+				}
+			});
+		},
 
 		getNotableObservations: function() {
 
