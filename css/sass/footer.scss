@@ -1,0 +1,30 @@
+footer {
+	padding: 7px 0px 7px 15px;
+	width: 304px;
+	position: absolute;
+	bottom: 0px;
+	font-size: 9pt;
+	color: #dddddd;
+}
+footer ul {
+	list-style-type: none;
+	margin: 0px 0px 0px 8px;
+	padding: 0px;
+}
+footer ul li {
+	line-height: 24px;
+	padding-right: 30px;
+	float: left;
+}
+footer span a:link, footer span a:visited {
+	background-color: #555555;
+	border-radius: 5px;
+	padding: 2px 8px;
+	color: white;
+	font-size: 8pt;
+	margin-right: 8px;
+	text-decoration: none;
+}
+footer span a:hover {
+	background-color: #333333;
+}

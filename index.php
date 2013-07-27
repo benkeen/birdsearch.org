@@ -5,13 +5,16 @@
 	<meta name="description" content="eBirdsearch.org - browse birding locations and sightings worldwide" />	
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 	<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
-	<link href="css/theme.bootstrap.css" rel="stylesheet" type="text/css" />
-	<link href="css/styles.css" rel="stylesheet" type="text/css" />
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/compiled/styles.css" rel="stylesheet" type="text/css" />
+
+	<!--<link href="css/theme.bootstrap.css" rel="stylesheet" type="text/css" />-->
+	<!--<link href="css/compiled/styles.css" rel="stylesheet">-->
+
 </head>
 <body data-serverdatetime="<?php echo date('U'); ?>">
 
 	<header></header>
-	<div id="backLeft"><div></div></div>
 	<section id="sidebar"></section>
 	<section id="mainPanel"></section>
 	<footer></footer>
@@ -29,6 +32,5 @@
 	<script src="core/requireConfig.js"></script>
 
 	<?php @include_once("tracking.php"); ?>
-
 </body>
 </html>

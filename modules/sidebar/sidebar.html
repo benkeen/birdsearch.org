@@ -1,31 +1,39 @@
-<div id="searchOptions" class="sidebarSection">
+<div id="backLeft"><div></div></div>
+
+<div class="well well-pad">
 	<input type="text" id="location" />
+
 	<div>
-		<label for="resultType">Result type:</label>
-		<select id="resultType">
-			<option value="all">All bird sightings</option>
-			<option value="notable">Notable sightings</option>
-			<option value="hotspots">Popular birding locations</option>
-		</select>
+		<div>
+			<label for="resultType">Result type:</label>
+			<select id="resultType">
+				<option value="all">All bird sightings</option>
+				<option value="notable">Notable sightings</option>
+				<option value="hotspots">Popular birding locations</option>
+			</select>
+		</div>
+		<div id="observationRecencySection">
+			<label for="observationRecency">Show observations made within last:</label>
+			<select id="observationRecency">
+				<% _.each(days, function(day) { %>
+				<option value="<%=day.value%>"<% if (day.selected) { %> selected="selected"<% } %>><%=day.label%></option>
+				<% }) %>
+			</select>
+		</div>
+		<div id="hotspotActivitySection" style="display:none">
+			<label for="hotspotActivity">Limit results to locations with observations made within last:</label>
+			<select id="hotspotActivity">
+				<% _.each(days, function(day) { %>
+				<option value="<%=day.value%>"<% if (day.selected) { %> selected="selected"<% } %>><%=day.label%></option>
+				<% }) %>
+			</select>
+		</div>
 	</div>
-	<div id="observationRecencySection">
-		<label for="observationRecency">Show observations made within last:</label>
-		<select id="observationRecency">
-			<% _.each(days, function(day) { %>
-			<option value="<%=day.value%>"<% if (day.selected) { %> selected="selected"<% } %>><%=day.label%></option>
-			<% }) %>
-		</select>
-	</div>
-	<div id="hotspotActivitySection" style="display:none">
-		<label for="hotspotActivity">Limit results to locations with observations made within last:</label>
-		<select id="hotspotActivity">
-			<% _.each(days, function(day) { %>
-			<option value="<%=day.value%>"<% if (day.selected) { %> selected="selected"<% } %>><%=day.label%></option>
-			<% }) %>
-		</select>
-	</div>
+</div>
+
+<div class="well">
 	<div>
-		<input type="submit" class="btn" id="searchBtn" value="Search &raquo;" />
+		<input type="submit" class="btn btn-primary" id="searchBtn" value="Search &raquo;" />
 		<span id="loadingSpinner"></span>
 	</div>
 </div>

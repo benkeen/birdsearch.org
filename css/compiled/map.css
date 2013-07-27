@@ -1,0 +1,56 @@
+/*
+Syntax error: Invalid CSS after "	cursor:": expected pseudoclass or pseudoelement, was " pointer;"
+        on line 3 of map.scss
+
+1: body div.mapBtnSelected {
+2: 	.mapBtn,
+3: 	cursor: pointer;
+4: 	-webkit-user-select: none;
+5: 	-moz-user-select: none;
+6: 	text-align: center;
+7: 	position: relative;
+8: 	font-family: "lucida grande", Arial;
+
+Backtrace:
+map.scss:3
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:1130:in `expected'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:1066:in `expected'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:1048:in `expr!'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:777:in `pseudo'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:661:in `simple_selector_sequence'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:623:in `_selector'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:602:in `selector'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:592:in `selector_sequence'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:511:in `ruleset'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:574:in `declaration_or_ruleset'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:1104:in `call'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:1104:in `rethrow'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:575:in `declaration_or_ruleset'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:537:in `block_child'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:526:in `block_contents'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:518:in `block'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:512:in `ruleset'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:536:in `block_child'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:526:in `block_contents'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:70:in `stylesheet'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/scss/parser.rb:27:in `parse'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/engine.rb:342:in `_to_tree'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/engine.rb:315:in `_render'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/engine.rb:262:in `render'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/plugin/compiler.rb:340:in `update_stylesheet'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/plugin/compiler.rb:202:in `update_stylesheets'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/plugin/compiler.rb:200:in `each'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/plugin/compiler.rb:200:in `update_stylesheets'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/plugin.rb:81:in `update_stylesheets'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/exec.rb:411:in `watch_or_update'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/exec.rb:302:in `process_result'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/exec.rb:41:in `parse'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/../lib/sass/../sass/exec.rb:21:in `parse!'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.1/bin/scss:8
+/usr/bin/scss:19:in `load'
+/usr/bin/scss:19
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Invalid CSS after \"	cursor:\": expected pseudoclass or pseudoelement, was \" pointer;\"\A         on line 3 of map.scss\A \A 1: body div.mapBtnSelected {\A 2: 	.mapBtn,\A 3: 	cursor: pointer;\A 4: 	-webkit-user-select: none;\A 5: 	-moz-user-select: none;\A 6: 	text-align: center;\A 7: 	position: relative;\A 8: 	font-family: \"lucida grande\", Arial;"; }

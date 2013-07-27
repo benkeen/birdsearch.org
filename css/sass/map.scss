@@ -1,0 +1,28 @@
+body div.mapBtn {
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	text-align: center;
+	position: relative;
+	font-family: "lucida grande", Arial;
+	font-size: 11px;
+	box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+	color: #000;
+	border: 1px solid #717B87;
+	background-color: #fff;
+	margin: 5px;
+	padding: 1px 6px;
+	overflow: hidden;
+}
+body div.mapBtn:hover {
+	background: #FEFEFE;
+	background: -moz-linear-gradient(top, #FEFEFE 0%, #F3F3F3 100%);
+	background: -webkit-gradient(linear, left top, left bottom, from(#FEFEFE), to(#F3F3F3));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEFEFE', endColorstr='#F3F3F3', GradientType=0);
+}
+body div.mapBtnSelected {
+	font-weight: bold;
+}
+

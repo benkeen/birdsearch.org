@@ -1,0 +1,47 @@
+#mapTabContent {
+	width: 100%;
+	height: 100%;
+}
+#mainPanel {
+	position: absolute;
+	left: 318px;
+	top: 51px;
+	padding-top: 6px;
+}
+#panelContent {
+	height:100%;
+	width: 100%;
+	clear: both;
+}
+#panelTabs {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+
+	li {
+		float: left;
+		margin-right: 1px;
+		text-align: center;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+		font-size: 9pt;
+		padding: 3px 22px;
+		cursor: pointer;
+
+		a {
+			color: #555555;
+			line-height: 17pt;
+			display: block;
+			&:hover {
+				color: #cccccc;
+				text-decoration: none;
+			}
+		}
+
+		&.disabled {
+			background: rgba(0, 0, 0, 0.5);
+			color: #444444;
+			cursor: default;
+		}
+	}
+}

@@ -12,11 +12,12 @@ define([
 	var _icon = 'images/marker.png';
 	var _infoWindows = {};
 	var _visibleHotspots = [];
+	var _defaultMapType = google.maps.MapTypeId.ROADMAP;
 
 	var _defaultMapOptions = {
-		center: new google.maps.LatLng(20, 12),
-		zoom: 2,
-		mapTypeId: google.maps.MapTypeId.TERRAIN,
+		center: new google.maps.LatLng(42, -100),
+		zoom: 4,
+		mapTypeId: _defaultMapType,
 		mapTypeControlOptions: { mapTypeIds: [] },
 		streetViewControl: false
 	};
@@ -50,8 +51,8 @@ define([
 
 
 	var _addCustomControls = function() {
-		var btn1 = $('<div class="mapBtn mapBtnSelected">Terrain</div>')[0];
-		var btn2 = $('<div class="mapBtn">Road Map</div>')[0];
+		var btn1 = $('<div class="mapBtn">Terrain</div>')[0];
+		var btn2 = $('<div class="mapBtn mapBtnSelected">Road Map</div>')[0];
 		var btn3 = $('<div class="mapBtn">Satellite</div>')[0];
 		var btn4 = $('<div class="mapBtn">Hybrid</div>')[0];
 

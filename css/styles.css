@@ -12,49 +12,12 @@ body {
 	background: url("../images/bg.png");
 	overflow: hidden;
 }
-.hidden {
-	display: none;
-}
-.clear {
-	clear: both;
-}
 a:link, a:visited {
 	color: #0033cc;
 	text-decoration: none;
 }
 .lightGrey {
 	color: #cccccc;
-}
-/*section {
-	background: url(../images/bg.png);
-}*/
-
-/* top row */
-header {
-	background: #333333;
-	background: -moz-linear-gradient(top,  #333333 0%, #212121 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#333333), color-stop(100%,#212121));
-	background: -webkit-linear-gradient(top, #333333 0%,#212121 100%);
-	background: -o-linear-gradient(top,  #333333 0%,#212121 100%);
-	background: -ms-linear-gradient(top,  #333333 0%,#212121 100%);
-	background: linear-gradient(to bottom,  #333333 0%,#212121 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#333333', endColorstr='#212121',GradientType=0 );
-	width: 100%;
-	height: 42px;
-}
-header h1 {
-	line-height: 41px;
-	color: white;
-	margin: 0 0 8px 6px;
-	padding-left: 40px;
-	background: transparent url(../images/logo.png) left 6px no-repeat;
-	font-family: "lucida grande";
-	font-size: 13pt;
-	text-shadow: 1px 1px #000000;
-}
-header h1 span {
-	font-size: 13pt;
-	color: #a4c2ff;
 }
 header ul {
 	position: absolute; 
@@ -78,31 +41,6 @@ header a:hover {
 }
 
 /* sidebar */
-#location {
-	width: 280px;
-	font-size: 12pt;
-	margin: 3px 3px 8px 0px;
-	height: 26px;
-	padding: 4px;
-}
-#sidebar {
-	position: absolute;
-	top: 42px;
-	left: 0px;
-	width: 310px;
-	border-bottom: 1px solid #efefef;
-}
-#sidebar label {
-	text-shadow: 1px 1px #ffffff;
-	margin-left: 2px;
-}
-#sidebar form {
-	margin: 0px;
-}
-#searchOptions {
-	background: url(../images/sidebar_bg.png);
-	border-bottom: 1px solid #ffffff;
-}
 #resultType {
 	width: 100%;
 }
@@ -152,80 +90,10 @@ header a:hover {
 	background-image: url(../images/loading.gif);
 	margin: -2px;
 }
-#backTop {
-	display: none;
-	padding: 6px 6px 6px 12px;
-}
-#backLeft {
-	display: none;
-	width: 50px;
-	background-color: #efefef;
-	position: absolute;
-	left: 0px;
-	height: 1000px;
-	cursor: pointer;
-}
-#backLeft div {
-	width: 0; 
-	height: 0; 
-	border-top: 20px solid transparent;
-	border-bottom: 20px solid transparent; 
-	border-right: 20px solid #666666; 
-	margin-left: 12px;
-	position: absolute;
-}
+
 
 /* main body */
-#mapTabContent {
-	width: 100%;
-	height: 100%;
-}
-#mainPanel {
-	position: absolute;
-	left: 311px;
-	top: 42px;
-	padding: 6px;
-}
-#panelTabs {
-	list-style-type: none;
-	margin: 0px;
-	padding: 0px;
-}
-#panelTabs li {
-	float: left;
-	padding: 3px 26px;
-	background-color: #cccccc;
-	border-radius: 5px 5px 0px 0px;
-	margin-right: 1px;
-	cursor: pointer;
-}
-#panelTabs li span {
-	color: #777777;
-}
-#panelTabs li.selected {
-	background: #333333;
-	background: -moz-linear-gradient(top,  #333333 0%, #212121 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#333333), color-stop(100%,#212121));
-	background: -webkit-linear-gradient(top,  #333333 0%,#212121 100%);
-	background: -o-linear-gradient(top,  #333333 0%,#212121 100%);
-	background: -ms-linear-gradient(top,  #333333 0%,#212121 100%);
-	background: linear-gradient(to bottom,  #333333 0%,#212121 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#333333', endColorstr='#212121',GradientType=0 );
-	color: white;
-}
-#panelTabs li.selected span {
-	color: #d5e3ff;
-}
-#panelTabs li.disabled {
-	color: #999999;
-	cursor: default;
-}
-#panelContent {
-	height:100%;
-	width: 100%;
-	clear: both;
-	border: 1px solid #212121;
-}
+
 #birdSpeciesTabContent {
 	height: 100%;
 	overflow-y: scroll;
@@ -271,49 +139,6 @@ header a:hover {
 #mapTabContent img{
 	max-width: inherit;
 }
-.speciesCount {
-	background-color: #333333;
-	color: white;
-	font-size: 7pt;
-	border-radius: 5px;
-	text-align: center;
-	display: block;
-	width: 30px;
-	margin: 1px 0px 0px 10px;
-}
-#messageBar {
-	display: none;
-	margin: 10px;
-	color: #ffffff;
-	padding: 8px;
-	font-size: 11pt;
-	text-align: center;
-	text-shadow: 1px 0px #666666;
-	border-radius: 5px 5px 5px 5px;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
-	-khtml-border-radius:5px;
-	-moz-box-shadow:0 1px 0 0 rgba(255,255,255,0.5) inset;
-	-webkit-box-shadow:0 1px 0 0 rgba(255,255,255,0.5) inset;
-	-o-box-shadow:0 1px 0 0 rgba(255,255,255,0.5) inset;
-	clear: both;
-	font-size: 12px;
-	font-weight: normal;
-	line-height: 20px;
-	min-height: 20px;
-}
-.error {
-	background-color: #cd2f2f;
-	background-image: linear-gradient(#cd2f2f, #e54444);
-	background-image: -webkit-linear-gradient(#cd2f2f, #e54444);
-	border: 1px solid #e54444;
-}
-.notification {
-	background-color: #8ACED6;
-	background-image: linear-gradient(#83ACFF, #82ABFF);
-	background-image: -webkit-linear-gradient(#83ACFF, #82ABFF);
-	border: 1px solid #A0BFFF;	
-}
 #searchResults .sp {
 	text-align: center;
 }
@@ -323,64 +148,6 @@ header a:hover {
 }
 
 /* footer */
-footer {
-	background-color: #ffffff;
-	padding: 7px 0px 7px 15px;
-	width: 294px;
-	position: absolute;
-	bottom: 0px;
-	font-size: 8.5pt;
-}
-footer ul {
-	list-style-type: none;
-	margin: 0px 0px 0px 8px;
-	padding: 0px;
-}
-footer ul li {
-	line-height: 24px;
-	padding-right: 30px;
-	float: left;
-}
-footer span a:link, footer span a:visited {
-	background-color: #555555;
-	border-radius: 5px;
-	padding: 2px 8px;
-	color: white;
-	font-size: 8pt;
-	margin-right: 8px;
-	text-decoration: none;
-}
-footer span a:hover {
-	background-color: #333333;
-}
-
-.mapBtn, .mapBtnSelected{
-	cursor: pointer;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	text-align: center;
-	position: relative;
-	font-family: "lucida grande", Arial;
-	font-size: 11px;
-	box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
-	-moz-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
-	-webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
-	color: #000;
-	border: 1px solid #717B87;
-	background-color: #fff; 
-	margin: 5px;
-	padding: 1px 6px;
-	overflow: hidden;
-}
-.mapBtn:hover {
-	background: #FEFEFE;
-	background: -moz-linear-gradient(top, #FEFEFE 0%, #F3F3F3 100%);
-	background: -webkit-gradient(linear, left top, left bottom, from(#FEFEFE), to(#F3F3F3));
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEFEFE', endColorstr='#F3F3F3', GradientType=0);
-}
-.mapBtnSelected {
-	font-weight: bold;
-}
 #searchResults thead tr {
 	background-color: #e1e1e1;
 }

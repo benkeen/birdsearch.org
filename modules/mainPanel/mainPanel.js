@@ -56,7 +56,7 @@ define([
 			$('#locationsTab').addClass('hidden');
 			$('#mainPanel').css({
 				height: msg.data.height - 54,
-				width: msg.data.width - 325
+				width: msg.data.width - 318
 			});
 		} else {
 			$('#locationsTab').removeClass("hidden");

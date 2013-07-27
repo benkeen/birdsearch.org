@@ -1,0 +1,310 @@
+body {
+  padding: 0px;
+  font-family: sans-serif;
+  line-height: 17pt;
+  color: #555555;
+  background-image: url(../../images/debut_dark.png);
+  background-repeat: repeat;
+  overflow: hidden; }
+
+section {
+  padding: 0px; }
+
+.hidden {
+  display: none; }
+
+.clear {
+  clear: both; }
+
+body .well {
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 4px rgba(40, 40, 40, 0.8);
+  border: 0px;
+  margin-bottom: 6px;
+  padding: 4px;
+  position: relative;
+  clear: both; }
+
+body .well-small {
+  padding: 5px;
+  margin-bottom: 0px; }
+
+body .well-pad {
+  padding: 8px; }
+
+#backTop {
+  display: none;
+  padding: 6px 6px 6px 12px; }
+
+#backLeft {
+  display: none;
+  width: 50px;
+  background-color: #efefef;
+  position: absolute;
+  left: 0px;
+  height: 1000px;
+  cursor: pointer; }
+
+#backLeft div {
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid #666666;
+  margin-left: 12px;
+  position: absolute; }
+
+/*body .table {
+	margin-bottom: 0px;
+	td {
+		padding: 5px;
+	}
+}
+.rangeTip {
+	font-size: 7pt;
+	color: #666666;
+
+	margin: 0px;
+	list-style-type: none;
+
+	li {
+		line-height: 14px;
+
+		&.rangeTipLeft {
+			float: left;
+		}
+		&.rangeTipRight {
+			float: right;
+		}
+	}
+}
+
+.spiro-controls {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 20px;
+	background: rgba(51, 7, 7, 0.3);
+	border-radius: 4px;
+	text-align: center;
+
+	a {
+		color: #555555;
+		display: block;
+		&:hover {
+			color: white;
+			text-decoration: none;
+		}
+	}
+	&:hover {
+		background-color: #EB0000;
+	}
+}
+*/
+.tabContent > div {
+  display: none;
+  min-height: 125px; }
+  .tabContent > div.visible {
+    display: block; }
+
+#sidebar {
+  position: absolute;
+  top: 58px;
+  left: 6px;
+  width: 306px; }
+  #sidebar ol {
+    list-style-type: none;
+    margin: 0px; }
+    #sidebar ol li {
+      float: left;
+      width: 35%;
+      margin-right: 1px;
+      text-align: center;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      background: rgba(0, 0, 0, 0.5);
+      font-size: 9pt;
+      cursor: pointer; }
+      #sidebar ol li a {
+        color: #555555;
+        line-height: 17pt;
+        display: block; }
+        #sidebar ol li a:hover {
+          color: #cccccc;
+          text-decoration: none; }
+      #sidebar ol li.selected {
+        background: rgba(0, 0, 0, 0.3); }
+        #sidebar ol li.selected a {
+          color: #888888; }
+
+#sidebar form {
+  margin: 0px; }
+
+#location {
+  width: 276px;
+  font-size: 12pt;
+  height: 26px;
+  background-color: #eeeeee; }
+
+.spinner {
+  float: right;
+  width: 26px;
+  height: 26px;
+  display: block; }
+
+#sidebar select {
+  width: 290px;
+  border-width: 0px;
+  border: 0px; }
+
+.speciesCount {
+  background-color: #333333;
+  color: white;
+  font-size: 7pt;
+  border-radius: 5px;
+  text-align: center;
+  display: block;
+  width: 30px;
+  margin: 1px 0px 0px 10px; }
+
+#messageBar {
+  display: none;
+  margin: 10px;
+  color: #ffffff;
+  padding: 8px;
+  font-size: 11pt;
+  text-align: center;
+  text-shadow: 1px 0px #666666;
+  border-radius: 5px 5px 5px 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  -moz-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+  -webkit-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+  -o-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+  clear: both;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 20px;
+  min-height: 20px; }
+
+.error {
+  background-color: #cd2f2f;
+  background-image: linear-gradient(#cd2f2f, #e54444);
+  background-image: -webkit-linear-gradient(#cd2f2f, #e54444);
+  border: 1px solid #e54444; }
+
+.notification {
+  background-color: #8ACED6;
+  background-image: linear-gradient(#83acff, #82abff);
+  background-image: -webkit-linear-gradient(#83acff, #82abff);
+  border: 1px solid #A0BFFF; }
+
+#mapTabContent {
+  width: 100%;
+  height: 100%; }
+
+#mainPanel {
+  position: absolute;
+  left: 318px;
+  top: 51px;
+  padding-top: 6px; }
+
+#panelContent {
+  height: 100%;
+  width: 100%;
+  clear: both; }
+
+#panelTabs {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px; }
+  #panelTabs li {
+    float: left;
+    margin-right: 1px;
+    text-align: center;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    font-size: 9pt;
+    padding: 3px 22px;
+    cursor: pointer; }
+    #panelTabs li a {
+      color: #555555;
+      line-height: 17pt;
+      display: block; }
+      #panelTabs li a:hover {
+        color: #cccccc;
+        text-decoration: none; }
+    #panelTabs li.disabled {
+      background: rgba(0, 0, 0, 0.5);
+      color: #444444;
+      cursor: default; }
+
+footer {
+  padding: 7px 0px 7px 15px;
+  width: 304px;
+  position: absolute;
+  bottom: 0px;
+  font-size: 9pt;
+  color: #dddddd; }
+
+footer ul {
+  list-style-type: none;
+  margin: 0px 0px 0px 8px;
+  padding: 0px; }
+
+footer ul li {
+  line-height: 24px;
+  padding-right: 30px;
+  float: left; }
+
+footer span a:link, footer span a:visited {
+  background-color: #555555;
+  border-radius: 5px;
+  padding: 2px 8px;
+  color: white;
+  font-size: 8pt;
+  margin-right: 8px;
+  text-decoration: none; }
+
+footer span a:hover {
+  background-color: #333333; }
+
+body .navbar .brand {
+  padding: 15px 0px 13px 40px;
+  width: 170px;
+  background: transparent url(../../images/icon.png) left center no-repeat;
+  margin-left: 1px;
+  color: #e9f7ff; }
+  body .navbar .brand span {
+    color: #007eac; }
+
+body .navbar {
+  margin-bottom: 5px; }
+
+body div.mapBtn {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  text-align: center;
+  position: relative;
+  font-family: "lucida grande", Arial;
+  font-size: 11px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
+  color: #000;
+  border: 1px solid #717B87;
+  background-color: #fff;
+  margin: 5px;
+  padding: 1px 6px;
+  overflow: hidden; }
+
+body div.mapBtn:hover {
+  background: #FEFEFE;
+  background: -moz-linear-gradient(top, #fefefe 0%, #f3f3f3 100%);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#f3f3f3));
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEFEFE', endColorstr='#F3F3F3', GradientType=0); }
+
+body div.mapBtnSelected {
+  font-weight: bold; }
