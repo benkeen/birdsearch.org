@@ -1,12 +1,17 @@
 define([
 	"manager",
-	"constants"
-], function(manager, C) {
+	"constants",
+	"dataCache"
+], function(manager, C, dataCache) {
 	"use strict";
 
 	var _MODULE_ID = "map";
 	var _mapCanvas;
 	var _map;
+	var _markers = {};
+	var _icon = 'images/marker.png';
+	var _infoWindows = {};
+	var _visibleHotspots = [];
 
 	var _defaultMapOptions = {
 		center: new google.maps.LatLng(20, 12),
@@ -126,7 +131,9 @@ define([
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
-
+				dataCache.storeData("hotspots", response);
+				_displayHotspots();
+				//_onMapBoundaryUpdate();
 				manager.stopLoading();
 			},
 			error: function(response) {
@@ -144,6 +151,109 @@ define([
 
 	var _redrawMap = function() {
 		google.maps.event.trigger(_map, 'resize');
+	};
+
+	var _displayHotspots = function() {
+		var hotspots = dataCache.getHotspots();
+
+		var mapBoundary = _map.getBounds();
+		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
+		var counter = 1;
+		var maxHotspotsReached = false;
+
+		_visibleHotspots = [];
+
+		for (var locationID in hotspots) {
+			if (counter > C.SETTINGS.MAX_HOTSPOTS) {
+				maxHotspotsReached = true;
+				continue;
+			}
+
+			var currHotspotInfo = hotspots[locationID].hotspotInfo;
+			var latlng = new google.maps.LatLng(currHotspotInfo.lat, currHotspotInfo.lng);
+			if (!boundsObj.contains(latlng)) {
+				continue;
+			}
+
+			if (_markers.hasOwnProperty(locationID)) {
+				if (_markers[locationID].map === null) {
+					_markers[locationID].setMap(_map);
+				}
+			} else {
+				console.log("adding: ", locationID);
+
+				_markers[locationID] = new google.maps.Marker({
+					position: latlng,
+					map: _map,
+					title: currHotspotInfo.n,
+					icon: _icon,
+					locationID: locationID
+				});
+				_infoWindows[locationID] = new google.maps.InfoWindow();
+
+				(function(marker, infoWindow, locID) {
+					google.maps.event.addListener(marker, "click", function() {
+						infoWindow.setContent(_getInfoWindowHTML(locID));
+						infoWindow.open(_map, this);
+					});
+				})(_markers[locationID], _infoWindows[locationID], locationID);
+			}
+
+			_visibleHotspots.push(locationID);
+			counter++;
+		}
+		console.log(_visibleHotspots);
+	};
+
+
+	var onMapBoundaryUpdate = function() {
+
+/*		if (_visibleHotspots.length > 0) {
+			var html = manager.generateHotspotTable(manager.visibleHotspots);
+			var locationStr = 'location';
+			if (manager.numVisibleHotspots > 1) {
+				locationStr  = 'locations';
+			}
+
+			try {
+				$('#hotspotTable').trigger("destroy");
+			} catch (e) { }
+
+			var numHotspotsStr = '';
+			if (manager.maxHotspotsReached) {
+				numHotspotsStr = manager.numVisibleHotspots + '+';
+			} else {
+				numHotspotsStr = manager.numVisibleHotspots;
+			}
+
+			manager.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
+
+			if (manager.currViewportMode === 'desktop') {
+				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
+			} else {
+				$('#locationsTabContent').html(html); //.removeClass('hidden').fadeIn(300);
+				$('#locationsTab').removeClass('disabled').html('Locations <span>(' + manager.numVisibleHotspots + ')</span>');
+			}
+			$('#hotspotTable').tablesorter({
+				headers: { 2: { sorter: 'species' } }
+			});
+		} else {
+
+			manager.showMessage('No birding locations found', 'notification');
+			$('#fullPageSearchResults').fadeOut(300);
+			manager.stopLoading();
+		}
+		*/
+	};
+
+
+	var _getInfoWindowHTML = function(locationID) {
+//		var numSpecies = _manager.allHotspots[locationID].observations[_manager.searchType][_manager.observationRecency + 'day'].numSpeciesRunningTotal;
+//		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
+//			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
+//			numSpecies + ')</b></a></p></div>';
+
+		return locationID;
 	};
 
 

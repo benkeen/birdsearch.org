@@ -19,5 +19,10 @@ define([], function() {
 		SEARCH: "search"
 	};
 
+	_CONSTANTS.SETTINGS = {
+		MAX_HOTSPOTS: 50,
+		SEARCH_DAYS: [1,2,3,4,5,6,7,10,15,20,25,30]
+	};
+
 	return _CONSTANTS;
 });

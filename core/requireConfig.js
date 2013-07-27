@@ -3,7 +3,7 @@ requirejs.config({
 	paths: {
 
 		// core stuff
-		"app-start": "core/app-start",
+		"appStart": "core/appStart",
 		"manager": "core/manager",
 		"dataCache": "core/dataCache",
 		"page": "core/page",
