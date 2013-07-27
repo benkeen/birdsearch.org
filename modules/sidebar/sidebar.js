@@ -3,6 +3,7 @@ define([
 	"constants",
 	"text!sidebarTemplate"
 ], function(manager, C, template) {
+	"use strict";
 
 	var _MODULE_ID = "sidebar";
 	var _autoComplete;
@@ -12,11 +13,17 @@ define([
 	// DOM nodes
 	var _locationField;
 	var _resultTypeField;
+	var _observationRecencySection;
 	var _observationRecencyField;
+	var _hotspotActivitySection;
+	var _hotspotActivity;
 	var _searchBtn;
 
+	// misc globally things
 	var _lat;
 	var _lng;
+	var _locationObj;
+	var _viewportObj;
 
 
 	var _init = function() {
@@ -24,19 +31,36 @@ define([
 		// keep track of when the window is resized
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeSidebar;
+		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		manager.subscribe(_MODULE_ID, subscriptions);
 
-		// render the template
-		$("#sidebar").html(template);
+		var days = [];
+		for (var i=0; i<C.SETTINGS.SEARCH_DAYS.length; i++) {
+			var currDay = C.SETTINGS.SEARCH_DAYS[i];
+			days.push({
+				value: currDay,
+				label: (currDay === 1) ? currDay + " day" : currDay + " days",
+				selected: currDay === C.SETTINGS.DEFAULT_SEARCH_DAY
+			});
+		}
+		var tmpl = _.template(template, {
+			days: days
+		});
 
-		// initialize the geocoder (used to convert human addresses into something more usable)
+		// render the template
+		$("#sidebar").html(tmpl);
+
+		// initialize the geocoder, used to convert human addresses into something more useful
 		_geocoder  = new google.maps.Geocoder();
 
 		// make a note of the DOM nodes
-		_locationField           = $("#location");
-		_resultTypeField         = $("#resultType");
-		_observationRecencyField = $("#observationRecency");
-		_searchBtn               = $("#searchBtn");
+		_locationField             = $("#location");
+		_resultTypeField           = $("#resultType");
+		_observationRecencySection = $("#observationRecencySection");
+		_observationRecencyField   = $("#observationRecency");
+		_hotspotActivitySection    = $("#hotspotActivitySection");
+		_hotspotActivity           = $("#hotspotActivity");
+		_searchBtn                 = $("#searchBtn");
 
 		_addEventHandlers();
 	};
@@ -47,12 +71,16 @@ define([
 		// executed whenever the user selects a place through the auto-complete function
 		google.maps.event.addListener(_autoComplete, 'place_changed', _onAutoComplete);
 		_searchBtn.on("click", _submitForm);
+
+		_resultTypeField.on("change", _onChangeResultType);
 	};
 
 	var _onAutoComplete = function() {
 		var currPlace = _autoComplete.getPlace();
 		_lat = currPlace.geometry.location.lat();
 		_lng = currPlace.geometry.location.lng();
+		_viewportObj = currPlace.geometry.viewport;
+		_locationObj = currPlace.geometry.location;
 
 		// keep track of the specificity of the last search. Depending on the search type (all, notable, hotspots)
 		// it may not be valid
@@ -65,6 +93,23 @@ define([
 		}
 	};
 
+	var _onChangeResultType = function(e) {
+		if (e.target.value === "hotspots") {
+			_observationRecencySection.hide();
+		} else {
+			_observationRecencySection.show();
+		}
+	};
+
+	var _onHotspotMarkersAdded = function(msg) {
+		var numMarkers = msg.data.numMarkers;
+		var locationStr = 'location';
+		if (numMarkers > 1) {
+			locationStr  = 'locations';
+		}
+		manager.showMessage('<b>' + numMarkers + '</b> ' + locationStr + ' found', 'notification');
+	};
+
 	var _submitForm = function(e) {
 		e.preventDefault();
 
@@ -75,7 +120,11 @@ define([
 				resultType: _resultTypeField.val(),
 				observationRecencyField: _observationRecencyField.val(),
 				lat: _lat,
-				lng: _lng
+				lng: _lng,
+
+				// additional info needed to center & zoom the map
+				viewportObj: _viewportObj,
+				locationObj: _locationObj
 			});
 		}
 	};
@@ -103,6 +152,7 @@ define([
 			$('#sidebar').css('height', 'auto');
 		}
 	};
+
 
 	manager.register(_MODULE_ID, {
 		init: _init

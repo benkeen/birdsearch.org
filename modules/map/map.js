@@ -89,6 +89,15 @@ define([
 	};
 
 	var _onSearch = function(msg) {
+
+		// first, update the map boundary to whatever address they just searched for
+		if (msg.data.viewportObj) {
+			_map.fitBounds(msg.data.viewportObj);
+		} else {
+			_map.setCenter(place.geometry.locationObj);
+			_map.setZoom(17);
+		}
+
 		if (msg.data.resultType === "all") {
 			//manager.getHotspots();
 		} else if (msg.data.resultType === "notable") {
@@ -132,9 +141,12 @@ define([
 			dataType: "json",
 			success: function(response) {
 				dataCache.storeData("hotspots", response);
-				_displayHotspots();
-				//_onMapBoundaryUpdate();
+				_addHotspotMarkers();
 				manager.stopLoading();
+
+				manager.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
+					numMarkers: _visibleHotspots.length
+				});
 			},
 			error: function(response) {
 				console.log("error", arguments, response);
@@ -153,22 +165,16 @@ define([
 		google.maps.event.trigger(_map, 'resize');
 	};
 
-	var _displayHotspots = function() {
+
+	var _addHotspotMarkers = function() {
 		var hotspots = dataCache.getHotspots();
 
 		var mapBoundary = _map.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
 		var counter = 1;
-		var maxHotspotsReached = false;
-
 		_visibleHotspots = [];
 
 		for (var locationID in hotspots) {
-			if (counter > C.SETTINGS.MAX_HOTSPOTS) {
-				maxHotspotsReached = true;
-				continue;
-			}
-
 			var currHotspotInfo = hotspots[locationID].hotspotInfo;
 			var latlng = new google.maps.LatLng(currHotspotInfo.lat, currHotspotInfo.lng);
 			if (!boundsObj.contains(latlng)) {
@@ -180,8 +186,6 @@ define([
 					_markers[locationID].setMap(_map);
 				}
 			} else {
-				console.log("adding: ", locationID);
-
 				_markers[locationID] = new google.maps.Marker({
 					position: latlng,
 					map: _map,
@@ -202,7 +206,6 @@ define([
 			_visibleHotspots.push(locationID);
 			counter++;
 		}
-		console.log(_visibleHotspots);
 	};
 
 

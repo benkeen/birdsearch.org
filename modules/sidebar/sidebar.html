@@ -3,26 +3,25 @@
 	<div>
 		<label for="resultType">Result type:</label>
 		<select id="resultType">
-			<option value="all">All observations</option>
-			<option value="notable">Notable observations</option>
-			<option value="hotspots">Popular birding locations ("hotspots")</option>
+			<option value="all">All bird sightings</option>
+			<option value="notable">Notable sightings</option>
+			<option value="hotspots">Popular birding locations</option>
 		</select>
 	</div>
-	<div>
+	<div id="observationRecencySection">
 		<label for="observationRecency">Show observations made within last:</label>
 		<select id="observationRecency">
-			<option value="1">1 day</option>
-			<option value="2">2 days</option>
-			<option value="3">3 days</option>
-			<option value="4">4 days</option>
-			<option value="5">5 days</option>
-			<option value="6">6 days</option>
-			<option value="7" selected="selected">7 days</option>
-			<option value="10">10 days</option>
-			<option value="15">15 days</option>
-			<option value="20">20 days</option>
-			<option value="25">25 days</option>
-			<option value="30">30 days</option>
+			<% _.each(days, function(day) { %>
+			<option value="<%=day.value%>"<% if (day.selected) { %> selected="selected"<% } %>><%=day.label%></option>
+			<% }) %>
+		</select>
+	</div>
+	<div id="hotspotActivitySection" style="display:none">
+		<label for="hotspotActivity">Limit results to locations with observations made within last:</label>
+		<select id="hotspotActivity">
+			<% _.each(days, function(day) { %>
+			<option value="<%=day.value%>"<% if (day.selected) { %> selected="selected"<% } %>><%=day.label%></option>
+			<% }) %>
 		</select>
 	</div>
 	<div>
