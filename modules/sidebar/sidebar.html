@@ -19,19 +19,23 @@
 	</ul>
 
 	<div id="observationRecencySection">
-		<label for="observationRecency">Show observations made within last:</label>
-		<input type="range" id="observationRecency" min="1" max="30" value="7" />
+		<label for="observationRecency">
+			Show observations made within last <input type="text" id="observationRecencyDisplay" value="7" /> day(s)
+		</label>
 		<ol class="rangeTip">
 			<li class="rangeTipLeft">1</li>
-			<li class="rangeValue">
-				<span id="observationRecencyDisplay">7 days</span>
+			<li class="">
+				<input type="range" id="observationRecency" min="1" max="30" value="7" />
 			</li>
 			<li class="rangeTipRight">30</li>
 		</ol>
 		<div class="clear"></div>
 	</div>
+
 	<div id="hotspotActivitySection" style="display:none">
-		<label for="hotspotActivity">Limit results to locations with observations made within last:</label>
+		<label for="hotspotActivity">
+			Limit results to locations with observations made within last
+		</label>
 		<select id="hotspotActivity">
 		</select>
 	</div>

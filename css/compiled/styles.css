@@ -71,9 +71,6 @@ body .well-pad {
   background-color: #eeeeee;
   margin-bottom: 16px; }
 
-#observationRecency {
-  width: 100%; }
-
 .spinner {
   float: right;
   width: 26px;
@@ -153,28 +150,35 @@ body .well-pad {
   list-style-type: none; }
   .rangeTip li {
     line-height: 14px;
-    width: 33%;
     float: left; }
     .rangeTip li.rangeTipLeft {
       text-align: left;
-      font-weight: bold; }
-    .rangeTip li.rangeValue {
-      text-align: center; }
-      .rangeTip li.rangeValue span {
-        background-color: #efefef;
-        color: #000000;
-        border-radius: 2px;
-        padding: 3px 8px;
-        font-size: 11px; }
+      font-weight: bold;
+      width: 15px; }
     .rangeTip li.rangeTipRight {
       text-align: right;
-      font-weight: bold; }
+      font-weight: bold;
+      width: 20px; }
+
+#observationRecency {
+  width: 255px; }
 
 #observationRecencySection label {
   border-top: 1px solid #333333;
   font-size: 13px;
   margin: 0px;
-  padding-top: 8px; }
+  padding-top: 3px; }
+
+#observationRecencyDisplay {
+  background-color: #efefef;
+  color: #000000;
+  border-radius: 2px;
+  padding: 3px 8px;
+  font-size: 11px;
+  width: 15px;
+  padding: 0px 2px;
+  margin-top: 7px;
+  text-align: center; }
 
 #mapTabContent {
   width: 100%;
@@ -254,9 +258,6 @@ body .navbar .brand {
   color: #e9f7ff; }
   body .navbar .brand span {
     color: #b2d0ff; }
-
-body .navbar {
-  margin-bottom: 5px; }
 
 body .navbar-inner {
   padding-left: 12px; }

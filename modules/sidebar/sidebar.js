@@ -12,6 +12,7 @@ define([
 
 	// DOM nodes
 	var _locationField;
+	var _resultTypeGroup;
 	var _resultTypeField;
 	var _observationRecencySection;
 	var _observationRecencyField;
@@ -45,6 +46,7 @@ define([
 
 		// make a note of the DOM nodes
 		_locationField             = $("#location");
+		_resultTypeGroup           = $("#resultTypeGroup");
 		_resultTypeField           = $("#resultType");
 		_observationRecencySection = $("#observationRecencySection");
 		_observationRecencyField   = $("#observationRecency");
@@ -59,6 +61,7 @@ define([
 		_locationField.focus();
 	};
 
+
 	var _addEventHandlers = function() {
 		_autoComplete = new google.maps.places.Autocomplete(_locationField[0]);
 
@@ -67,7 +70,9 @@ define([
 		_searchBtn.on("click", _submitForm);
 
 		_observationRecencyField.on("change", _onChangeRecencyField);
-		_resultTypeField.on("change", _onChangeResultType);
+		//_resultTypeField.on("change", _onChangeResultType);
+
+		_resultTypeGroup.on("click", "li", _onClickResultTypeGroupRow);
 	};
 
 	var _onAutoComplete = function() {
@@ -88,31 +93,35 @@ define([
 		}
 	};
 
-	var _onChangeResultType = function(e) {
-		if (e.target.value === "hotspots") {
-			_observationRecencySection.hide();
-		} else {
-			_observationRecencySection.show();
-		}
+	var _onChangeRecencyField = function(e) {
+		_observationRecencyDisplay.val(e.target.value);
 	};
 
-	var _onChangeRecencyField = function(e) {
-		var dayOrDays = (e.target.value === "1") ? "day" : "days";
-		_observationRecencyDisplay.html(e.target.value + " " + dayOrDays);
+	var _onClickResultTypeGroupRow = function(e) {
+//		e.preventDefault();
+
+		var currentLi = e.currentTarget;
+//		$("#resultTypeGroup li.selected").removeClass("selected").find("input").removeAttr("checked");
+		//$(currentLi).addClass("selected").find("input").attr("checked", "checked");
+
+		if (e.currentTarget.value === "hotspots") {
+			_observationRecencySection.hide("fade");
+		} else {
+			_observationRecencySection.show("fade");
+		}
 	};
 
 	var _onHotspotMarkersAdded = function(msg) {
 		var numMarkers = msg.data.numMarkers;
-		var locationStr = 'location';
+		var locationStr = "location";
 		if (numMarkers > 1) {
-			locationStr  = 'locations';
+			locationStr  = "locations";
 		}
-		manager.showMessage('<b>' + numMarkers + '</b> ' + locationStr + ' found', 'notification');
+		manager.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
 	};
 
 	var _submitForm = function(e) {
 		e.preventDefault();
-
 		if (_validateSearchForm()) {
 			manager.startLoading();
 			manager.publish(_MODULE_ID, C.EVENT.SEARCH, {

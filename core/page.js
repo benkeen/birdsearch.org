@@ -19,7 +19,6 @@ define([
 		manager.subscribe(_MODULE_ID, subscriptions);
 	};
 
-
 	var _handleWindowResize = function() {
 		var windowHeight = $(window).height();
 		var windowWidth  = $(window).width();
