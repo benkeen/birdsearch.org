@@ -3,36 +3,39 @@
 <div class="well well-pad">
 	<input type="text" id="location" />
 
-	<div>
-		<div>
-			<label for="resultType">Result type:</label>
-			<select id="resultType">
-				<option value="all">All bird sightings</option>
-				<option value="notable">Notable sightings</option>
-				<option value="hotspots">Popular birding locations</option>
-			</select>
-		</div>
-		<div id="observationRecencySection">
-			<label for="observationRecency">Show observations made within last:</label>
-			<select id="observationRecency">
-				<% _.each(days, function(day) { %>
-				<option value="<%=day.value%>"<% if (day.selected) { %> selected="selected"<% } %>><%=day.label%></option>
-				<% }) %>
-			</select>
-		</div>
-		<div id="hotspotActivitySection" style="display:none">
-			<label for="hotspotActivity">Limit results to locations with observations made within last:</label>
-			<select id="hotspotActivity">
-				<% _.each(days, function(day) { %>
-				<option value="<%=day.value%>"<% if (day.selected) { %> selected="selected"<% } %>><%=day.label%></option>
-				<% }) %>
-			</select>
-		</div>
-	</div>
-</div>
+	<ul id="resultTypeGroup">
+		<li class="selected">
+			<input type="radio" name="resultType" id="rt1" checked="checked" />
+			<label for="rt1">All bird sightings</label>
+		</li>
+		<li>
+			<input type="radio" name="resultType" id="rt2" />
+			<label for="rt2">Notable sightings</label>
+		</li>
+		<li>
+			<input type="radio" name="resultType" id="rt3" />
+			<label for="rt3">Popular birding locations</label>
+		</li>
+	</ul>
 
-<div class="well">
-	<div>
+	<div id="observationRecencySection">
+		<label for="observationRecency">Show observations made within last:</label>
+		<input type="range" id="observationRecency" min="1" max="30" value="7" />
+		<ol class="rangeTip">
+			<li class="rangeTipLeft">1</li>
+			<li class="rangeValue">
+				<span id="observationRecencyDisplay">7 days</span>
+			</li>
+			<li class="rangeTipRight">30</li>
+		</ol>
+		<div class="clear"></div>
+	</div>
+	<div id="hotspotActivitySection" style="display:none">
+		<label for="hotspotActivity">Limit results to locations with observations made within last:</label>
+		<select id="hotspotActivity">
+		</select>
+	</div>
+	<div style="margin-top: 15px;">
 		<input type="submit" class="btn btn-primary" id="searchBtn" value="Search &raquo;" />
 		<span id="loadingSpinner"></span>
 	</div>

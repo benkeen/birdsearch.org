@@ -15,6 +15,7 @@ define([
 	var _resultTypeField;
 	var _observationRecencySection;
 	var _observationRecencyField;
+	var _observationRecencyDisplay;
 	var _hotspotActivitySection;
 	var _hotspotActivity;
 	var _searchBtn;
@@ -34,18 +35,7 @@ define([
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		manager.subscribe(_MODULE_ID, subscriptions);
 
-		var days = [];
-		for (var i=0; i<C.SETTINGS.SEARCH_DAYS.length; i++) {
-			var currDay = C.SETTINGS.SEARCH_DAYS[i];
-			days.push({
-				value: currDay,
-				label: (currDay === 1) ? currDay + " day" : currDay + " days",
-				selected: currDay === C.SETTINGS.DEFAULT_SEARCH_DAY
-			});
-		}
-		var tmpl = _.template(template, {
-			days: days
-		});
+		var tmpl = _.template(template);
 
 		// render the template
 		$("#sidebar").html(tmpl);
@@ -58,11 +48,15 @@ define([
 		_resultTypeField           = $("#resultType");
 		_observationRecencySection = $("#observationRecencySection");
 		_observationRecencyField   = $("#observationRecency");
+		_observationRecencyDisplay = $("#observationRecencyDisplay");
 		_hotspotActivitySection    = $("#hotspotActivitySection");
 		_hotspotActivity           = $("#hotspotActivity");
 		_searchBtn                 = $("#searchBtn");
 
 		_addEventHandlers();
+
+		// now focus on the location field on page load
+		_locationField.focus();
 	};
 
 	var _addEventHandlers = function() {
@@ -72,6 +66,7 @@ define([
 		google.maps.event.addListener(_autoComplete, 'place_changed', _onAutoComplete);
 		_searchBtn.on("click", _submitForm);
 
+		_observationRecencyField.on("change", _onChangeRecencyField);
 		_resultTypeField.on("change", _onChangeResultType);
 	};
 
@@ -99,6 +94,11 @@ define([
 		} else {
 			_observationRecencySection.show();
 		}
+	};
+
+	var _onChangeRecencyField = function(e) {
+		var dayOrDays = (e.target.value === "1") ? "day" : "days";
+		_observationRecencyDisplay.html(e.target.value + " " + dayOrDays);
 	};
 
 	var _onHotspotMarkersAdded = function(msg) {
