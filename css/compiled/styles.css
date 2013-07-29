@@ -126,7 +126,7 @@ body .well-pad {
   border: 1px solid #A0BFFF; }
 
 #resultTypeGroup {
-  margin: 0px 0px 10px;
+  margin: 0px 0px 4px;
   padding: 0px; }
   #resultTypeGroup li:hover label {
     color: #b2d0ff;
@@ -179,6 +179,13 @@ body .well-pad {
   padding: 0px 2px;
   margin-top: 7px;
   text-align: center; }
+
+#searchOptionsLink {
+  font-size: 11px;
+  color: #777777; }
+  #searchOptionsLink:hover {
+    color: #b2d0ff;
+    text-decoration: none; }
 
 #mapTabContent {
   width: 100%;

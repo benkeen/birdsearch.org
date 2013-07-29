@@ -5,20 +5,22 @@
 
 	<ul id="resultTypeGroup">
 		<li class="selected">
-			<input type="radio" name="resultType" id="rt1" checked="checked" />
+			<input type="radio" name="resultType" id="rt1" value="all" checked="checked" />
 			<label for="rt1">All bird sightings</label>
 		</li>
 		<li>
-			<input type="radio" name="resultType" id="rt2" />
+			<input type="radio" name="resultType" id="rt2" value="notable" />
 			<label for="rt2">Notable sightings</label>
 		</li>
 		<li>
-			<input type="radio" name="resultType" id="rt3" />
+			<input type="radio" name="resultType" id="rt3" value="hotspots" />
 			<label for="rt3">Popular birding locations</label>
 		</li>
 	</ul>
 
-	<div id="observationRecencySection">
+	<a href="#" id="searchOptionsLink">More search options &raquo;</a>
+
+	<div id="observationRecencySection" style="display:none">
 		<label for="observationRecency">
 			Show observations made within last <input type="text" id="observationRecencyDisplay" value="7" /> day(s)
 		</label>
@@ -39,7 +41,7 @@
 		<select id="hotspotActivity">
 		</select>
 	</div>
-	<div style="margin-top: 15px;">
+	<div style="margin-top: 10px;">
 		<input type="submit" class="btn btn-primary" id="searchBtn" value="Search &raquo;" />
 		<span id="loadingSpinner"></span>
 	</div>

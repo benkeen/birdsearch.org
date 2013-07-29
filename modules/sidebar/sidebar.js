@@ -9,11 +9,13 @@ define([
 	var _autoComplete;
 	var _geocoder;
 	var _lastSearchNumAddressComponents;
+	var _searchOptionsEnabled = false;
 
 	// DOM nodes
 	var _locationField;
 	var _resultTypeGroup;
 	var _resultTypeField;
+	var _searchOptionsLink;
 	var _observationRecencySection;
 	var _observationRecencyField;
 	var _observationRecencyDisplay;
@@ -47,7 +49,8 @@ define([
 		// make a note of the DOM nodes
 		_locationField             = $("#location");
 		_resultTypeGroup           = $("#resultTypeGroup");
-		_resultTypeField           = $("#resultType");
+		_resultTypeField           = $("input[name=resultType]");
+		_searchOptionsLink         = $("#searchOptionsLink");
 		_observationRecencySection = $("#observationRecencySection");
 		_observationRecencyField   = $("#observationRecency");
 		_observationRecencyDisplay = $("#observationRecencyDisplay");
@@ -57,22 +60,20 @@ define([
 
 		_addEventHandlers();
 
-		// now focus on the location field on page load
+		// focus on the location field on page load. Seems like this should be part of the manager... maybe the manager
+		// should fire a "complete" even to which this module listens?
 		_locationField.focus();
 	};
 
 
 	var _addEventHandlers = function() {
 		_autoComplete = new google.maps.places.Autocomplete(_locationField[0]);
-
-		// executed whenever the user selects a place through the auto-complete function
 		google.maps.event.addListener(_autoComplete, 'place_changed', _onAutoComplete);
+
 		_searchBtn.on("click", _submitForm);
-
 		_observationRecencyField.on("change", _onChangeRecencyField);
-		//_resultTypeField.on("change", _onChangeResultType);
-
 		_resultTypeGroup.on("click", "li", _onClickResultTypeGroupRow);
+		_searchOptionsLink.on("click", _toggleSearchOptions);
 	};
 
 	var _onAutoComplete = function() {
@@ -98,10 +99,16 @@ define([
 	};
 
 	var _onClickResultTypeGroupRow = function(e) {
-//		e.preventDefault();
+		//e.preventDefault();
 
+		console.log($("#resultTypeGroup li input:checked").val());
 		var currentLi = e.currentTarget;
-//		$("#resultTypeGroup li.selected").removeClass("selected").find("input").removeAttr("checked");
+		var els = $("#resultTypeGroup li");
+		for (var i=0; i<els.length; i++) {
+			$(els[i]).removeClass("selected");
+//			$(els[i]).find("input").removeAttr("checked");
+		}
+
 		//$(currentLi).addClass("selected").find("input").attr("checked", "checked");
 
 		if (e.currentTarget.value === "hotspots") {
@@ -162,6 +169,27 @@ define([
 		}
 	};
 
+	var _toggleSearchOptions = function(e) {
+		e.preventDefault();
+
+		var resultTypeValue = _resultTypeField.filter(":checked").val();
+		if (resultTypeValue === "all") {
+			if (_searchOptionsEnabled) {
+				$("#observationRecencySection").fadeOut();
+			} else {
+				$("#observationRecencySection").fadeIn();
+			}
+		}
+
+		// update the link text
+		if (_searchOptionsEnabled) {
+			_searchOptionsLink.html("More search options &raquo;");
+		} else {
+			_searchOptionsLink.html("&laquo; Hide search options");
+		}
+
+		_searchOptionsEnabled = !_searchOptionsEnabled;
+	};
 
 	manager.register(_MODULE_ID, {
 		init: _init
