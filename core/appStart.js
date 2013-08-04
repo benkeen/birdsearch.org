@@ -1,13 +1,14 @@
 require([
-	"manager",
-	"page",
-	"simplemodal"
-], function(manager) {
+	"mediator",
+	"page"
+], function(mediator) {
 	"use strict";
 
 	// load all page components, then start up the app
-	var pageComponents = ["dataCache", "header", "footer", "sidebar", "mainPanel", "about", "contact"];
+	var pageComponents = [
+		"dataCache", "header", "footer", "sidebar", "mainPanel", "about", "contact"
+	];
 	require(pageComponents, function() {
-		manager.start();
+		mediator.start();
 	});
 });

@@ -1,8 +1,8 @@
 define([
-	"manager",
+	"mediator",
 	"constants",
 	"dataCache"
-], function(manager, C, dataCache) {
+], function(mediator, C, dataCache) {
 	"use strict";
 
 	var _MODULE_ID = "map";
@@ -12,23 +12,23 @@ define([
 	var _icon = 'images/marker.png';
 	var _infoWindows = {};
 	var _visibleHotspots = [];
-	var _defaultMapType = google.maps.MapTypeId.ROADMAP;
-
+	var _defaultMapType = null;
 	var _defaultMapOptions = {
-		center: new google.maps.LatLng(42, -100),
 		zoom: 4,
 		mapTypeId: _defaultMapType,
 		mapTypeControlOptions: { mapTypeIds: [] },
 		streetViewControl: false
 	};
 
-
 	var _init = function() {
+		_defaultMapType = google.maps.MapTypeId.ROADMAP;
+		_defaultMapOptions.center = new google.maps.LatLng(42, -100);
+
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
 		subscriptions[C.EVENT.SELECT_TAB] = _onSelectTab;
 		subscriptions[C.EVENT.SEARCH] = _onSearch;
-		manager.subscribe(_MODULE_ID, subscriptions);
+		mediator.subscribe(_MODULE_ID, subscriptions);
 	};
 
 	/**
@@ -46,7 +46,7 @@ define([
 		// called any time the map has had its bounds changed
 		google.maps.event.addListener(_map, 'dragend', _onMapBoundsChange);
 
-		manager.publish(_MODULE_ID, C.EVENT.TRIGGER_WINDOW_RESIZE);
+		mediator.publish(_MODULE_ID, C.EVENT.TRIGGER_WINDOW_RESIZE);
 	};
 
 
@@ -100,9 +100,9 @@ define([
 		}
 
 		if (msg.data.resultType === "all") {
-			//manager.getHotspots();
+			//mediator.getHotspots();
 		} else if (msg.data.resultType === "notable") {
-			//manager.getNotableObservations();
+			//mediator.getNotableObservations();
 		} else if (msg.data.resultType === "hotspots") {
 			_getHotspots(msg.data.lat, msg.data.lng);
 		}
@@ -117,10 +117,10 @@ define([
 			$('#panelContent').css('height', data.height - 40);
 		}
 
-//		if (manager.currTabID == 'mapTab') {
-//			var address = $.trim(manager.searchField.value);
+//		if (mediator.currTabID == 'mapTab') {
+//			var address = $.trim(mediator.searchField.value);
 //			if (address !== '') {
-//				manager.updatePage(false);
+//				mediator.updatePage(false);
 //			}
 //		}
 	};
@@ -143,15 +143,15 @@ define([
 			success: function(response) {
 				dataCache.storeData("hotspots", response);
 				_addHotspotMarkers();
-				manager.stopLoading();
+				mediator.stopLoading();
 
-				manager.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
+				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
 					numMarkers: _visibleHotspots.length
 				});
 			},
 			error: function(response) {
 				console.log("error", arguments, response);
-				manager.stopLoading();
+				mediator.stopLoading();
 			}
 		});
 	};
@@ -213,9 +213,9 @@ define([
 	var onMapBoundaryUpdate = function() {
 
 /*		if (_visibleHotspots.length > 0) {
-			var html = manager.generateHotspotTable(manager.visibleHotspots);
+			var html = mediator.generateHotspotTable(mediator.visibleHotspots);
 			var locationStr = 'location';
-			if (manager.numVisibleHotspots > 1) {
+			if (mediator.numVisibleHotspots > 1) {
 				locationStr  = 'locations';
 			}
 
@@ -224,36 +224,35 @@ define([
 			} catch (e) { }
 
 			var numHotspotsStr = '';
-			if (manager.maxHotspotsReached) {
-				numHotspotsStr = manager.numVisibleHotspots + '+';
+			if (mediator.maxHotspotsReached) {
+				numHotspotsStr = mediator.numVisibleHotspots + '+';
 			} else {
-				numHotspotsStr = manager.numVisibleHotspots;
+				numHotspotsStr = mediator.numVisibleHotspots;
 			}
 
-			manager.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
+			mediator.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
 
-			if (manager.currViewportMode === 'desktop') {
+			if (mediator.currViewportMode === 'desktop') {
 				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
 			} else {
 				$('#locationsTabContent').html(html); //.removeClass('hidden').fadeIn(300);
-				$('#locationsTab').removeClass('disabled').html('Locations <span>(' + manager.numVisibleHotspots + ')</span>');
+				$('#locationsTab').removeClass('disabled').html('Locations <span>(' + mediator.numVisibleHotspots + ')</span>');
 			}
 			$('#hotspotTable').tablesorter({
 				headers: { 2: { sorter: 'species' } }
 			});
 		} else {
-
-			manager.showMessage('No birding locations found', 'notification');
+			mediator.showMessage('No birding locations found', 'notification');
 			$('#fullPageSearchResults').fadeOut(300);
-			manager.stopLoading();
+			mediator.stopLoading();
 		}
 		*/
 	};
 
 
 	var _getInfoWindowHTML = function(locationID) {
-//		var numSpecies = _manager.allHotspots[locationID].observations[_manager.searchType][_manager.observationRecency + 'day'].numSpeciesRunningTotal;
-//		var html = '<div class="hotspotDialog"><p><b>' + manager.allHotspots[locationID].n + '</b></p>' +
+//		var numSpecies = mediator.allHotspots[locationID].observations[mediator.searchType][mediator.observationRecency + 'day'].numSpeciesRunningTotal;
+//		var html = '<div class="hotspotDialog"><p><b>' + mediator.allHotspots[locationID].n + '</b></p>' +
 //			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
 //			numSpecies + ')</b></a></p></div>';
 
@@ -261,7 +260,7 @@ define([
 	};
 
 
-	manager.register(_MODULE_ID, {
+	mediator.register(_MODULE_ID, {
 		init: _init
 	});
 

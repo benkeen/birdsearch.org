@@ -3,9 +3,9 @@
  * for example.
  */
 define([
-	"manager",
+	"mediator",
 	"constants"
-], function(manager, C) {
+], function(mediator, C) {
 
 	var _MODULE_ID = "page";
 	var _VIEWPORT_WIDTH_BREAKPOINT = 640; // where should this live?
@@ -16,7 +16,7 @@ define([
 
 		var subscriptions = {};
 		subscriptions[C.EVENT.TRIGGER_WINDOW_RESIZE] = _handleWindowResize;
-		manager.subscribe(_MODULE_ID, subscriptions);
+		mediator.subscribe(_MODULE_ID, subscriptions);
 	};
 
 	var _handleWindowResize = function() {
@@ -28,7 +28,7 @@ define([
 			viewportMode = 'mobile';
 		}
 
-		manager.publish(_MODULE_ID, C.EVENT.WINDOW_RESIZE, {
+		mediator.publish(_MODULE_ID, C.EVENT.WINDOW_RESIZE, {
 			viewportMode: viewportMode,
 			width: windowWidth,
 			height: windowHeight
@@ -42,8 +42,7 @@ define([
 		*/
 	};
 
-
-	manager.register(_MODULE_ID, {
+	mediator.register(_MODULE_ID, {
 		init: _init
 	});
 });

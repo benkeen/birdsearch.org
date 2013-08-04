@@ -4,7 +4,7 @@ requirejs.config({
 
 		// core stuff
 		"appStart": "core/appStart",
-		"manager": "core/manager",
+		"mediator": "core/mediator",
 		"dataCache": "core/dataCache",
 		"page": "core/page",
 		"constants": "core/constants",
@@ -25,9 +25,14 @@ requirejs.config({
 		"map": "modules/map/map",
 
 		// helpers
-		'tablesorter': "libs/jquery.tablesorter.min",
-		'simplemodal': "libs/jquery.simplemodal",
-		"underscore": "libs/underscore.min"
+		"tablesorter": "libs/jquery.tablesorter.min",
+		"simplemodal": "libs/jquery.simplemodal",
+		"underscore": "libs/underscore.min",
+
+		// language files
+		"lang_en": "lang/en",
+		"lang_fr": "lang/fr",
+		"lang_de": "lang/de"
 	},
 	shim: {
 		'tablesorter': "jquery",

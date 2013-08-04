@@ -1,9 +1,9 @@
 define([
-	"manager",
+	"mediator",
 	"constants",
 	"text!mainPanelTemplate",
 	"map"
-], function(manager, C, template, map) {
+], function(mediator, C, template, map) {
 
 	var _MODULE_ID = "mainPanel";
 	var _currTabID = "mapTab";
@@ -13,7 +13,7 @@ define([
 
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMainPanel;
-		manager.subscribe(_MODULE_ID, subscriptions);
+		mediator.subscribe(_MODULE_ID, subscriptions);
 
 		// insert the main panel
 		$("#mainPanel").html(template);
@@ -43,12 +43,12 @@ define([
 
 		$("#panelTabs li").removeClass("selected");
 		$('#' + tabID).addClass("selected");
-		$('#' + manager.currTabID + 'Content').addClass("hidden");
+		$('#' + mediator.currTabID + 'Content').addClass("hidden");
 		$('#' + tabID + 'Content').removeClass("hidden");
 
 		_currTabID = tabID;
 
-		manager.publish(_MODULE_ID, C.EVENT.SELECT_TAB, { tab: _currTabID });
+		mediator.publish(_MODULE_ID, C.EVENT.SELECT_TAB, { tab: _currTabID });
 	};
 
 	var _resizeMainPanel = function(msg) {
@@ -65,7 +65,7 @@ define([
 		}
 	};
 
-	manager.register(_MODULE_ID, {
+	mediator.register(_MODULE_ID, {
 		init: _init
 	});
 });

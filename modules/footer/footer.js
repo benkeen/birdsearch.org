@@ -1,9 +1,9 @@
 define([
-	"manager",
+	"mediator",
 	"constants",
 	"underscore",
 	"text!footerTemplate"
-], function(manager, C, _, template) {
+], function(mediator, C, _, template) {
 	"use strict";
 
 	var _MODULE_ID = "footer";
@@ -16,7 +16,7 @@ define([
 		$("footer").html(tmpl);
 	};
 
-	manager.register(_MODULE_ID, {
+	mediator.register(_MODULE_ID, {
 		run: _run
 	});
 });

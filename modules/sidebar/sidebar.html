@@ -20,6 +20,7 @@
 
 	<a href="#" id="searchOptionsLink">More search options &raquo;</a>
 
+	<!-- optional search options for the "All bird sightings" search option -->
 	<div id="observationRecencySection" style="display:none">
 		<label for="observationRecency">
 			Show observations made within last <span id="observationRecencyDisplay">7</span> day(s)
@@ -34,13 +35,22 @@
 		<div class="clear"></div>
 	</div>
 
+	<!-- optional search options for the "Popular birding locations" search option -->
 	<div id="hotspotActivitySection" style="display:none">
+		<input type="checkbox" />
 		<label for="hotspotActivity">
-			Limit results to locations with observations made within last
+			Limit to locations with observations made within last
+			<span id="hotspotActivityRecencyDisplay">7</span> day(s)
 		</label>
-		<select id="hotspotActivity">
-		</select>
+		<ol class="rangeTip">
+			<li class="rangeTipLeft">1</li>
+			<li class="">
+				<input type="range" id="hotspotActivity" min="1" max="30" value="7" />
+			</li>
+			<li class="rangeTipRight">30</li>
+		</ol>
 	</div>
+
 	<div style="margin-top: 10px;">
 		<input type="submit" class="btn btn-primary" id="searchBtn" value="Search &raquo;" />
 		<span id="loadingSpinner"></span>

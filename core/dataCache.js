@@ -2,8 +2,8 @@
  * This acts as the sole, central repo for hotspot and observation data
  */
 define([
-	"manager" // pity
-], function(manager) {
+	"mediator" // pity
+], function(mediator) {
 
 	var _MODULE_ID = "dataCache";
 	var _hotspotData = {};
@@ -49,7 +49,7 @@ define([
 		}
 	};
 
-	manager.register(_MODULE_ID, {
+	mediator.register(_MODULE_ID, {
 		init: _init
 	});
 

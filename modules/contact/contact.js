@@ -1,22 +1,22 @@
 define([
-	"manager",
+	"mediator",
 	"constants",
 	"text!contactTemplate"
-], function(manager, C, template) {
+], function(mediator, C, template) {
 
 	var _MODULE_ID = "contact";
 
 	var _init = function() {
 		var subscriptions = {};
 		subscriptions[C.EVENT.CONTACT_LINK_CLICK] = _openContactModal;
-		manager.subscribe(_MODULE_ID, subscriptions)
+		mediator.subscribe(_MODULE_ID, subscriptions)
 	};
 
 	var _openContactModal = function() {
 		$.modal(template);
 	};
 
-	manager.register(_MODULE_ID, {
+	mediator.register(_MODULE_ID, {
 		init: _init
 	});
 });

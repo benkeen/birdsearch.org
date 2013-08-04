@@ -1,8 +1,8 @@
 define([
-	"manager",
+	"mediator",
 	"constants",
 	"text!sidebarTemplate"
-], function(manager, C, template) {
+], function(mediator, C, template) {
 	"use strict";
 
 	var _MODULE_ID = "sidebar";
@@ -36,7 +36,7 @@ define([
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeSidebar;
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
-		manager.subscribe(_MODULE_ID, subscriptions);
+		mediator.subscribe(_MODULE_ID, subscriptions);
 
 		var tmpl = _.template(template);
 
@@ -44,7 +44,7 @@ define([
 		$("#sidebar").html(tmpl);
 
 		// initialize the geocoder, used to convert human addresses into something more useful
-		_geocoder  = new google.maps.Geocoder();
+		_geocoder = new google.maps.Geocoder();
 
 		// make a note of the DOM nodes
 		_locationField             = $("#location");
@@ -58,9 +58,10 @@ define([
 		_hotspotActivity           = $("#hotspotActivity");
 		_searchBtn                 = $("#searchBtn");
 
+		// add all relevant event handlers for the sidebar content
 		_addEventHandlers();
 
-		// focus on the location field on page load. Seems like this should be part of the manager... maybe the manager
+		// focus on the location field on page load. Seems like this should be part of the moduleHelper... maybe that
 		// should fire a "complete" even to which this module listens?
 		_locationField.focus();
 	};
@@ -99,6 +100,8 @@ define([
 	};
 
 	var _onClickResultTypeGroupRow = function(e) {
+
+		// can't prevent default because the native label-click action to check the radio won't occur
 		//e.preventDefault();
 
 		console.log($("#resultTypeGroup li input:checked").val());
@@ -124,14 +127,16 @@ define([
 		if (numMarkers > 1) {
 			locationStr  = "locations";
 		}
-		manager.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
+
+		// move to moduleHelper
+		mediator.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
 	};
 
 	var _submitForm = function(e) {
 		e.preventDefault();
 		if (_validateSearchForm()) {
-			manager.startLoading();
-			manager.publish(_MODULE_ID, C.EVENT.SEARCH, {
+			mediator.startLoading();
+			mediator.publish(_MODULE_ID, C.EVENT.SEARCH, {
 				location: _locationField.val(),
 				resultType: _resultTypeField.val(),
 				observationRecencyField: _observationRecencyField.val(),
@@ -147,15 +152,15 @@ define([
 
 	var _validateSearchForm = function() {
 		if (_locationField[0].value === '') {
-			manager.showMessage('Please enter a location.', 'error');
+			mediator.showMessage('Please enter a location.', 'error');
 			return false;
 		}
 		if (_resultTypeField[0].value === "all" && _lastSearchNumAddressComponents < 3) {
-			manager.showMessage('Please enter a more specific location.', 'error');
+			mediator.showMessage('Please enter a more specific location.', 'error');
 			return false;
 		}
 		if ($.inArray(_resultTypeField[0].value, ["notable", "hotspots"]) !== -1 && _lastSearchNumAddressComponents < 2) {
-			manager.showMessage('Please enter a more specific location.', 'error');
+			mediator.showMessage('Please enter a more specific location.', 'error');
 			return false;
 		}
 		return true;
@@ -191,7 +196,7 @@ define([
 		_searchOptionsEnabled = !_searchOptionsEnabled;
 	};
 
-	manager.register(_MODULE_ID, {
+	mediator.register(_MODULE_ID, {
 		init: _init
 	});
 });
