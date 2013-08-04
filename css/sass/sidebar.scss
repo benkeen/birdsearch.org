@@ -182,21 +182,14 @@ body .well-pad {
 		border-top: 1px solid #333333;
 		font-size: 13px;
 		margin: 0px;
-		padding-top: 3px;
+		padding: 8px 0px 4px;
 	}
 }
 #observationRecencyDisplay {
-	background-color: #efefef;
-	color: #000000;
-	border-radius: 2px;
-	padding: 3px 8px;
-	font-size: 11px;
-	width: 15px;
-	padding: 0px 2px;
+	font-weight: bold;
+	color: white;
 	margin-top: 7px;
-	text-align: center;
 }
-
 #searchOptionsLink {
 	font-size: 11px;
 	color: #777777;

@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>eBirdsearch.org</title>
-	<meta name="description" content="eBirdsearch.org - browse birding locations and sightings worldwide" />	
+	<title>birdsearch.org</title>
+	<meta name="description" content="birdsearch.org - browse worldwide birding locations and sightings" />
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 	<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/compiled/styles.css" rel="stylesheet" type="text/css" />
-
 	<!--<link href="css/theme.bootstrap.css" rel="stylesheet" type="text/css" />-->
 	<!--<link href="css/compiled/styles.css" rel="stylesheet">-->
-
 </head>
 <body data-serverdatetime="<?php echo date('U'); ?>">
 

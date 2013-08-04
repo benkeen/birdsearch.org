@@ -95,7 +95,7 @@ define([
 	};
 
 	var _onChangeRecencyField = function(e) {
-		_observationRecencyDisplay.val(e.target.value);
+		_observationRecencyDisplay.html(e.target.value);
 	};
 
 	var _onClickResultTypeGroupRow = function(e) {
