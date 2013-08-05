@@ -56,7 +56,7 @@ define([
 			return;
 		}
 
-		var visibilHotspots = _addMarkers({
+		var visibleHotspots = _addMarkers({
 			searchType: _manager.getSearchType(),
 			clearMarkers: false
 		});

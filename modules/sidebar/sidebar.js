@@ -2,8 +2,9 @@ define([
 	"mediator",
 	"constants",
 	"moduleHelper",
-	"text!sidebarTemplate"
-], function(mediator, C, helper, template) {
+	"text!sidebarTemplate",
+	"text!hotspotTable"
+], function(mediator, C, helper, sidebarTemplate, hotspotTableTemplate) {
 	"use strict";
 
 	var _MODULE_ID = "sidebar";
@@ -40,7 +41,7 @@ define([
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
-		var tmpl = _.template(template, {
+		var tmpl = _.template(sidebarTemplate, {
 			L: helper.L
 		});
 
@@ -110,6 +111,8 @@ define([
 					step:  parseFloat(range.attr("step")),
 					slide: function(e, ui) {
 						range.val(ui.value);
+
+						// this kind of sucks, but ...
 						if (id === "observationRecency") {
 							_observationRecencyDisplay.html(ui.value);
 						} else if (id === "") {
@@ -217,15 +220,101 @@ define([
 	};
 
 
+	/**
+	 * Called after the used does a Popular Birding Locations search and whatever hotspots were found
+	 * were just added to the map. This displays a "X locations found" message and shows a table
+	 * of all the hotspots.
+	 * @param msg
+	 * @private
+	 */
 	var _onHotspotMarkersAdded = function(msg) {
 		var numMarkers = msg.data.numMarkers;
 		var locationStr = "location";
-		if (numMarkers > 1) {
+		if (numMarkers == 0 || numMarkers > 1) {
 			locationStr  = "locations";
 		}
 
 		helper.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
+
+		_generateHotspotTable(msg.data.hotspots);
+
+		/*
+		if (manager.numVisibleHotspots > 0) {
+			var html = manager.generateHotspotTable(manager.visibleHotspots);
+			var locationStr = 'location';
+			if (manager.numVisibleHotspots > 1) {
+				locationStr  = 'locations';
+			}
+
+			try {
+				$('#hotspotTable').trigger("destroy");
+			} catch (e) { }
+
+			var numHotspotsStr = '';
+			if (manager.maxHotspotsReached) {
+				numHotspotsStr = manager.numVisibleHotspots + '+';
+			} else {
+				numHotspotsStr = manager.numVisibleHotspots;
+			}
+
+			helper.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
+
+			if (manager.currViewportMode === 'desktop') {
+				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
+			} else {
+				$('#locationsTabContent').html(html); //.removeClass('hidden').fadeIn(300);
+				$('#locationsTab').removeClass('disabled').html('Locations <span>(' + manager.numVisibleHotspots + ')</span>');
+			}
+			$('#hotspotTable').tablesorter({
+				headers: { 2: { sorter: 'species' } }
+			});
+		} else {
+			helper.showMessage('No birding locations found', 'notification');
+			$('#fullPageSearchResults').fadeOut(300);
+			helper.stopLoading();
+		}
+		*/
 	};
+
+	var _generateHotspotTable = function(visibleHotspots) {
+
+		console.log(visibleHotspots);
+
+		var tmpl = _.template(hotspotTableTemplate, {
+			showSpeciesColumn: false,
+			hotspots: visibleHotspots,
+			L: helper.L
+		});
+
+		/*
+		for (var i=0; i<visibleHotspots.length; i++) {
+			var currLocationID = visibleHotspots[i];
+			var rowClass = '';
+			var checkedAttr = '';
+
+			if (manager.allHotspots[currLocationID].isDisplayed) {
+				rowClass = '';
+				checkedAttr = 'checked="checked"';
+			}
+			var numSpeciesWithinRange = '';
+			if (!manager.allHotspots[currLocationID].hasOwnProperty('observations')) {
+				rowClass = ' notLoaded';
+				checkedAttr = 'checked="checked"';
+			} else {
+				numSpeciesWithinRange = manager.allHotspots[currLocationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal;
+			}
+
+			html += '<tr id="location_' + currLocationID + '">' +
+				'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
+				'<td class="loadingStatus' + rowClass + '">' + '<label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
+				'<td class="sp"><span class="speciesCount">' + numSpeciesWithinRange + '</span></td>' +
+				'</tr>';
+		}
+		*/
+
+	};
+
+
 
 	var _submitForm = function(e) {
 		e.preventDefault();

@@ -149,12 +149,14 @@ define([
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
-				dataCache.storeData("hotspots", response);
+
+				var hotspots = dataCache.formatHotspotData(response);
 				_clearHotspots();
-				_addHotspotMarkers();
+				_addHotspotMarkers(hotspots);
 				helper.stopLoading();
 
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
+					hotspots: hotspots,
 					numMarkers: _visibleHotspots.length
 				});
 			},
@@ -176,10 +178,7 @@ define([
 	};
 
 
-	var _addHotspotMarkers = function() {
-
-		var hotspots = dataCache.getHotspots();
-
+	var _addHotspotMarkers = function(hotspots) {
 		var mapBoundary = _map.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
 		var counter = 1;

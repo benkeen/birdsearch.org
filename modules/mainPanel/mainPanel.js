@@ -1,13 +1,14 @@
 define([
 	"mediator",
 	"constants",
+	"underscore",
+	"moduleHelper",
 	"text!mainPanelTemplate",
 	"map"
-], function(mediator, C, template, map) {
+], function(mediator, C, _, helper, template, map) {
 
 	var _MODULE_ID = "mainPanel";
 	var _currTabID = "mapTab";
-
 
 	var _init = function() {
 
@@ -16,7 +17,11 @@ define([
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
 		// insert the main panel
-		$("#mainPanel").html(template);
+		var tmpl = _.template(template, {
+			L: helper.L
+		});
+
+		$("#mainPanel").html(tmpl);
 		_addMainPanelEvents();
 
 		// insert the map

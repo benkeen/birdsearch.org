@@ -11,7 +11,17 @@ define([], function() {
 
 	/*
 
-	
+	HOTSPOTS
+	1. store all hotspots
+	2. track recency
+
+	Caching the hotspot locations that were spotted within a particular time period doesn't seem worthwhile.
+	Soo.... we continue to store all the hotspot info in _hotspotData = {}; but
+
+	hotspotRecencySearches = [1, 2, 15, 30];// this means those f
+	hotspots = {
+
+	}
 
 	*/
 
@@ -41,23 +51,27 @@ define([], function() {
 	};
 
 	var _storeData = function(dataFormat, data) {
-		if (dataFormat === "hotspots") {
-			for (var i=0; i<data.length; i++) {
-				var locationID = data[i].i;
-				if (!_hotspotData.hasOwnProperty(locationID)) {
-					_hotspotData[locationID] = {};
-				}
-				_hotspotData[locationID].hotspotInfo = {
-					lat: data[i].la,
-					lng: data[i].lg,
-					n: data[i].n
-				}
+	};
+
+	var _formatHotspotData = function(data) {
+		var hotspotData = {};
+		for (var i=0; i<data.length; i++) {
+			var locationID = data[i].i;
+			if (!hotspotData.hasOwnProperty(locationID)) {
+				hotspotData[locationID] = {};
+			}
+			hotspotData[locationID].hotspotInfo = {
+				lat: data[i].la,
+				lng: data[i].lg,
+				n: data[i].n
 			}
 		}
+		return hotspotData;
 	};
 
 	return {
 		getHotspots: _getHotspots,
+		formatHotspotData: _formatHotspotData,
 		getHotspotObservations: _getHotspotObservations,
 		getHotspotNotableObservations: _getHotspotNotableObservations,
 		storeData: _storeData

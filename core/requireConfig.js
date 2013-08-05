@@ -17,6 +17,7 @@ requirejs.config({
 		"footerTemplate": "modules/footer/footer.html",
 		"sidebar": "modules/sidebar/sidebar",
 		"sidebarTemplate": "modules/sidebar/sidebar.html",
+		"hotspotTable": "modules/sidebar/hotspotTable.html",
 		"about": "modules/about/about",
 		"aboutTemplate": "modules/about/about.html",
 		"contact": "modules/contact/contact",
