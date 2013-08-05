@@ -190,7 +190,7 @@ body .well-pad {
 
 #limitHotspotsByObservationRecency {
   float: left;
-  margin: 10px 8px 10px 0px; }
+  margin: 12px 8px 10px 0px; }
 
 #mapTabContent {
   width: 100%;
@@ -300,3 +300,6 @@ body div.mapBtn:hover {
 
 body div.mapBtnSelected {
   font-weight: bold; }
+
+#mapTabContent img {
+  max-width: none; }

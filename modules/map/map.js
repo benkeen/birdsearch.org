@@ -12,18 +12,20 @@ define([
 	var _icon = 'images/marker.png';
 	var _infoWindows = {};
 	var _visibleHotspots = [];
-	var _defaultMapType = null;
 	var _defaultMapOptions = {
 		zoom: 4,
-		mapTypeId: _defaultMapType,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		mapTypeControlOptions: { mapTypeIds: [] },
-		streetViewControl: false
+		center: new google.maps.LatLng(40, -95),
+		streetViewControl: false,
+		disableDefaultUI: true,
+		panControl: true,
+		zoomControl: true,
+		scaleControl: true,
+		overviewMapControl: true
 	};
 
 	var _init = function() {
-		_defaultMapType = google.maps.MapTypeId.ROADMAP;
-		_defaultMapOptions.center = new google.maps.LatLng(42, -100);
-
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
 		subscriptions[C.EVENT.SELECT_TAB] = _onSelectTab;

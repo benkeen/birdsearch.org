@@ -22,6 +22,8 @@ define([
 	var _observationRecencyField;
 	var _observationRecencyDisplay;
 	var _hotspotActivitySection;
+	var _hotspotActivityRecencyDisplay;
+	var _limitHotspotsByObservationRecency;
 	var _hotspotActivity;
 	var _searchBtn;
 
@@ -59,6 +61,8 @@ define([
 		_observationRecencyField   = $("#observationRecency");
 		_observationRecencyDisplay = $("#observationRecencyDisplay");
 		_hotspotActivitySection    = $("#hotspotActivitySection");
+		_limitHotspotsByObservationRecency = $("#limitHotspotsByObservationRecency");
+		_hotspotActivityRecencyDisplay = $("#hotspotActivityRecencyDisplay");
 		_hotspotActivity           = $("#hotspotActivity");
 		_searchBtn                 = $("#searchBtn");
 
@@ -80,6 +84,7 @@ define([
 
 		_searchBtn.on("click", _submitForm);
 		_observationRecencyField.on("change", _onChangeRecencyField);
+		_hotspotActivity.on("change", _onChangeHotspotActivityField);
 		_resultTypeGroup.on("change", "li", _onClickResultTypeGroupRow);
 		_searchOptionsLink.on("click", _toggleSearchOptions);
 	};
@@ -106,11 +111,17 @@ define([
 						range.val(ui.value);
 						if (id === "observationRecency") {
 							_observationRecencyDisplay.html(ui.value);
+						} else if (id === "") {
+
 						}
 					},
 					change: function(e, ui) {
 						range.val(ui.value);
-						//_onChangeRecencyField(e);
+						if (id === "observationRecency") {
+							_observationRecencyDisplay.html(ui.value);
+						} else if (id === "") {
+
+						}
 					}
 				}));
 			}).hide();
@@ -139,6 +150,11 @@ define([
 		_observationRecencyDisplay.html(e.target.value);
 	};
 
+	var _onChangeHotspotActivityField = function(e) {
+		_hotspotActivityRecencyDisplay.html(e.target.value);
+		_limitHotspotsByObservationRecency.attr("checked", "checked");
+	};
+
 	var _onClickResultTypeGroupRow = function(e) {
 		e.stopImmediatePropagation();
 
@@ -156,15 +172,13 @@ define([
 
 		// if the search options section is expanded, hide/show the appropriate elements
 		if (_searchOptionsEnabled) {
-
-			if (_currResultType === "all") {
+			if (_currResultType === "all" || _currResultType === "notable") {
 				$("#observationRecencySection").hide();
 			}
 			if (_currResultType === "hotspots") {
 				$("#hotspotActivitySection").hide();
 			}
-
-			if (newResultType === "all") {
+			if (newResultType === "all" || newResultType === "notable") {
 				$("#observationRecencySection").show();
 			}
 			if (newResultType === "hotspots") {
@@ -179,11 +193,17 @@ define([
 		e.preventDefault();
 
 		var resultTypeValue = _resultTypeField.filter(":checked").val();
-		if (resultTypeValue === "all") {
+		if (resultTypeValue === "all" || resultTypeValue === "notable") {
 			if (_searchOptionsEnabled) {
-				$("#observationRecencySection").fadeOut();
+				$("#observationRecencySection").hide("blind");
 			} else {
-				$("#observationRecencySection").fadeIn();
+				$("#observationRecencySection").show("blind");
+			}
+		} else if (resultTypeValue === "hotspots") {
+			if (_searchOptionsEnabled) {
+				$("#hotspotActivitySection").hide("blind");
+			} else {
+				$("#hotspotActivitySection").show("blind");
 			}
 		}
 
