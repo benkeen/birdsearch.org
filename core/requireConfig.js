@@ -8,6 +8,7 @@ requirejs.config({
 		"dataCache": "core/dataCache",
 		"page": "core/page",
 		"constants": "core/constants",
+		"moduleHelper": "core/moduleHelper",
 
 		// page components
 		"header": "modules/header/header",

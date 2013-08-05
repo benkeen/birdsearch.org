@@ -177,7 +177,7 @@ body .well-pad {
 	width: 255px;
 }
 
-#observationRecencySection {
+#observationRecencySection, #hotspotActivitySection {
 	label {
 		border-top: 1px solid #333333;
 		font-size: 13px;
@@ -198,4 +198,9 @@ body .well-pad {
 		color: $primaryColor1;
 		text-decoration: none;
 	}
+}
+
+#lang {
+	margin: 10px 0px 10px 18px;
+	width: 90px;
 }

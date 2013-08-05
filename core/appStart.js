@@ -8,6 +8,7 @@ require([
 	var pageComponents = [
 		"dataCache", "header", "footer", "sidebar", "mainPanel", "about", "contact"
 	];
+
 	require(pageComponents, function() {
 		mediator.start();
 	});

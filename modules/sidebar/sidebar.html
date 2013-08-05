@@ -6,19 +6,19 @@
 	<ul id="resultTypeGroup">
 		<li class="selected">
 			<input type="radio" name="resultType" id="rt1" value="all" checked="checked" />
-			<label for="rt1">All bird sightings</label>
+			<label for="rt1"><%= L.all_bird_sightings %></label>
 		</li>
 		<li>
 			<input type="radio" name="resultType" id="rt2" value="notable" />
-			<label for="rt2">Notable sightings</label>
+			<label for="rt2"><%= L.notable_sightings %></label>
 		</li>
 		<li>
 			<input type="radio" name="resultType" id="rt3" value="hotspots" />
-			<label for="rt3">Popular birding locations</label>
+			<label for="rt3"><%= L.popular_birding_locations %></label>
 		</li>
 	</ul>
 
-	<a href="#" id="searchOptionsLink">More search options &raquo;</a>
+	<a href="#" id="searchOptionsLink"><%= L.more_search_options %></a>
 
 	<!-- optional search options for the "All bird sightings" search option -->
 	<div id="observationRecencySection" style="display:none">

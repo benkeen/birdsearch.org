@@ -6,7 +6,7 @@ define([
 	"lang_en" // TODO
 ], function(mediator, L) {
 
-	var _MODULE_ID = "brain";
+	var _MODULE_ID = "moduleHelper";
 	var _currLangFile = "lang_en";
 
 	var _init = function() {

@@ -1,14 +1,16 @@
 define([
 	"mediator",
 	"constants",
+	"moduleHelper",
 	"text!sidebarTemplate"
-], function(mediator, C, template) {
+], function(mediator, C, helper, template) {
 	"use strict";
 
 	var _MODULE_ID = "sidebar";
 	var _autoComplete;
 	var _geocoder;
 	var _lastSearchNumAddressComponents;
+	var _currResultType = "all";
 	var _searchOptionsEnabled = false;
 
 	// DOM nodes
@@ -38,7 +40,9 @@ define([
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
-		var tmpl = _.template(template);
+		var tmpl = _.template(template, {
+			L: helper.L
+		});
 
 		// render the template
 		$("#sidebar").html(tmpl);
@@ -73,7 +77,7 @@ define([
 
 		_searchBtn.on("click", _submitForm);
 		_observationRecencyField.on("change", _onChangeRecencyField);
-		_resultTypeGroup.on("click", "li", _onClickResultTypeGroupRow);
+		_resultTypeGroup.on("change", "li", _onClickResultTypeGroupRow);
 		_searchOptionsLink.on("click", _toggleSearchOptions);
 	};
 
@@ -100,26 +104,63 @@ define([
 	};
 
 	var _onClickResultTypeGroupRow = function(e) {
+		e.stopImmediatePropagation();
 
-		// can't prevent default because the native label-click action to check the radio won't occur
-		//e.preventDefault();
+		var clickedLi = e.currentTarget;
+		var newResultType = $(clickedLi).find("input").val();
+		if (newResultType === _currResultType) {
+			return;
+		}
 
-		console.log($("#resultTypeGroup li input:checked").val());
-		var currentLi = e.currentTarget;
 		var els = $("#resultTypeGroup li");
 		for (var i=0; i<els.length; i++) {
 			$(els[i]).removeClass("selected");
-//			$(els[i]).find("input").removeAttr("checked");
+		}
+		$(clickedLi).addClass("selected").find("input").attr("checked", "checked");
+
+		// if the search options section is expanded, hide/show the appropriate elements
+		if (_searchOptionsEnabled) {
+
+			if (_currResultType === "all") {
+				$("#observationRecencySection").hide();
+			}
+			if (_currResultType === "hotspots") {
+				$("#hotspotActivitySection").hide();
+			}
+
+			if (newResultType === "all") {
+				$("#observationRecencySection").show();
+			}
+			if (newResultType === "hotspots") {
+				$("#hotspotActivitySection").show();
+			}
 		}
 
-		//$(currentLi).addClass("selected").find("input").attr("checked", "checked");
-
-		if (e.currentTarget.value === "hotspots") {
-			_observationRecencySection.hide("fade");
-		} else {
-			_observationRecencySection.show("fade");
-		}
+		_currResultType = newResultType;
 	};
+
+	var _toggleSearchOptions = function(e) {
+		e.preventDefault();
+
+		var resultTypeValue = _resultTypeField.filter(":checked").val();
+		if (resultTypeValue === "all") {
+			if (_searchOptionsEnabled) {
+				$("#observationRecencySection").fadeOut();
+			} else {
+				$("#observationRecencySection").fadeIn();
+			}
+		}
+
+		// update the link text
+		if (_searchOptionsEnabled) {
+			_searchOptionsLink.html("More search options &raquo;");
+		} else {
+			_searchOptionsLink.html("&laquo; Hide search options");
+		}
+
+		_searchOptionsEnabled = !_searchOptionsEnabled;
+	};
+
 
 	var _onHotspotMarkersAdded = function(msg) {
 		var numMarkers = msg.data.numMarkers;
@@ -172,28 +213,6 @@ define([
 		} else {
 			$('#sidebar').css('height', 'auto');
 		}
-	};
-
-	var _toggleSearchOptions = function(e) {
-		e.preventDefault();
-
-		var resultTypeValue = _resultTypeField.filter(":checked").val();
-		if (resultTypeValue === "all") {
-			if (_searchOptionsEnabled) {
-				$("#observationRecencySection").fadeOut();
-			} else {
-				$("#observationRecencySection").fadeIn();
-			}
-		}
-
-		// update the link text
-		if (_searchOptionsEnabled) {
-			_searchOptionsLink.html("More search options &raquo;");
-		} else {
-			_searchOptionsLink.html("&laquo; Hide search options");
-		}
-
-		_searchOptionsEnabled = !_searchOptionsEnabled;
 	};
 
 	mediator.register(_MODULE_ID, {
