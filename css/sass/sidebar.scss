@@ -183,6 +183,11 @@ body .well-pad {
 		padding: 8px 0px 4px;
 	}
 }
+/* for browsers that don't support the range element, this styles the jQuery slider */
+#hotspotActivitySection .ui-slider-horizontal {
+	margin-bottom: 10px;
+}
+
 #observationRecencyDisplay, #hotspotActivityRecencyDisplay {
 	font-weight: bold;
 	color: white;
@@ -210,4 +215,13 @@ body .well-pad {
 
 #loadingSpinner {
 	float: right;
+}
+
+#hotspotTable td, #hotspotTable th {
+	padding: 0px;
+	font-size: 12px;
+}
+#hotspotTable td label {
+	margin: 0px;
+	font-size: 12px;
 }

@@ -115,16 +115,18 @@ define([
 						// this kind of sucks, but ...
 						if (id === "observationRecency") {
 							_observationRecencyDisplay.html(ui.value);
-						} else if (id === "") {
-
-						}
+						} else if (id === "hotspotActivity") {
+							_hotspotActivityRecencyDisplay.html(ui.value);
+							_limitHotspotsByObservationRecency.prop("checked", true);						}
 					},
+
 					change: function(e, ui) {
 						range.val(ui.value);
 						if (id === "observationRecency") {
 							_observationRecencyDisplay.html(ui.value);
-						} else if (id === "") {
-
+						} else if (id === "hotspotActivity") {
+							_hotspotActivityRecencyDisplay.html(ui.value);
+							_limitHotspotsByObservationRecency.prop("checked", true);
 						}
 					}
 				}));
@@ -285,6 +287,8 @@ define([
 			hotspots: visibleHotspots,
 			L: helper.L
 		});
+
+		$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
 
 		/*
 		for (var i=0; i<visibleHotspots.length; i++) {

@@ -5,7 +5,7 @@
 #mainPanel {
 	position: absolute;
 	left: 318px;
-	top: 51px;
+	top: 52px;
 	padding-top: 6px;
 }
 #panelContent {
@@ -20,12 +20,12 @@
 
 	li {
 		float: left;
-		margin-right: 1px;
+		margin: 0px 4px 6px 0px;
 		text-align: center;
 		border-top-left-radius: 4px;
 		border-top-right-radius: 4px;
 		font-size: 9pt;
-		padding: 3px 22px;
+		padding: 2px 22px;
 		cursor: pointer;
 
 		a {

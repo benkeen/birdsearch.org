@@ -184,8 +184,9 @@ define([
 		var counter = 1;
 		_visibleHotspots = [];
 
-		for (var locationID in hotspots) {
-			var currHotspotInfo = hotspots[locationID].hotspotInfo;
+		for (var i=0; i<hotspots.length; i++) {
+			var currHotspotInfo = hotspots[i];
+			var locationID = currHotspotInfo.locationID;
 			var latlng = new google.maps.LatLng(currHotspotInfo.lat, currHotspotInfo.lng);
 			if (!boundsObj.contains(latlng)) {
 				continue;

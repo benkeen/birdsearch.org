@@ -54,17 +54,14 @@ define([], function() {
 	};
 
 	var _formatHotspotData = function(data) {
-		var hotspotData = {};
+		var hotspotData = [];
 		for (var i=0; i<data.length; i++) {
-			var locationID = data[i].i;
-			if (!hotspotData.hasOwnProperty(locationID)) {
-				hotspotData[locationID] = {};
-			}
-			hotspotData[locationID].hotspotInfo = {
+			hotspotData.push({
+				locationId: data[i].i,
 				lat: data[i].la,
 				lng: data[i].lg,
 				n: data[i].n
-			}
+			});
 		}
 		return hotspotData;
 	};
