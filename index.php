@@ -7,6 +7,7 @@
 	<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/compiled/styles.css" rel="stylesheet" type="text/css" />
+	<link href="css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
 	<!--<link href="css/theme.bootstrap.css" rel="stylesheet" type="text/css" />-->
 	<!--<link href="css/compiled/styles.css" rel="stylesheet">-->
 </head>
@@ -29,6 +30,7 @@
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places"></script>
 	<script src="libs/require-jquery.js" data-main="appStart"></script>
 	<script src="core/requireConfig.js"></script>
+	<script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
 
 	<script>
 	var _gaq = _gaq || [];

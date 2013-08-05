@@ -160,8 +160,11 @@ body .well-pad {
       font-weight: bold;
       width: 20px; }
 
-#observationRecency {
-  width: 255px; }
+#observationRecency, #hotspotActivity {
+  width: 252px; }
+
+#hotspotActivity {
+  margin-bottom: 10px; }
 
 #observationRecencySection label, #hotspotActivitySection label {
   border-top: 1px solid #333333;
@@ -169,7 +172,7 @@ body .well-pad {
   margin: 0px;
   padding: 8px 0px 4px; }
 
-#observationRecencyDisplay {
+#observationRecencyDisplay, #hotspotActivityRecencyDisplay {
   font-weight: bold;
   color: white;
   margin-top: 7px; }
@@ -184,6 +187,10 @@ body .well-pad {
 #lang {
   margin: 10px 0px 10px 18px;
   width: 90px; }
+
+#limitHotspotsByObservationRecency {
+  float: left;
+  margin: 10px 8px 10px 0px; }
 
 #mapTabContent {
   width: 100%;

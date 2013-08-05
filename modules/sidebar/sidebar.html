@@ -27,7 +27,7 @@
 		</label>
 		<ol class="rangeTip">
 			<li class="rangeTipLeft">1</li>
-			<li class="">
+			<li>
 				<input type="range" id="observationRecency" min="1" max="30" value="7" />
 			</li>
 			<li class="rangeTipRight">30</li>
@@ -37,14 +37,13 @@
 
 	<!-- optional search options for the "Popular birding locations" search option -->
 	<div id="hotspotActivitySection" style="display:none">
-		<input type="checkbox" />
-		<label for="hotspotActivity">
-			Limit to locations with observations made within last
-			<span id="hotspotActivityRecencyDisplay">7</span> day(s)
+		<input type="checkbox" id="limitHotspotsByObservationRecency" />
+		<label for="limitHotspotsByObservationRecency" class="disabled">
+			Limit to locations with observations made within last <span id="hotspotActivityRecencyDisplay">7</span> day(s)
 		</label>
 		<ol class="rangeTip">
 			<li class="rangeTipLeft">1</li>
-			<li class="">
+			<li>
 				<input type="range" id="hotspotActivity" min="1" max="30" value="7" />
 			</li>
 			<li class="rangeTipRight">30</li>

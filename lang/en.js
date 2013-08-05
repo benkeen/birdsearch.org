@@ -1,6 +1,10 @@
 define([], function() {
 
 	var L = {
+		// header
+		"about": "About",
+		"contact": "Contact",
+
 		// sidebar
 		"all_bird_sightings": "All bird sightings",
 		"notable_sightings": "Notable sightings",

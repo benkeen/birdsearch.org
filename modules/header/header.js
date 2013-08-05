@@ -1,15 +1,20 @@
 define([
 	"mediator",
 	"constants",
+	"underscore",
+	"moduleHelper",
 	"text!headerTemplate"
-], function(mediator, C, template) {
+], function(mediator, C, _, helper, template) {
 	"use strict";
 
 	var _MODULE_ID = "header";
 
 
 	var _run = function() {
-		$("header").html(template);
+		var tmpl = _.template(template, {
+			L: helper.L
+		});
+		$("header").html(tmpl);
 		_addEventHandlers();
 	};
 

@@ -65,6 +65,9 @@ define([
 		// add all relevant event handlers for the sidebar content
 		_addEventHandlers();
 
+		// if need be, progressively enhance the slider for browser that don't support that element
+		_fixSliders();
+
 		// focus on the location field on page load. Seems like this should be part of the moduleHelper... maybe that
 		// should fire a "complete" even to which this module listens?
 		_locationField.focus();
@@ -79,6 +82,39 @@ define([
 		_observationRecencyField.on("change", _onChangeRecencyField);
 		_resultTypeGroup.on("change", "li", _onClickResultTypeGroupRow);
 		_searchOptionsLink.on("click", _toggleSearchOptions);
+	};
+
+
+	// if there's no native support for the range element, offer the jQuery slider
+	var _fixSliders = function() {
+		if (!Modernizr.inputtypes.range){
+			$("input[type=range]").each(function() {
+				if ($(this).nextAll(".slider").length) {
+					return;
+				}
+				var range = $(this);
+				var id    = $(this).attr("id");
+
+				var sliderDiv = $("<div class=\"slider\" />");
+				sliderDiv.width(range.width());
+				range.after(sliderDiv.slider({
+					min:   parseFloat(range.attr("min")),
+					max:   parseFloat(range.attr("max")),
+					value: parseFloat(range.val()),
+					step:  parseFloat(range.attr("step")),
+					slide: function(e, ui) {
+						range.val(ui.value);
+						if (id === "observationRecency") {
+							_observationRecencyDisplay.html(ui.value);
+						}
+					},
+					change: function(e, ui) {
+						range.val(ui.value);
+						//_onChangeRecencyField(e);
+					}
+				}));
+			}).hide();
+		}
 	};
 
 	var _onAutoComplete = function() {
