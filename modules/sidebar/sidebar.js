@@ -28,8 +28,6 @@ define([
 	var _searchBtn;
 
 	// misc globally things
-	var _lat;
-	var _lng;
 	var _locationObj;
 	var _viewportObj;
 
@@ -71,6 +69,9 @@ define([
 
 		// if need be, progressively enhance the slider for browser that don't support that element
 		_fixSliders();
+
+		// initialize the main spinner
+		helper.initSpinner();
 
 		// focus on the location field on page load. Seems like this should be part of the moduleHelper... maybe that
 		// should fire a "complete" even to which this module listens?
@@ -130,8 +131,6 @@ define([
 
 	var _onAutoComplete = function() {
 		var currPlace = _autoComplete.getPlace();
-		_lat = currPlace.geometry.location.lat();
-		_lng = currPlace.geometry.location.lng();
 		_viewportObj = currPlace.geometry.viewport;
 		_locationObj = currPlace.geometry.location;
 
@@ -152,7 +151,7 @@ define([
 
 	var _onChangeHotspotActivityField = function(e) {
 		_hotspotActivityRecencyDisplay.html(e.target.value);
-		_limitHotspotsByObservationRecency.attr("checked", "checked");
+		_limitHotspotsByObservationRecency.prop("checked", true);
 	};
 
 	var _onClickResultTypeGroupRow = function(e) {
@@ -192,7 +191,7 @@ define([
 	var _toggleSearchOptions = function(e) {
 		e.preventDefault();
 
-		var resultTypeValue = _resultTypeField.filter(":checked").val();
+		var resultTypeValue = _getResultType();
 		if (resultTypeValue === "all" || resultTypeValue === "notable") {
 			if (_searchOptionsEnabled) {
 				$("#observationRecencySection").hide("blind");
@@ -225,39 +224,53 @@ define([
 			locationStr  = "locations";
 		}
 
-		// move to moduleHelper
-		mediator.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
+		helper.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
 	};
 
 	var _submitForm = function(e) {
 		e.preventDefault();
+
 		if (_validateSearchForm()) {
-			mediator.startLoading();
+			helper.startLoading();
+
+			// since the search options are really very basic, just send along all possible info needed
 			mediator.publish(_MODULE_ID, C.EVENT.SEARCH, {
 				location: _locationField.val(),
-				resultType: _resultTypeField.val(),
+				resultType: _getResultType(),
 				observationRecencyField: _observationRecencyField.val(),
-				lat: _lat,
-				lng: _lng,
 
-				// additional info needed to center & zoom the map
+				// additional info about the Map needed to center & zoom the map
 				viewportObj: _viewportObj,
-				locationObj: _locationObj
+				locationObj: _locationObj,
+
+				searchOptions: {
+					allAndNotable: {
+						observationRecency: _observationRecencyField.val()
+					},
+					hotspots: {
+						limitByObservationRecency: _limitHotspotsByObservationRecency.prop("checked"),
+						observationRecency: _hotspotActivity.val()
+					}
+				}
+
 			});
 		}
 	};
 
 	var _validateSearchForm = function() {
-		if (_locationField[0].value === '') {
-			mediator.showMessage('Please enter a location.', 'error');
+		var location =_locationField[0].value;
+		var resultType = _getResultType();
+
+		if (location === "") {
+			helper.showMessage("Please enter a location.", "error");
 			return false;
 		}
-		if (_resultTypeField[0].value === "all" && _lastSearchNumAddressComponents < 3) {
-			mediator.showMessage('Please enter a more specific location.', 'error');
+		if (resultType === "all" || resultType == "hotspots" && _lastSearchNumAddressComponents < 3) {
+			helper.showMessage("Please enter a more specific location.", "error");
 			return false;
 		}
-		if ($.inArray(_resultTypeField[0].value, ["notable", "hotspots"]) !== -1 && _lastSearchNumAddressComponents < 2) {
-			mediator.showMessage('Please enter a more specific location.', 'error');
+		if (resultType == "notable" && _lastSearchNumAddressComponents < 2) {
+			helper.showMessage("Please enter a more specific location.", "error");
 			return false;
 		}
 		return true;
@@ -269,6 +282,10 @@ define([
 		} else {
 			$('#sidebar').css('height', 'auto');
 		}
+	};
+
+	var _getResultType = function() {
+		return _resultTypeField.filter(":checked").val();
 	};
 
 	mediator.register(_MODULE_ID, {

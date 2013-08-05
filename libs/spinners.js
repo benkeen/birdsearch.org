@@ -5,6 +5,9 @@
  * Spinners is freely distributable under the terms of an MIT-style license.
  *
  * GitHub: http://github.com/staaky/spinners
+ *
+ * -- modded by Ben Keen:
+ * https://github.com/benkeen/spinners
  */
 
 // TODO: Add background option that creates a ring, disabled by default:

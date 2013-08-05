@@ -1,8 +1,9 @@
 define([
 	"mediator",
 	"constants",
+	"moduleHelper",
 	"dataCache"
-], function(mediator, C, dataCache) {
+], function(mediator, C, helper, dataCache) {
 	"use strict";
 
 	var _MODULE_ID = "map";
@@ -34,8 +35,8 @@ define([
 	};
 
 	/**
-	 * Called manually by mainPanel.js after the panel has been created.
-	 * @private
+	 * Called manually by mainPanel.js after the panel has been created. Could this be
+	 * part of init()? Would sure be nice...
 	 */
 	var _create = function() {
 		google.maps.visualRefresh = true;
@@ -92,6 +93,8 @@ define([
 	};
 
 	var _onSearch = function(msg) {
+		var lat = msg.data.locationObj.lat();
+		var lng = msg.data.locationObj.lng();
 
 		// first, update the map boundary to whatever address they just searched for
 		if (msg.data.viewportObj) {
@@ -106,7 +109,12 @@ define([
 		} else if (msg.data.resultType === "notable") {
 			//mediator.getNotableObservations();
 		} else if (msg.data.resultType === "hotspots") {
-			_getHotspots(msg.data.lat, msg.data.lng);
+			_getHotspots({
+				lat: lat,
+				lng: lng,
+				limitByObservationRecency: msg.data.searchOptions.hotspots.limitByObservationRecency,
+				observationRecency: msg.data.searchOptions.hotspots.observationRecency
+			});
 		}
 	}
 
@@ -127,25 +135,24 @@ define([
 //		}
 	};
 
+
 	/**
-	 * Retrieves all hotspots for a region.
+	 * Searches a regions for hotspots.
 	 */
-	var _getHotspots = function(lat, lng) {
+	var _getHotspots = function(searchParams) {
 
 		// check cache here
 
 		$.ajax({
 			url: "ajax/getHotspotLocations.php",
-			data: {
-				lat: lat,
-				lng: lng
-			},
+			data: searchParams,
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
 				dataCache.storeData("hotspots", response);
+				_clearHotspots();
 				_addHotspotMarkers();
-				mediator.stopLoading();
+				helper.stopLoading();
 
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
 					numMarkers: _visibleHotspots.length
@@ -153,7 +160,7 @@ define([
 			},
 			error: function(response) {
 				console.log("error", arguments, response);
-				mediator.stopLoading();
+				helper.stopLoading();
 			}
 		});
 	};
@@ -170,6 +177,7 @@ define([
 
 
 	var _addHotspotMarkers = function() {
+
 		var hotspots = dataCache.getHotspots();
 
 		var mapBoundary = _map.getBounds();
@@ -211,6 +219,14 @@ define([
 		}
 	};
 
+	// clears the map. Note that we DON'T reset _markers. That retains the information loaded for as long as the user's
+	// session so we don't re-request the same info from eBird
+	var _clearHotspots = function() {
+		for (var locationID in _markers) {
+			_markers[locationID].setMap(null);
+		}
+	};
+
 
 	var onMapBoundaryUpdate = function() {
 
@@ -232,7 +248,7 @@ define([
 				numHotspotsStr = mediator.numVisibleHotspots;
 			}
 
-			mediator.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
+ helper.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
 
 			if (mediator.currViewportMode === 'desktop') {
 				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
@@ -244,7 +260,7 @@ define([
 				headers: { 2: { sorter: 'species' } }
 			});
 		} else {
-			mediator.showMessage('No birding locations found', 'notification');
+ helper.showMessage('No birding locations found', 'notification');
 			$('#fullPageSearchResults').fadeOut(300);
 			mediator.stopLoading();
 		}

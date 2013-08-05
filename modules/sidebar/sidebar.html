@@ -6,7 +6,7 @@
 	<ul id="resultTypeGroup">
 		<li class="selected">
 			<input type="radio" name="resultType" id="rt1" value="all" checked="checked" />
-			<label for="rt1"><%= L.all_bird_sightings %></label>
+			<label for="rt1"><%= L.bird_sightings %></label>
 		</li>
 		<li>
 			<input type="radio" name="resultType" id="rt2" value="notable" />
@@ -38,7 +38,7 @@
 	<!-- optional search options for the "Popular birding locations" search option -->
 	<div id="hotspotActivitySection" style="display:none">
 		<input type="checkbox" id="limitHotspotsByObservationRecency" />
-		<label for="limitHotspotsByObservationRecency" class="disabled">
+		<label for="limitHotspotsByObservationRecency">
 			Limit to locations with observations made within last <span id="hotspotActivityRecencyDisplay">7</span> day(s)
 		</label>
 		<ol class="rangeTip">

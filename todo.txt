@@ -1,10 +1,11 @@
 Short-term
 -----------
 
+- spinner
+
 SIDEBAR
 - fix the select item & hide/show sections
 - progressively enhance the sliders with jquery UI (or something better?)
--
 
 
 MODALS

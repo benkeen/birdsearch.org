@@ -1,12 +1,19 @@
 /**
- * This acts as the sole, central repo for hotspot and observation data
+ * This acts as the sole, central repo for hotspot and observation data. It does all the
+ * nitty gritty work with organizing the info into sane data structures so the rest of the
+ * scripts can
  */
-define([
-	"mediator" // pity
-], function(mediator) {
+define([], function() {
 
 	var _MODULE_ID = "dataCache";
 	var _hotspotData = {};
+
+
+	/*
+
+	
+
+	*/
 
 
 	// set up our data structure that's going to house all the data
@@ -48,10 +55,6 @@ define([
 			}
 		}
 	};
-
-	mediator.register(_MODULE_ID, {
-		init: _init
-	});
 
 	return {
 		getHotspots: _getHotspots,

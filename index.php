@@ -31,6 +31,7 @@
 	<script src="libs/require-jquery.js" data-main="appStart"></script>
 	<script src="core/requireConfig.js"></script>
 	<script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="libs/spinners.js"></script>
 
 	<script>
 	var _gaq = _gaq || [];

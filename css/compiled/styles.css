@@ -94,7 +94,7 @@ body .well-pad {
 
 #messageBar {
   display: none;
-  margin: 10px;
+  margin: 0px;
   color: #ffffff;
   padding: 8px;
   font-size: 11pt;
@@ -108,22 +108,16 @@ body .well-pad {
   -webkit-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
   -o-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
   clear: both;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: normal;
   line-height: 20px;
   min-height: 20px; }
 
 .error {
-  background-color: #cd2f2f;
-  background-image: linear-gradient(#cd2f2f, #e54444);
-  background-image: -webkit-linear-gradient(#cd2f2f, #e54444);
-  border: 1px solid #e54444; }
+  background-color: #cd2f2f; }
 
 .notification {
-  background-color: #8ACED6;
-  background-image: linear-gradient(#83acff, #82abff);
-  background-image: -webkit-linear-gradient(#83acff, #82abff);
-  border: 1px solid #A0BFFF; }
+  background-color: #8ACED6; }
 
 #resultTypeGroup {
   margin: 0px 0px 4px;
@@ -191,6 +185,9 @@ body .well-pad {
 #limitHotspotsByObservationRecency {
   float: left;
   margin: 12px 8px 10px 0px; }
+
+#loadingSpinner {
+  float: right; }
 
 #mapTabContent {
   width: 100%;

@@ -70,33 +70,11 @@ define([
 		_modules[MODULE_ID].subscriptions = subscriptions;
 	};
 
-	/**
-	 * Shows the large message section in the left sidebar (desktop only).
-	 */
-	var _showMessage = function(message, messageType) {
-		if ($("#messageBar").hasClass('visible')) {
-			$("#messageBar").removeClass().addClass(messageType + ' visible').html(message);
-		} else {
-			$("#messageBar").css('display', 'none').removeClass().addClass(messageType + ' visible').html(message).fadeIn(300);
-		}
-	};
-
-	var _startLoading = function() {
-		$('#loadingSpinner').fadeIn(200);
-	};
-
-	var _stopLoading = function() {
-		$('#loadingSpinner').fadeOut(200);
-	};
-
 
 	return {
 		start: _start,
 		register: _register,
 		publish: _publish,
-		subscribe: _subscribe,
-		startLoading: _startLoading,
-		stopLoading: _stopLoading,
-		showMessage: _showMessage
+		subscribe: _subscribe
 	};
 });

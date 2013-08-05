@@ -82,10 +82,10 @@ define([
 
 			var isValid = true;
 			if (manager.searchType === 'all' && numAddressComponents < 3) {
-				manager.showMessage('Please enter a more specific location.', 'error');
+				helper.showMessage('Please enter a more specific location.', 'error');
 				isValid = false;
 			} else if (numAddressComponents < 2) {
-				manager.showMessage('Please enter a more specific location.', 'error');
+				helper.showMessage('Please enter a more specific location.', 'error');
 				isValid = false;
 			}
 
@@ -562,7 +562,7 @@ define([
 					numHotspotsStr = manager.numVisibleHotspots;
 				}
 
-				manager.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
+				helper.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
 
 				if (manager.currViewportMode === 'desktop') {
 					$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
@@ -574,9 +574,9 @@ define([
 					headers: { 2: { sorter: 'species' } }
 				});			
 			} else {
-				manager.showMessage('No birding locations found', 'notification');
+				helper.showMessage('No birding locations found', 'notification');
 				$('#fullPageSearchResults').fadeOut(300);
-				manager.stopLoading();
+				helper.stopLoading();
 			}
 		},
 
