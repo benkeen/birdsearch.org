@@ -15,6 +15,7 @@ define([
 	var _openInfoWindows = [];
 	var _visibleHotspots = [];
 	var _lastSearchAllHotspots = [];
+	var _lastSearchLatLng = null;
 	var _defaultMapOptions = {
 		zoom: 4,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -51,11 +52,11 @@ define([
 		_addCustomControls();
 
 		// called any time the map has had its bounds changed
-		google.maps.event.addListener(_map, 'dragend', _onMapBoundsChange);
+		google.maps.event.addListener(_map, "dragend", _onMapBoundsChange);
+		google.maps.event.addListener(_map, "zoom_changed", _onMapBoundsChange);
 
 		mediator.publish(_MODULE_ID, C.EVENT.TRIGGER_WINDOW_RESIZE);
 	};
-
 
 	var _addCustomControls = function() {
 		var btn1 = $('<div class="mapBtn">Terrain</div>')[0];
@@ -94,8 +95,7 @@ define([
 
 	var _onMapBoundsChange = function() {
 		// cool. This will need to detect when it's 25KM away from the original search, then do a fresh search
-		console.log("distance from center:", _calcDistance(_lastSearchLatLng, _map.getCenter()));
-
+		//console.log("distance from center:", _calcDistance(_lastSearchLatLng, _map.getCenter()));
 		_clearHotspots();
 
 		// this adds as many as possible to the map - but many may be out of bounds
@@ -104,46 +104,8 @@ define([
 		mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
 			hotspots: _visibleHotspots
 		});
-
-
-		/*
-		if (_visibleHotspots.length > 0) {
-		var html = mediator.generateHotspotTable(mediator.visibleHotspots);
-		var locationStr = 'location';
-		if (mediator.numVisibleHotspots > 1) {
-		locationStr  = 'locations';
-		}
-		try {
-		$('#hotspotTable').trigger("destroy");
-		} catch (e) { }
-
-		var numHotspotsStr = '';
-		if (mediator.maxHotspotsReached) {
-		numHotspotsStr = mediator.numVisibleHotspots + '+';
-		} else {
-		numHotspotsStr = mediator.numVisibleHotspots;
-		}
-
-		helper.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
-
-		if (mediator.currViewportMode === 'desktop') {
-		$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
-		} else {
-		$('#locationsTabContent').html(html); //.removeClass('hidden').fadeIn(300);
-		$('#locationsTab').removeClass('disabled').html('Locations <span>(' + mediator.numVisibleHotspots + ')</span>');
-		}
-		$('#hotspotTable').tablesorter({
-		headers: { 2: { sorter: 'species' } }
-		});
-		} else {
-		helper.showMessage('No birding locations found', 'notification');
-		$('#fullPageSearchResults').fadeOut(300);
-		mediator.stopLoading();
-		}
-		*/
 	};
 
-	var _lastSearchLatLng;
 	var _onSearch = function(msg) {
 		var lat = msg.data.locationObj.lat();
 		var lng = msg.data.locationObj.lng();
@@ -176,9 +138,9 @@ define([
 		var data = msg.data;
 
 		if (data.viewportMode == "desktop") {
-			$('#panelContent').css('height', data.height - 82);
+			$("#panelContent").css("height", data.height - 82);
 		} else {
-			$('#panelContent').css('height', data.height - 40);
+			$("#panelContent").css("height", data.height - 40);
 		}
 	};
 
@@ -271,15 +233,12 @@ define([
 		}
 	};
 
-
 	var _getInfoWindowHTML = function(locationID) {
 //		var numSpecies = mediator.allHotspots[locationID].observations[mediator.searchType][mediator.observationRecency + 'day'].numSpeciesRunningTotal;
 //		var html = '<div class="hotspotDialog"><p><b>' + mediator.allHotspots[locationID].n + '</b></p>' +
 //			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
 //			numSpecies + ')</b></a></p></div>';
-
 	};
-
 
 	var _onHotspotLocationMouseover = function(msg) {
 		var locationID = msg.data.locationID;
@@ -303,7 +262,6 @@ define([
 			_openInfoWindows.push(locationID);
 		}
 	};
-
 
 	//calculates distance between two points in km's
 	var _calcDistance = function(p1, p2){

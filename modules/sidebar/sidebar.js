@@ -238,7 +238,6 @@ define([
 	 * @private
 	 */
 	var _onHotspotMarkersAdded = function(msg) {
-
 		var numMarkers = msg.data.hotspots.length;
 		var locationStr = "location";
 		if (numMarkers == 0 || numMarkers > 1) {
