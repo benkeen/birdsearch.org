@@ -8,8 +8,6 @@
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/compiled/styles.css" rel="stylesheet" type="text/css" />
 	<link href="css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
-	<!--<link href="css/theme.bootstrap.css" rel="stylesheet" type="text/css" />-->
-	<!--<link href="css/compiled/styles.css" rel="stylesheet">-->
 </head>
 <body data-serverdatetime="<?php echo date('U'); ?>">
 
@@ -27,7 +25,7 @@
 
 	<script src="libs/html5shiv.js"></script>
 	<script src="libs/modernizr-2.0.6.min.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places,geometry"></script>
 	<script src="libs/require-jquery.js" data-main="appStart"></script>
 	<script src="core/requireConfig.js"></script>
 	<script src="libs/jquery-ui-1.10.3.custom.min.js"></script>

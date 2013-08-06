@@ -15,13 +15,14 @@ http://ebirdsearch.org
 
 ## v1.1.0
 Currently under development (August 2013). This is a complete re-write of the script to better architect the code,
-improve the styles and add functionality. This version includes the following:
+improve the site design and add some functionality. This version includes the following:
 
 - Three search types: "bird sightings", "notable sightings", "popular birding locations"
 - mobile support
 - advanced search functionality
 - option to share search results, via URL
 - multi-language support
+- more accurate results based on lat/lng instead of human addresses (interface still has a simple address search)
 
 
 Ben Keen

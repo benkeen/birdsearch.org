@@ -13,6 +13,8 @@ define([
 	var _lastSearchNumAddressComponents;
 	var _currResultType = "all";
 	var _searchOptionsEnabled = false;
+	var _currentMouseoverLocationID = null;
+	var _sidebarResultPanelOffsetHeight = null;
 
 	// DOM nodes
 	var _locationField;
@@ -37,7 +39,7 @@ define([
 
 		// keep track of when the window is resized
 		var subscriptions = {};
-		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeSidebar;
+		subscriptions[C.EVENT.WINDOW_RESIZE] = _onResize;
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
@@ -89,6 +91,11 @@ define([
 		_hotspotActivity.on("change", _onChangeHotspotActivityField);
 		_resultTypeGroup.on("change", "li", _onClickResultTypeGroupRow);
 		_searchOptionsLink.on("click", _toggleSearchOptions);
+
+		var searchResults = $("#fullPageSearchResults");
+		searchResults.on("mouseover", "#hotspotTableBody tr", _onHoverHotspotRow);
+		searchResults.on("mouseout", "#hotspotTableBody tr", _onHoverOutHotspotRow);
+		searchResults.on("click", "#hotspotTableBody tr", _onClickHotspotRow);
 	};
 
 
@@ -117,7 +124,8 @@ define([
 							_observationRecencyDisplay.html(ui.value);
 						} else if (id === "hotspotActivity") {
 							_hotspotActivityRecencyDisplay.html(ui.value);
-							_limitHotspotsByObservationRecency.prop("checked", true);						}
+							_limitHotspotsByObservationRecency.prop("checked", true);
+						}
 					},
 
 					change: function(e, ui) {
@@ -230,94 +238,28 @@ define([
 	 * @private
 	 */
 	var _onHotspotMarkersAdded = function(msg) {
-		var numMarkers = msg.data.numMarkers;
+
+		var numMarkers = msg.data.hotspots.length;
 		var locationStr = "location";
 		if (numMarkers == 0 || numMarkers > 1) {
 			locationStr  = "locations";
 		}
 
 		helper.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
-
 		_generateHotspotTable(msg.data.hotspots);
-
-		/*
-		if (manager.numVisibleHotspots > 0) {
-			var html = manager.generateHotspotTable(manager.visibleHotspots);
-			var locationStr = 'location';
-			if (manager.numVisibleHotspots > 1) {
-				locationStr  = 'locations';
-			}
-
-			try {
-				$('#hotspotTable').trigger("destroy");
-			} catch (e) { }
-
-			var numHotspotsStr = '';
-			if (manager.maxHotspotsReached) {
-				numHotspotsStr = manager.numVisibleHotspots + '+';
-			} else {
-				numHotspotsStr = manager.numVisibleHotspots;
-			}
-
-			helper.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
-
-			if (manager.currViewportMode === 'desktop') {
-				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
-			} else {
-				$('#locationsTabContent').html(html); //.removeClass('hidden').fadeIn(300);
-				$('#locationsTab').removeClass('disabled').html('Locations <span>(' + manager.numVisibleHotspots + ')</span>');
-			}
-			$('#hotspotTable').tablesorter({
-				headers: { 2: { sorter: 'species' } }
-			});
-		} else {
-			helper.showMessage('No birding locations found', 'notification');
-			$('#fullPageSearchResults').fadeOut(300);
-			helper.stopLoading();
-		}
-		*/
 	};
 
 	var _generateHotspotTable = function(visibleHotspots) {
-
-		console.log(visibleHotspots);
-
 		var tmpl = _.template(hotspotTableTemplate, {
+			showCheckboxColumn: false,
 			showSpeciesColumn: false,
 			hotspots: visibleHotspots,
-			L: helper.L
+			L: helper.L,
+			height: _getSidebarResultsPanelHeight()
 		});
 
 		$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
-
-		/*
-		for (var i=0; i<visibleHotspots.length; i++) {
-			var currLocationID = visibleHotspots[i];
-			var rowClass = '';
-			var checkedAttr = '';
-
-			if (manager.allHotspots[currLocationID].isDisplayed) {
-				rowClass = '';
-				checkedAttr = 'checked="checked"';
-			}
-			var numSpeciesWithinRange = '';
-			if (!manager.allHotspots[currLocationID].hasOwnProperty('observations')) {
-				rowClass = ' notLoaded';
-				checkedAttr = 'checked="checked"';
-			} else {
-				numSpeciesWithinRange = manager.allHotspots[currLocationID].observations[manager.searchType][manager.observationRecency + 'day'].numSpeciesRunningTotal;
-			}
-
-			html += '<tr id="location_' + currLocationID + '">' +
-				'<td><input type="checkbox" id="row' + i + '" ' + checkedAttr + ' /></td>' +
-				'<td class="loadingStatus' + rowClass + '">' + '<label for="row' + i + '">' + manager.allHotspots[currLocationID].n + '</label></td>' +
-				'<td class="sp"><span class="speciesCount">' + numSpeciesWithinRange + '</span></td>' +
-				'</tr>';
-		}
-		*/
-
 	};
-
 
 
 	var _submitForm = function(e) {
@@ -345,7 +287,6 @@ define([
 						observationRecency: _hotspotActivity.val()
 					}
 				}
-
 			});
 		}
 	};
@@ -369,17 +310,64 @@ define([
 		return true;
 	};
 
-	var _resizeSidebar = function(msg) {
+	var _onResize = function(msg) {
 		if (msg.data.viewportMode === "desktop") {
 			$('#sidebar').css('height', msg.data.height - 77);
 		} else {
 			$('#sidebar').css('height', 'auto');
 		}
+
+		$("#hotspotTableRows").css({
+			height: _getSidebarResultsPanelHeight
+		});
+	};
+
+	var _getSidebarResultsPanelHeight = function() {
+
+		// memoized
+		if (_sidebarResultPanelOffsetHeight === null) {
+			var headerHeight  = $("header").height(); // won't change
+			var messageBar    = $("#messageBar").height(); // won't change
+			var footerHeight  = $("footer").height(); // won't change
+			var padding = 80;
+			_sidebarResultPanelOffsetHeight = headerHeight + messageBar + searchPanel + footerHeight + padding;
+		}
+
+		var searchPanel  = $("#searchPanel").height();
+		var windowHeight = $(window).height();
+
+		return windowHeight - _sidebarResultPanelOffsetHeight;
 	};
 
 	var _getResultType = function() {
 		return _resultTypeField.filter(":checked").val();
 	};
+
+	var _onHoverHotspotRow = function(e) {
+		var id = $(e.currentTarget).attr("id");
+		if (id) {
+			_currentMouseoverLocationID = id.replace(/^location_/, '');
+			mediator.publish(_MODULE_ID, C.EVENT.HOTSPOT_LOCATION_MOUSEOVER, {
+				locationID: _currentMouseoverLocationID
+			});
+		}
+	};
+
+	var _onHoverOutHotspotRow = function() {
+		if (_currentMouseoverLocationID !== null) {
+			mediator.publish(_MODULE_ID, C.EVENT.HOTSPOT_LOCATION_MOUSEOUT, {
+				locationID: _currentMouseoverLocationID
+			});
+		}
+		_currentMouseoverLocationID = null;
+	};
+
+	var _onClickHotspotRow = function() {
+		mediator.publish(_MODULE_ID, C.EVENT.HOTSPOT_LOCATION_CLICK, {
+			locationID: _currentMouseoverLocationID
+		});
+	};
+
 
 	mediator.register(_MODULE_ID, {
 		init: _init

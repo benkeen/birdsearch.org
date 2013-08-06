@@ -33,13 +33,6 @@ define([
 			width: windowWidth,
 			height: windowHeight
 		});
-
-		/*
-		if (_pageViewportMode === 'desktop') {
-			$('#fullPageSearchResults').css('height', windowHeight - 267);
-		} else {
-		}
-		*/
 	};
 
 	mediator.register(_MODULE_ID, {

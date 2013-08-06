@@ -57,7 +57,7 @@ define([], function() {
 		var hotspotData = [];
 		for (var i=0; i<data.length; i++) {
 			hotspotData.push({
-				locationId: data[i].i,
+				locationID: data[i].i,
 				lat: data[i].la,
 				lng: data[i].lg,
 				n: data[i].n

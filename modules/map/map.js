@@ -12,7 +12,9 @@ define([
 	var _markers = {};
 	var _icon = 'images/marker.png';
 	var _infoWindows = {};
+	var _openInfoWindows = [];
 	var _visibleHotspots = [];
+	var _lastSearchAllHotspots = [];
 	var _defaultMapOptions = {
 		zoom: 4,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -31,6 +33,9 @@ define([
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
 		subscriptions[C.EVENT.SELECT_TAB] = _onSelectTab;
 		subscriptions[C.EVENT.SEARCH] = _onSearch;
+		subscriptions[C.EVENT.HOTSPOT_LOCATION_MOUSEOVER] = _onHotspotLocationMouseover;
+		subscriptions[C.EVENT.HOTSPOT_LOCATION_MOUSEOUT] = _onHotspotLocationMouseout;
+		subscriptions[C.EVENT.HOTSPOT_LOCATION_CLICK] = _onHotspotLocationClick;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 	};
 
@@ -43,7 +48,6 @@ define([
 
 		_mapCanvas = $('#mapTabContent')[0];
 		_map       = new google.maps.Map(_mapCanvas, _defaultMapOptions);
-
 		_addCustomControls();
 
 		// called any time the map has had its bounds changed
@@ -89,12 +93,62 @@ define([
 	};
 
 	var _onMapBoundsChange = function() {
+		// cool. This will need to detect when it's 25KM away from the original search, then do a fresh search
+		console.log("distance from center:", _calcDistance(_lastSearchLatLng, _map.getCenter()));
 
+		_clearHotspots();
+
+		// this adds as many as possible to the map - but many may be out of bounds
+		_addHotspotMarkers(_lastSearchAllHotspots);
+
+		mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
+			hotspots: _visibleHotspots
+		});
+
+
+		/*
+		if (_visibleHotspots.length > 0) {
+		var html = mediator.generateHotspotTable(mediator.visibleHotspots);
+		var locationStr = 'location';
+		if (mediator.numVisibleHotspots > 1) {
+		locationStr  = 'locations';
+		}
+		try {
+		$('#hotspotTable').trigger("destroy");
+		} catch (e) { }
+
+		var numHotspotsStr = '';
+		if (mediator.maxHotspotsReached) {
+		numHotspotsStr = mediator.numVisibleHotspots + '+';
+		} else {
+		numHotspotsStr = mediator.numVisibleHotspots;
+		}
+
+		helper.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
+
+		if (mediator.currViewportMode === 'desktop') {
+		$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
+		} else {
+		$('#locationsTabContent').html(html); //.removeClass('hidden').fadeIn(300);
+		$('#locationsTab').removeClass('disabled').html('Locations <span>(' + mediator.numVisibleHotspots + ')</span>');
+		}
+		$('#hotspotTable').tablesorter({
+		headers: { 2: { sorter: 'species' } }
+		});
+		} else {
+		helper.showMessage('No birding locations found', 'notification');
+		$('#fullPageSearchResults').fadeOut(300);
+		mediator.stopLoading();
+		}
+		*/
 	};
 
+	var _lastSearchLatLng;
 	var _onSearch = function(msg) {
 		var lat = msg.data.locationObj.lat();
 		var lng = msg.data.locationObj.lng();
+
+		_lastSearchLatLng = msg.data.locationObj;
 
 		// first, update the map boundary to whatever address they just searched for
 		if (msg.data.viewportObj) {
@@ -116,7 +170,7 @@ define([
 				observationRecency: msg.data.searchOptions.hotspots.observationRecency
 			});
 		}
-	}
+	};
 
 	var _resizeMap = function(msg) {
 		var data = msg.data;
@@ -126,22 +180,14 @@ define([
 		} else {
 			$('#panelContent').css('height', data.height - 40);
 		}
-
-//		if (mediator.currTabID == 'mapTab') {
-//			var address = $.trim(mediator.searchField.value);
-//			if (address !== '') {
-//				mediator.updatePage(false);
-//			}
-//		}
 	};
-
 
 	/**
 	 * Searches a regions for hotspots.
 	 */
 	var _getHotspots = function(searchParams) {
 
-		// check cache here
+		// TODO check cache here
 
 		$.ajax({
 			url: "ajax/getHotspotLocations.php",
@@ -149,15 +195,15 @@ define([
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
-
-				var hotspots = dataCache.formatHotspotData(response);
+				_lastSearchAllHotspots = dataCache.formatHotspotData(response);
 				_clearHotspots();
-				_addHotspotMarkers(hotspots);
+
+				// this adds as many as possible to the map - but many may be out of bounds.
+				_addHotspotMarkers(_lastSearchAllHotspots);
 				helper.stopLoading();
 
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
-					hotspots: hotspots,
-					numMarkers: _visibleHotspots.length
+					hotspots: _visibleHotspots
 				});
 			},
 			error: function(response) {
@@ -174,14 +220,13 @@ define([
 	};
 
 	var _redrawMap = function() {
-		google.maps.event.trigger(_map, 'resize');
+		google.maps.event.trigger(_map, "resize");
 	};
 
 
 	var _addHotspotMarkers = function(hotspots) {
 		var mapBoundary = _map.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-		var counter = 1;
 		_visibleHotspots = [];
 
 		for (var i=0; i<hotspots.length; i++) {
@@ -206,16 +251,15 @@ define([
 				});
 				_infoWindows[locationID] = new google.maps.InfoWindow();
 
-				(function(marker, infoWindow, locID) {
+				(function(marker, infoWindow, locID, locName) {
 					google.maps.event.addListener(marker, "click", function() {
-						infoWindow.setContent(_getInfoWindowHTML(locID));
+						infoWindow.setContent(locName);
 						infoWindow.open(_map, this);
 					});
-				})(_markers[locationID], _infoWindows[locationID], locationID);
+				})(_markers[locationID], _infoWindows[locationID], locationID, currHotspotInfo.n);
 			}
 
-			_visibleHotspots.push(locationID);
-			counter++;
+			_visibleHotspots.push(currHotspotInfo);
 		}
 	};
 
@@ -228,54 +272,43 @@ define([
 	};
 
 
-	var onMapBoundaryUpdate = function() {
-
-/*		if (_visibleHotspots.length > 0) {
-			var html = mediator.generateHotspotTable(mediator.visibleHotspots);
-			var locationStr = 'location';
-			if (mediator.numVisibleHotspots > 1) {
-				locationStr  = 'locations';
-			}
-
-			try {
-				$('#hotspotTable').trigger("destroy");
-			} catch (e) { }
-
-			var numHotspotsStr = '';
-			if (mediator.maxHotspotsReached) {
-				numHotspotsStr = mediator.numVisibleHotspots + '+';
-			} else {
-				numHotspotsStr = mediator.numVisibleHotspots;
-			}
-
- helper.showMessage('<b>' + numHotspotsStr + '</b> ' + locationStr + ' found', 'notification');
-
-			if (mediator.currViewportMode === 'desktop') {
-				$('#fullPageSearchResults').html(html).removeClass('hidden').fadeIn(300);
-			} else {
-				$('#locationsTabContent').html(html); //.removeClass('hidden').fadeIn(300);
-				$('#locationsTab').removeClass('disabled').html('Locations <span>(' + mediator.numVisibleHotspots + ')</span>');
-			}
-			$('#hotspotTable').tablesorter({
-				headers: { 2: { sorter: 'species' } }
-			});
-		} else {
- helper.showMessage('No birding locations found', 'notification');
-			$('#fullPageSearchResults').fadeOut(300);
-			mediator.stopLoading();
-		}
-		*/
-	};
-
-
 	var _getInfoWindowHTML = function(locationID) {
 //		var numSpecies = mediator.allHotspots[locationID].observations[mediator.searchType][mediator.observationRecency + 'day'].numSpeciesRunningTotal;
 //		var html = '<div class="hotspotDialog"><p><b>' + mediator.allHotspots[locationID].n + '</b></p>' +
 //			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
 //			numSpecies + ')</b></a></p></div>';
 
-		return locationID;
 	};
+
+
+	var _onHotspotLocationMouseover = function(msg) {
+		var locationID = msg.data.locationID;
+		_markers[locationID].setIcon("images/marker2.png");
+		_markers[locationID].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+	};
+
+	var _onHotspotLocationMouseout = function(msg) {
+		var locationID = msg.data.locationID;
+		_markers[locationID].setIcon("images/marker.png");
+	};
+
+	var _onHotspotLocationClick = function(msg) {
+		var locationID = msg.data.locationID;
+		if ($.inArray(locationID, _openInfoWindows) !== -1) {
+			_infoWindows[locationID].close();
+			// remove it from the array
+			_openInfoWindows.splice($.inArray(locationID, _openInfoWindows), 1);
+		} else {
+			google.maps.event.trigger(_markers[locationID], "click");
+			_openInfoWindows.push(locationID);
+		}
+	};
+
+
+	//calculates distance between two points in km's
+	var _calcDistance = function(p1, p2){
+		return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
+	}
 
 
 	mediator.register(_MODULE_ID, {
