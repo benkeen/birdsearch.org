@@ -28,6 +28,9 @@ define([
 		scaleControl: true,
 		overviewMapControl: true
 	};
+	var _circleOverlayIndex = 0;
+	var _circleOverlays = [];
+	var _searchStarted = false;
 
 	var _init = function() {
 		var subscriptions = {};
@@ -94,6 +97,12 @@ define([
 	};
 
 	var _onMapBoundsChange = function() {
+
+		// if there's an ongoing search, don't do anything
+		if (_searchStarted) {
+			return;
+		}
+
 		// cool. This will need to detect when it's 25KM away from the original search, then do a fresh search
 		//console.log("distance from center:", _calcDistance(_lastSearchLatLng, _map.getCenter()));
 		_clearHotspots();
@@ -113,12 +122,15 @@ define([
 		_lastSearchLatLng = msg.data.locationObj;
 
 		// first, update the map boundary to whatever address they just searched for
+		_searchStarted = true;
 		if (msg.data.viewportObj) {
 			_map.fitBounds(msg.data.viewportObj);
 		} else {
 			_map.setCenter(place.geometry.locationObj);
 			_map.setZoom(17);
 		}
+
+		_addSearchRangeIndicator();
 
 		if (msg.data.resultType === "all") {
 			//mediator.getHotspots();
@@ -162,6 +174,7 @@ define([
 
 				// this adds as many as possible to the map - but many may be out of bounds.
 				_addHotspotMarkers(_lastSearchAllHotspots);
+				_searchStarted = false;
 				helper.stopLoading();
 
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
@@ -183,6 +196,24 @@ define([
 
 	var _redrawMap = function() {
 		google.maps.event.trigger(_map, "resize");
+	};
+
+	var _addSearchRangeIndicator = function() {
+
+		// lame, but setting the map to null doesn't work, so keep adding more & hiding the previous
+		if (_circleOverlayIndex > 0) {
+			_circleOverlays[_circleOverlayIndex-1].set("visible", false);
+		}
+
+		_circleOverlays[_circleOverlayIndex] = new InvertedCircle({
+			center: _map.getCenter(),
+			map: _map,
+			radius: 60000, // 60K
+			editable: false,
+			stroke_weight: 0,
+			always_fit_to_map: false
+		});
+		_circleOverlayIndex++;
 	};
 
 

@@ -245,19 +245,24 @@ define([
 		}
 
 		helper.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
+
 		_generateHotspotTable(msg.data.hotspots);
 	};
 
 	var _generateHotspotTable = function(visibleHotspots) {
-		var tmpl = _.template(hotspotTableTemplate, {
-			showCheckboxColumn: false,
-			showSpeciesColumn: false,
-			hotspots: visibleHotspots,
-			L: helper.L,
-			height: _getSidebarResultsPanelHeight()
-		});
 
-		$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
+		if (visibleHotspots.length > 0) {
+			var tmpl = _.template(hotspotTableTemplate, {
+				showCheckboxColumn: false,
+				showSpeciesColumn: false,
+				hotspots: visibleHotspots,
+				L: helper.L,
+				height: _getSidebarResultsPanelHeight()
+			});
+			$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
+		} else {
+			$("#fullPageSearchResults").addClass("hidden");
+		}
 	};
 
 
@@ -329,13 +334,13 @@ define([
 			var messageBar    = $("#messageBar").height(); // won't change
 			var footerHeight  = $("footer").height(); // won't change
 			var padding = 80;
-			_sidebarResultPanelOffsetHeight = headerHeight + messageBar + searchPanel + footerHeight + padding;
+			_sidebarResultPanelOffsetHeight = headerHeight + messageBar + footerHeight + padding;
 		}
 
 		var searchPanel  = $("#searchPanel").height();
 		var windowHeight = $(window).height();
 
-		return windowHeight - _sidebarResultPanelOffsetHeight;
+		return windowHeight - (_sidebarResultPanelOffsetHeight + searchPanel);
 	};
 
 	var _getResultType = function() {
