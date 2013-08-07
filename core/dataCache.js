@@ -1,30 +1,7 @@
-/**
- * This acts as the sole, central repo for hotspot and observation data. It does all the
- * nitty gritty work with organizing the info into sane data structures so the rest of the
- * scripts can
- */
 define([], function() {
 
 	var _MODULE_ID = "dataCache";
 	var _hotspotData = {};
-
-
-	/*
-
-	HOTSPOTS
-	1. store all hotspots
-	2. track recency
-
-	Caching the hotspot locations that were spotted within a particular time period doesn't seem worthwhile.
-	Soo.... we continue to store all the hotspot info in _hotspotData = {}; but
-
-	hotspotRecencySearches = [1, 2, 15, 30];// this means those f
-	hotspots = {
-
-	}
-
-	*/
-
 
 	// set up our data structure that's going to house all the data
 	var _init = function() {
@@ -42,16 +19,6 @@ define([], function() {
 		return _hotspotData;
 	};
 
-	var _getHotspotObservations = function() {
-
-	};
-
-	var _getHotspotNotableObservations = function() {
-
-	};
-
-	var _storeData = function(dataFormat, data) {
-	};
 
 	var _formatHotspotData = function(data) {
 		var hotspotData = [];
@@ -66,11 +33,29 @@ define([], function() {
 		return hotspotData;
 	};
 
+	var _formatNotableSightingsData = function(data) {
+		var notableSightingsData = [];
+		var foundLocations = [];
+
+		for (var i=0; i<data.length; i++) {
+			var currLocationID = data[i].locID;
+			if ($.inArray(currLocationID, foundLocations) === -1) {
+				foundLocations.push(currLocationID);
+				console.log("adding: ", data[i]);
+				notableSightingsData.push({
+					locationID: currLocationID,
+					lat: data[i].lat,
+					lng: data[i].lng,
+					n: data[i].n
+				});
+			}
+		}
+		return notableSightingsData;
+	};
+
 	return {
 		getHotspots: _getHotspots,
 		formatHotspotData: _formatHotspotData,
-		getHotspotObservations: _getHotspotObservations,
-		getHotspotNotableObservations: _getHotspotNotableObservations,
-		storeData: _storeData
+		formatNotableSightingsData: _formatNotableSightingsData
 	};
 });

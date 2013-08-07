@@ -266,7 +266,7 @@ define([
 			manager.startLoading();
 
 			$.ajax({
-				url: "ajax/getNotableObservations.php",
+				url: "ajax/getNotableSightings.php",
 				data: {
 					regionType: manager.regionType,
 					region: manager.region,

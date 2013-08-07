@@ -31,6 +31,8 @@ define([
 	var _circleOverlayIndex = 0;
 	var _circleOverlays = [];
 	var _searchStarted = false;
+	var _lastSearchNotableSightings = [];
+
 
 	var _init = function() {
 		var subscriptions = {};
@@ -133,9 +135,14 @@ define([
 		_addSearchRangeIndicator();
 
 		if (msg.data.resultType === "all") {
-			//mediator.getHotspots();
+
+
 		} else if (msg.data.resultType === "notable") {
-			//mediator.getNotableObservations();
+			_getNotableSightings({
+				lat: lat,
+				lng: lng,
+				observationRecency: msg.data.searchOptions.allAndNotable.observationRecency
+			});
 		} else if (msg.data.resultType === "hotspots") {
 			_getHotspots({
 				lat: lat,
@@ -154,6 +161,35 @@ define([
 		} else {
 			$("#panelContent").css("height", data.height - 40);
 		}
+	};
+
+	/**
+	 * Searches a regions for notable sightings.
+	 */
+	var _getNotableSightings = function(searchParams) {
+		$.ajax({
+			url: "ajax/getNotableSightings.php",
+			data: searchParams,
+			type: "POST",
+			dataType: "json",
+			success: function(response) {
+				_lastSearchNotableSightings = dataCache.formatNotableSightingsData(response);
+				_clearHotspots();
+
+				// this adds as many as possible to the map - but many may be out of bounds.
+				_addHotspotMarkers(_lastSearchNotableSightings);
+				_searchStarted = false;
+				helper.stopLoading();
+
+				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
+					hotspots: _visibleHotspots
+				});
+			},
+			error: function(response) {
+//				console.log("error", arguments, response);
+				helper.stopLoading();
+			}
+		});
 	};
 
 	/**

@@ -5,7 +5,6 @@ if (!isset($_POST["lat"]) || empty($_POST["lat"]) ||
 	exit;
 }
 
-
 $lat = $_POST["lat"];
 $lng = $_POST["lng"];
 $limitByObservationRecency = $_POST["limitByObservationRecency"];

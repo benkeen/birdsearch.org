@@ -243,14 +243,11 @@ define([
 		if (numMarkers == 0 || numMarkers > 1) {
 			locationStr  = "locations";
 		}
-
 		helper.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
-
 		_generateHotspotTable(msg.data.hotspots);
 	};
 
 	var _generateHotspotTable = function(visibleHotspots) {
-
 		if (visibleHotspots.length > 0) {
 			var tmpl = _.template(hotspotTableTemplate, {
 				showCheckboxColumn: false,
@@ -327,8 +324,6 @@ define([
 	};
 
 	var _getSidebarResultsPanelHeight = function() {
-
-		// memoized
 		if (_sidebarResultPanelOffsetHeight === null) {
 			var headerHeight  = $("header").height(); // won't change
 			var messageBar    = $("#messageBar").height(); // won't change
