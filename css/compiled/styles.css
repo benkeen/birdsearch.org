@@ -83,14 +83,16 @@ body .well-pad {
     height: 26px; }
 
 .speciesCount {
-  background-color: #333333;
+  background-color: #B0CDF7;
   color: white;
-  font-size: 7pt;
+  font-size: 7.2pt;
+  font-weight: bold;
   border-radius: 5px;
   text-align: center;
   display: block;
   width: 30px;
-  margin: 1px 0px 0px 10px; }
+  margin: 1px 0px 0px 10px;
+  text-shadow: 1px 1px 1px #333333; }
 
 #messageBar {
   display: none;
@@ -228,12 +230,12 @@ body .well-pad {
   padding: 0px; }
   #panelTabs li {
     float: left;
-    margin: 0px 4px 6px 0px;
+    margin: 1px 4px -2px 0px;
     text-align: center;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     font-size: 9pt;
-    padding: 2px 22px;
+    padding: 3px 22px 5px;
     cursor: pointer; }
     #panelTabs li a {
       color: #555555;
@@ -242,10 +244,6 @@ body .well-pad {
       #panelTabs li a:hover {
         color: #cccccc;
         text-decoration: none; }
-    #panelTabs li.disabled {
-      background: rgba(0, 0, 0, 0.5);
-      color: #444444;
-      cursor: default; }
 
 footer {
   background-image: url("../../images/debut_dark.png");
@@ -319,3 +317,6 @@ body div.mapBtnSelected {
 
 #mapTabContent img {
   max-width: none; }
+
+.gm-style-iw h4 {
+  color: #333333; }

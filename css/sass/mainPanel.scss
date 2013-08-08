@@ -20,12 +20,12 @@
 
 	li {
 		float: left;
-		margin: 0px 4px 6px 0px;
+		margin: 1px 4px -2px 0px;
 		text-align: center;
 		border-top-left-radius: 4px;
 		border-top-right-radius: 4px;
 		font-size: 9pt;
-		padding: 2px 22px;
+		padding: 3px 22px 5px;
 		cursor: pointer;
 
 		a {
@@ -36,12 +36,6 @@
 				color: #cccccc;
 				text-decoration: none;
 			}
-		}
-
-		&.disabled {
-			background: rgba(0, 0, 0, 0.5);
-			color: #444444;
-			cursor: default;
 		}
 	}
 }

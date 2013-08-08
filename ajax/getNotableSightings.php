@@ -13,7 +13,7 @@ echo getNotableObservations($lat, $lng, $observationRecency);
 
 
 function getNotableObservations($lat, $lng, $recency) {
-    $url = "http://ebird.org/ws1.1/data/notable/geo/recent?lat=$lat&lng=$lng&fmt=json&back=$recency&dist=250";
+    $url = "http://ebird.org/ws1.1/data/notable/geo/recent?lat=$lat&lng=$lng&fmt=json&back=$recency&dist=250&hotspot=false";
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

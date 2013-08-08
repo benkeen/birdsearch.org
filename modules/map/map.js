@@ -2,20 +2,16 @@ define([
 	"mediator",
 	"constants",
 	"moduleHelper",
-	"dataCache"
-], function(mediator, C, helper, dataCache) {
+	"dataCache",
+	"text!notableSightingsInfoWindowTemplate"
+], function(mediator, C, helper, dataCache, notableSightingsInfoWindowTemplate) {
 	"use strict";
 
 	var _MODULE_ID = "map";
 	var _mapCanvas;
 	var _map;
-	var _markers = {};
-	var _icon = 'images/marker.png';
-	var _infoWindows = {};
-	var _openInfoWindows = [];
+	var _icon = "images/marker.png";
 	var _visibleHotspots = [];
-	var _lastSearchAllHotspots = [];
-	var _lastSearchLatLng = null;
 	var _defaultMapOptions = {
 		zoom: 4,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -28,10 +24,49 @@ define([
 		scaleControl: true,
 		overviewMapControl: true
 	};
+
+	// general fields relating to search
+	var _currSearchType = null;
+	var _searchStarted = false;
 	var _circleOverlayIndex = 0;
 	var _circleOverlays = [];
-	var _searchStarted = false;
+	var _searchTypeCircleRadius = {
+		all: 60000,
+		notable: 250000,
+		hotspots: 60000
+	};
+	var _lastSearchLatLng = null;
+
+
+	// all bird sightings search
+
+	// notable search
 	var _lastSearchNotableSightings = [];
+	var _notableMarkers = {};
+	var _notableInfoWindows = {};
+	var _openNotableInfoWindows = [];
+
+	// hotspot search
+	var _lastSearchAllHotspots = [];
+	var _hotspotInfoWindows = {};
+	var _hotspotMarkers = {};
+	var _openHotspotInfoWindows = [];
+
+	// this sucks. Group all the above data here, maybe...
+	var _searchTypeData = {
+		all: null,
+		notable: {
+			infoWindows: _notableInfoWindows,
+			openInfoWindows: _openNotableInfoWindows,
+			markers: _notableMarkers
+		},
+		hotspots: {
+			infoWindows: _hotspotInfoWindows,
+			openInfoWindows: _openHotspotInfoWindows,
+			markers: _hotspotMarkers
+		}
+	};
+
 
 
 	var _init = function() {
@@ -39,9 +74,9 @@ define([
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
 		subscriptions[C.EVENT.SELECT_TAB] = _onSelectTab;
 		subscriptions[C.EVENT.SEARCH] = _onSearch;
-		subscriptions[C.EVENT.HOTSPOT_LOCATION_MOUSEOVER] = _onHotspotLocationMouseover;
-		subscriptions[C.EVENT.HOTSPOT_LOCATION_MOUSEOUT] = _onHotspotLocationMouseout;
-		subscriptions[C.EVENT.HOTSPOT_LOCATION_CLICK] = _onHotspotLocationClick;
+		subscriptions[C.EVENT.LOCATION_MOUSEOVER] = _onLocationMouseover;
+		subscriptions[C.EVENT.LOCATION_MOUSEOUT] = _onLocationMouseout;
+		subscriptions[C.EVENT.LOCATION_CLICK] = _onLocationClick;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 	};
 
@@ -105,19 +140,33 @@ define([
 			return;
 		}
 
-		// cool. This will need to detect when it's 25KM away from the original search, then do a fresh search
+		// cool. This can be used to detect when it's 25KM away from the original search, then do a fresh search
 		//console.log("distance from center:", _calcDistance(_lastSearchLatLng, _map.getCenter()));
+
 		_clearHotspots();
 
 		// this adds as many as possible to the map - but many may be out of bounds
-		_addHotspotMarkers(_lastSearchAllHotspots);
-
-		mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
-			hotspots: _visibleHotspots
-		});
+		switch (_currSearchType) {
+			case "notable":
+				_addHotspotMarkers("notable", _lastSearchNotableSightings);
+				mediator.publish(_MODULE_ID, C.EVENT.MAP.NOTABLE_MARKERS_ADDED, {
+					locations: _visibleHotspots
+				});
+				break;
+			case "hotspots":
+				_addHotspotMarkers("hotspots", _lastSearchAllHotspots);
+				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
+					hotspots: _visibleHotspots
+				});
+				break;
+		}
 	};
 
 	var _onSearch = function(msg) {
+
+		// make a note of the search type
+		_currSearchType = msg.data.resultType;
+
 		var lat = msg.data.locationObj.lat();
 		var lng = msg.data.locationObj.lng();
 
@@ -134,16 +183,15 @@ define([
 
 		_addSearchRangeIndicator();
 
-		if (msg.data.resultType === "all") {
+		if (_currSearchType === "all") {
 
-
-		} else if (msg.data.resultType === "notable") {
+		} else if (_currSearchType === "notable") {
 			_getNotableSightings({
 				lat: lat,
 				lng: lng,
 				observationRecency: msg.data.searchOptions.allAndNotable.observationRecency
 			});
-		} else if (msg.data.resultType === "hotspots") {
+		} else if (_currSearchType === "hotspots") {
 			_getHotspots({
 				lat: lat,
 				lng: lng,
@@ -177,12 +225,12 @@ define([
 				_clearHotspots();
 
 				// this adds as many as possible to the map - but many may be out of bounds.
-				_addHotspotMarkers(_lastSearchNotableSightings);
+				_addHotspotMarkers("notable", _lastSearchNotableSightings);
 				_searchStarted = false;
 				helper.stopLoading();
 
-				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
-					hotspots: _visibleHotspots
+				mediator.publish(_MODULE_ID, C.EVENT.MAP.NOTABLE_MARKERS_ADDED, {
+					locations: _visibleHotspots
 				});
 			},
 			error: function(response) {
@@ -209,7 +257,7 @@ define([
 				_clearHotspots();
 
 				// this adds as many as possible to the map - but many may be out of bounds.
-				_addHotspotMarkers(_lastSearchAllHotspots);
+				_addHotspotMarkers("hotspots", _lastSearchAllHotspots);
 				_searchStarted = false;
 				helper.stopLoading();
 
@@ -244,7 +292,7 @@ define([
 		_circleOverlays[_circleOverlayIndex] = new InvertedCircle({
 			center: _map.getCenter(),
 			map: _map,
-			radius: 60000, // 60K
+			radius: _searchTypeCircleRadius[_currSearchType],
 			editable: false,
 			stroke_weight: 0,
 			always_fit_to_map: false
@@ -253,87 +301,143 @@ define([
 	};
 
 
-	var _addHotspotMarkers = function(hotspots) {
+	/**
+	 * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
+	 * param specifies the search type; the second is a standardized array of hotspot data. Format:
+	 *   {
+	 *		locationID: ...
+	 *		lat: ...
+	 *		lng: ...
+	 *		n: ... (location name)
+	 *   }
+	 * The objects can contain any additional info needed; they're just ignored.
+	 *
+	 * @param searchType
+	 * @param hotspots
+	 * @private
+	 */
+	var _addHotspotMarkers = function(searchType, data) {
 		var mapBoundary = _map.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
 		_visibleHotspots = [];
 
-		for (var i=0; i<hotspots.length; i++) {
-			var currHotspotInfo = hotspots[i];
-			var locationID = currHotspotInfo.locationID;
-			var latlng = new google.maps.LatLng(currHotspotInfo.lat, currHotspotInfo.lng);
+		for (var i=0; i<data.length; i++) {
+			var currMarkerInfo = data[i];
+			var locationID = currMarkerInfo.locationID;
+			var latlng = new google.maps.LatLng(currMarkerInfo.lat, currMarkerInfo.lng);
 			if (!boundsObj.contains(latlng)) {
 				continue;
 			}
 
-			if (_markers.hasOwnProperty(locationID)) {
-				if (_markers[locationID].map === null) {
-					_markers[locationID].setMap(_map);
-				}
-			} else {
-				_markers[locationID] = new google.maps.Marker({
-					position: latlng,
-					map: _map,
-					title: currHotspotInfo.n,
-					icon: _icon,
-					locationID: locationID
-				});
-				_infoWindows[locationID] = new google.maps.InfoWindow();
-
-				(function(marker, infoWindow, locID, locName) {
-					google.maps.event.addListener(marker, "click", function() {
-						infoWindow.setContent(locName);
-						infoWindow.open(_map, this);
+			if (searchType === "hotspots") {
+				if (_hotspotMarkers.hasOwnProperty(locationID)) {
+					if (_hotspotMarkers[locationID].map === null) {
+						_hotspotMarkers[locationID].setMap(_map);
+					}
+				} else {
+					_hotspotMarkers[locationID] = new google.maps.Marker({
+						position: latlng,
+						map: _map,
+						title: currMarkerInfo.n,
+						icon: _icon,
+						locationID: locationID
 					});
-				})(_markers[locationID], _infoWindows[locationID], locationID, currHotspotInfo.n);
+					_hotspotInfoWindows[locationID] = new google.maps.InfoWindow();
+
+					(function(marker, infoWindow, locID, locName) {
+						google.maps.event.addListener(marker, "click", function() {
+							infoWindow.setContent(locName);
+							infoWindow.open(_map, this);
+						});
+					})(_hotspotMarkers[locationID], _hotspotInfoWindows[locationID], locationID, currMarkerInfo.n);
+				}
+
+			} else if (searchType === "notable") {
+
+				if (_notableMarkers.hasOwnProperty(locationID)) {
+					if (_notableMarkers[locationID].map === null) {
+						_notableMarkers[locationID].setMap(_map);
+					}
+				} else {
+					_notableMarkers[locationID] = new google.maps.Marker({
+						position: latlng,
+						map: _map,
+						title: currMarkerInfo.n,
+						icon: _icon,
+						locationID: locationID
+					});
+					_notableInfoWindows[locationID] = new google.maps.InfoWindow();
+
+					(function(marker, infoWindow, locInfo) {
+						google.maps.event.addListener(marker, "click", function() {
+							infoWindow.setContent(_getNotableSightingInfoWindow(locInfo));
+							infoWindow.open(_map, this);
+						});
+					})(_notableMarkers[locationID], _notableInfoWindows[locationID], currMarkerInfo);
+				}
 			}
 
-			_visibleHotspots.push(currHotspotInfo);
+			_visibleHotspots.push(currMarkerInfo);
 		}
 	};
+
+	var _getNotableSightingInfoWindow = function(locInfo) {
+		var html = _.template(notableSightingsInfoWindowTemplate, {
+			L: helper.L,
+			sightings: locInfo.sightings,
+			locationName: locInfo.n,
+			locationID: locInfo.locationID
+		});
+
+		// render the template
+		return html;
+	};
+
 
 	// clears the map. Note that we DON'T reset _markers. That retains the information loaded for as long as the user's
 	// session so we don't re-request the same info from eBird
 	var _clearHotspots = function() {
-		for (var locationID in _markers) {
-			_markers[locationID].setMap(null);
+		for (var locationID in _hotspotMarkers) {
+			_hotspotMarkers[locationID].setMap(null);
+		}
+		for (var locationID in _notableMarkers) {
+			_notableMarkers[locationID].setMap(null);
 		}
 	};
 
-	var _getInfoWindowHTML = function(locationID) {
-//		var numSpecies = mediator.allHotspots[locationID].observations[mediator.searchType][mediator.observationRecency + 'day'].numSpeciesRunningTotal;
-//		var html = '<div class="hotspotDialog"><p><b>' + mediator.allHotspots[locationID].n + '</b></p>' +
-//			'<p><a href="#" class="viewLocationBirds" data-location="' + locationID + '">View bird species spotted at this location <b>(' +
-//			numSpecies + ')</b></a></p></div>';
+	var _onLocationMouseover = function(msg) {
+		var locationID = msg.data.locationID;
+		_searchTypeData[_currSearchType].markers[locationID].setIcon("images/marker2.png");
+		_searchTypeData[_currSearchType].markers[locationID].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
 	};
 
-	var _onHotspotLocationMouseover = function(msg) {
+	var _onLocationMouseout = function(msg) {
 		var locationID = msg.data.locationID;
-		_markers[locationID].setIcon("images/marker2.png");
-		_markers[locationID].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+		_searchTypeData[_currSearchType].markers[locationID].setIcon("images/marker.png");
 	};
 
-	var _onHotspotLocationMouseout = function(msg) {
+	var _onLocationClick = function(msg) {
 		var locationID = msg.data.locationID;
-		_markers[locationID].setIcon("images/marker.png");
-	};
 
-	var _onHotspotLocationClick = function(msg) {
-		var locationID = msg.data.locationID;
-		if ($.inArray(locationID, _openInfoWindows) !== -1) {
-			_infoWindows[locationID].close();
+		var openInfoWindows = _searchTypeData[_currSearchType].openInfoWindows;
+		var infoWindows     = _searchTypeData[_currSearchType].infoWindows;
+		var markers         = _searchTypeData[_currSearchType].markers;
+
+		if ($.inArray(locationID, openInfoWindows) !== -1) {
+			infoWindows[locationID].close();
+
 			// remove it from the array
-			_openInfoWindows.splice($.inArray(locationID, _openInfoWindows), 1);
+			openInfoWindows.splice($.inArray(locationID, openInfoWindows), 1);
 		} else {
-			google.maps.event.trigger(_markers[locationID], "click");
-			_openInfoWindows.push(locationID);
+			google.maps.event.trigger(markers[locationID], "click");
+			openInfoWindows.push(locationID);
 		}
 	};
 
 	//calculates distance between two points in km's
-	var _calcDistance = function(p1, p2){
-		return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
-	}
+//	var _calcDistance = function(p1, p2){
+//		return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
+//	}
 
 
 	mediator.register(_MODULE_ID, {

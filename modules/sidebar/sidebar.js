@@ -41,6 +41,7 @@ define([
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _onResize;
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
+		subscriptions[C.EVENT.MAP.NOTABLE_MARKERS_ADDED] = _onNotableMarkersAdded;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
 		var tmpl = _.template(sidebarTemplate, {
@@ -93,13 +94,14 @@ define([
 		_searchOptionsLink.on("click", _toggleSearchOptions);
 
 		var searchResults = $("#fullPageSearchResults");
-		searchResults.on("mouseover", "#hotspotTableBody tr", _onHoverHotspotRow);
-		searchResults.on("mouseout", "#hotspotTableBody tr", _onHoverOutHotspotRow);
+		searchResults.on("mouseover", "#hotspotTableBody tr", _onHoverLocationRow);
+		searchResults.on("mouseout", "#hotspotTableBody tr", _onHoverOutLocationRow);
 		searchResults.on("click", "#hotspotTableBody tr", _onClickHotspotRow);
 	};
 
 
-	// if there's no native support for the range element, offer the jQuery slider
+	// if there's no native support for the range element, offer the jQuery slider. Be nice if this dynamically downloaded the
+	// resource as required... why penalize newer browsers?
 	var _fixSliders = function() {
 		if (!Modernizr.inputtypes.range){
 			$("input[type=range]").each(function() {
@@ -247,11 +249,51 @@ define([
 		_generateHotspotTable(msg.data.hotspots);
 	};
 
-	var _generateHotspotTable = function(visibleHotspots) {
+	/**
+	 * Called after the used does a Notable Sightings search and whatever locations were found
+	 * were just added to the map. This displays a "X locations found" message and shows a table
+	 * of all the hotspots.
+	 * @param msg
+	 * @private
+	 */
+	var _onNotableMarkersAdded = function(msg) {
+		var locations = msg.data.locations;
+		var numMarkers = locations.length;
+		var locationStr = "location";
+		if (numMarkers === 0 || numMarkers > 1) {
+			locationStr = "locations";
+		}
+
+		// total up the total number of sightings made at the various locations
+		var numSightings = 0;
+		for (var i=0; i<numMarkers; i++) {
+			numSightings += locations[i].sightings.length;
+		}
+
+		var sightingsStr = "sighting";
+		if (numMarkers === 0 || numMarkers > 1) {
+			sightingsStr = "sightings";
+		}
+
+		var message = "<b>" + numMarkers + "</b> " + locationStr + ", " +
+			          "<b>" + numSightings + "</b> " + sightingsStr;
+
+		helper.showMessage(message, "notification");
+
+		_generateHotspotTable(locations, { showSpeciesColumn: true });
+	};
+
+
+	var _generateHotspotTable = function(visibleHotspots, options) {
+		var opts = $.extend({
+			showCheckboxColumn: false,
+			showSpeciesColumn: false
+		}, options);
+
 		if (visibleHotspots.length > 0) {
 			var tmpl = _.template(hotspotTableTemplate, {
-				showCheckboxColumn: false,
-				showSpeciesColumn: false,
+				showCheckboxColumn: opts.showCheckboxColumn,
+				showSpeciesColumn: opts.showSpeciesColumn,
 				hotspots: visibleHotspots,
 				L: helper.L,
 				height: _getSidebarResultsPanelHeight()
@@ -342,19 +384,19 @@ define([
 		return _resultTypeField.filter(":checked").val();
 	};
 
-	var _onHoverHotspotRow = function(e) {
+	var _onHoverLocationRow = function(e) {
 		var id = $(e.currentTarget).attr("id");
 		if (id) {
 			_currentMouseoverLocationID = id.replace(/^location_/, '');
-			mediator.publish(_MODULE_ID, C.EVENT.HOTSPOT_LOCATION_MOUSEOVER, {
+			mediator.publish(_MODULE_ID, C.EVENT.LOCATION_MOUSEOVER, {
 				locationID: _currentMouseoverLocationID
 			});
 		}
 	};
 
-	var _onHoverOutHotspotRow = function() {
+	var _onHoverOutLocationRow = function() {
 		if (_currentMouseoverLocationID !== null) {
-			mediator.publish(_MODULE_ID, C.EVENT.HOTSPOT_LOCATION_MOUSEOUT, {
+			mediator.publish(_MODULE_ID, C.EVENT.LOCATION_MOUSEOUT, {
 				locationID: _currentMouseoverLocationID
 			});
 		}
@@ -362,7 +404,7 @@ define([
 	};
 
 	var _onClickHotspotRow = function() {
-		mediator.publish(_MODULE_ID, C.EVENT.HOTSPOT_LOCATION_CLICK, {
+		mediator.publish(_MODULE_ID, C.EVENT.LOCATION_CLICK, {
 			locationID: _currentMouseoverLocationID
 		});
 	};

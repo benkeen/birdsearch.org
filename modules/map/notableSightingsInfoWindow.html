@@ -1,0 +1,16 @@
+<h4><%=locationName%></h4>
+
+<table>
+	<tbody>
+	<% _.each(sightings, function(sighting, index) { %>
+	<tr>
+		<td style="padding-right:30px"><%=sighting.comName%></td>
+		<td><%=sighting.obsDt%></td>
+	</tr>
+	<% }); %>
+	</tbody>
+</table>
+
+<p>
+	<a href="#" >View full information &raquo;</a>
+</p>

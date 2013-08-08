@@ -19,12 +19,14 @@ define([], function() {
 		SEARCH: "search",
 
 		MAP: {
+			ALL_MARKERS_ADDED: 'map-all-markers-added',
+			NOTABLE_MARKERS_ADDED: 'map-notable-markers-added',
 			HOTSPOT_MARKERS_ADDED: 'map-hotspot-markers-added'
 		},
 
-		HOTSPOT_LOCATION_MOUSEOVER: 'hotspot-location-mouseover',
-		HOTSPOT_LOCATION_MOUSEOUT: 'hotspot-location-mouseout',
-		HOTSPOT_LOCATION_CLICK: 'hotspot-location-click'
+		LOCATION_MOUSEOVER: 'location-mouseover',
+		LOCATION_MOUSEOUT: 'location-mouseout',
+		LOCATION_CLICK: 'location-click'
 	};
 
 	_CONSTANTS.SETTINGS = {

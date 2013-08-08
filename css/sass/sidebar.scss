@@ -80,14 +80,16 @@ body .well-pad {
 }
 
 .speciesCount {
-	background-color: #333333;
+	background-color: #B0CDF7;
 	color: white;
-	font-size: 7pt;
+	font-size: 7.2pt;
+	font-weight: bold;
 	border-radius: 5px;
 	text-align: center;
 	display: block;
 	width: 30px;
 	margin: 1px 0px 0px 10px;
+	text-shadow: 1px 1px 1px #333333;
 }
 #messageBar {
 	display: none;

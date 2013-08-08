@@ -4,7 +4,7 @@
 		<tr>
 			<% if (showCheckboxColumn) { %><th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" title="<%=L.select_unselect_all%>" /></th><% } %>
 			<th><%=L.location.toUpperCase()%></th>
-			<% if (showSpeciesColumn) { %><th class="sorter-species" width="40"><%=L.species.toUpperCase()%></th><% } %>
+			<% if (showSpeciesColumn) { %><th class="sorter-species" width="40"></th><% } %>
 		</tr>
 	</thead>
 	</table>
@@ -16,7 +16,7 @@
 			<tr id="location_<%=hotspot.locationID%>">
 				<% if (showCheckboxColumn) { %><td><input type="checkbox" id="row<%=index%>" checked="checked" /></td><% } %>
 				<td class="loadingStatus' + rowClass + '"><label for="row<%=index%>"><%=hotspot.n%></label></td>
-				<% if (showSpeciesColumn) { %><td class="sp"><span class="speciesCount">numSpeciesWithinRange</span></td><% } %>
+				<% if (showSpeciesColumn) { %><td class="sp" width="40"><span class="speciesCount"><%=hotspot.sightings.length%></span></td><% } %>
 			</tr>
 		<% }); %>
 		</tbody>
