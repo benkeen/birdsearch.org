@@ -128,7 +128,7 @@ body .well-pad {
     margin: -3px 5px 0px 4px; }
   #resultTypeGroup label {
     display: inline-block;
-    color: #444444; }
+    color: #666666; }
   #resultTypeGroup .selected label {
     color: #efefef;
     text-shadow: 1px 1px 3px black; }
@@ -244,6 +244,11 @@ body .well-pad {
       #panelTabs li a:hover {
         color: #cccccc;
         text-decoration: none; }
+
+.disabledTab {
+  color: #888888; }
+  .disabledTab:hover {
+    text-decoration: none; }
 
 footer {
   background-image: url("../../images/debut_dark.png");
