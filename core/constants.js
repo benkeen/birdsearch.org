@@ -13,17 +13,19 @@ define([], function() {
 	_CONSTANTS.EVENT = {
 		ABOUT_LINK_CLICK: "about-link-click",
 		CONTACT_LINK_CLICK: "contact-link-click",
+		TAB_CHANGED: "tab-changed",
 		SELECT_TAB: "select-tab",
 		WINDOW_RESIZE: "window-resize",
 		TRIGGER_WINDOW_RESIZE: "trigger-window-resize",
 		SEARCH_TYPE_CHANGED: 'search-type-changed',
+		INIT_SEARCH: "init-search",
 		SEARCH: "search",
 
 		MAP: {
 			ALL_MARKERS_ADDED: 'map-all-markers-added',
 			NOTABLE_MARKERS_ADDED: 'map-notable-markers-added',
 			HOTSPOT_MARKERS_ADDED: 'map-hotspot-markers-added',
-			VIEW_NOTABLE_SIGHTING_DETAILS: 'view-notable-sighting-details'
+			VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION: 'view-notable-sighting-single-location'
 		},
 
 		LOCATION_MOUSEOVER: 'location-mouseover',

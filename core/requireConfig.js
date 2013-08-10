@@ -26,7 +26,7 @@ requirejs.config({
 
 		mainPanel: "modules/mainPanel/mainPanel",
 		mainPanelTemplate: "modules/mainPanel/mainPanel.html",
-		notableSightingsDetailsTableTemplate: "modules/mainPanel/notableSightingsDetailsTable.html",
+		notableSightingsTableTemplate: "modules/mainPanel/notableSightingsTable.html",
 
 		map: "modules/map/map",
 		notableSightingsInfoWindowTemplate: "modules/map/notableSightingsInfoWindow.html",

@@ -245,17 +245,9 @@ body .well-pad {
     padding: 3px 22px 3px;
     cursor: pointer; }
     #panelTabs li.disabledTab {
-      color: #888888;
+      padding-top: 4px;
+      background: rgba(0, 0, 0, 0.3);
       cursor: default; }
-      #panelTabs li.disabledTab:hover, #panelTabs li.disabledTab:active {
-        text-decoration: none;
-        color: #888888;
-        background-position: 0px;
-        background-color: #5C5C5C;
-        -moz-transition: none;
-        -webkit-transition: none;
-        -o-transition: color 0 ease-in;
-        transition: none; }
     #panelTabs li a {
       color: #555555;
       line-height: 17pt;
@@ -265,9 +257,10 @@ body .well-pad {
         text-decoration: none; }
 
 #birdSpeciesTabContent {
-  background-color: #ffffff;
   padding: 20px;
-  overflow-y: scroll; }
+  overflow-y: scroll;
+  background-color: #f2f2f2;
+  font-size: 13px; }
   #birdSpeciesTabContent h1 {
     font-size: 18pt;
     color: #333333;

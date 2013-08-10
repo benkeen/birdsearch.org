@@ -71,7 +71,7 @@ define([
 	var _init = function() {
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
-		subscriptions[C.EVENT.SELECT_TAB] = _onSelectTab;
+		subscriptions[C.EVENT.TAB_CHANGED] = _onTabChanged;
 		subscriptions[C.EVENT.SEARCH] = _onSearch;
 		subscriptions[C.EVENT.LOCATION_MOUSEOVER] = _onLocationMouseover;
 		subscriptions[C.EVENT.LOCATION_MOUSEOUT] = _onLocationMouseout;
@@ -141,7 +141,7 @@ define([
 		e.preventDefault();
 		var locationID = $(e.target).data("locationId");
 
-		mediator.publish(_MODULE_ID, C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_DETAILS, {
+		mediator.publish(_MODULE_ID, C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION, {
 			locationID: locationID,
 			lastSearchNotableSightings: _lastSearchNotableSightings,
 			lastSearchObservationRecency: _lastSearchObservationRecency
@@ -165,13 +165,16 @@ define([
 			case "notable":
 				_addHotspotMarkers("notable", _lastSearchNotableSightings);
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.NOTABLE_MARKERS_ADDED, {
-					locations: _visibleHotspots
+					locations: _visibleHotspots,
+					lastSearchObservationRecency: _lastSearchObservationRecency
 				});
 				break;
+
 			case "hotspots":
 				_addHotspotMarkers("hotspots", _lastSearchAllHotspots);
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
-					hotspots: _visibleHotspots
+					hotspots: _visibleHotspots,
+					lastSearchObservationRecency: _lastSearchObservationRecency
 				});
 				break;
 		}
@@ -192,8 +195,8 @@ define([
 		if (msg.data.viewportObj) {
 			_map.fitBounds(msg.data.viewportObj);
 		} else {
-			_map.setCenter(place.geometry.locationObj);
-			_map.setZoom(17);
+			_map.setCenter(msg.data.locationObj);
+			_map.setZoom(12); // good for notable...
 		}
 
 		_addSearchRangeIndicator();
@@ -262,8 +265,6 @@ define([
 	 */
 	var _getHotspots = function(searchParams) {
 
-		// TODO check cache here
-
 		$.ajax({
 			url: "ajax/getHotspotLocations.php",
 			data: searchParams,
@@ -289,7 +290,7 @@ define([
 		});
 	};
 
-	var _onSelectTab = function(msg) {
+	var _onTabChanged = function(msg) {
 		if (msg.data.tab === "mapTab") {
 			_redrawMap();
 		}
@@ -409,7 +410,6 @@ define([
 		// render the template
 		return html;
 	};
-
 
 	// clears the map. Note that we DON'T reset _markers. That retains the information loaded for as long as the user's
 	// session so we don't re-request the same info from eBird

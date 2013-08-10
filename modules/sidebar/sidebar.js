@@ -317,7 +317,7 @@ define([
 			helper.startLoading();
 
 			// since the search options are really very basic, just send along all possible info needed
-			mediator.publish(_MODULE_ID, C.EVENT.SEARCH, {
+			mediator.publish(_MODULE_ID, C.EVENT.INIT_SEARCH, {
 				location: _locationField.val(),
 				resultType: _getResultType(),
 				observationRecencyField: _observationRecencyField.val(),
