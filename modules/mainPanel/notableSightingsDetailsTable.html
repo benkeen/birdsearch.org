@@ -1,0 +1,23 @@
+<h1>
+	<a href="#">Notable Sightings</a> &raquo; <%= locationName %>
+</h1>
+<h2>Notable bird sightings reported in the last <%=searchObservationRecency%> days</h2>
+
+<table class="tablesorter tablesorter-bootstrap table table-bordered table-striped">
+	<thead>
+		<th>Species</th>
+		<th>Scientific Name</th>
+		<th>Observation Date</th>
+		<th>Reviewed?</th>
+	</thead>
+	<tbody>
+	<% _.each(sightings, function(sighting, index) { %>
+	<tr>
+		<td><%=sighting.comName%></td>
+		<td><%=sighting.sciName%></td>
+		<td><%=sighting.obsDt%></td>
+		<td><%=sighting.isReviewed%></td>
+	</tr>
+	<% }); %>
+	</tbody>
+</table>

@@ -23,8 +23,11 @@ requirejs.config({
 		aboutTemplate: "modules/about/about.html",
 		contact: "modules/contact/contact",
 		contactTemplate: "modules/contact/contact.html",
+
 		mainPanel: "modules/mainPanel/mainPanel",
 		mainPanelTemplate: "modules/mainPanel/mainPanel.html",
+		notableSightingsDetailsTableTemplate: "modules/mainPanel/notableSightingsDetailsTable.html",
+
 		map: "modules/map/map",
 		notableSightingsInfoWindowTemplate: "modules/map/notableSightingsInfoWindow.html",
 

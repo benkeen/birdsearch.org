@@ -200,6 +200,11 @@ define([
 			}
 		}
 
+		mediator.publish(_MODULE_ID, C.EVENT.SEARCH_TYPE_CHANGED, {
+			oldSearchType: _currResultType,
+			newSearchType: newResultType
+		});
+
 		_currResultType = newResultType;
 	};
 

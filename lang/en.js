@@ -22,7 +22,7 @@ define([], function() {
 
 
 		// footer
-		"site_not_affiliated_with_ebird": "This site is not affiliated with %1"
+		"site_not_affiliated_with_ebird": "All data courtesy of %1"
 	};
 
 	return L;

@@ -36,7 +36,7 @@ define([
 		hotspots: 60000
 	};
 	var _lastSearchLatLng = null;
-
+	var _lastSearchObservationRecency = null;
 
 	// all bird sightings search
 
@@ -68,7 +68,6 @@ define([
 	};
 
 
-
 	var _init = function() {
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMap;
@@ -90,6 +89,7 @@ define([
 		_mapCanvas = $('#mapTabContent')[0];
 		_map       = new google.maps.Map(_mapCanvas, _defaultMapOptions);
 		_addCustomControls();
+		_addEventHandlers();
 
 		// called any time the map has had its bounds changed
 		google.maps.event.addListener(_map, "dragend", _onMapBoundsChange);
@@ -130,6 +130,21 @@ define([
 			_map.setMapTypeId(google.maps.MapTypeId.HYBRID);
 			$(".mapBtn").removeClass('mapBtnSelected');
 			$(btn4).addClass('mapBtnSelected');
+		});
+	};
+
+	var _addEventHandlers = function() {
+		$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
+	};
+
+	var _onClickViewFullNotableDetails = function(e) {
+		e.preventDefault();
+		var locationID = $(e.target).data("locationId");
+
+		mediator.publish(_MODULE_ID, C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_DETAILS, {
+			locationID: locationID,
+			lastSearchNotableSightings: _lastSearchNotableSightings,
+			lastSearchObservationRecency: _lastSearchObservationRecency
 		});
 	};
 
@@ -191,6 +206,7 @@ define([
 				lng: lng,
 				observationRecency: msg.data.searchOptions.allAndNotable.observationRecency
 			});
+			_lastSearchObservationRecency = msg.data.searchOptions.allAndNotable.observationRecency;
 		} else if (_currSearchType === "hotspots") {
 			_getHotspots({
 				lat: lat,
@@ -198,6 +214,7 @@ define([
 				limitByObservationRecency: msg.data.searchOptions.hotspots.limitByObservationRecency,
 				observationRecency: msg.data.searchOptions.hotspots.observationRecency
 			});
+			_lastSearchObservationRecency = msg.data.searchOptions.hotspots.observationRecency;
 		}
 	};
 

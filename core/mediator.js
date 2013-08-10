@@ -50,7 +50,7 @@ define([
 	 */
 	var _publish = function(moduleID, message, data) {
 		if (C.DEBUG) {
-			console.log(moduleID + " published event: ", message);
+			console.log("[" + moduleID + "] publish(): ", message, data);
 		}
 
 		for (var i in _modules) {
