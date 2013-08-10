@@ -3,6 +3,7 @@ requirejs.config({
 	paths: {
 
 		// core stuff
+		text: "libs/text",
 		appStart: "core/appStart",
 		mediator: "core/mediator",
 		dataCache: "core/dataCache",
