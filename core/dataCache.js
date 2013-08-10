@@ -44,7 +44,9 @@ define([
 				sciName: data[i].sciName,
 				obsDt: moment(data[i].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, h:mm a'),
 				obsReviewed: data[i].obsReviewed,
-				obsValid: data[i].obsValid
+				obsValid: data[i].obsValid,
+				howMany: data[i].howMany,
+				reporterName: data[i].firstName + " " + data[i].lastName
 			});
 		}
 

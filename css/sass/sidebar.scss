@@ -105,6 +105,7 @@ body .well-pad {
 	font-weight: normal;
 	line-height: 20px;
 	min-height: 20px;
+	text-shadow: 1px 1px 3px #111111;
 }
 .error {
 	background: rgba(204, 0, 0, 0.2);
@@ -112,6 +113,9 @@ body .well-pad {
 }
 .notification {
 	background: rgba(0, 153, 234, 0.2);
+	b {
+		color: #B0CDF7;
+	}
 }
 
 #resultTypeGroup {

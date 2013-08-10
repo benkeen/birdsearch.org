@@ -111,7 +111,8 @@ body .well-pad {
   font-size: 14px;
   font-weight: normal;
   line-height: 20px;
-  min-height: 20px; }
+  min-height: 20px;
+  text-shadow: 1px 1px 3px #111111; }
 
 .error {
   background: rgba(204, 0, 0, 0.2);
@@ -119,6 +120,8 @@ body .well-pad {
 
 .notification {
   background: rgba(0, 153, 234, 0.2); }
+  .notification b {
+    color: #B0CDF7; }
 
 #resultTypeGroup {
   margin: 0px 0px 4px;
@@ -257,19 +260,50 @@ body .well-pad {
         text-decoration: none; }
 
 #birdSpeciesTabContent {
-  padding: 20px;
+  box-sizing: border-box;
   overflow-y: scroll;
-  background-color: #f2f2f2;
-  font-size: 13px; }
+  font-size: 13px;
+  color: #cccccc;
+  background: rgba(255, 255, 255, 0.1); }
   #birdSpeciesTabContent h1 {
     font-size: 18pt;
-    color: #333333;
-    margin: 0px; }
+    color: #ffffff;
+    margin: 0px 0px 10px 0px;
+    line-height: 26px;
+    float: left; }
   #birdSpeciesTabContent h2 {
-    font-size: 13pt;
+    font-size: 10pt;
     color: #666666;
-    margin: 0px;
-    line-height: 18px; }
+    margin: 2px 0px 0px 20px;
+    float: left;
+    padding: 3px 10px;
+    border-radius: 7px;
+    color: black;
+    background-color: #efefef;
+    line-height: 17px; }
+  #birdSpeciesTabContent table td, #birdSpeciesTabContent table th {
+    padding: 6px; }
+  #birdSpeciesTabContent table th {
+    color: #cccccc;
+    font-size: 14px;
+    text-shadow: 1px 2px 2px #222222; }
+  #birdSpeciesTabContent .species {
+    color: #ffffff; }
+
+.fixedHeader {
+  width: 100%;
+  position: fixed;
+  background-image: url(../../images/debut_dark.png);
+  background-repeat: repeat; }
+  .fixedHeader > div {
+    padding: 20px 20px 0px;
+    background: rgba(255, 255, 255, 0.1); }
+
+.fixedContent {
+  padding: 0px 15px;
+  margin-top: 60px; }
+  .fixedContent a {
+    display: block; }
 
 footer {
   background-image: url("../../images/debut_dark.png");
@@ -350,3 +384,10 @@ body div.mapBtnSelected {
 a.viewNotableSightingDetails:hover {
   color: #990000;
   text-decoration: none; }
+
+.table-striped tbody > tr:nth-child(odd) > td,
+.table-striped tbody > tr:nth-child(odd) > th {
+  background: rgba(100, 100, 100, 0.25); }
+
+body .table-hover tbody tr:hover > td {
+  background-color: #222222; }

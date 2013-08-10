@@ -1,26 +1,37 @@
-<h1>
-	<a href="#">Notable Sightings</a>
-	<% if (isSingleLocation) { %>
-		<span class="joiner">&raquo;</span> <%= locationName %>
-	<% } %>
-</h1>
-<h2>Notable bird sightings reported in the last <%=searchObservationRecency%> days</h2>
+<div class="fixedHeader">
+	<div>
+		<h1>
+			<% if (isSingleLocation) { %>
+			<a href="#">Notable Sightings</a>
+				<span class="joiner">&raquo;</span> <%= locationName %>
+			<% } else { %>
+				Notable Sightings
+			<% } %>
+		</h1>
+		<h2>last <%=searchObservationRecency%> days</h2>
+		<div class="clear"></div>
+	</div>
+</div>
 
-<table class="">
-	<thead>
-		<% if (!isSingleLocation) { %><th>Location</th><% } %>
-		<th>Species</th>
-		<th>Scientific Name</th>
-		<th>Observation Date</th>
-	</thead>
-	<tbody>
-	<% _.each(sightings, function(sighting, index) { %>
-	<tr>
-		<% if (!isSingleLocation) { %><td><%=sighting.locationName%></td><% } %>
-		<td><%=sighting.comName%></td>
-		<td><%=sighting.sciName%></td>
-		<td><%=sighting.obsDt%></td>
-	</tr>
-	<% }); %>
-	</tbody>
-</table>
+<div class="fixedContent">
+	<table class="table table-striped table-hover">
+		<thead>
+			<% if (!isSingleLocation) { %><th>Location</th><% } %>
+			<th>Species</th>
+			<th>Scientific Name</th>
+			<th>Reported by</th>
+			<th>Date</th>
+		</thead>
+		<tbody>
+		<% _.each(sightings, function(sighting, index) { %>
+		<tr>
+			<% if (!isSingleLocation) { %><td><a href="#" class="" data-location-id="<%=sighting.locationID%>"><%=sighting.locationName%></a></td><% } %>
+			<td class="species"><%=sighting.comName%></td>
+			<td><%=sighting.sciName%></td>
+			<td><%=sighting.reporterName%></td>
+			<td nowrap><%=sighting.obsDt%></td>
+		</tr>
+		<% }); %>
+		</tbody>
+	</table>
+</div>

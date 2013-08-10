@@ -51,20 +51,64 @@
 }
 
 #birdSpeciesTabContent {
-	padding: 20px;
+	box-sizing: border-box;
 	overflow-y: scroll;
-	background-color: #f2f2f2;
 	font-size: 13px;
+	color: #cccccc;
+	background: rgba(255, 255, 255, 0.1);
 
 	h1 {
 		font-size: 18pt;
-		color: #333333;
-		margin: 0px;
+		color: #ffffff;
+		margin: 0px 0px 10px 0px;
+		line-height: 26px;
+		float: left;
 	}
 	h2 {
-		font-size: 13pt;
+		font-size: 10pt;
 		color: #666666;
-		margin: 0px;
-		line-height: 18px;
+		margin: 2px 0px 0px 20px;
+		float: left;
+		padding: 3px 10px;
+		border-radius: 7px;
+		color: black;
+		background-color: #efefef;
+		line-height: 17px;
+	}
+
+	table {
+		td, th {
+			padding: 6px;
+		}
+		th {
+			color: #cccccc;
+			font-size: 14px;
+			text-shadow: 1px 2px 2px #222222;
+		}
+	}
+	.species {
+		color: #ffffff;
 	}
 }
+
+.fixedHeader {
+	width: 100%;
+	position: fixed;
+	background-image: url(../../images/debut_dark.png);
+	background-repeat: repeat;
+
+	&>div {
+		padding: 20px 20px 0px;
+		background: rgba(255, 255, 255, 0.1);
+	}
+}
+.fixedContent {
+	padding: 0px 15px;
+	margin-top: 60px;
+
+	a {
+		display: block;
+	}
+}
+
+
