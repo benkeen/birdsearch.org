@@ -124,7 +124,8 @@ define([
 		var html = _.template(notableSightingsTableTemplate, {
 			isSingleLocation: false,
 			searchObservationRecency: _lastNotableSearch.lastSearchObservationRecency,
-			sightings: sightings
+			sightings: sightings,
+			L: helper.L
 		});
 
 		// update the tab
@@ -166,7 +167,8 @@ define([
 			lat: lat,
 			lng: lng,
 			searchObservationRecency: searchObservationRecency,
-			sightings: sightings
+			sightings: sightings,
+			L: helper.L
 		});
 
 		// update the tab

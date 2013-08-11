@@ -8,6 +8,11 @@ define([], function() {
 		map: "Map",
 		locations: "Locations",
 		bird_species: "Bird Species",
+		notable_sightings: "Notable Sightings",
+		species: "Species",
+		date: "Date",
+		scientific_name: "Scientific Name",
+		reported_by: "Reported by",
 
 		// sidebar
 		bird_sightings: "Bird sightings",
@@ -28,7 +33,6 @@ define([], function() {
 		about_para3: "The problem is, the search functionality currently available through eBird is fairly limited. As a birder, I want a simple high-level overview of a region: where are the popular hotspots? What locations yield the most birds? What rarities are being spotted in my region, and where? This site attempts to help plug that gap.",
 		about_para4: "All the source code for this site is free and open source and found on %1.",
 		make_comment: "Make a comment on <a href=\"http://www.benjaminkeen.com/ebirdsearch-org/\">this post</a>, or email me at <a href=\"mailto:ben.keen@gmail.com\">ben.keen@gmail.com</a>.",
-
 		have_fun: "Have fun!",
 		close: "Close",
 

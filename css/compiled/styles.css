@@ -306,6 +306,9 @@ body .well-pad {
   .fixedContent a {
     display: block; }
 
+.joiner {
+  color: #999999; }
+
 footer {
   background-image: url("../../images/debut_dark.png");
   padding: 7px 0px 7px 15px;

@@ -2,10 +2,10 @@
 	<div>
 		<h1>
 			<% if (isSingleLocation) { %>
-			<a href="#" class="showNotableSightingsTable">Notable Sightings</a>
+			<a href="#" class="showNotableSightingsTable"><%=L.notable_sightings%></a>
 				<span class="joiner">&raquo;</span> <%= locationName %>
 			<% } else { %>
-				Notable Sightings
+				<%=L.notable_sightings%>
 			<% } %>
 		</h1>
 		<h2>last <%=searchObservationRecency%> days</h2>
@@ -17,10 +17,10 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<% if (!isSingleLocation) { %><th>Location</th><% } %>
-			<th>Species</th>
-			<th>Scientific Name</th>
-			<th>Reported by</th>
-			<th>Date</th>
+			<th><%=L.species%></th>
+			<th><%=L.scientific_name%></th>
+			<th><%=L.reported_by%></th>
+			<th><%=L.date%></th>
 		</thead>
 		<tbody>
 		<% _.each(sightings, function(sighting, index) { %>
