@@ -18,18 +18,30 @@
 		<thead>
 			<% if (!isSingleLocation) { %><th>Location</th><% } %>
 			<th><%=L.species%></th>
+			<th>#</th>
 			<th><%=L.scientific_name%></th>
 			<th><%=L.reported_by%></th>
 			<th><%=L.date%></th>
+			<th>Status</th>
 		</thead>
 		<tbody>
 		<% _.each(sightings, function(sighting, index) { %>
 		<tr>
 			<% if (!isSingleLocation) { %><td><a href="#" class="filterNotableSightingByLocation" data-location-id="<%=sighting.locationID%>"><%=sighting.locationName%></a></td><% } %>
 			<td class="species"><%=sighting.comName%></td>
+			<td><%=sighting.howMany%></td>
 			<td><%=sighting.sciName%></td>
 			<td><%=sighting.reporterName%></td>
 			<td nowrap><%=sighting.obsDt%></td>
+			<td>
+				<% if (sighting.obsValid) { %>
+					<span class="confirmed">Confirmed</span>
+				<% } else if (sighting.obsReviewed) { %>
+					<span class="reviewed">Reviewed</span>
+				<% } else if (!sighting.obsReviewed) { %>
+					<span class="not_reviewed">Not reviewed</span>
+				<% } %>
+			</td>
 		</tr>
 		<% }); %>
 		</tbody>

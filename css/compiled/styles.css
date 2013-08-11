@@ -309,6 +309,15 @@ body .well-pad {
 .joiner {
   color: #999999; }
 
+.confirmed {
+  color: green; }
+
+.reviewed {
+  color: #9f3fcf; }
+
+.not_reviewed {
+  color: #995200; }
+
 footer {
   background-image: url("../../images/debut_dark.png");
   padding: 7px 0px 7px 15px;
