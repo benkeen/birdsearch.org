@@ -24,6 +24,7 @@ define([
 		scaleControl: true,
 		overviewMapControl: true
 	};
+	var _currTab = "mapTab";
 
 	// general fields relating to search
 	var _currSearchType = null;
@@ -142,9 +143,9 @@ define([
 		var locationID = $(e.target).data("locationId");
 
 		mediator.publish(_MODULE_ID, C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION, {
-			locationID: locationID,
-			lastSearchNotableSightings: _lastSearchNotableSightings,
-			lastSearchObservationRecency: _lastSearchObservationRecency
+			locationID: locationID
+//			lastSearchNotableSightings: _lastSearchNotableSightings,
+//			lastSearchObservationRecency: _lastSearchObservationRecency
 		});
 	};
 
@@ -173,8 +174,7 @@ define([
 			case "hotspots":
 				_addHotspotMarkers("hotspots", _lastSearchAllHotspots);
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
-					hotspots: _visibleHotspots,
-					lastSearchObservationRecency: _lastSearchObservationRecency
+					hotspots: _visibleHotspots
 				});
 				break;
 		}
@@ -225,7 +225,7 @@ define([
 		var data = msg.data;
 
 		if (data.viewportMode == "desktop") {
-			$("#panelContent").css("height", data.height - 82);
+			$("#panelContent").css("height", data.height - 88);
 		} else {
 			$("#panelContent").css("height", data.height - 40);
 		}
@@ -250,7 +250,8 @@ define([
 				helper.stopLoading();
 
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.NOTABLE_MARKERS_ADDED, {
-					locations: _visibleHotspots
+					locations: _visibleHotspots,
+					lastSearchObservationRecency: _lastSearchObservationRecency
 				});
 			},
 			error: function(response) {
@@ -264,7 +265,6 @@ define([
 	 * Searches a regions for hotspots.
 	 */
 	var _getHotspots = function(searchParams) {
-
 		$.ajax({
 			url: "ajax/getHotspotLocations.php",
 			data: searchParams,
@@ -294,6 +294,7 @@ define([
 		if (msg.data.tab === "mapTab") {
 			_redrawMap();
 		}
+		_currTab = msg.data.tab;
 	};
 
 	var _redrawMap = function() {
@@ -434,8 +435,13 @@ define([
 	};
 
 	var _onLocationClick = function(msg) {
-		var locationID = msg.data.locationID;
 
+		// if the map tab isn't open, don't worry about it
+		if (_currTab !== "mapTab") {
+			return;
+		}
+
+		var locationID = msg.data.locationID;
 		var openInfoWindows = _searchTypeData[_currSearchType].openInfoWindows;
 		var infoWindows     = _searchTypeData[_currSearchType].infoWindows;
 		var markers         = _searchTypeData[_currSearchType].markers;

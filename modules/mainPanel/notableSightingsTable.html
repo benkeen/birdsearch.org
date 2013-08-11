@@ -2,7 +2,7 @@
 	<div>
 		<h1>
 			<% if (isSingleLocation) { %>
-			<a href="#">Notable Sightings</a>
+			<a href="#" class="showNotableSightingsTable">Notable Sightings</a>
 				<span class="joiner">&raquo;</span> <%= locationName %>
 			<% } else { %>
 				Notable Sightings
@@ -25,7 +25,7 @@
 		<tbody>
 		<% _.each(sightings, function(sighting, index) { %>
 		<tr>
-			<% if (!isSingleLocation) { %><td><a href="#" class="" data-location-id="<%=sighting.locationID%>"><%=sighting.locationName%></a></td><% } %>
+			<% if (!isSingleLocation) { %><td><a href="#" class="filterNotableSightingByLocation" data-location-id="<%=sighting.locationID%>"><%=sighting.locationName%></a></td><% } %>
 			<td class="species"><%=sighting.comName%></td>
 			<td><%=sighting.sciName%></td>
 			<td><%=sighting.reporterName%></td>

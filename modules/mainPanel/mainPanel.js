@@ -10,15 +10,17 @@ define([
 
 	var _MODULE_ID = "mainPanel";
 	var _currTabID = "mapTab";
+	var _lastNotableSearch = null;
 
 	var _init = function() {
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMainPanel;
 		subscriptions[C.EVENT.INIT_SEARCH] = _onInitSearch;
-		subscriptions[C.EVENT.SEARCH_TYPE_CHANGED] = _onSearchTypeChange;
 		subscriptions[C.EVENT.SELECT_TAB] = _onRequestTabChange;
+		subscriptions[C.EVENT.SEARCH_TYPE_CHANGED] = _onSearchTypeChanged;
 		subscriptions[C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION] = _showNotableSightingsSingleLocationTable;
 		subscriptions[C.EVENT.MAP.NOTABLE_MARKERS_ADDED] = _onNotableMarkersAdded;
+		subscriptions[C.EVENT.LOCATION_CLICK] = _onLocationClick;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
 		// insert the main panel
@@ -47,6 +49,15 @@ define([
 
 	var _addMainPanelEvents = function() {
 		$("#panelTabs").on("click", "li", _onClickSelectTab);
+		$("#birdSpeciesTabContent").on("click", ".filterNotableSightingByLocation", function(e) {
+			e.preventDefault();
+			var locationID = $(e.target).data("locationId");
+			_addNotableSightingsSingleLocationTable(locationID);
+		});
+		$("#birdSpeciesTabContent").on("click", ".showNotableSightingsTable", function(e) {
+			e.preventDefault();
+			_addNotableSightingsTable();
+		});
 	};
 
 	var _onClickSelectTab = function(e) {
@@ -95,16 +106,12 @@ define([
 		}
 	};
 
-	var _onSearchTypeChange = function(msg) {
-
-	};
-
-	var _addNotableSightingsTable = function(msg) {
+	var _addNotableSightingsTable = function() {
 
 		// flatten the sightings info into a single array
 		var sightings = [];
-		for (var i=0; i<msg.data.locations.length; i++) {
-			var currLocation = msg.data.locations[i];
+		for (var i=0; i<_lastNotableSearch.locations.length; i++) {
+			var currLocation = _lastNotableSearch.locations[i];
 
 			for (var j=0; j<currLocation.sightings.length; j++) {
 				var currSighting = currLocation.sightings[j];
@@ -114,34 +121,42 @@ define([
 			}
 		}
 
-
 		var html = _.template(notableSightingsTableTemplate, {
 			isSingleLocation: false,
-			searchObservationRecency: msg.data.lastSearchObservationRecency,
+			searchObservationRecency: _lastNotableSearch.lastSearchObservationRecency,
 			sightings: sightings
 		});
 
 		// update the tab
-		$("#birdSpeciesTab").html("Bird Species (" + sightings.length + ")");
+		$("#birdSpeciesTab").html("Bird Sightings (" + sightings.length + ")");
 		$("#birdSpeciesTabContent").html(html);
 	};
 
+	/**
+	 * Shows notable sightings from a single location.
+	 * @param msg
+	 * @private
+	 */
 	var _showNotableSightingsSingleLocationTable = function(msg) {
-		var lastSearch = msg.data.lastSearchNotableSightings;
-		var searchObservationRecency = msg.data.lastSearchObservationRecency;
+		var locationID = msg.data.locationID;
+		_addNotableSightingsSingleLocationTable(locationID);
+	};
+
+	var _addNotableSightingsSingleLocationTable = function(locationID) {
+		var searchObservationRecency = _lastNotableSearch.lastSearchObservationRecency;
 
 		var sightings = [];
 		var locationName = null;
 		var lat = null;
 		var lng = null;
-		for (var i=0; i<lastSearch.length; i++) {
-			if (lastSearch[i].locationID !== msg.data.locationID) {
+		for (var i=0; i<_lastNotableSearch.locations.length; i++) {
+			if (_lastNotableSearch.locations[i].locationID !== locationID) {
 				continue;
 			}
-			locationName = lastSearch[i].n;
-			lat = lastSearch[i].lat;
-			lng = lastSearch[i].lng;
-			sightings = lastSearch[i].sightings;
+			locationName = _lastNotableSearch.locations[i].n;
+			lat = _lastNotableSearch.locations[i].lat;
+			lng = _lastNotableSearch.locations[i].lng;
+			sightings = _lastNotableSearch.locations[i].sightings;
 			break;
 		}
 
@@ -161,18 +176,38 @@ define([
 		_selectTab("birdSpeciesTab");
 	};
 
-
 	var _onNotableMarkersAdded = function(msg) {
+		_lastNotableSearch = msg.data;
+
 		var numLocations = msg.data.locations;
 		if (numLocations) {
 			$("#birdSpeciesTab").addClass("btn").removeClass("disabledTab");
 
 			// now generate the table and automatically insert it into the page - even though it's not shown right now
-			_addNotableSightingsTable(msg);
+			_addNotableSightingsTable();
 		} else {
 			$("#birdSpeciesTab").addClass("disabledTab").removeClass("btn");
 		}
 	};
+
+	var _onLocationClick = function(msg) {
+		if (_currTabID !== "birdSpeciesTab") {
+			return;
+		}
+
+		var locationID = msg.data.locationID;
+		_addNotableSightingsSingleLocationTable(locationID);
+	};
+
+	/**
+	 * This is called whenever a user changes the search type.
+	 * @param msg
+	 * @private
+	 */
+	var _onSearchTypeChanged = function(msg) {
+		var searchType = msg.data.newSearchType;
+	};
+
 
 	mediator.register(_MODULE_ID, {
 		init: _init
