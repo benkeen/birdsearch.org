@@ -422,7 +422,7 @@ define([
 			var locationObj = manager.allHotspots[locationID].observations[manager.searchType];
 
 			// mark the information as now available for this observation recency + and anything below,
-			// and reset the observation data (it's about to be updated below)
+			// and reset the observation data (it's aboutDialog to be updated below)
 			switch (manager.observationRecency) {
 				case 30:
 					locationObj['30day'] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };

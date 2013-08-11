@@ -3,7 +3,6 @@ define([], function() {
 	var L = {
 		// header
 		"about": "About",
-		"contact": "Contact",
 
 		// main panel
 		"map": "Map",

@@ -24,6 +24,8 @@
 	<script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
 	<script src="libs/spinners.js"></script>
 	<script src="libs/gmaps.inverted.circle.js"></script>
+	<script src="libs/bootstrap-modal.js"></script>
+	<script src="libs/bootstrap-transition.js"></script>
 
 	<script>
 	var _gaq = _gaq || [];

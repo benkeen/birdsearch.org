@@ -47,6 +47,7 @@ $.tablesorter.themes = {
 	}
 };
 
+
 // *** Store data in local storage, with a cookie fallback ***
 /* IE7 needs JSON library for JSON.stringify - (http://caniuse.com/#search=json)
    if you need it, then include https://github.com/douglascrockford/JSON-js

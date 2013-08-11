@@ -19,10 +19,8 @@ requirejs.config({
 		sidebar: "modules/sidebar/sidebar",
 		sidebarTemplate: "modules/sidebar/sidebar.html",
 		hotspotTable: "modules/sidebar/hotspotTable.html",
-		about: "modules/about/about",
-		aboutTemplate: "modules/about/about.html",
-		contact: "modules/contact/contact",
-		contactTemplate: "modules/contact/contact.html",
+		aboutDialog: "modules/aboutDialog/about",
+		aboutTemplate: "modules/aboutDialog/about.html",
 
 		mainPanel: "modules/mainPanel/mainPanel",
 		mainPanelTemplate: "modules/mainPanel/mainPanel.html",
@@ -40,7 +38,8 @@ requirejs.config({
 		// language files
 		"lang_en": "lang/en",
 		"lang_fr": "lang/fr",
-		"lang_de": "lang/de"
+		"lang_de": "lang/de",
+		"lang_es": "lang/es"
 	},
 	shim: {
 		'tablesorter': "jquery",

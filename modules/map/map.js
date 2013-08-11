@@ -436,7 +436,7 @@ define([
 
 	var _onLocationClick = function(msg) {
 
-		// if the map tab isn't open, don't worry about it
+		// if the map tab isn't open, don't worry aboutDialog it
 		if (_currTab !== "mapTab") {
 			return;
 		}
@@ -461,7 +461,6 @@ define([
 //	var _calcDistance = function(p1, p2){
 //		return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
 //	}
-
 
 	mediator.register(_MODULE_ID, {
 		init: _init

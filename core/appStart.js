@@ -6,7 +6,7 @@ require([
 
 	// load all page components, then start up the app
 	var pageComponents = [
-		"dataCache", "header", "footer", "sidebar", "mainPanel", "about", "contact"
+		"dataCache", "header", "footer", "sidebar", "mainPanel", "aboutDialog"
 	];
 
 	require(pageComponents, function() {

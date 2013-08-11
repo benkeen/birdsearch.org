@@ -322,7 +322,7 @@ define([
 				resultType: _getResultType(),
 				observationRecencyField: _observationRecencyField.val(),
 
-				// additional info about the Map needed to center & zoom the map
+				// additional info aboutDialog the Map needed to center & zoom the map
 				viewportObj: _viewportObj,
 				locationObj: _locationObj,
 

@@ -344,7 +344,7 @@ body .navbar .brand {
   margin-left: 1px;
   color: #e9f7ff; }
   body .navbar .brand span {
-    color: #b2d0ff; }
+    color: #33b5e5; }
 
 body .navbar-inner {
   padding-left: 12px; }
@@ -392,3 +392,30 @@ a.viewNotableSightingDetails:hover {
 
 body .table-hover tbody tr:hover > td {
   background-color: #222222; }
+
+.modal {
+  width: 800px;
+  margin-left: -400px;
+  border-radius: 6px;
+  background-image: url(../../images/debut_dark.png);
+  background-repeat: repeat;
+  color: #888888; }
+
+.modal-header {
+  border-bottom: 2px solid #0094c8;
+  padding: 9px 0px 0px; }
+  .modal-header ul {
+    margin-bottom: 0px; }
+  .modal-header li {
+    font-size: 9pt;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    box-shadow: none;
+    padding: 5px 22px; }
+
+.modal-footer {
+  background-image: url(../../images/debut_dark.png);
+  background-repeat: repeat; }
+
+body .modal h2 {
+  font-size: 28px; }
