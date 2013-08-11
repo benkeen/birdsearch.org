@@ -20,6 +20,7 @@ define([
 		subscriptions[C.EVENT.SEARCH_TYPE_CHANGED] = _onSearchTypeChanged;
 		subscriptions[C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION] = _showNotableSightingsSingleLocationTable;
 		subscriptions[C.EVENT.MAP.NOTABLE_MARKERS_ADDED] = _onNotableMarkersAdded;
+		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		subscriptions[C.EVENT.LOCATION_CLICK] = _onLocationClick;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
@@ -42,8 +43,6 @@ define([
 	 */
 	var _onInitSearch = function(msg) {
 		_selectTab("mapTab");
-
-		// now continue with the publish event
 		mediator.publish(_MODULE_ID, C.EVENT.SEARCH, msg.data);
 	};
 
@@ -196,7 +195,6 @@ define([
 		if (_currTabID !== "birdSpeciesTab") {
 			return;
 		}
-
 		var locationID = msg.data.locationID;
 		_addNotableSightingsSingleLocationTable(locationID);
 	};
@@ -210,6 +208,11 @@ define([
 		var searchType = msg.data.newSearchType;
 	};
 
+	// ----------------------- HOTSPOTS -------------------------
+
+	var _onHotspotMarkersAdded = function(msg) {
+		$("#birdSpeciesTab").html("Bird Species").removeClass("btn").addClass("disabledTab");
+	};
 
 	mediator.register(_MODULE_ID, {
 		init: _init

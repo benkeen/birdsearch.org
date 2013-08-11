@@ -16,11 +16,9 @@ define([], function() {
 
 		// sidebar
 		bird_sightings: "Bird sightings",
-		notable_sightings: "Notable sightings",
 		popular_birding_locations: "Popular birding locations",
 		more_search_options: "More search options &raquo;",
 		location: "Location",
-		species: "species",
 		select_unselect_all: "Select / Unselect all",
 
 		// about dialog

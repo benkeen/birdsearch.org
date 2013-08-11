@@ -389,6 +389,9 @@ a.viewNotableSightingDetails:hover {
   color: #990000;
   text-decoration: none; }
 
+.cornellThanks {
+  color: white; }
+
 .table-striped tbody > tr:nth-child(odd) > td,
 .table-striped tbody > tr:nth-child(odd) > th {
   background: rgba(100, 100, 100, 0.25); }
@@ -421,4 +424,5 @@ body .table-hover tbody tr:hover > td {
   background-repeat: repeat; }
 
 body .modal h2 {
+  margin-top: 2px;
   font-size: 28px; }

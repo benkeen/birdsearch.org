@@ -1,12 +1,14 @@
-Short-term
------------
-
-- spinner
-
-SIDEBAR
-- fix the select item & hide/show sections
-- progressively enhance the sliders with jquery UI (or something better?)
+Not to forget
+-------------
 
 
-MODALS
-- find a suitable bootstrap JS modal
+- requireJS optimize the whole shebang for deployment [draaaaggg....]
+- improve the load speed
+- move all colours to Sass vars
+- fix the adjustable height of the left results pane
+- Notable Sightings table: really want the <a> location name to be display blocked in height as well as width...!
+
+
+Bugs?
+- check "_openNotableInfoWindows"
+

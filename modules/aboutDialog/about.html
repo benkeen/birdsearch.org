@@ -2,6 +2,7 @@
 	<div class="modal-header">
 		<ul id="aboutDialogTabs">
 			<li data-tab="about" class="btn btn-primary"><%=L.about_birdsearch%></li>
+			<li data-tab="thanks" class="btn">Thanks!</li>
 			<li data-tab="contact" class="btn"><%=L.contact%></li>
 		</ul>
 	</div>
@@ -26,6 +27,41 @@
 			</p>
 			<p>
 				- <a href="http://www.benjaminkeen.com" target="_blank">Ben Keen</a>, August 2013
+			</p>
+		</div>
+
+		<div class="modalTab hidden" id="thanksTabContent">
+			<h2>Thanks!</h2>
+			<p>
+				This website is almost entirely JS, CSS + HTML with a couple of server-side pages (PHP) to handle
+				conversion of eBird API data into JSON. This script was built using the following open source scripts
+				and resources. A big thanks to all the developers for their work.
+			</p>
+
+			<ul style="float:left; width: 47%">
+				<li><a href="http://requirejs.org/" target="_blank">RequireJS</a> - JS AMD dependency loader</li>
+				<li><a href="http://jquery.com/" target="_blank">jQuery</a></li>
+				<li><a href="http://jqueryui.com/" target="_blank">jQuery UI</a></li>
+				<li><a href="http://tablesorter.com/docs/" target="_blank">jQuery tablesorter</a></li>
+				<li><a href="https://code.google.com/p/html5shiv/" target="_blank">html5shiv</a></li>
+				<li><a href="http://modernizr.com/" target="_blank">Modernizr</a></li>
+			</ul>
+
+			<ul style="float:left">
+				<li><a href="http://underscorejs.org/" target="_blank">Underscore</a></li>
+				<li><a href="https://github.com/raihan2006i/google-map-inverted-circle" target="_blank">Google Maps inverted circle</a></li>
+				<li><a href="http://getbootstrap.com/2.3.2/" target="_blank">Bootstrap</a>, modals and transition</li>
+				<li><a href="bootswatch.com/cyborg/" target="_blank">Bootstrap, cyborg theme</a> (heavily modded)</li>
+				<li><a href="http://sass-lang.com/" target="_blank">Sass</a></li>
+				<li><a href="https://github.com/benkeen/spinners" target="_blank">Spinners</a> - my own project fork</li>
+			</ul>
+			<div class="clear"></div>
+
+			<p>
+				As always, thanks to Addy Osmani for his many articles and books on JS architecture. And lastly,
+				<span class="cornellThanks">a huge thanks to the <b>Cornell Ornithology lab</b> for their
+				<a href="https://confluence.cornell.edu/display/CLOISAPI/eBird+API+1.1" target="_blank">API</a>,
+				without which this site would be impossible.</span>
 			</p>
 		</div>
 
