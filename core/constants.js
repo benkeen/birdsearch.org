@@ -7,7 +7,7 @@ define([], function() {
 	_CONSTANTS.CORE = {
 		APP_VERSION:  "1.1.0",
 		RELEASE_DATE: "",
-		GITHUB_URL:   "https://github.com/benkeen/eBirdsearch.org"
+		GITHUB_URL:   "https://github.com/benkeen/birdsearch.org"
 	};
 
 	_CONSTANTS.EVENT = {

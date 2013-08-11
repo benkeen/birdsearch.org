@@ -1,33 +1,28 @@
 <div id="aboutDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="aboutDialog" aria-hidden="true">
 	<div class="modal-header">
 		<ul id="aboutDialogTabs">
-			<li data-tab="about" class="btn btn-primary">About birdsearch.org</li>
-			<li data-tab="contact" class="btn">Contact</li>
+			<li data-tab="about" class="btn btn-primary"><%=L.about_birdsearch%></li>
+			<li data-tab="contact" class="btn"><%=L.contact%></li>
 		</ul>
 	</div>
 	<div class="modal-body">
 
 		<div class="modalTab" id="aboutTabContent">
-			<h2>About birdsearch.org</h2>
+			<h2><%=L.about_birdsearch%></h2>
 			<p>
-				I wrote birdsearch.org to fill what I regard as a rather conspicuous gap in the functionality of the amazing
-				<a href="http://ebird.org" target="_blank">eBird.org</a> site.
+				<%=about_para1%>
 			</p>
 			<p>
-				If you haven't discovered eBird yet, do so now. It's an terrific resource and tool for birders, ornithologists,
-				educators - anyone interested in birds. Birders around the world submit millions of observations a year to eBird,
-				providing a wealth of information for viewing and analysis. The more people use it, the better it becomes.
+				<%=L.about_para2%>
 			</p>
 			<p>
-				The problem is, the search functionality currently available through eBird is fairly limited. As a birder, I want a simple
-				high-level overview of a region: where are the popular hotspots? What locations yield the most birds? What rarities
-				are being spotted in my region, and where? This site attempts to help plug that gap.
+				<%=L.about_para3%>
 			</p>
 			<p>
-				All the source code for this site is free and open source and found on <a href="GITHUB_URL">github</a>.
+				<%=about_para4%>
 			</p>
 			<p>
-				Have fun!
+				<%=L.have_fun%>
 			</p>
 			<p>
 				- <a href="http://www.benjaminkeen.com" target="_blank">Ben Keen</a>, August 2013
@@ -35,22 +30,21 @@
 		</div>
 
 		<div class="modalTab hidden" id="contactTabContent">
-			<h2>Contact</h2>
+			<h2><%=L.contact%></h2>
 
 			<p>
-				Found a bug? Got an idea on how to improve this site? I'd love to hear from you.
+				<%=L.contact_me_para%>
 			</p>
 			<p>
-				Make a comment on <a href="http://www.benjaminkeen.com/ebirdsearch-org/">this post</a>, or email me at
-				<a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>.
+				<%=L.make_comment%>
 			</p>
 			<p>
-				Thanks!
+				<%=L.thanks%>
 			</p>
 		</div>
 
 	</div>
 	<div class="modal-footer">
-		<a href="#" onclick="return false;" data-dismiss="modal" data-target="#aboutDialog" class="btn btn-info">Close</a>
+		<a href="#" onclick="return false;" data-dismiss="modal" data-target="#aboutDialog" class="btn btn-info"><%=L.close%></a>
 	</div>
 </div>
