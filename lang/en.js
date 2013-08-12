@@ -13,6 +13,8 @@ define([], function() {
 		date: "Date",
 		scientific_name: "Scientific Name",
 		reported_by: "Reported by",
+		sightings: "Sightings",
+		last_seen: "Last Seen",
 
 		// sidebar
 		bird_sightings: "Bird sightings",
@@ -25,7 +27,7 @@ define([], function() {
 		contact: "Contact",
 		about_birdsearch: "About birdsearch.org",
 		thanks: "Thanks!",
-		contact_me_para: "Found a bug? Got an idea on how to improve this site? I'd love to hear from you.",
+		contact_me_para: "Found a bug? Have an idea on how to improve this site? I'd love to hear from you.",
 		about_para1: "I wrote this site to fill what I regard as a rather conspicuous gap in the functionality of the amazing %1 site.",
 		about_para2: "If you haven't discovered eBird yet, do so now. It's a terrific resource for birders, ornithologists, educators - anyone interested in birds. People around the world submit millions of observations a year to eBird, providing a wealth of information for viewing and analysis. The more people use it, the better it becomes.",
 		about_para3: "The problem is, the search functionality currently available through eBird is fairly limited. As a birder, I want a simple high-level overview of a region: where are the popular birding locations? Which spots yield the most birds? What rarities are being spotted in my region, and where? This site attempts to help plug that gap.",

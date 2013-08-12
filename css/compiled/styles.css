@@ -98,6 +98,9 @@ body .well-pad {
   margin: 1px 0px 0px 10px;
   text-shadow: 1px 1px 1px #333333; }
 
+#hotspotTableRows tr {
+  cursor: pointer; }
+
 #messageBar {
   display: none;
   margin: 0px 0px 4px;
@@ -401,6 +404,9 @@ a.viewNotableSightingDetails:hover {
 
 .dialogBottomLink {
   padding-bottom: 10px; }
+
+.dialogTable {
+  margin-bottom: 6px; }
 
 .cornellThanks {
   color: white; }

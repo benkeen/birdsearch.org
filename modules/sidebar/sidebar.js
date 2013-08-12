@@ -3,8 +3,8 @@ define([
 	"constants",
 	"moduleHelper",
 	"text!sidebarTemplate",
-	"text!hotspotTable"
-], function(mediator, C, helper, sidebarTemplate, hotspotTableTemplate) {
+	"text!sidebarResultsTable"
+], function(mediator, C, helper, sidebarTemplate, sidebarResultsTableTemplate) {
 	"use strict";
 
 	var _MODULE_ID = "sidebar";
@@ -337,7 +337,7 @@ define([
 		}, options);
 
 		if (visibleHotspots.length > 0) {
-			var tmpl = _.template(hotspotTableTemplate, {
+			var tmpl = _.template(sidebarResultsTableTemplate, {
 				showCheckboxColumn: opts.showCheckboxColumn,
 				showSpeciesColumn: opts.showSpeciesColumn,
 				hotspots: visibleHotspots,

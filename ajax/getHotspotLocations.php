@@ -1,5 +1,7 @@
 <?php
 
+header('Content-Type: application/json');
+
 if (!isset($_POST["lat"]) || empty($_POST["lat"]) ||
 	!isset($_POST["lng"]) || empty($_POST["lng"])) {
 	exit;

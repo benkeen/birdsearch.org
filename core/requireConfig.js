@@ -18,12 +18,14 @@ requirejs.config({
 		footerTemplate: "modules/footer/footer.html",
 		sidebar: "modules/sidebar/sidebar",
 		sidebarTemplate: "modules/sidebar/sidebar.html",
-		hotspotTable: "modules/sidebar/hotspotTable.html",
+		sidebarResultsTable: "modules/sidebar/sidebarResultsTable.html",
+
 		aboutDialog: "modules/aboutDialog/about",
 		aboutTemplate: "modules/aboutDialog/about.html",
 
 		mainPanel: "modules/mainPanel/mainPanel",
 		mainPanelTemplate: "modules/mainPanel/mainPanel.html",
+		birdSightingsTableTemplate: "modules/mainPanel/birdSightingsTable.html",
 		notableSightingsTableTemplate: "modules/mainPanel/notableSightingsTable.html",
 
 		map: "modules/map/map",
