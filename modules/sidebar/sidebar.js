@@ -40,8 +40,9 @@ define([
 		// keep track of when the window is resized
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _onResize;
-		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
+		subscriptions[C.EVENT.MAP.BIRD_MARKERS_ADDED] = _onBirdMarkersAdded;
 		subscriptions[C.EVENT.MAP.NOTABLE_MARKERS_ADDED] = _onNotableMarkersAdded;
+		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
 		var tmpl = _.template(sidebarTemplate, {
@@ -238,26 +239,49 @@ define([
 
 
 	/**
-	 * Called after the used does a Popular Birding Locations search and whatever hotspots were found
+	 * Called after the used does a Notable Sightings search and whatever locations were found
 	 * were just added to the map. This displays a "X locations found" message and shows a table
-	 * of all the hotspots.
+	 * of all the locations
 	 * @param msg
 	 * @private
 	 */
-	var _onHotspotMarkersAdded = function(msg) {
-		var numMarkers = msg.data.hotspots.length;
+	var _onBirdMarkersAdded = function(msg) {
+		var locations = msg.data.locations;
+		var numMarkers = locations.length;
 		var locationStr = "location";
-		if (numMarkers == 0 || numMarkers > 1) {
-			locationStr  = "locations";
+		if (numMarkers === 0 || numMarkers > 1) {
+			locationStr = "locations";
 		}
-		helper.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
-		_generateHotspotTable(msg.data.hotspots);
+
+		// total up the total number of species made at the various locations
+		var species = {};
+		var numSpecies = 0;
+		for (var i=0; i<numMarkers; i++) {
+			for (var j=0; j<locations[i].sightings.length; j++) {
+				if (!species.hasOwnProperty(locations[i].sightings[j].sciName)) {
+					species[locations[i].sightings[j].sciName] = null;
+					numSpecies++;
+				}
+			}
+		}
+
+		var sightingsStr = "species";
+		if (numSpecies === 0 || numSpecies > 1) {
+			sightingsStr = "species";
+		}
+
+		var message = "<b>" + numMarkers + "</b> " + locationStr + ", " +
+			"<b>" + numSpecies + "</b> " + sightingsStr;
+
+		helper.showMessage(message, "notification");
+		_generateSidebarTable(locations, { showSpeciesColumn: true });
 	};
+
 
 	/**
 	 * Called after the used does a Notable Sightings search and whatever locations were found
 	 * were just added to the map. This displays a "X locations found" message and shows a table
-	 * of all the hotspots.
+	 * of all the locations
 	 * @param msg
 	 * @private
 	 */
@@ -284,12 +308,29 @@ define([
 			          "<b>" + numSightings + "</b> " + sightingsStr;
 
 		helper.showMessage(message, "notification");
+		_generateSidebarTable(locations, { showSpeciesColumn: true });
+	};
 
-		_generateHotspotTable(locations, { showSpeciesColumn: true });
+	/**
+	 * Called after the used does a Popular Birding Locations search and whatever hotspots were found
+	 * were just added to the map. This displays a "X locations found" message and shows a table
+	 * of all the hotspots.
+	 * @param msg
+	 * @private
+	 */
+	var _onHotspotMarkersAdded = function(msg) {
+		var numMarkers = msg.data.hotspots.length;
+		var locationStr = "location";
+		if (numMarkers == 0 || numMarkers > 1) {
+			locationStr  = "locations";
+		}
+		helper.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
+		_generateSidebarTable(msg.data.hotspots);
 	};
 
 
-	var _generateHotspotTable = function(visibleHotspots, options) {
+
+	var _generateSidebarTable = function(visibleHotspots, options) {
 		var opts = $.extend({
 			showCheckboxColumn: false,
 			showSpeciesColumn: false
@@ -347,7 +388,15 @@ define([
 			helper.showMessage("Please enter a location.", "error");
 			return false;
 		}
-		if (resultType === "all" || resultType == "hotspots" && _lastSearchNumAddressComponents < 3) {
+		if (!_viewportObj || !_locationObj) {
+			helper.showMessage("Please select a location from the auto-completed location field.", "error");
+			return false;
+		}
+		if (resultType === "all" && _lastSearchNumAddressComponents < 3) {
+			helper.showMessage("Please enter a more specific location.", "error");
+			return false;
+		}
+		if (resultType == "hotspots" && _lastSearchNumAddressComponents < 3) {
 			helper.showMessage("Please enter a more specific location.", "error");
 			return false;
 		}

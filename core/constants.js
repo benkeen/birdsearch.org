@@ -2,7 +2,7 @@ define([], function() {
 
 	var _CONSTANTS = {};
 
-	_CONSTANTS.DEBUG = true;
+	_CONSTANTS.DEBUG = false;
 
 	_CONSTANTS.CORE = {
 		APP_VERSION:  "1.1.0",
@@ -21,7 +21,7 @@ define([], function() {
 		SEARCH: "search",
 
 		MAP: {
-			ALL_MARKERS_ADDED: 'map-all-markers-added',
+			BIRD_MARKERS_ADDED: 'map-bird-markers-added',
 			NOTABLE_MARKERS_ADDED: 'map-notable-markers-added',
 			HOTSPOT_MARKERS_ADDED: 'map-hotspot-markers-added',
 			VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION: 'view-notable-sighting-single-location'

@@ -24,6 +24,45 @@ define([
 		return hotspotData;
 	};
 
+	/**
+	 * @param data
+	 * @private
+	 */
+	var _formatBirdSightingsData = function(data) {
+		var locations = {};
+		for (var i=0; i<data.length; i++) {
+			var currLocationID = data[i].locID;
+			if (!locations.hasOwnProperty(currLocationID)) {
+				locations[currLocationID] = {
+					locationID: currLocationID,
+					lat: data[i].lat,
+					lng: data[i].lng,
+					n: data[i].locName,
+					sightings: []
+				};
+			}
+
+			locations[currLocationID].sightings.push({
+				comName: data[i].comName,
+				sciName: data[i].sciName,
+				obsDt: moment(data[i].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, h:mm a'),
+				obsReviewed: data[i].obsReviewed,
+				obsValid: data[i].obsValid,
+				howMany: data[i].howMany,
+			});
+		}
+
+		// now convert the info into an array
+		var foundLocations = [];
+		for (var locID in locations) {
+			foundLocations.push(locations[locID]);
+		}
+
+		console.log(foundLocations);
+
+		return foundLocations;
+	};
+
 	var _formatNotableSightingsData = function(data) {
 		var notableSightingsData = {};
 
@@ -53,7 +92,7 @@ define([
 
 		// now convert the info into an array
 		var foundLocations = [];
-		for (locID in notableSightingsData) {
+		for (var locID in notableSightingsData) {
 			foundLocations.push(notableSightingsData[locID]);
 		}
 
@@ -63,6 +102,7 @@ define([
 	return {
 		getHotspots: _getHotspots,
 		formatHotspotData: _formatHotspotData,
-		formatNotableSightingsData: _formatNotableSightingsData
+		formatNotableSightingsData: _formatNotableSightingsData,
+		formatBirdSightingsData: _formatBirdSightingsData
 	};
 });

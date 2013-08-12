@@ -3,8 +3,9 @@ define([
 	"constants",
 	"moduleHelper",
 	"dataCache",
-	"text!notableSightingsInfoWindowTemplate"
-], function(mediator, C, helper, dataCache, notableSightingsInfoWindowTemplate) {
+	"text!notableSightingsInfoWindowTemplate",
+	"text!allSightingsInfoWindowTemplate"
+], function(mediator, C, helper, dataCache, notableSightingsInfoWindowTemplate, allSightingsInfoWindowTemplate) {
 	"use strict";
 
 	var _MODULE_ID = "map";
@@ -154,10 +155,15 @@ define([
 		// this adds as many as possible to the map - but many may be out of bounds
 		switch (_lastSearch.searchType) {
 			case "all":
+				_addMarkers("all", _data.all.lastSearch);
+				mediator.publish(_MODULE_ID, C.EVENT.MAP.BIRD_MARKERS_ADDED, {
+					locations: _visibleHotspots,
+					lastSearchObservationRecency: _lastSearch.observationRecency
+				});
 				break;
 
 			case "notable":
-				_addHotspotMarkers("notable", _data.notable.lastSearch);
+				_addMarkers("notable", _data.notable.lastSearch);
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.NOTABLE_MARKERS_ADDED, {
 					locations: _visibleHotspots,
 					lastSearchObservationRecency: _lastSearch.observationRecency
@@ -165,7 +171,7 @@ define([
 				break;
 
 			case "hotspots":
-				_addHotspotMarkers("hotspots", _data.hotspots.lastSearch);
+				_addMarkers("hotspots", _data.hotspots.lastSearch);
 				mediator.publish(_MODULE_ID, C.EVENT.MAP.HOTSPOT_MARKERS_ADDED, {
 					hotspots: _visibleHotspots
 				});
@@ -195,7 +201,12 @@ define([
 		_addSearchRangeIndicator();
 
 		if (_lastSearch.searchType === "all") {
-
+			_getBirdSightings({
+				lat: lat,
+				lng: lng,
+				observationRecency: msg.data.searchOptions.allAndNotable.observationRecency
+			});
+			_lastSearch.observationRecency = msg.data.searchOptions.allAndNotable.observationRecency;
 		} else if (_lastSearch.searchType === "notable") {
 			_getNotableSightings({
 				lat: lat,
@@ -225,7 +236,37 @@ define([
 	};
 
 	/**
-	 * Searches a regions for notable sightings.
+	 * Searches a region for bird sightings.
+	 */
+	var _getBirdSightings = function(searchParams) {
+		$.ajax({
+			url: "ajax/getBirdSightings.php",
+			data: searchParams,
+			type: "POST",
+			dataType: "json",
+			success: function(response) {
+				_data.all.lastSearch = dataCache.formatBirdSightingsData(response);
+				_clearHotspots();
+
+				// this adds as many as possible to the map - but many may be out of bounds.
+				_addMarkers("all", _data.all.lastSearch);
+				_searchStarted = false;
+				helper.stopLoading();
+
+				mediator.publish(_MODULE_ID, C.EVENT.MAP.BIRD_MARKERS_ADDED, {
+					locations: _visibleHotspots,
+					lastSearchObservationRecency: _lastSearch.observationRecency
+				});
+			},
+			error: function(response) {
+//				console.log("error", arguments, response);
+				helper.stopLoading();
+			}
+		});
+	};
+
+	/**
+	 * Searches a region for notable sightings.
 	 */
 	var _getNotableSightings = function(searchParams) {
 		$.ajax({
@@ -238,7 +279,7 @@ define([
 				_clearHotspots();
 
 				// this adds as many as possible to the map - but many may be out of bounds.
-				_addHotspotMarkers("notable", _data.notable.lastSearch);
+				_addMarkers("notable", _data.notable.lastSearch);
 				_searchStarted = false;
 				helper.stopLoading();
 
@@ -254,6 +295,8 @@ define([
 		});
 	};
 
+
+
 	/**
 	 * Searches a regions for hotspots.
 	 */
@@ -268,7 +311,7 @@ define([
 				_clearHotspots();
 
 				// this adds as many as possible to the map - but many may be out of bounds.
-				_addHotspotMarkers("hotspots", _data.hotspots.lastSearch);
+				_addMarkers("hotspots", _data.hotspots.lastSearch);
 				_searchStarted = false;
 				helper.stopLoading();
 
@@ -328,7 +371,7 @@ define([
 	 * @param hotspots
 	 * @private
 	 */
-	var _addHotspotMarkers = function(searchType, data) {
+	var _addMarkers = function(searchType, data) {
 		var mapBoundary = _map.getBounds();
 		var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
 		_visibleHotspots = [];
@@ -341,56 +384,101 @@ define([
 				continue;
 			}
 
-			if (searchType === "hotspots") {
-				if (_data.hotspots.markers.hasOwnProperty(locationID)) {
-					if (_data.hotspots.markers[locationID].map === null) {
-						_data.hotspots.markers[locationID].setMap(_map);
-					}
-				} else {
-					_data.hotspots.markers[locationID] = new google.maps.Marker({
-						position: latlng,
-						map: _map,
-						title: currMarkerInfo.n,
-						icon: _icon,
-						locationID: locationID
-					});
-					_data.hotspots.infoWindows[locationID] = new google.maps.InfoWindow();
-
-					(function(marker, infoWindow, locID, locName) {
-						google.maps.event.addListener(marker, "click", function() {
-							infoWindow.setContent(locName);
-							infoWindow.open(_map, this);
-						});
-					})(_data.hotspots.markers[locationID], _data.hotspots.infoWindows[locationID], locationID, currMarkerInfo.n);
-				}
-
+			if (searchType === "all") {
+				_addBirdMarker(locationID, latlng, currMarkerInfo);
 			} else if (searchType === "notable") {
-
-				if (_data.notable.markers.hasOwnProperty(locationID)) {
-					if (_data.notable.markers[locationID].map === null) {
-						_data.notable.markers[locationID].setMap(_map);
-					}
-				} else {
-					_data.notable.markers[locationID] = new google.maps.Marker({
-						position: latlng,
-						map: _map,
-						title: currMarkerInfo.n,
-						icon: _icon,
-						locationID: locationID
-					});
-					_data.notable.infoWindows[locationID] = new google.maps.InfoWindow();
-
-					(function(marker, infoWindow, locInfo) {
-						google.maps.event.addListener(marker, "click", function() {
-							infoWindow.setContent(_getNotableSightingInfoWindow(locInfo));
-							infoWindow.open(_map, this);
-						});
-					})(_data.notable.markers[locationID], _data.notable.infoWindows[locationID], currMarkerInfo);
-				}
+				_addNotableMarker(locationID, latlng, currMarkerInfo);
+			} else if (searchType === "hotspots") {
+				_addHotspotMarker(locationID, latlng, currMarkerInfo);
 			}
 
 			_visibleHotspots.push(currMarkerInfo);
 		}
+	};
+
+	var _addBirdMarker = function(locationID, latlng, currMarkerInfo) {
+		if (_data.all.markers.hasOwnProperty(locationID)) {
+			if (_data.all.markers[locationID].map === null) {
+				_data.all.markers[locationID].setMap(_map);
+			}
+		} else {
+			_data.all.markers[locationID] = new google.maps.Marker({
+				position: latlng,
+				map: _map,
+				title: currMarkerInfo.n,
+				icon: _icon,
+				locationID: locationID
+			});
+			_data.all.infoWindows[locationID] = new google.maps.InfoWindow();
+
+			(function(marker, infoWindow, locInfo) {
+				google.maps.event.addListener(marker, "click", function() {
+					infoWindow.setContent(_getBirdSightingInfoWindow(locInfo));
+					infoWindow.open(_map, this);
+				});
+			})(_data.all.markers[locationID], _data.all.infoWindows[locationID], currMarkerInfo);
+		}
+	};
+
+	var _addNotableMarker = function(locationID, latlng, currMarkerInfo) {
+		if (_data.notable.markers.hasOwnProperty(locationID)) {
+			if (_data.notable.markers[locationID].map === null) {
+				_data.notable.markers[locationID].setMap(_map);
+			}
+		} else {
+			_data.notable.markers[locationID] = new google.maps.Marker({
+				position: latlng,
+				map: _map,
+				title: currMarkerInfo.n,
+				icon: _icon,
+				locationID: locationID
+			});
+			_data.notable.infoWindows[locationID] = new google.maps.InfoWindow();
+
+			(function(marker, infoWindow, locInfo) {
+				google.maps.event.addListener(marker, "click", function() {
+					infoWindow.setContent(_getNotableSightingInfoWindow(locInfo));
+					infoWindow.open(_map, this);
+				});
+			})(_data.notable.markers[locationID], _data.notable.infoWindows[locationID], currMarkerInfo);
+		}
+	};
+
+	var _addHotspotMarker = function(locationID, latlng, currMarkerInfo) {
+		if (_data.hotspots.markers.hasOwnProperty(locationID)) {
+			if (_data.hotspots.markers[locationID].map === null) {
+				_data.hotspots.markers[locationID].setMap(_map);
+			}
+		} else {
+			_data.hotspots.markers[locationID] = new google.maps.Marker({
+				position: latlng,
+				map: _map,
+				title: currMarkerInfo.n,
+				icon: _icon,
+				locationID: locationID
+			});
+			_data.hotspots.infoWindows[locationID] = new google.maps.InfoWindow();
+
+			(function(marker, infoWindow, locID, locName) {
+				google.maps.event.addListener(marker, "click", function() {
+					locName = locName.replace(/\s+/g, "&nbsp;");
+					infoWindow.setContent("<h4>" + locName + "</h4>");
+					infoWindow.open(_map, this);
+				});
+			})(_data.hotspots.markers[locationID], _data.hotspots.infoWindows[locationID], locationID, currMarkerInfo.n);
+		}
+	};
+
+	var _getBirdSightingInfoWindow = function(locInfo) {
+		var html = _.template(allSightingsInfoWindowTemplate, {
+			L: helper.L,
+			locationName: locInfo.n,
+			locationID: locInfo.locationID,
+			numSpecies: locInfo.sightings.length
+		});
+
+		// render the template
+		return html;
 	};
 
 	var _getNotableSightingInfoWindow = function(locInfo) {
@@ -405,14 +493,15 @@ define([
 		return html;
 	};
 
-	// clears the map. Note that we DON'T reset _markers. That retains the information loaded for as long as the user's
-	// session so we don't re-request the same info from eBird
 	var _clearHotspots = function() {
-		for (var locationID in _data.hotspots.markers) {
-			_data.hotspots.markers[locationID].setMap(null);
+		for (var locationID in _data.all.markers) {
+			_data.all.markers[locationID].setMap(null);
 		}
 		for (var locationID in _data.notable.markers) {
 			_data.notable.markers[locationID].setMap(null);
+		}
+		for (var locationID in _data.hotspots.markers) {
+			_data.hotspots.markers[locationID].setMap(null);
 		}
 	};
 
@@ -428,7 +517,6 @@ define([
 	};
 
 	var _onLocationClick = function(msg) {
-
 		// if the map tab isn't open, don't worry about it
 		if (_currTab !== "mapTab") {
 			return;

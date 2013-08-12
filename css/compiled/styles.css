@@ -392,14 +392,41 @@ body div.mapBtnSelected {
   max-width: none; }
 
 .gm-style-iw h4 {
-  color: #333333; }
+  color: #333333;
+  white-space: nowrap; }
 
 a.viewNotableSightingDetails:hover {
   color: #990000;
   text-decoration: none; }
 
+.dialogBottomLink {
+  padding-bottom: 10px; }
+
 .cornellThanks {
   color: white; }
+
+.decorationImage {
+  float: right;
+  margin-left: 15px;
+  box-shadow: 1px 1px 4px #222222; }
+  .decorationImage img {
+    -webkit-border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px; }
+  .decorationImage div {
+    background: rgba(0, 0, 0, 0.3);
+    color: #bbbbbb;
+    text-align: center;
+    -webkit-border-bottom-right-radius: 3px;
+    -webkit-border-bottom-left-radius: 3px;
+    -moz-border-radius-bottomright: 3px;
+    -moz-border-radius-bottomleft: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    font-size: 10px; }
 
 .table-striped tbody > tr:nth-child(odd) > td,
 .table-striped tbody > tr:nth-child(odd) > th {

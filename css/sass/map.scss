@@ -25,14 +25,17 @@ body div.mapBtn:hover {
 body div.mapBtnSelected {
 	font-weight: bold;
 }
-
 #mapTabContent img {
 	max-width: none;
 }
 .gm-style-iw h4 {
 	color: #333333;
+	white-space: nowrap;
 }
 a.viewNotableSightingDetails:hover {
 	color: #990000;
 	text-decoration: none;
+}
+.dialogBottomLink {
+	padding-bottom: 10px;
 }
