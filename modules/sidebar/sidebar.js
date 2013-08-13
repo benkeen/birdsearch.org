@@ -97,9 +97,8 @@ define([
 		_locationField.focus();
 
 		// initialize the sightings array. This is deep copied when
-		var _sightingsArray = [];
 		for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
-			_sightingsArray.push({ available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
+			_sightingsArray.push({ available: false, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
 		}
 	};
 
@@ -388,7 +387,7 @@ define([
 			if (!_birdSearchHotspots[currLocationID].hasOwnProperty("sightings")) {
 				row.rowClass = "notLoaded";
 			} else {
-//				numSpeciesWithinRange = _birdSearchHotspots[currLocationID].sightings[observationRecency + 'day'].numSpeciesRunningTotal;
+				row.numSpeciesWithinRange = _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency].numSpeciesRunningTotal;
 			}
 
 			templateData.push(row);
@@ -534,11 +533,10 @@ define([
 
 
 	// -------------------------------------------------------------------------------------
+	// all old code
 
 
 	var _getBirdHotspotObservations = function() {
-		var recencyKey = _lastSearchObsRecency + 'day';
-
 		var hasAtLeastOneRequest = false;
 		for (var i=0; i<_numVisibleLocations; i++) {
 			var currLocationID = _visibleLocations[i].locationID;
@@ -552,12 +550,12 @@ define([
 				_birdSearchHotspots[currLocationID].isDisplayed = false;
 				_birdSearchHotspots[currLocationID].sightings = {
 					success: null,
-					all: $.extend(true, [], _sightingsArray)
+					data: $.extend(true, [], _sightingsArray)
 				};
 			}
 
 			// if we already have the hotspot data available, just update the sidebar table
-			if (_birdSearchHotspots[currLocationID].sightings[i].available) {
+			if (_birdSearchHotspots[currLocationID].sightings.data[i].available) {
 				_updateVisibleLocationInfo(currLocationID);
 			} else {
 				_getSingleHotspotObservations(currLocationID);
@@ -580,7 +578,7 @@ define([
 
 	var _getSingleHotspotObservations = function(locationID) {
 		$.ajax({
-			url: "ajax/getHotspotObservations.php",
+			url: "ajax/getHotspotSightings.php",
 			data: {
 				locationID: locationID,
 				recency: _lastSearchObsRecency
@@ -673,13 +671,12 @@ define([
 	 * Helper function to update the location's row in the sidebar table and the map modal.
 	 */
 	var _updateVisibleLocationInfo = function(locationID, numSpecies) {
-		var title = numSpecies + ' bird species seen at this location in the last ' + manager.observationRecency + ' days.';
-		var row = $('#location_' + locationID);
-		row.removeClass('notLoaded').addClass('loaded');
+		var title = numSpecies + ' bird species seen at this location in the last ' + _lastSearchObsRecency + ' days.';
+		var row = $("#location_" + locationID);
+		row.removeClass("notLoaded").addClass("loaded");
 
 		if (numSpecies > 0) {
 			row.find('.speciesCount').html(numSpecies).attr('title', title);
-			//$('#iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
 		}
 	};
 
@@ -745,33 +742,6 @@ define([
 
 		return allLoaded;
 	};
-
-	var _getLocationSpeciesList = function(locationID, searchType, recency) {
-		if (!_birdSearchHotspots.hasOwnProperty(locationID)) {
-			return false;
-		}
-		var startIndex = $.inArray(recency, _SEARCH_DAYS);
-
-		var species = {};
-		var numSpecies = 0;
-		for (var i=startIndex; i>=0; i--) {
-			var currDay = _SEARCH_DAYS[i];
-			var observations = _numVisibleLocations[locationID].observations[currDay + 'day'].data;
-
-			for (var j=0; j<observations.length; j++) {
-				if (!species.hasOwnProperty(observations[j].sciName)) {
-					species[observations[j].sciName] = observations[j];
-					numSpecies++;
-				}
-			}
-		}
-
-		return {
-			numSpecies: numSpecies,
-			species: species
-		};
-	};
-
 
 	mediator.register(_MODULE_ID, {
 		init: _init

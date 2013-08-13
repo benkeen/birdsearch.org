@@ -99,7 +99,8 @@ body .well-pad {
   text-shadow: 1px 1px 1px #333333; }
 
 #hotspotTableRows tr {
-  cursor: pointer; }
+  cursor: pointer;
+  height: 22px; }
 
 #messageBar {
   display: none;
@@ -308,6 +309,12 @@ body .well-pad {
   margin-top: 60px; }
   .fixedContent a {
     display: block; }
+
+.sp {
+  width: 30px; }
+
+.notLoaded label {
+  color: #555555; }
 
 .joiner {
   color: #999999; }

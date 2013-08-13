@@ -12,8 +12,8 @@
 		<table class="tablesorter tablesorter-bootstrap table table-striped" id="hotspotTableBody">
 			<tbody>
 			<% _.each(hotspots, function(hotspot, index) { %>
-				<tr id="location_<%=hotspot.locationID%>">
-					<td class="loadingStatus <%=hotspot.rowClass%>"><%=hotspot.n%></td>
+				<tr id="location_<%=hotspot.locationID%>" class="<%=hotspot.rowClass%>">
+					<td class="loadingStatus"><label><%=hotspot.n%></label></td>
 					<td class="sp"><span class="speciesCount"><%=hotspot.numSpeciesWithinRange%></span></td>
 				</tr>
 			<% }); %>

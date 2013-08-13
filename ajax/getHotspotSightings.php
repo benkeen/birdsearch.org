@@ -11,7 +11,6 @@ $recency    = $_POST["recency"];
 
 echo getHotspotObservations($locationID, $recency);
 
-
 function getHotspotObservations($locationID, $recency) {
 	$url = "http://ebird.org/ws1.1/data/obs/loc/recent?r=$locationID&fmt=json&back=$recency";
 
@@ -23,21 +22,3 @@ function getHotspotObservations($locationID, $recency) {
 
 	return $response;
 }
-
-/*
-[
-   {
-      "comName":"Rock Pigeon",
-      "howMany":12,
-      "lat":49.1716971,
-      "lng":-122.947197,
-      "locID":"L1140384",
-      "locName":"Annacis Island",
-      "locationPrivate":false,
-      "obsDt":"2013-02-07",
-      "obsReviewed":false,
-      "obsValid":true,
-      "sciName":"Columba livia"
-   },
-	...
-]*/

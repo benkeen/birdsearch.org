@@ -270,6 +270,33 @@ define([
 	};
 
 
+	var _getLocationSpeciesList = function(locationID, searchType, recency) {
+		if (!_birdSearchHotspots.hasOwnProperty(locationID)) {
+			return false;
+		}
+		var startIndex = $.inArray(recency, _SEARCH_DAYS);
+
+		var species = {};
+		var numSpecies = 0;
+		for (var i=startIndex; i>=0; i--) {
+			var currDay = _SEARCH_DAYS[i];
+			var observations = _numVisibleLocations[locationID].observations[currDay + 'day'].data;
+
+			for (var j=0; j<observations.length; j++) {
+				if (!species.hasOwnProperty(observations[j].sciName)) {
+					species[observations[j].sciName] = observations[j];
+					numSpecies++;
+				}
+			}
+		}
+
+		return {
+			numSpecies: numSpecies,
+			species: species
+		};
+	};
+
+
 	mediator.register(_MODULE_ID, {
 		init: _init
 	});
