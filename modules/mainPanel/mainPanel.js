@@ -21,7 +21,7 @@ define([
 		subscriptions[C.EVENT.SELECT_TAB] = _onRequestTabChange;
 		subscriptions[C.EVENT.SEARCH_TYPE_CHANGED] = _onSearchTypeChanged;
 		subscriptions[C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION] = _showNotableSightingsSingleLocationTable;
-		subscriptions[C.EVENT.MAP.BIRD_MARKERS_ADDED] = _onBirdMarkersAdded;
+		subscriptions[C.EVENT.MAP.BIRD_SEARCH_COMPLETE] = _onBirdSearchComplete;
 		subscriptions[C.EVENT.MAP.NOTABLE_MARKERS_ADDED] = _onNotableMarkersAdded;
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		subscriptions[C.EVENT.LOCATION_CLICK] = _onLocationClick;
@@ -206,7 +206,9 @@ define([
 		_selectTab("birdSpeciesTab");
 	};
 
-	var _onBirdMarkersAdded = function(msg) {
+
+
+	var _onBirdSearchComplete = function(msg) {
 		_lastBirdSearch = msg.data;
 
 		var species = {};
@@ -230,6 +232,7 @@ define([
 			$("#birdSpeciesTab").addClass("disabledTab").removeClass("btn").html("Bird Species (<b>0</b>)");
 		}
 	};
+
 
 	var _onNotableMarkersAdded = function(msg) {
 		_lastNotableSearch = msg.data;

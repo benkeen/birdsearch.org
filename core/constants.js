@@ -22,6 +22,7 @@ define([], function() {
 
 		MAP: {
 			BIRD_MARKERS_ADDED: 'map-bird-markers-added',
+			BIRD_SEARCH_COMPLETE: 'map-bird-search-complete',
 			NOTABLE_MARKERS_ADDED: 'map-notable-markers-added',
 			HOTSPOT_MARKERS_ADDED: 'map-hotspot-markers-added',
 			VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION: 'view-notable-sighting-single-location'
@@ -34,7 +35,8 @@ define([], function() {
 
 	_CONSTANTS.SETTINGS = {
 		MAX_HOTSPOTS: 50,
-		DEFAULT_SEARCH_DAY: 7
+		DEFAULT_SEARCH_DAY: 7,
+		NUM_SEARCH_DAYS: 30
 	};
 
 	return _CONSTANTS;

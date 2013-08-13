@@ -19,6 +19,7 @@ requirejs.config({
 		sidebar: "modules/sidebar/sidebar",
 		sidebarTemplate: "modules/sidebar/sidebar.html",
 		sidebarResultsTable: "modules/sidebar/sidebarResultsTable.html",
+		birdSightingsSidebarTableTemplate: "modules/sidebar/birdSightingsSidebarTable.html",
 
 		aboutDialog: "modules/aboutDialog/about",
 		aboutTemplate: "modules/aboutDialog/about.html",

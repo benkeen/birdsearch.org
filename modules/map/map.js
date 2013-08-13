@@ -144,8 +144,6 @@ define([
 	};
 
 	var _onMapBoundsChange = function() {
-
-		// if there's an ongoing search, don't do anything
 		if (_searchStarted) {
 			return;
 		}
@@ -204,6 +202,7 @@ define([
 			_getBirdSightings({
 				lat: lat,
 				lng: lng,
+				limitByObservationRecency: true,
 				observationRecency: msg.data.searchOptions.allAndNotable.observationRecency
 			});
 			_lastSearch.observationRecency = msg.data.searchOptions.allAndNotable.observationRecency;
@@ -240,12 +239,12 @@ define([
 	 */
 	var _getBirdSightings = function(searchParams) {
 		$.ajax({
-			url: "ajax/getBirdSightings.php",
+			url: "ajax/getHotspotLocations.php",
 			data: searchParams,
 			type: "POST",
 			dataType: "json",
 			success: function(response) {
-				_data.all.lastSearch = dataCache.formatBirdSightingsData(response);
+				_data.all.lastSearch = dataCache.formatHotspotData(response);
 				_clearHotspots();
 
 				// this adds as many as possible to the map - but many may be out of bounds.
@@ -259,7 +258,6 @@ define([
 				});
 			},
 			error: function(response) {
-//				console.log("error", arguments, response);
 				helper.stopLoading();
 			}
 		});
@@ -289,12 +287,10 @@ define([
 				});
 			},
 			error: function(response) {
-//				console.log("error", arguments, response);
 				helper.stopLoading();
 			}
 		});
 	};
-
 
 
 	/**
@@ -320,7 +316,6 @@ define([
 				});
 			},
 			error: function(response) {
-				console.log("error", arguments, response);
 				helper.stopLoading();
 			}
 		});

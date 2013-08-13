@@ -3,18 +3,24 @@ define([
 	"constants",
 	"moduleHelper",
 	"text!sidebarTemplate",
-	"text!sidebarResultsTable"
-], function(mediator, C, helper, sidebarTemplate, sidebarResultsTableTemplate) {
+	"text!sidebarResultsTable",
+	"text!birdSightingsSidebarTableTemplate"
+], function(mediator, C, helper, sidebarTemplate, sidebarResultsTableTemplate, birdSightingsSidebarTableTemplate) {
 	"use strict";
 
 	var _MODULE_ID = "sidebar";
 	var _autoComplete;
 	var _geocoder;
 	var _lastSearchNumAddressComponents;
+	var _lastSearchObsRecency = null;
 	var _currResultType = "all";
 	var _searchOptionsEnabled = false;
 	var _currentMouseoverLocationID = null;
 	var _sidebarResultPanelOffsetHeight = null;
+	var _sightingsArray = [];
+	var _speciesInVisibleHotspots = {};
+	var _numSpeciesInVisibleHotspots = 0;
+
 
 	// DOM nodes
 	var _locationField;
@@ -33,9 +39,17 @@ define([
 	// misc globally things
 	var _locationObj;
 	var _viewportObj;
+	var _birdSearchHotspots = {};
+	var _visibleLocations = [];
+	var _numVisibleLocations = null;
+
+	var _CURRENT_SERVER_TIME = null;
+	var _ONE_DAY_IN_SECONDS = 24 * 60 * 60;
 
 
 	var _init = function() {
+
+		_CURRENT_SERVER_TIME = parseInt($("body").data("serverdatetime"), 10);
 
 		// keep track of when the window is resized
 		var subscriptions = {};
@@ -81,6 +95,12 @@ define([
 		// focus on the location field on page load. Seems like this should be part of the moduleHelper... maybe that
 		// should fire a "complete" even to which this module listens?
 		_locationField.focus();
+
+		// initialize the sightings array. This is deep copied when
+		var _sightingsArray = [];
+		for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
+			_sightingsArray.push({ available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
+		}
 	};
 
 
@@ -145,6 +165,7 @@ define([
 		}
 	};
 
+
 	var _onAutoComplete = function() {
 		var currPlace = _autoComplete.getPlace();
 		_viewportObj = currPlace.geometry.viewport;
@@ -161,14 +182,17 @@ define([
 		}
 	};
 
+
 	var _onChangeRecencyField = function(e) {
 		_observationRecencyDisplay.html(e.target.value);
 	};
+
 
 	var _onChangeHotspotActivityField = function(e) {
 		_hotspotActivityRecencyDisplay.html(e.target.value);
 		_limitHotspotsByObservationRecency.prop("checked", true);
 	};
+
 
 	var _onClickResultTypeGroupRow = function(e) {
 		e.stopImmediatePropagation();
@@ -209,6 +233,7 @@ define([
 		_currResultType = newResultType;
 	};
 
+
 	var _toggleSearchOptions = function(e) {
 		e.preventDefault();
 
@@ -241,40 +266,41 @@ define([
 	/**
 	 * Called after the used does a Notable Sightings search and whatever locations were found
 	 * were just added to the map. This displays a "X locations found" message and shows a table
-	 * of all the locations
+	 * of all the locations. Due to the limitations of the eBird API, we need to make separate requests
+	 * for each and every location returned.
 	 * @param msg
 	 * @private
 	 */
 	var _onBirdMarkersAdded = function(msg) {
-		var locations = msg.data.locations;
-		var numMarkers = locations.length;
-		var locationStr = "location";
-		if (numMarkers === 0 || numMarkers > 1) {
-			locationStr = "locations";
-		}
+		_visibleLocations = msg.data.locations;
 
-		// total up the total number of species made at the various locations
-		var species = {};
-		var numSpecies = 0;
-		for (var i=0; i<numMarkers; i++) {
-			for (var j=0; j<locations[i].sightings.length; j++) {
-				if (!species.hasOwnProperty(locations[i].sightings[j].sciName)) {
-					species[locations[i].sightings[j].sciName] = null;
-					numSpecies++;
+		// store the hotspot data. This will probably contain more results than are currently
+		// needed to display, according to the current viewport. That's cool. The map code
+		// figures out what needs to be shown and ignores the rest.
+		if ($.isArray(_visibleLocations)) {
+
+			for (var i=0; i<_visibleLocations.length; i++) {
+				var locationID = _visibleLocations[i].locationID;
+				if (!_birdSearchHotspots.hasOwnProperty(locationID)) {
+					_birdSearchHotspots[locationID] = _visibleLocations[i];
 				}
 			}
+
+			var locationStr = "locations";
+			if (_visibleLocations.length === 1) {
+				locationStr = "location";
+			}
+
+			var message = "<b>" + _visibleLocations.length + "</b> " + locationStr;
+			helper.showMessage(message, "notification");
+			_numVisibleLocations = _visibleLocations.length;
+			_generateAsyncSidebarTable();
+
+		} else {
+			helper.showMessage('No birding locations found', 'notification');
+			$("#searchResults").fadeOut(300);
+			helper.stopLoading();
 		}
-
-		var sightingsStr = "species";
-		if (numSpecies === 0 || numSpecies > 1) {
-			sightingsStr = "species";
-		}
-
-		var message = "<b>" + numMarkers + "</b> " + locationStr + ", " +
-			"<b>" + numSpecies + "</b> " + sightingsStr;
-
-		helper.showMessage(message, "notification");
-		_generateSidebarTable(locations, { showSpeciesColumn: true });
 	};
 
 
@@ -311,6 +337,7 @@ define([
 		_generateSidebarTable(locations, { showSpeciesColumn: true });
 	};
 
+
 	/**
 	 * Called after the used does a Popular Birding Locations search and whatever hotspots were found
 	 * were just added to the map. This displays a "X locations found" message and shows a table
@@ -327,7 +354,6 @@ define([
 		helper.showMessage("<b>" + numMarkers + "</b> " + locationStr + " found", "notification");
 		_generateSidebarTable(msg.data.hotspots);
 	};
-
 
 
 	var _generateSidebarTable = function(visibleHotspots, options) {
@@ -351,17 +377,53 @@ define([
 	};
 
 
+	var _generateAsyncSidebarTable = function(visibleHotspots) {
+		var templateData = [];
+		for (var i=0; i<_numVisibleLocations; i++) {
+			var row = _visibleLocations[i];
+
+			var currLocationID = _visibleLocations[i].locationID;
+			row.rowClass = "";
+			row.numSpeciesWithinRange = "";
+			if (!_birdSearchHotspots[currLocationID].hasOwnProperty("sightings")) {
+				row.rowClass = "notLoaded";
+			} else {
+//				numSpeciesWithinRange = _birdSearchHotspots[currLocationID].sightings[observationRecency + 'day'].numSpeciesRunningTotal;
+			}
+
+			templateData.push(row);
+		}
+
+		// add the table to the page
+		var tmpl = _.template(birdSightingsSidebarTableTemplate, {
+			L: helper.L,
+			height: _getSidebarResultsPanelHeight(),
+			hotspots: templateData
+		});
+		$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
+
+		_getBirdHotspotObservations();
+	};
+
+
 	var _submitForm = function(e) {
 		e.preventDefault();
 
 		if (_validateSearchForm()) {
 			helper.startLoading();
 
+			var searchType = _getResultType();
+			if (searchType === "all" || searchType === "notasble") {
+				_lastSearchObsRecency = _observationRecencyField.val();
+			} else {
+				_lastSearchObsRecency = _hotspotActivity.val();
+			}
+
 			// since the search options are really very basic, just send along all possible info needed
 			mediator.publish(_MODULE_ID, C.EVENT.INIT_SEARCH, {
 				location: _locationField.val(),
 				resultType: _getResultType(),
-				observationRecencyField: _observationRecencyField.val(),
+				observationRecencyField: _observationRecencyField.val(), // TODO... errr?
 
 				// additional info aboutDialog the Map needed to center & zoom the map
 				viewportObj: _viewportObj,
@@ -407,6 +469,7 @@ define([
 		return true;
 	};
 
+
 	var _onResize = function(msg) {
 		if (msg.data.viewportMode === "desktop") {
 			$('#sidebar').css('height', msg.data.height - 77);
@@ -418,6 +481,7 @@ define([
 			height: _getSidebarResultsPanelHeight
 		});
 	};
+
 
 	var _getSidebarResultsPanelHeight = function() {
 		if (_sidebarResultPanelOffsetHeight === null) {
@@ -434,9 +498,11 @@ define([
 		return windowHeight - (_sidebarResultPanelOffsetHeight + searchPanel);
 	};
 
+
 	var _getResultType = function() {
 		return _resultTypeField.filter(":checked").val();
 	};
+
 
 	var _onHoverLocationRow = function(e) {
 		var id = $(e.currentTarget).attr("id");
@@ -448,6 +514,7 @@ define([
 		}
 	};
 
+
 	var _onHoverOutLocationRow = function() {
 		if (_currentMouseoverLocationID !== null) {
 			mediator.publish(_MODULE_ID, C.EVENT.LOCATION_MOUSEOUT, {
@@ -457,10 +524,252 @@ define([
 		_currentMouseoverLocationID = null;
 	};
 
+
 	var _onClickHotspotRow = function() {
 		mediator.publish(_MODULE_ID, C.EVENT.LOCATION_CLICK, {
 			locationID: _currentMouseoverLocationID
 		});
+	};
+
+
+
+	// -------------------------------------------------------------------------------------
+
+
+	var _getBirdHotspotObservations = function() {
+		var recencyKey = _lastSearchObsRecency + 'day';
+
+		var hasAtLeastOneRequest = false;
+		for (var i=0; i<_numVisibleLocations; i++) {
+			var currLocationID = _visibleLocations[i].locationID;
+
+			// check allHotspots to see if this data has been loaded yet. If not, prep the object. To reduce
+			// server requests, we intelligently categorize all sightings into an array, where the index-1 === the day.
+			// That way, if the user does a search for 30 days then reduces the recency setting, we don't need any
+			// superfluous requests. If a request for 30 days goes through, ALL properties have their available property
+			// set to true
+			if (!_birdSearchHotspots[currLocationID].hasOwnProperty("sightings")) {
+				_birdSearchHotspots[currLocationID].isDisplayed = false;
+				_birdSearchHotspots[currLocationID].sightings = {
+					success: null,
+					all: $.extend(true, [], _sightingsArray)
+				};
+			}
+
+			// if we already have the hotspot data available, just update the sidebar table
+			if (_birdSearchHotspots[currLocationID].sightings[i].available) {
+				_updateVisibleLocationInfo(currLocationID);
+			} else {
+				_getSingleHotspotObservations(currLocationID);
+				hasAtLeastOneRequest = true;
+			}
+		}
+
+		// if we didn't just put through a new request, the user just searched a subset of what's already been loaded
+		if (!hasAtLeastOneRequest) {
+			// let the tablesort know to re-parse the hotspot table
+			$('#hotspotTable').trigger("update").trigger("appendCache");
+			helper.stopLoading();
+
+			// publish shit here!
+//			manager.updateSpeciesData();
+//			manager.updateSpeciesTab();
+		}
+	};
+
+
+	var _getSingleHotspotObservations = function(locationID) {
+		$.ajax({
+			url: "ajax/getHotspotObservations.php",
+			data: {
+				locationID: locationID,
+				recency: _lastSearchObsRecency
+			},
+			type: "POST",
+			dataType: "json",
+			success: function(response) {
+				_onSuccessReturnLocationObservations(locationID, response);
+			},
+			error: function(response) {
+				_onErrorReturnLocationObservations(locationID, response);
+			}
+		});
+	};
+
+
+	/**
+	 * Returns the observations reports for a single location at a given interval (last 2 days, last 30 days
+	 * etc). This can be called multiple times for a single location if the user keeps increasing the recency
+	 * range upwards. Once the user's returned data for a location for 30 days, it contains everything it needs
+	 * so no new requests are required.
+	 */
+	var _onSuccessReturnLocationObservations = function(locationID, response) {
+		_birdSearchHotspots[locationID].isDisplayed = true;
+		_birdSearchHotspots[locationID].sightings.success = true;
+
+		// by reference, of course
+		var sightings = _birdSearchHotspots[locationID].sightings;
+
+		// mark the information as now available for this observation recency + and anything below,
+		// and reset the observation data (it's about to be updated below)
+		for (var i=C.SETTINGS.NUM_SEARCH_DAYS-1; i>=0; i--) {
+			sightings[i] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
+		}
+
+		// now for the exciting part: loop through the observations and put them in the appropriate spot
+		// in the data structure
+		var speciesCount = response.length;
+		for (var i=0; i<speciesCount; i++) {
+			var observationTime = parseInt(moment(response[i].obsDt, "YYYY-MM-DD HH:mm").format("X"), 10);
+			var difference = _CURRENT_SERVER_TIME - observationTime;
+			var daysAgo = Math.ceil(difference / _ONE_DAY_IN_SECONDS); // between 1 and 30
+			sightings[daysAgo-1].data.push(response[i]);
+		}
+
+		// we've added all the observation data, set the numSpecies counts
+		for (var i=0; i<sightings.length; i++) {
+			sightings[i].numSpecies = sightings[i].data.length;
+		}
+
+		// now add the numSpeciesRunningTotal property. This is the running total seen in that time
+		// range: e.g. 3 days would include the total species seen in that day, and 2 days and 1 day
+
+		var uniqueSpecies = {};
+		var numUniqueSpecies = 0;
+		for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
+			var sightings = _birdSearchHotspots[locationID].sightings[i].data;
+			for (var j=0; j<sightings.length; j++) {
+				if (!uniqueSpecies.hasOwnProperty(sightings[j].sciName)) {
+					uniqueSpecies[sightings[j].sciName] = null;
+					numUniqueSpecies++;
+				}
+			}
+			_birdSearchHotspots[locationID].sightings[i].numSpeciesRunningTotal = numUniqueSpecies;
+		}
+
+		_updateVisibleLocationInfo(locationID, response.length);
+
+		if (_checkAllObservationsLoaded()) {
+//			manager.updateSpeciesTab();
+
+			// let the tablesort know to re-parse the hotspot table
+			$("#hotspotTable").trigger("update").trigger("appendCache");
+			helper.stopLoading();
+
+			console.log("loaded");
+		}
+	};
+
+
+	var _onErrorReturnLocationObservations = function(locationID, response) {
+		_birdSearchHotspots[locationID].observations.success = false;
+		if (_checkAllObservationsLoaded()) {
+			helper.stopLoading();
+		}
+	};
+
+
+	/**
+	 * Helper function to update the location's row in the sidebar table and the map modal.
+	 */
+	var _updateVisibleLocationInfo = function(locationID, numSpecies) {
+		var title = numSpecies + ' bird species seen at this location in the last ' + manager.observationRecency + ' days.';
+		var row = $('#location_' + locationID);
+		row.removeClass('notLoaded').addClass('loaded');
+
+		if (numSpecies > 0) {
+			row.find('.speciesCount').html(numSpecies).attr('title', title);
+			//$('#iw_' + locationID + ' .viewLocationBirds').append(' <b>' + numSpecies + '</b>');
+		}
+	};
+
+
+	/**
+	 * Called any time the selected data changes. This updates the Bird Species tab and tab content.
+	var _updateSpeciesData = function() {
+		_speciesInVisibleHotspots = {};
+		_numSpeciesInVisibleHotspots = 0;
+
+		for (var i=0; i<_numVisibleLocations; i++) {
+			var currLocationID = _visibleLocations[i];
+
+			// if this hotspots observations failed to load (for whatever reason), just ignore the row
+			if (!_birdSearchHotspots[currLocationID].sightings.success) {
+				continue;
+			}
+
+			var currLocationSpeciesInfo = _getLocationSpeciesList(currLocationID, manager.searchType, manager.observationRecency);
+			for (var speciesSciName in currLocationSpeciesInfo.species) {
+				var currData = currLocationSpeciesInfo.species[speciesSciName];
+				if (!manager.speciesInVisibleHotspots.hasOwnProperty(speciesSciName)) {
+					manager.speciesInVisibleHotspots[speciesSciName] = {
+						comName: currData.comName,
+						sciName: speciesSciName,
+						obs: []
+					};
+					manager.numSpeciesInVisibleHotspots++;
+				}
+
+				manager.speciesInVisibleHotspots[speciesSciName].obs.push({
+					howMany: currData.howMany,
+					lat: currData.lat,
+					lng: currData.lng,
+					locID: currData.locID,
+					locName: currData.locName,
+					obsDt: currData.obsDt,
+					obsReviewed: currData.obsReviewed,
+					obsValid: currData.obsValid
+				});
+			}
+		}
+	};
+	 */
+
+	/**
+	 * Called after any observations has been returned. It looks through all of data.hotspots
+	 * and confirms every one has an observations property (they are added after a response - success
+	 * or failure).
+	 */
+	var _checkAllObservationsLoaded = function() {
+		var allLoaded = true;
+		for (var i=0; i<_numVisibleLocations; i++) {
+			var currLocationID = _visibleLocations[i].locationID;
+
+			// if any of the visible hotspots haven't had a success/fail message for their observation
+			// list, we ain't done
+			if (_birdSearchHotspots[currLocationID].observations.success === null) {
+				allLoaded = false;
+				break;
+			}
+		}
+
+		return allLoaded;
+	};
+
+	var _getLocationSpeciesList = function(locationID, searchType, recency) {
+		if (!_birdSearchHotspots.hasOwnProperty(locationID)) {
+			return false;
+		}
+		var startIndex = $.inArray(recency, _SEARCH_DAYS);
+
+		var species = {};
+		var numSpecies = 0;
+		for (var i=startIndex; i>=0; i--) {
+			var currDay = _SEARCH_DAYS[i];
+			var observations = _numVisibleLocations[locationID].observations[currDay + 'day'].data;
+
+			for (var j=0; j<observations.length; j++) {
+				if (!species.hasOwnProperty(observations[j].sciName)) {
+					species[observations[j].sciName] = observations[j];
+					numSpecies++;
+				}
+			}
+		}
+
+		return {
+			numSpecies: numSpecies,
+			species: species
+		};
 	};
 
 
