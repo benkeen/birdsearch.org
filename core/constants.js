@@ -19,6 +19,7 @@ define([], function() {
 		SEARCH_TYPE_CHANGED: 'search-type-changed',
 		INIT_SEARCH: "init-search",
 		SEARCH: "search",
+		BIRD_SIGHTINGS_LOADED: "bird-sightings-loaded",
 
 		MAP: {
 			BIRD_MARKERS_ADDED: 'map-bird-markers-added',

@@ -648,19 +648,19 @@ define([
 		_updateVisibleLocationInfo(locationID, response.length);
 
 		if (_checkAllObservationsLoaded()) {
-//			manager.updateSpeciesTab();
-
 			// let the tablesort know to re-parse the hotspot table
 			$("#hotspotTable").trigger("update").trigger("appendCache");
 			helper.stopLoading();
 
-			console.log("loaded");
+			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
+				birdData: _birdSearchHotspots
+			});
 		}
 	};
 
 
 	var _onErrorReturnLocationObservations = function(locationID, response) {
-		_birdSearchHotspots[locationID].observations.success = false;
+		_birdSearchHotspots[locationID].sightings.success = false;
 		if (_checkAllObservationsLoaded()) {
 			helper.stopLoading();
 		}
@@ -682,47 +682,6 @@ define([
 
 
 	/**
-	 * Called any time the selected data changes. This updates the Bird Species tab and tab content.
-	var _updateSpeciesData = function() {
-		_speciesInVisibleHotspots = {};
-		_numSpeciesInVisibleHotspots = 0;
-
-		for (var i=0; i<_numVisibleLocations; i++) {
-			var currLocationID = _visibleLocations[i];
-
-			// if this hotspots observations failed to load (for whatever reason), just ignore the row
-			if (!_birdSearchHotspots[currLocationID].sightings.success) {
-				continue;
-			}
-
-			var currLocationSpeciesInfo = _getLocationSpeciesList(currLocationID, manager.searchType, manager.observationRecency);
-			for (var speciesSciName in currLocationSpeciesInfo.species) {
-				var currData = currLocationSpeciesInfo.species[speciesSciName];
-				if (!manager.speciesInVisibleHotspots.hasOwnProperty(speciesSciName)) {
-					manager.speciesInVisibleHotspots[speciesSciName] = {
-						comName: currData.comName,
-						sciName: speciesSciName,
-						obs: []
-					};
-					manager.numSpeciesInVisibleHotspots++;
-				}
-
-				manager.speciesInVisibleHotspots[speciesSciName].obs.push({
-					howMany: currData.howMany,
-					lat: currData.lat,
-					lng: currData.lng,
-					locID: currData.locID,
-					locName: currData.locName,
-					obsDt: currData.obsDt,
-					obsReviewed: currData.obsReviewed,
-					obsValid: currData.obsValid
-				});
-			}
-		}
-	};
-	 */
-
-	/**
 	 * Called after any observations has been returned. It looks through all of data.hotspots
 	 * and confirms every one has an observations property (they are added after a response - success
 	 * or failure).
@@ -734,14 +693,14 @@ define([
 
 			// if any of the visible hotspots haven't had a success/fail message for their observation
 			// list, we ain't done
-			if (_birdSearchHotspots[currLocationID].observations.success === null) {
+			if (_birdSearchHotspots[currLocationID].sightings.success === null) {
 				allLoaded = false;
 				break;
 			}
 		}
-
 		return allLoaded;
 	};
+
 
 	mediator.register(_MODULE_ID, {
 		init: _init

@@ -13,18 +13,20 @@ define([
 	var _currTabID = "mapTab";
 	var _lastBirdSearch = null;
 	var _lastNotableSearch = null;
+	var _birdData;
+
 
 	var _init = function() {
 		var subscriptions = {};
 		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMainPanel;
 		subscriptions[C.EVENT.INIT_SEARCH] = _onInitSearch;
 		subscriptions[C.EVENT.SELECT_TAB] = _onRequestTabChange;
-		subscriptions[C.EVENT.SEARCH_TYPE_CHANGED] = _onSearchTypeChanged;
 		subscriptions[C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION] = _showNotableSightingsSingleLocationTable;
 		subscriptions[C.EVENT.MAP.BIRD_SEARCH_COMPLETE] = _onBirdSearchComplete;
 		subscriptions[C.EVENT.MAP.NOTABLE_MARKERS_ADDED] = _onNotableMarkersAdded;
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		subscriptions[C.EVENT.LOCATION_CLICK] = _onLocationClick;
+		subscriptions[C.EVENT.BIRD_SIGHTINGS_LOADED] = _onBirdSightingsLoaded;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
 		// insert the main panel
@@ -39,6 +41,7 @@ define([
 		map.create();
 	};
 
+
 	/**
 	 * Any time there's a search, return it to the map tab. This is needed for technical reasons, but also it makes
 	 * sense from a UI perspective.
@@ -48,6 +51,7 @@ define([
 		_selectTab("mapTab");
 		mediator.publish(_MODULE_ID, C.EVENT.SEARCH, msg.data);
 	};
+
 
 	var _addMainPanelEvents = function() {
 		$("#panelTabs").on("click", "li", _onClickSelectTab);
@@ -62,6 +66,7 @@ define([
 		});
 	};
 
+
 	var _onClickSelectTab = function(e) {
 		var tab = e.target;
 		if ($(tab).hasClass("disabledTab")) {
@@ -70,6 +75,7 @@ define([
 		var tabID = $(tab).attr("id");
 		_selectTab(tabID);
 	};
+
 
 	/**
 	 * Allows other components to call the tab changing functionality from their own code, rather than have
@@ -80,6 +86,7 @@ define([
 	var _onRequestTabChange = function(msg) {
 		_selectTab(msg.data.tabID);
 	};
+
 
 	var _selectTab = function(tabID) {
 		if (tabID === _currTabID) {
@@ -93,6 +100,7 @@ define([
 		_currTabID = tabID;
 		mediator.publish(_MODULE_ID, C.EVENT.TAB_CHANGED, { tab: _currTabID });
 	};
+
 
 	var _resizeMainPanel = function(msg) {
 		if (msg.data.viewportMode === "desktop") {
@@ -161,6 +169,7 @@ define([
 		$("#birdSpeciesTabContent").html(html);
 	};
 
+
 	/**
 	 * Shows notable sightings from a single location.
 	 * @param msg
@@ -170,6 +179,7 @@ define([
 		var locationID = msg.data.locationID;
 		_addNotableSightingsSingleLocationTable(locationID);
 	};
+
 
 	var _addNotableSightingsSingleLocationTable = function(locationID) {
 		var searchObservationRecency = _lastNotableSearch.lastSearchObservationRecency;
@@ -248,9 +258,11 @@ define([
 		}
 	};
 
+
 	var _onHotspotMarkersAdded = function(msg) {
 		$("#birdSpeciesTab").html("Bird Species").removeClass("btn").addClass("disabledTab");
 	};
+
 
 	var _onLocationClick = function(msg) {
 		if (_currTabID !== "birdSpeciesTab") {
@@ -258,15 +270,6 @@ define([
 		}
 		var locationID = msg.data.locationID;
 		_addNotableSightingsSingleLocationTable(locationID);
-	};
-
-	/**
-	 * This is called whenever a user changes the search type.
-	 * @param msg
-	 * @private
-	 */
-	var _onSearchTypeChanged = function(msg) {
-		var searchType = msg.data.newSearchType;
 	};
 
 
@@ -296,6 +299,76 @@ define([
 		};
 	};
 
+	/**
+	 * Called any time the selected data changes. This updates the Bird Species tab and tab content.
+	 var _updateSpeciesData = function() {
+		_speciesInVisibleHotspots = {};
+		_numSpeciesInVisibleHotspots = 0;
+
+		for (var i=0; i<_numVisibleLocations; i++) {
+			var currLocationID = _visibleLocations[i];
+
+			// if this hotspots observations failed to load (for whatever reason), just ignore the row
+			if (!_birdSearchHotspots[currLocationID].sightings.success) {
+				continue;
+			}
+
+			var currLocationSpeciesInfo = _getLocationSpeciesList(currLocationID, manager.searchType, manager.observationRecency);
+			for (var speciesSciName in currLocationSpeciesInfo.species) {
+				var currData = currLocationSpeciesInfo.species[speciesSciName];
+				if (!manager.speciesInVisibleHotspots.hasOwnProperty(speciesSciName)) {
+					manager.speciesInVisibleHotspots[speciesSciName] = {
+						comName: currData.comName,
+						sciName: speciesSciName,
+						obs: []
+					};
+					manager.numSpeciesInVisibleHotspots++;
+				}
+
+				manager.speciesInVisibleHotspots[speciesSciName].obs.push({
+					howMany: currData.howMany,
+					lat: currData.lat,
+					lng: currData.lng,
+					locID: currData.locID,
+					locName: currData.locName,
+					obsDt: currData.obsDt,
+					obsReviewed: currData.obsReviewed,
+					obsValid: currData.obsValid
+				});
+			}
+		}
+	};
+	*/
+
+
+	var _onBirdSightingsLoaded = function(msg) {
+		_birdData = msg.data.birdData;
+
+		var numSpecies = _getUniqueSpeciesCount();
+		if (numSpecies > 0) {
+			$("#birdSpeciesTab").html("Bird Sightings (" + sightings.length + ")");
+		} else {
+
+		}
+//		$("#birdSpeciesTabContent").html(html);
+	};
+
+
+	var _getUniqueSpeciesCount = function() {
+		var uniqueSpecies = {};
+		var numUniqueSpecies = 0;
+		for (var i=0; i<_birdData.length; i++) {
+			var sightings = _birdSearchHotspots[locationID].sightings[i].data;
+			for (var j=0; j<sightings.length; j++) {
+				if (!uniqueSpecies.hasOwnProperty(sightings[j].sciName)) {
+					uniqueSpecies[sightings[j].sciName] = null;
+					numUniqueSpecies++;
+				}
+			}
+			_birdSearchHotspots[locationID].sightings[i].numSpeciesRunningTotal = numUniqueSpecies;
+		}
+
+	}
 
 	mediator.register(_MODULE_ID, {
 		init: _init
