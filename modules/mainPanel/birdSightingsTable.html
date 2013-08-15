@@ -14,22 +14,31 @@
 </div>
 
 <div class="fixedContent">
-	<table class="table table-striped table-hover">
+	<table class="birdSightingsTable table table-striped table-hover">
 		<thead>
-			<% if (!isSingleLocation) { %><th>Location</th><% } %>
 			<th><%=L.species%></th>
-			<th>#</th>
 			<th><%=L.scientific_name%></th>
+			<th class="{ sorter: false }">Locations Seen <a href="#" class="toggleBirdSpeciesLocations">+</a></th>
 			<th><%=L.last_seen%></th>
+			<th># Reported</th>
 		</thead>
 		<tbody>
 		<% _.each(sightings, function(sighting, index) { %>
 		<tr>
-			<% if (!isSingleLocation) { %><td><a href="#" class="filterNotableSightingByLocation" data-location-id="<%=sighting.locationID%>"><%=sighting.locationName%></a></td><% } %>
 			<td class="species"><%=sighting.comName%></td>
-			<td><%=sighting.howMany%></td>
 			<td><%=sighting.sciName%></td>
-			<td nowrap><%=sighting.obsDt%></td>
+			<td>
+				Seen at <%= sighting.obs.length %> locations
+				<div class="birdLocations hidden"><%= sighting.locations.join("<br />") %></div>
+			</td>
+			<td nowrap>
+				<div class="lastSeen"><%=sighting.mostRecentObservationTime%></div>
+
+			</td>
+			<td>
+				<div class="lastSeen"><%=sighting.howMany%></div>
+
+			</td>
 		</tr>
 		<% }); %>
 		</tbody>

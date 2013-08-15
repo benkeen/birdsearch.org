@@ -18,9 +18,6 @@ define([
 	var _currentMouseoverLocationID = null;
 	var _sidebarResultPanelOffsetHeight = null;
 	var _sightingsArray = [];
-	var _speciesInVisibleHotspots = {};
-	var _numSpeciesInVisibleHotspots = 0;
-
 
 	// DOM nodes
 	var _locationField;
@@ -96,9 +93,9 @@ define([
 		// should fire a "complete" even to which this module listens?
 		_locationField.focus();
 
-		// initialize the sightings array. This is deep copied when
+		// initialize the sightings array
 		for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
-			_sightingsArray.push({ available: false, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
+			_sightingsArray.push({ available: false, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
 		}
 	};
 
@@ -565,13 +562,13 @@ define([
 
 		// if we didn't just put through a new request, the user just searched a subset of what's already been loaded
 		if (!hasAtLeastOneRequest) {
-			// let the tablesort know to re-parse the hotspot table
-			$('#hotspotTable').trigger("update").trigger("appendCache");
+			$('#hotspotTable').trigger("update").trigger("appendCache"); // for tablesort
 			helper.stopLoading();
 
-			// publish shit here!
-//			manager.updateSpeciesData();
-//			manager.updateSpeciesTab();
+			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
+				birdData: _birdSearchHotspots,
+				observationRecency: _lastSearchObsRecency
+			});
 		}
 	};
 
@@ -600,18 +597,21 @@ define([
 	 * etc). This can be called multiple times for a single location if the user keeps increasing the recency
 	 * range upwards. Once the user's returned data for a location for 30 days, it contains everything it needs
 	 * so no new requests are required.
+	 * @param locationID
+	 * @param response
+	 * @private
 	 */
 	var _onSuccessReturnLocationObservations = function(locationID, response) {
 		_birdSearchHotspots[locationID].isDisplayed = true;
 		_birdSearchHotspots[locationID].sightings.success = true;
 
 		// by reference, of course
-		var sightings = _birdSearchHotspots[locationID].sightings;
+		var sightings = _birdSearchHotspots[locationID].sightings.data;
 
 		// mark the information as now available for this observation recency + and anything below,
 		// and reset the observation data (it's about to be updated below)
 		for (var i=C.SETTINGS.NUM_SEARCH_DAYS-1; i>=0; i--) {
-			sightings[i] = { available: true, data: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
+			sightings[i] = { available: true, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 		}
 
 		// now for the exciting part: loop through the observations and put them in the appropriate spot
@@ -621,28 +621,27 @@ define([
 			var observationTime = parseInt(moment(response[i].obsDt, "YYYY-MM-DD HH:mm").format("X"), 10);
 			var difference = _CURRENT_SERVER_TIME - observationTime;
 			var daysAgo = Math.ceil(difference / _ONE_DAY_IN_SECONDS); // between 1 and 30
-			sightings[daysAgo-1].data.push(response[i]);
+			sightings[daysAgo-1].obs.push(response[i]);
 		}
 
 		// we've added all the observation data, set the numSpecies counts
 		for (var i=0; i<sightings.length; i++) {
-			sightings[i].numSpecies = sightings[i].data.length;
+			sightings[i].numSpecies = sightings[i].obs.length;
 		}
 
 		// now add the numSpeciesRunningTotal property. This is the running total seen in that time
-		// range: e.g. 3 days would include the total species seen in that day, and 2 days and 1 day
-
+		// range: e.g. 3 days would include the total species seen on days 1-3, 4 days would have 1-4 etc.
 		var uniqueSpecies = {};
 		var numUniqueSpecies = 0;
 		for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
-			var sightings = _birdSearchHotspots[locationID].sightings[i].data;
-			for (var j=0; j<sightings.length; j++) {
-				if (!uniqueSpecies.hasOwnProperty(sightings[j].sciName)) {
-					uniqueSpecies[sightings[j].sciName] = null;
+			var currDaySightings = _birdSearchHotspots[locationID].sightings.data[i];
+			for (var j=0; j<currDaySightings.length; j++) {
+				if (!uniqueSpecies.hasOwnProperty(currDaySightings[j].sciName)) {
+					uniqueSpecies[currDaySightings[j].sciName] = null;
 					numUniqueSpecies++;
 				}
 			}
-			_birdSearchHotspots[locationID].sightings[i].numSpeciesRunningTotal = numUniqueSpecies;
+			_birdSearchHotspots[locationID].sightings.data[i].numSpeciesRunningTotal = numUniqueSpecies;
 		}
 
 		_updateVisibleLocationInfo(locationID, response.length);
@@ -653,7 +652,8 @@ define([
 			helper.stopLoading();
 
 			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
-				birdData: _birdSearchHotspots
+				birdData: _birdSearchHotspots,
+				observationRecency: _lastSearchObsRecency
 			});
 		}
 	};
