@@ -23,7 +23,6 @@ define([
 		subscriptions[C.EVENT.INIT_SEARCH] = _onInitSearch;
 		subscriptions[C.EVENT.SELECT_TAB] = _onRequestTabChange;
 		subscriptions[C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION] = _showNotableSightingsSingleLocationTable;
-		//subscriptions[C.EVENT.MAP.BIRD_SEARCH_COMPLETE] = _onBirdSearchComplete;
 		subscriptions[C.EVENT.MAP.NOTABLE_MARKERS_ADDED] = _onNotableMarkersAdded;
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		subscriptions[C.EVENT.LOCATION_CLICK] = _onLocationClick;
