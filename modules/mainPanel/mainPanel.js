@@ -15,6 +15,7 @@ define([
 	var _lastNotableSearch = null;
 	var _birdData;
 	var _birdSearchObsRecency;
+	var _L = {};
 
 
 	var _init = function() {
@@ -29,16 +30,20 @@ define([
 		subscriptions[C.EVENT.BIRD_SIGHTINGS_LOADED] = _onBirdSightingsLoaded;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
-		// insert the main panel
-		var tmpl = _.template(mainTemplate, {
-			L: helper.L
+		require([helper.getCurrentLangFile()], function(L) {
+			_L = L;
+
+			// insert the main panel
+			var tmpl = _.template(mainTemplate, {
+				L: _L
+			});
+
+			$("#mainPanel").html(tmpl);
+			_addMainPanelEvents();
+
+			// insert the map
+			map.create();
 		});
-
-		$("#mainPanel").html(tmpl);
-		_addMainPanelEvents();
-
-		// insert the map
-		map.create();
 	};
 
 
@@ -135,7 +140,7 @@ define([
 			isSingleLocation: false,
 			searchObservationRecency: _lastNotableSearch.lastSearchObservationRecency,
 			sightings: sightings,
-			L: helper.L
+			L: _L
 		});
 
 		// update the tab
@@ -217,7 +222,7 @@ define([
 			isSingleLocation: false,
 			searchObservationRecency: _birdSearchObsRecency,
 			sightings: sightings,
-			L: helper.L
+			L: _L
 		});
 
 		// update the tab
@@ -262,7 +267,7 @@ define([
 			lng: lng,
 			searchObservationRecency: searchObservationRecency,
 			sightings: sightings,
-			L: helper.L
+			L: _L
 		});
 
 		// update the tab

@@ -25,6 +25,7 @@ define([
 		overviewMapControl: true
 	};
 	var _currTab = "mapTab";
+	var _L = {};
 
 	// general fields relating to search
 	var _searchStarted = false;
@@ -74,6 +75,10 @@ define([
 		subscriptions[C.EVENT.LOCATION_MOUSEOUT] = _onLocationMouseout;
 		subscriptions[C.EVENT.LOCATION_CLICK] = _onLocationClick;
 		mediator.subscribe(_MODULE_ID, subscriptions);
+
+		require([helper.getCurrentLangFile()], function(L) {
+			_L = L;
+		});
 	};
 
 	/**
@@ -466,7 +471,7 @@ define([
 
 	var _getBirdSightingInfoWindow = function(locInfo) {
 		var html = _.template(allSightingsInfoWindowTemplate, {
-			L: helper.L,
+			L: _L,
 			locationName: locInfo.n,
 			locationID: locInfo.locationID,
 			numSpecies: locInfo.sightings.length
@@ -478,7 +483,7 @@ define([
 
 	var _getNotableSightingInfoWindow = function(locInfo) {
 		var html = _.template(notableSightingsInfoWindowTemplate, {
-			L: helper.L,
+			L: _L,
 			sightings: locInfo.sightings,
 			locationName: locInfo.n,
 			locationID: locInfo.locationID

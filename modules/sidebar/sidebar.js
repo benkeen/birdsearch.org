@@ -367,7 +367,7 @@ define([
 				showCheckboxColumn: opts.showCheckboxColumn,
 				showSpeciesColumn: opts.showSpeciesColumn,
 				hotspots: visibleHotspots,
-				L: helper.L,
+				L: _L,
 				height: _getSidebarResultsPanelHeight()
 			});
 			$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
@@ -396,7 +396,7 @@ define([
 
 		// add the table to the page
 		var tmpl = _.template(birdSightingsSidebarTableTemplate, {
-			L: helper.L,
+			L: _L,
 			height: _getSidebarResultsPanelHeight(),
 			hotspots: templateData
 		});

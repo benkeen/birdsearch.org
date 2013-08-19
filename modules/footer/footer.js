@@ -13,7 +13,7 @@ define([
 	var _run = function() {
 		require([helper.getCurrentLangFile()], function(L) {
 			_L = L;
-			var footerText = helper.L.site_not_affiliated_with_ebird.replace(/%1/, '<a href="http://ebird.org" target="_blank">eBird.org</a>');
+			var footerText = L.site_not_affiliated_with_ebird.replace(/%1/, '<a href="http://ebird.org" target="_blank">eBird.org</a>');
 			var tmpl = _.template(template, {
 				githubUrl: C.CORE.GITHUB_URL,
 				appVersion: C.CORE.APP_VERSION,

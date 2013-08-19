@@ -8,13 +8,17 @@ define([
 	"use strict";
 
 	var _MODULE_ID = "header";
+	var _L = {};
 
 	var _run = function() {
-		var tmpl = _.template(template, {
-			L: helper.L
+		require([helper.getCurrentLangFile()], function(L) {
+			_L = L;
+			var tmpl = _.template(template, {
+				L: _L
+			});
+			$("header").html(tmpl);
+			_addEventHandlers();
 		});
-		$("header").html(tmpl);
-		_addEventHandlers();
 	};
 
 	var _addEventHandlers = function() {
