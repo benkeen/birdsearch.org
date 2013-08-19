@@ -17,13 +17,12 @@ define([], function() {
 		WINDOW_RESIZE: "window-resize",
 		TRIGGER_WINDOW_RESIZE: "trigger-window-resize",
 		SEARCH_TYPE_CHANGED: 'search-type-changed',
-		INIT_SEARCH: "init-search",
 		SEARCH: "search",
+		INIT_SEARCH: "init-search",
 		BIRD_SIGHTINGS_LOADED: "bird-sightings-loaded",
 
 		MAP: {
 			BIRD_MARKERS_ADDED: 'map-bird-markers-added',
-			BIRD_SEARCH_COMPLETE: 'map-bird-search-complete',
 			NOTABLE_MARKERS_ADDED: 'map-notable-markers-added',
 			HOTSPOT_MARKERS_ADDED: 'map-hotspot-markers-added',
 			VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION: 'view-notable-sighting-single-location'

@@ -28,25 +28,22 @@ requirejs.config({
 		mainPanelTemplate: "modules/mainPanel/mainPanel.html",
 		birdSightingsTableTemplate: "modules/mainPanel/birdSightingsTable.html",
 		notableSightingsTableTemplate: "modules/mainPanel/notableSightingsTable.html",
-
 		map: "modules/map/map",
 		allSightingsInfoWindowTemplate: "modules/map/allSightingsInfoWindow.html",
 		notableSightingsInfoWindowTemplate: "modules/map/notableSightingsInfoWindow.html",
 
 		// helpers
-		"tablesorter": "libs/jquery.tablesorter.min",
-		"simplemodal": "libs/jquery.simplemodal",
-		"underscore": "libs/underscore.min",
-		"moment": "libs/moment.min",
+		tablesorter: "libs/jquery.tablesorter.min",
+		underscore: "libs/underscore.min",
+		moment: "libs/moment.min",
 
 		// language files
-		"lang_en": "lang/en",
-		"lang_fr": "lang/fr",
-		"lang_de": "lang/de",
-		"lang_es": "lang/es"
+		lang_en: "lang/en",
+		lang_fr: "lang/fr",
+		lang_de: "lang/de",
+		lang_es: "lang/es"
 	},
 	shim: {
-		'tablesorter': "jquery",
-		'simplemodal': "jquery"
+		'tablesorter': "jquery"
 	}
 });

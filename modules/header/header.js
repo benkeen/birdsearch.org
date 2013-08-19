@@ -9,7 +9,6 @@ define([
 
 	var _MODULE_ID = "header";
 
-
 	var _run = function() {
 		var tmpl = _.template(template, {
 			L: helper.L
@@ -24,8 +23,8 @@ define([
 			mediator.publish(_MODULE_ID, C.EVENT.ABOUT_LINK_CLICK);
 		});
 
-		$("#lang").on("click", function() {
-			// do stuff
+		$("#lang").on("change", function(e) {
+			window.location = "?lang=" + $(e.target).val();
 		});
 	};
 

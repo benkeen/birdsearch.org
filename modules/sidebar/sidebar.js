@@ -39,13 +39,13 @@ define([
 	var _birdSearchHotspots = {};
 	var _visibleLocations = [];
 	var _numVisibleLocations = null;
+	var _L = {};
 
 	var _CURRENT_SERVER_TIME = null;
 	var _ONE_DAY_IN_SECONDS = 24 * 60 * 60;
 
 
 	var _init = function() {
-
 		_CURRENT_SERVER_TIME = parseInt($("body").data("serverdatetime"), 10);
 
 		// keep track of when the window is resized
@@ -56,47 +56,51 @@ define([
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		mediator.subscribe(_MODULE_ID, subscriptions);
 
-		var tmpl = _.template(sidebarTemplate, {
-			L: helper.L
+		require([helper.getCurrentLangFile()], function(L) {
+			var _L = L;
+
+			var tmpl = _.template(sidebarTemplate, {
+				L: _L
+			});
+
+			// render the template
+			$("#sidebar").html(tmpl);
+
+			// initialize the geocoder, used to convert human addresses into something more useful
+			_geocoder = new google.maps.Geocoder();
+
+			// make a note of the DOM nodes
+			_locationField             = $("#location");
+			_resultTypeGroup           = $("#resultTypeGroup");
+			_resultTypeField           = $("input[name=resultType]");
+			_searchOptionsLink         = $("#searchOptionsLink");
+			_observationRecencySection = $("#observationRecencySection");
+			_observationRecencyField   = $("#observationRecency");
+			_observationRecencyDisplay = $("#observationRecencyDisplay");
+			_hotspotActivitySection    = $("#hotspotActivitySection");
+			_limitHotspotsByObservationRecency = $("#limitHotspotsByObservationRecency");
+			_hotspotActivityRecencyDisplay = $("#hotspotActivityRecencyDisplay");
+			_hotspotActivity           = $("#hotspotActivity");
+			_searchBtn                 = $("#searchBtn");
+
+			// add all relevant event handlers for the sidebar content
+			_addEventHandlers();
+
+			// if need be, progressively enhance the slider for browser that don't support that element
+			_fixSliders();
+
+			// initialize the main spinner
+			helper.initSpinner();
+
+			// focus on the location field on page load. Seems like this should be part of the moduleHelper... maybe that
+			// should fire a "complete" even to which this module listens?
+			_locationField.focus();
+
+			// initialize the sightings array
+			for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
+				_sightingsArray.push({ available: false, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
+			}
 		});
-
-		// render the template
-		$("#sidebar").html(tmpl);
-
-		// initialize the geocoder, used to convert human addresses into something more useful
-		_geocoder = new google.maps.Geocoder();
-
-		// make a note of the DOM nodes
-		_locationField             = $("#location");
-		_resultTypeGroup           = $("#resultTypeGroup");
-		_resultTypeField           = $("input[name=resultType]");
-		_searchOptionsLink         = $("#searchOptionsLink");
-		_observationRecencySection = $("#observationRecencySection");
-		_observationRecencyField   = $("#observationRecency");
-		_observationRecencyDisplay = $("#observationRecencyDisplay");
-		_hotspotActivitySection    = $("#hotspotActivitySection");
-		_limitHotspotsByObservationRecency = $("#limitHotspotsByObservationRecency");
-		_hotspotActivityRecencyDisplay = $("#hotspotActivityRecencyDisplay");
-		_hotspotActivity           = $("#hotspotActivity");
-		_searchBtn                 = $("#searchBtn");
-
-		// add all relevant event handlers for the sidebar content
-		_addEventHandlers();
-
-		// if need be, progressively enhance the slider for browser that don't support that element
-		_fixSliders();
-
-		// initialize the main spinner
-		helper.initSpinner();
-
-		// focus on the location field on page load. Seems like this should be part of the moduleHelper... maybe that
-		// should fire a "complete" even to which this module listens?
-		_locationField.focus();
-
-		// initialize the sightings array
-		for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
-			_sightingsArray.push({ available: false, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
-		}
 	};
 
 
