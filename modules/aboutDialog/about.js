@@ -12,8 +12,15 @@ define([
 	var _init = function() {
 		var aboutPara1 = helper.L.about_para1.replace(/%1/, '<a href="http://ebird.org" target="_blank">eBird.org</a>');
 		var aboutPara4 = helper.L.about_para4.replace(/%1/, '<a href="' + C.CORE.GITHUB_URL + '" target="_blank">github</a>');
+
+		var className = "fade";
+		if ($.browser.msie) {
+			className = "";
+		}
+
 		var html = _.template(template, {
 			L: helper.L,
+			className: className,
 			about_para1: aboutPara1,
 			about_para4: aboutPara4
 		});

@@ -214,8 +214,6 @@ define([
 			updatedSightings.push(sightings[i]);
 		}
 
-		console.log(updatedSightings);
-
 		var html = _.template(birdSightingsTableTemplate, {
 			isSingleLocation: false,
 			searchObservationRecency: _birdSearchObsRecency,

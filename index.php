@@ -16,11 +16,11 @@
 	<section id="mainPanel"></section>
 	<footer></footer>
 
-	<script src="libs/html5shiv.js"></script>
-	<script src="libs/modernizr-2.0.6.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places,geometry"></script>
 	<script src="libs/require-jquery.js" data-main="appStart"></script>
 	<script src="core/requireConfig.js"></script>
+	<script src="libs/html5shiv.js"></script>
+	<script src="libs/modernizr-2.0.6.min.js"></script>
 	<script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
 	<script src="libs/spinners.js"></script>
 	<script src="libs/gmaps.inverted.circle.js"></script>
@@ -32,7 +32,6 @@
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
 		ga('create', 'UA-43097657-1', 'birdsearch.org');
 		ga('send', 'pageview');
 	</script>
