@@ -8,13 +8,14 @@ to birdsearch.org once 1.1.0 is complete.
 
 ### v1.1.0
 Currently under development (August 2013). This is a complete re-write of the script to better organize the code,
-improve the site design and add some functionality. It version includes the following:
+improve the site design and add some functionality. It includes the following additions over 1.0.0:
 
 - Three search types: "bird sightings", "notable sightings", "popular birding locations"
 - advanced search functionality
 - option to share search results, via URL
 - multi-language support
-- more accurate results based on lat/lng instead of human addresses (interface still has a simple address search)
+- more accurate results based on lat/lng instead of human addresses (but the interface still has a simple address
+search)
 
 ### v1.0.0 - initial release
 You can find 1.0.0 online here:
