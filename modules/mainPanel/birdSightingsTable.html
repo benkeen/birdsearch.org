@@ -8,7 +8,7 @@
 				<%=L.sightings%>
 			<% } %>
 		</h1>
-		<h2>last <%=searchObservationRecency%> days</h2>
+		<h2>last <%=searchObservationRecency%> <% if (searchObservationRecency == 1) { %><%=L.day%><% } else {%><%=L.days%><% } %></h2>
 		<div class="clear"></div>
 	</div>
 </div>

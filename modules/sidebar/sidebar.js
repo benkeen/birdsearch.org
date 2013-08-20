@@ -550,11 +550,6 @@ define([
 	};
 
 
-
-	// -------------------------------------------------------------------------------------
-	// all old code
-
-
 	var _getBirdHotspotObservations = function() {
 		var hasAtLeastOneRequest = false;
 		for (var i=0; i<_numVisibleLocations; i++) {
@@ -575,8 +570,8 @@ define([
 
 			// if we already have the hotspot data available, just update the sidebar table
 			if (_birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].available) {
-				console.log("here: ", _lastSearchObsRecency, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
-				console.log(_birdSearchHotspots[currLocationID].sightings.data);
+//				console.log("here: ", _lastSearchObsRecency, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
+//				console.log(_birdSearchHotspots[currLocationID].sightings.data);
 				_updateVisibleLocationInfo(currLocationID, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
 			} else {
 				_getSingleHotspotObservations(currLocationID);

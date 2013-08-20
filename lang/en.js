@@ -15,6 +15,8 @@ define([], function() {
 		reported_by: "Reported by",
 		sightings: "Sightings",
 		last_seen: "Last Seen",
+		days: "days",
+		day: "day",
 
 		// sidebar
 		bird_sightings: "Bird sightings",
