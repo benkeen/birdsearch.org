@@ -44,12 +44,13 @@ This is important! To allow the script to run in both DEV and PROD modules (one 
 `grunt-template` task re-generates the index.php file from `index.template.tpl`. To change this from PROD to DEV, just
 tweak that value in the `gruntfile.js.
 
-### Couple other notes...
-- James Burke (requireJS Optimizer) recommends using a custom build folder when running the optimizer, since it can overwrite
+### Misc notes
+- James Burke (requireJS author) recommends using a custom build folder when running the optimizer, since it can overwrite
 files if you're not careful. While I generally agree, I didn't do this here: the grunt task generates a custom
-`core/appStart-min.js`, bundled file of all the JS modules.
-- The checked-in code should always be PROD-ready, so I can just do a simple `git pull` on the main website to get the latest
-content.
+`core/appStart-min.js`, bundled file of all the JS modules, then the `grunt-template` task handles re-generation of the main
+index file to link to that file instead of the unbundled `appStart.js` file.
+- The checked-in code should always be production ready, so I can just do a simple `git pull` on the main website to get
+the latest content.
 
 If there are any instructions missing here, let me know in the issues list or just fork the project and fix it.
 
