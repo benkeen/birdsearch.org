@@ -4,24 +4,56 @@ This is an experiment to try different ways of viewing eBird data to provide a b
 bird sightings and distribution. Right now the website is found at ebirdsearch.org, but it will soon be moved
 to birdsearch.org once 1.1.0 is complete.
 
-## v0.9 - proof of concept
-This was a working copy which you can download from the tags section.
+## Versions
 
-## v1.0.0 - initial version
-You can find 1.0.0 online here:
-http://ebirdsearch.org
-
-## v1.1.0
-Currently under development (August 2013). This is a complete re-write of the script to better architect the code,
-improve the site design and add some functionality. This version includes the following:
+### v1.1.0
+Currently under development (August 2013). This is a complete re-write of the script to better organize the code,
+improve the site design and add some functionality. It version includes the following:
 
 - Three search types: "bird sightings", "notable sightings", "popular birding locations"
-- mobile support [will be added in later version]
 - advanced search functionality
 - option to share search results, via URL
 - multi-language support
 - more accurate results based on lat/lng instead of human addresses (interface still has a simple address search)
 
+### v1.0.0 - initial release
+You can find 1.0.0 online here:
+http://ebirdsearch.org
+
+## Local dev / build instructions
+
+For the 1.1.0 rewrite, I decided to use [Grunt](http://gruntjs.com/) to handle all the nagging tasks like JS minification,
+bundling, requireJS module optimization and for generating env-specific index files to allow switching between local and
+prod configurations. Grunt's pretty damned amazing once you get it all hooked up, but there's a little bit of a learning
+curve at the start.
+
+First, download [Node](http://nodejs.org/), which should include the Node Package Manager (NPM). This is pretty
+painless but involves a bit of googling. It runs fine on Mac + Windows.
+
+After checking out this repo, in your command line go to the root folder and type the following:
+
+`npm install`
+This command will look at the `package.json` file and ensure that all dependencies have been downloaded and are available.
+It creates a node_modules folder. Don't bother checking that in.
+
+`grunt`
+Running this command will execute the default tasks specified in your `gruntfile.js`. Take a look at the file to see.
+
+In addition to doing the bundling of some core JS files, executing this command also *re-generates your index.php file*.
+This is important! To allow the script to run in both DEV and PROD modules (one without any bundling, one with), the
+`grunt-template` task re-generates the index.php file from `index.template.tpl`. To change this from PROD to DEV, just
+tweak that value in the `gruntfile.js.
+
+### Couple other notes...
+- James Burke (requireJS Optimizer) recommends using a custom build folder when running the optimizer, since it can overwrite
+files if you're not careful. While I generally agree, I didn't do this here: the grunt task generates a custom
+`core/appStart-min.js`, bundled file of all the JS modules.
+- The checked-in code should always be PROD-ready, so I can just do a simple `git pull` on the main website to get the latest
+content.
+
+If there are any instructions missing here, let me know in the issues list or just fork the project and fix it.
+
+Thanks!
 
 Ben Keen
 [@vancouverben](https://twitter.com/#!/vancouverben)

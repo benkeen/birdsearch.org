@@ -5,6 +5,7 @@ requirejs.config({
 		// core stuff
 		text: "libs/text",
 		appStart: "core/appStart",
+		appStartProd: "core/appStart.min",
 		mediator: "core/mediator",
 		dataCache: "core/dataCache",
 		page: "core/page",
