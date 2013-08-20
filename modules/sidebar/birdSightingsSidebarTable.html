@@ -14,7 +14,9 @@
 			<% _.each(hotspots, function(hotspot, index) { %>
 				<tr id="location_<%=hotspot.locationID%>" class="<%=hotspot.rowClass%>">
 					<td class="loadingStatus"><label><%=hotspot.n%></label></td>
-					<td class="sp"><span class="speciesCount"><%=hotspot.numSpeciesWithinRange%></span></td>
+					<td class="sp">
+						<div id="spinner_<%=hotspot.locationID%>" class="speciesCount"><%=hotspot.numSpeciesWithinRange%></div>
+					</td>
 				</tr>
 			<% }); %>
 			</tbody>

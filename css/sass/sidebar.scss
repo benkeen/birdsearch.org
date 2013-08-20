@@ -90,6 +90,10 @@ body .well-pad {
 	width: 30px;
 	margin: 1px 0px 0px 10px;
 	text-shadow: 1px 1px 1px #333333;
+	height: 21px;
+	canvas {
+		margin-top: 2px;
+	}
 }
 #hotspotTableRows tr {
 	cursor: pointer;
@@ -236,7 +240,7 @@ body .well-pad {
 	margin-bottom: 0px;
 }
 #hotspotTableRows {
-	overflow-y: scroll;
+	overflow-y: auto;
 	label:hover {
 		color: white;
 	}
