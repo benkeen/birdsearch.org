@@ -2,6 +2,19 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		template: {
+			'process-html-template': {
+				options: {
+					data: {
+						ENV: "PROD", // PROD/DEV
+						NOW: Math.round(new Date().getTime() / 1000)
+					}
+				},
+				files: {
+					'index.html': ['index.template.tpl']
+				}
+			}
+		},
 		uglify: {
 			my_target: {
 				files: {
@@ -28,18 +41,6 @@ module.exports = function(grunt) {
 					baseUrl: "./",
 					mainConfigFile: "core/requireConfig.js",
 					out: "./core/appStart.min.js"
-				}
-			}
-		},
-		template: {
-			'process-html-template': {
-				options: {
-					data: {
-						ENV: "PROD" // or DEV
-					}
-				},
-				files: {
-					'index.php': ['index.template.html']
 				}
 			}
 		}

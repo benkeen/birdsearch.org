@@ -18,9 +18,9 @@
 		<thead>
 			<th><%=L.species%></th>
 			<th><%=L.scientific_name%></th>
-			<th class="{ sorter: false }">Locations Seen <a href="#" class="toggleBirdSpeciesLocations">+</a></th>
-			<th><%=L.last_seen%></th>
-			<th># Reported</th>
+			<th class="{ sorter: false }">Locations Seen <a href="#" class="toggleBirdSpeciesLocations">(+)</a></th>
+			<th width="140"><%=L.last_seen%></th>
+			<th width="80"># Reported</th>
 		</thead>
 		<tbody>
 		<% _.each(sightings, function(sighting, index) { %>
@@ -32,12 +32,12 @@
 				<div class="birdLocations hidden"><%= sighting.locations.join("<br />") %></div>
 			</td>
 			<td nowrap>
-				<div class="lastSeen"><%=sighting.mostRecentObservationTime%></div>
-
+				<div class="lastSeenSingle"><%=sighting.mostRecentObservationTime%></div>
+				<div class="lastSeenDetails hidden"><%=sighting.lastSeenArray.join("<br />") %></div>
 			</td>
 			<td>
-				<div class="lastSeen"><%=sighting.howMany%></div>
-
+				<div class="howManySingle"><%=sighting.howManyCount%></div>
+				<div class="howManyDetails hidden"><%=sighting.howManyArray.join("<br />") %></div>
 			</td>
 		</tr>
 		<% }); %>

@@ -71,6 +71,7 @@ define([
 			e.preventDefault();
 			_addNotableSightingsTable();
 		});
+		$("#birdSpeciesTabContent").on('click', '.toggleBirdSpeciesLocations', _onClickToggleBirdSpeciesLocations);
 	};
 
 
@@ -202,33 +203,41 @@ define([
 		var updatedSightings = [];
 		for (var i=0; i<sightings.length; i++) {
 			var lastObservation = 0;
-			var howMany = 0;
+			var howManyArray = [];
+			var lastSeenArray = [];
 			for (var j=0; j<sightings[i].obs.length; j++) {
 				var observationTimeUnix = parseInt(moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format("X"), 10);
 				if (observationTimeUnix > lastObservation) {
 					lastObservation = observationTimeUnix;
 					sightings[i].mostRecentObservationTime = moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 				}
+				lastSeenArray.push(moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a'));
+
 				howMany = sightings[i].obs[j].howMany || "-";
 				if (howMany.toString().match(/\D/g)) {
 					howManyCount = "-";
-					break;
+					howManyArray.push("-");
+				} else {
+					howManyArray.push(sightings[i].obs[j].howMany);
+					sightings[i].howManyCount += parseInt(sightings[i].obs[j].howMany, 10);
 				}
-				sightings[i].howManyCount += parseInt(sightings[i].obs[j].howMany, 10);
 			}
 
+			sightings[i].howManyArray = howManyArray;
+			sightings[i].lastSeenArray = lastSeenArray;
 			updatedSightings.push(sightings[i]);
 		}
+
+		console.log(updatedSightings);
 
 		var html = _.template(birdSightingsTableTemplate, {
 			isSingleLocation: false,
 			searchObservationRecency: _birdSearchObsRecency,
-			sightings: sightings,
+			sightings: updatedSightings,
 			L: _L
 		});
 
 		// update the tab
-//		$("#birdSpeciesTab").html("Bird Sightings (" + sightings.length + ")");
 		$("#birdSpeciesTabContent").html(html);
 	};
 
@@ -378,6 +387,29 @@ define([
 
 		return numUniqueSpeciesInAllLocations;
 	};
+
+
+	/**
+	 * Called whenever the user clicks the (+) or (-) in the Bird Species tab to expand/contract the list of Locations Seen
+	 * for either a single bird, or all birds in the tab.
+	 */
+	var _onClickToggleBirdSpeciesLocations = function(e) {
+		e.preventDefault();
+
+		// find out if this is the header or just a table row
+		if ($(e.target).html() === '(+)') {
+			$(e.target).html("(-)");
+			$(".birdLocations").removeClass("hidden");
+			$(".lastSeenSingle,.howManySingle").css("visibility", "hidden");
+			$(".lastSeenDetails,.howManyDetails").removeClass("hidden");
+		} else {
+			$(e.target).html("(+)");
+			$(".birdLocations").addClass("hidden");
+			$(".lastSeenSingle,.howManySingle").css("visibility", "visible");
+			$(".lastSeenDetails,.howManyDetails").addClass("hidden");
+		}
+	};
+
 
 	mediator.register(_MODULE_ID, {
 		init: _init
