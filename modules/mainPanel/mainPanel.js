@@ -11,7 +11,6 @@ define([
 
 	var _MODULE_ID = "mainPanel";
 	var _currTabID = "mapTab";
-	var _lastBirdSearch = null;
 	var _lastNotableSearch = null;
 	var _lastSearchInfo;
 	var _birdData;

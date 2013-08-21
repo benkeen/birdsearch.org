@@ -29,13 +29,19 @@ define([], function() {
 		// sidebar
 		bird_sightings: "Observations d'oiseaux",
 		popular_birding_locations: "Endroits populaires",
-		more_search_options: "plus d'options &raquo;",
+		more_search_options: "Plus d'options &raquo;",
+		hide_search_options: "&laquo; Masquer les options de recherche",
 		location: "Emplacement",
 		select_unselect_all: "Sélectionner / Désélectionner tous",
 		show_obs_made_within_last: "Afficher observations faites dans la dernière",
 		day_or_days: "jour(s)",
-		limit_to_locations: "Limit to locations with observations made within last",
+		limit_to_locations: "Limiter aux endroits avec les observations faites dans les",
 		search: "Rechercher",
+		please_enter_location: "S'il vous plaît entrer un emplacement.",
+		please_select_location_from_dropdown: "S'il vous plaît sélectionnez un emplacement dans le champ Emplacement auto-complété.",
+		please_enter_more_specific_location: "S'il vous plaît entrer une localisation plus précise.",
+		num_species_seen_at_location: "1% des espèces d'oiseaux observées à cet endroit dans le dossier% 2 derniers jours.",
+		no_results_found: "Aucun résultat",
 
 		// about dialog
 		contact: "Contacter",
@@ -60,54 +66,6 @@ define([], function() {
 		// footer
 		site_not_affiliated_with_ebird: "Tous courtoisie de données %1"
 	};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	return L;
 });

@@ -254,9 +254,9 @@ define([
 
 		// update the link text
 		if (_searchOptionsEnabled) {
-			_searchOptionsLink.html("More search options &raquo;");
+			_searchOptionsLink.html(_L.more_search_options);
 		} else {
-			_searchOptionsLink.html("&laquo; Hide search options");
+			_searchOptionsLink.html(_L.hide_search_options);
 		}
 
 		_searchOptionsEnabled = !_searchOptionsEnabled;
@@ -299,7 +299,7 @@ define([
 			_generateAsyncSidebarTable();
 
 		} else {
-			helper.showMessage('No results found', 'notification');
+			helper.showMessage(_L.no_results_found, 'notification');
 			$("#searchResults").fadeOut(300);
 			helper.stopLoading();
 		}
@@ -465,23 +465,23 @@ define([
 		var resultType = _getResultType();
 
 		if (location === "") {
-			helper.showMessage("Please enter a location.", "error");
+			helper.showMessage(_L.please_enter_location, "error");
 			return false;
 		}
 		if (!_viewportObj || !_locationObj) {
-			helper.showMessage("Please select a location from the auto-completed location field.", "error");
+			helper.showMessage(_L.please_select_location_from_dropdown, "error");
 			return false;
 		}
 		if (resultType === "all" && _lastSearchNumAddressComponents < 3) {
-			helper.showMessage("Please enter a more specific location.", "error");
+			helper.showMessage(_L.please_enter_more_specific_location, "error");
 			return false;
 		}
 		if (resultType == "hotspots" && _lastSearchNumAddressComponents < 3) {
-			helper.showMessage("Please enter a more specific location.", "error");
+			helper.showMessage(_L.please_enter_more_specific_location, "error");
 			return false;
 		}
 		if (resultType == "notable" && _lastSearchNumAddressComponents < 2) {
-			helper.showMessage("Please enter a more specific location.", "error");
+			helper.showMessage(_L.please_enter_more_specific_location, "error");
 			return false;
 		}
 		return true;
@@ -578,8 +578,6 @@ define([
 
 			// if we already have the hotspot data available, just update the sidebar table
 			if (_birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].available) {
-//				console.log("here: ", _lastSearchObsRecency, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
-//				console.log(_birdSearchHotspots[currLocationID].sightings.data);
 				_updateVisibleLocationInfo(currLocationID, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
 			} else {
 				_getSingleHotspotObservations(currLocationID);
@@ -701,7 +699,9 @@ define([
 	 * Helper function to update the location's row in the sidebar table and the map modal.
 	 */
 	var _updateVisibleLocationInfo = function(locationID, numSpecies) {
-		var title = numSpecies + ' bird species seen at this location in the last ' + _lastSearchObsRecency + ' days.';
+		var title = L.num_species_seen_at_location.replace(/%1/, numSpecies);
+		title = title.replace(/%2/, _lastSearchObsRecency);
+
 		var row = $("#location_" + locationID);
 		row.removeClass("notLoaded").addClass("loaded");
 

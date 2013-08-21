@@ -30,12 +30,18 @@ define([], function() {
 		bird_sightings: "Bird sightings",
 		popular_birding_locations: "Popular birding locations",
 		more_search_options: "More search options &raquo;",
+		hide_search_options: "&laquo; Hide search options",
 		location: "Location",
 		select_unselect_all: "Select / Unselect all",
 		show_obs_made_within_last: "Show observations made within last",
 		day_or_days: "day(s)",
 		limit_to_locations: "Limit to locations with observations made within last",
 		search: "Search",
+		please_enter_location: "Please enter a location.",
+		please_select_location_from_dropdown: "Please select a location from the auto-completed location field.",
+		please_enter_more_specific_location: "Please enter a more specific location.",
+		num_species_seen_at_location: "%1 bird species seen at this location in the last %2 days.",
+		no_results_found: "No results found",
 
 		// about dialog
 		contact: "Contact",
