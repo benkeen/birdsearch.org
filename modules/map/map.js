@@ -470,11 +470,12 @@ define([
 	};
 
 	var _getBirdSightingInfoWindow = function(locInfo) {
+		var numSightings = locInfo.sightings.data[_lastSearch.observationRecency].numSpeciesRunningTotal;
 		var html = _.template(allSightingsInfoWindowTemplate, {
 			L: _L,
 			locationName: locInfo.n,
 			locationID: locInfo.locationID,
-			numSpecies: locInfo.sightings.length
+			numSpecies: numSightings
 		});
 
 		// render the template
