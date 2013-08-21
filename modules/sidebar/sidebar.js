@@ -543,10 +543,18 @@ define([
 	};
 
 
+	// TODO rename
 	var _onClickHotspotRow = function() {
-		mediator.publish(_MODULE_ID, C.EVENT.LOCATION_CLICK, {
+
+		var params = {
 			locationID: _currentMouseoverLocationID
-		});
+		};
+
+		if (_currResultType === "all") {
+			params.numSpecies = _birdSearchHotspots[_currentMouseoverLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal;
+		}
+
+		mediator.publish(_MODULE_ID, C.EVENT.LOCATION_CLICK, params);
 	};
 
 

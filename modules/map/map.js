@@ -535,6 +535,15 @@ define([
 		} else {
 			google.maps.event.trigger(markers[locationID], "click");
 			openInfoWindows.push(locationID);
+
+			// TODO create the dialog here instead
+			if (_lastSearch.searchType === "all") {
+				console.log($("#loc_" + locationID + "_numSpecies"));
+
+				setTimeout(function() {
+					$("#loc_" + locationID + "_numSpecies").html(msg.data.numSpecies);
+				}, 1000);
+			}
 		}
 	};
 

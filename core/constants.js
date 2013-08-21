@@ -2,7 +2,7 @@ define([], function() {
 
 	var _CONSTANTS = {};
 
-	_CONSTANTS.DEBUG = true;
+	_CONSTANTS.DEBUG = false;
 
 	_CONSTANTS.CORE = {
 		APP_VERSION:  "1.1.0",
