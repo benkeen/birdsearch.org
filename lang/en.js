@@ -17,6 +17,14 @@ define([], function() {
 		last_seen: "Last Seen",
 		days: "days",
 		day: "day",
+		locations_seen: "Locations Seen",
+		num_reported: "# Reported",
+		last: "last",
+		seen_at: "seen at",
+		status: "Status",
+		confirmed: "Confirmed",
+		reviewed: "Reviewed",
+		not_reviewed: "Not reviewed",
 
 		// sidebar
 		bird_sightings: "Bird sightings",
@@ -24,6 +32,10 @@ define([], function() {
 		more_search_options: "More search options &raquo;",
 		location: "Location",
 		select_unselect_all: "Select / Unselect all",
+		show_obs_made_within_last: "Show observations made within last",
+		day_or_days: "day(s)",
+		limit_to_locations: "Limit to locations with observations made within last",
+		search: "Search",
 
 		// about dialog
 		contact: "Contact",
@@ -37,6 +49,13 @@ define([], function() {
 		make_comment: "Make a comment on <a href=\"http://www.benjaminkeen.com/ebirdsearch-org/\">this post</a>, or email me at <a href=\"mailto:ben.keen@gmail.com\">ben.keen@gmail.com</a>.",
 		have_fun: "Have fun!",
 		close: "Close",
+		thanks_homies: "Thanks, homies.",
+		thanks_blurb: "This website is almost entirely JS, CSS + HTML, with a couple of server-side pages (PHP) thrown in to handle conversion of eBird API data into JSON. The following is a list of all the open source scripts and resources used. A <b>big</b> thanks to all the developers for your work. You rock. May your first child be a masculine child, and all that.",
+		thanks_footer: "Lastly, <span class=\"cornellThanks\">a huge thanks to the <b>Cornell Lab of Ornithology</b> for creating their <a href=\"https://confluence.cornell.edu/display/CLOISAPI/eBird+API+1.1\" target=\"_blank\">public API</a></span>, which makes this site possible.",
+
+		// map
+		view_bird_species: "View bird species seen at this location",
+		view_full_info: "View full information",
 
 		// footer
 		site_not_affiliated_with_ebird: "All data courtesy of %1"

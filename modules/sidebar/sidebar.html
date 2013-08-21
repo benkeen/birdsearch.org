@@ -23,7 +23,7 @@
 	<!-- optional search options for the "All bird sightings" and "Notable sightings" search option -->
 	<div id="observationRecencySection" style="display:none">
 		<label for="observationRecency">
-			Show observations made within last <span id="observationRecencyDisplay">7</span> day(s)
+			<%=L.show_obs_made_within_last%> <span id="observationRecencyDisplay">7</span> <%=L.day_or_days%>
 		</label>
 		<ol class="rangeTip">
 			<li class="rangeTipLeft">1</li>
@@ -39,7 +39,7 @@
 	<div id="hotspotActivitySection" style="display:none">
 		<input type="checkbox" id="limitHotspotsByObservationRecency" />
 		<label for="limitHotspotsByObservationRecency">
-			Limit to locations with observations made within last <span id="hotspotActivityRecencyDisplay">7</span> day(s)
+			<%=L.limit_to_locations%> <span id="hotspotActivityRecencyDisplay">7</span> <%=L.day_or_days%>
 		</label>
 		<ol class="rangeTip">
 			<li class="rangeTipLeft">1</li>
@@ -51,7 +51,7 @@
 	</div>
 
 	<div style="margin-top: 10px;">
-		<input type="submit" class="btn btn-primary" id="searchBtn" value="Search &raquo;" />
+		<input type="submit" class="btn btn-primary" id="searchBtn" value="<%=L.search%> &raquo;" />
 		<span id="loadingSpinner"></span>
 	</div>
 </div>

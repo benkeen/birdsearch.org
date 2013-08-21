@@ -8,7 +8,7 @@
 				<%=L.notable_sightings%>
 			<% } %>
 		</h1>
-		<h2>last <%=searchObservationRecency%> days</h2>
+		<h2><%=L.last%> <%=searchObservationRecency%> <% if (searchObservationRecency == 1) { %><%=L.day%><% } else {%><%=L.days%><% } %></h2>
 		<div class="clear"></div>
 	</div>
 </div>
@@ -22,7 +22,7 @@
 			<th><%=L.scientific_name%></th>
 			<th><%=L.reported_by%></th>
 			<th><%=L.date%></th>
-			<th>Status</th>
+			<th><%=L.status%></th>
 		</thead>
 		<tbody>
 		<% _.each(sightings, function(sighting, index) { %>
@@ -35,11 +35,11 @@
 			<td nowrap><%=sighting.obsDt%></td>
 			<td>
 				<% if (sighting.obsValid) { %>
-					<span class="confirmed">Confirmed</span>
+					<span class="confirmed"><%=L.confirmed%></span>
 				<% } else if (sighting.obsReviewed) { %>
-					<span class="reviewed">Reviewed</span>
+					<span class="reviewed"><%=L.reviewed%></span>
 				<% } else if (!sighting.obsReviewed) { %>
-					<span class="not_reviewed">Not reviewed</span>
+					<span class="not_reviewed"><%=L.not_reviewed%></span>
 				<% } %>
 			</td>
 		</tr>

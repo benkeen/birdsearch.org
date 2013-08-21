@@ -2,7 +2,7 @@
 	<div class="modal-header">
 		<ul id="aboutDialogTabs">
 			<li data-tab="about" class="btn btn-primary"><%=L.about_birdsearch%></li>
-			<li data-tab="thanks" class="btn">Thanks!</li>
+			<li data-tab="thanks" class="btn"><%=L.thanks%></li>
 			<li data-tab="contact" class="btn"><%=L.contact%></li>
 		</ul>
 	</div>
@@ -37,12 +37,9 @@
 		</div>
 
 		<div class="modalTab hidden" id="thanksTabContent">
-			<h2>Thanks, homies.</h2>
+			<h2><%=L.thanks_homies%></h2>
 			<p>
-				This website is almost entirely JS, CSS + HTML, with a couple of server-side pages (PHP) thrown in to handle
-				conversion of eBird API data into JSON. The following is a list of all the open source scripts
-				and resources used. A <b>big</b> thanks to all the developers for your work. You rock. May your
-				first child be a masculine child, and all that.
+				<%=L.thanks_blurb%>
 			</p>
 
 			<ul style="float:left; width: 47%">
@@ -65,9 +62,7 @@
 			<div class="clear"></div>
 
 			<p>
-				Lastly, <span class="cornellThanks">a huge thanks to the <b>Cornell Lab of Ornithology</b> for creating their
-				<a href="https://confluence.cornell.edu/display/CLOISAPI/eBird+API+1.1" target="_blank">public API</a></span>,
-				which makes this site possible.
+				<%=L.thanks_footer%>
 			</p>
 		</div>
 

@@ -2,7 +2,6 @@
 	<table class="tablesorter tablesorter-bootstrap table table-striped" id="hotspotTableHeader">
 	<thead>
 		<tr>
-			<% if (showCheckboxColumn) { %><th width="20" class="{ sorter: false }"><input type="checkbox" class="toggle" checked="checked" title="<%=L.select_unselect_all%>" /></th><% } %>
 			<th><%=L.location.toUpperCase()%></th>
 			<% if (showSpeciesColumn) { %><th class="sorter-species" width="40"></th><% } %>
 		</tr>
@@ -14,8 +13,7 @@
 		<tbody>
 		<% _.each(hotspots, function(hotspot, index) { %>
 			<tr id="location_<%=hotspot.locationID%>">
-				<% if (showCheckboxColumn) { %><td><input type="checkbox" id="row<%=index%>" checked="checked" /></td><% } %>
-				<td><label for="row<%=index%>"><%=hotspot.n%></label></td>
+				<td><label><%=hotspot.n%></label></td>
 				<% if (showSpeciesColumn) { %><td class="sp" width="40"><span class="speciesCount"><%=hotspot.sightings.length%></span></td><% } %>
 			</tr>
 		<% }); %>

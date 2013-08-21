@@ -8,7 +8,7 @@
 				<%=L.sightings%>
 			<% } %>
 		</h1>
-		<h2>last <%=searchObservationRecency%> <% if (searchObservationRecency == 1) { %><%=L.day%><% } else {%><%=L.days%><% } %></h2>
+		<h2><%=L.last%> <%=searchObservationRecency%> <% if (searchObservationRecency == 1) { %><%=L.day%><% } else {%><%=L.days%><% } %></h2>
 		<div class="clear"></div>
 	</div>
 </div>
@@ -18,9 +18,9 @@
 		<thead>
 			<th><%=L.species%></th>
 			<th><%=L.scientific_name%></th>
-			<th class="{ sorter: false }">Locations Seen <a href="#" class="toggleBirdSpeciesLocations">(+)</a></th>
+			<th class="{ sorter: false }"><%=L.locations_seen%> <a href="#" class="toggleBirdSpeciesLocations">(+)</a></th>
 			<th width="140"><%=L.last_seen%></th>
-			<th width="80"># Reported</th>
+			<th width="80"><%=L.num_reported%></th>
 		</thead>
 		<tbody>
 		<% _.each(sightings, function(sighting, index) { %>
@@ -28,7 +28,7 @@
 			<td class="species"><%=sighting.comName%></td>
 			<td><%=sighting.sciName%></td>
 			<td>
-				Seen at <%= sighting.obs.length %> locations
+				<%=L.seen_at%> <%= sighting.obs.length %> <%= if (sighting.obs.length > 1) {%><%=L.locations%><% } else { %><%=L.location%><% } %>
 				<div class="birdLocations hidden"><%= sighting.locations.join("<br />") %></div>
 			</td>
 			<td nowrap>
