@@ -11,10 +11,12 @@ define([
 	var _L = {};
 
 	var _run = function() {
-		require([helper.getCurrentLangFile()], function(L) {
+		var currentLangFile = helper.getCurrentLangFile();
+		require([currentLangFile], function(L) {
 			_L = L;
 			var tmpl = _.template(template, {
-				L: _L
+				L: _L,
+				currentLangFile: currentLangFile
 			});
 			$("header").html(tmpl);
 			_addEventHandlers();

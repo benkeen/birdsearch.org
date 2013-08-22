@@ -15,8 +15,6 @@ requirejs.config({
 		// page components
 		header: "modules/header/header",
 		headerTemplate: "modules/header/header.html",
-		footer: "modules/footer/footer",
-		footerTemplate: "modules/footer/footer.html",
 		sidebar: "modules/sidebar/sidebar",
 		sidebarTemplate: "modules/sidebar/sidebar.html",
 		sidebarResultsTable: "modules/sidebar/sidebarResultsTable.html",
@@ -28,6 +26,7 @@ requirejs.config({
 		mainPanel: "modules/mainPanel/mainPanel",
 		mainPanelTemplate: "modules/mainPanel/mainPanel.html",
 		birdSightingsTableTemplate: "modules/mainPanel/birdSightingsTable.html",
+		singleBirdSightingsTableTemplate: "modules/mainPanel/singleBirdSightingsTable.html",
 		notableSightingsTableTemplate: "modules/mainPanel/notableSightingsTable.html",
 		map: "modules/map/map",
 		allSightingsInfoWindowTemplate: "modules/map/allSightingsInfoWindow.html",

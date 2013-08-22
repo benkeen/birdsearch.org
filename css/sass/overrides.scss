@@ -2,11 +2,9 @@
 .table-striped tbody>tr:nth-child(odd)>th {
 	background: rgba(100,100,100,0.25);
 }
-
 body .table-hover tbody tr:hover > td {
 	background-color: #222222;
 }
-
 .modal {
 	width: 800px;
 	margin-left: -400px;
@@ -15,7 +13,6 @@ body .table-hover tbody tr:hover > td {
 	background-repeat: repeat;
 	color: #888888;
 }
-
 .modal-header {
 	border-bottom: 2px solid #0094c8;
 	padding: 9px 0px 0px;

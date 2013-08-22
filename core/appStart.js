@@ -3,7 +3,6 @@ require([
 	"page",
 	"dataCache",
 	"header",
-	"footer",
 	"sidebar",
 	"mainPanel",
 	"aboutDialog"

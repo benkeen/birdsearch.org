@@ -5,9 +5,11 @@ define([
 	"moduleHelper",
 	"text!mainPanelTemplate",
 	"text!birdSightingsTableTemplate",
+	"text!singleBirdSightingsTableTemplate",
 	"text!notableSightingsTableTemplate",
 	"map"
-], function(mediator, C, _, helper, mainTemplate, birdSightingsTableTemplate, notableSightingsTableTemplate, map) {
+], function(mediator, C, _, helper, mainTemplate, birdSightingsTableTemplate, singleBirdSightingsTableTemplate,
+			notableSightingsTableTemplate, map) {
 
 	var _MODULE_ID = "mainPanel";
 	var _currTabID = "mapTab";
@@ -34,8 +36,12 @@ define([
 			_L = L;
 
 			// insert the main panel
+			var eBirdText = L.site_not_affiliated_with_ebird.replace(/%1/, '<a href="http://ebird.org" target="_blank">eBird.org</a>');
 			var tmpl = _.template(mainTemplate, {
-				L: _L
+				L: _L,
+				eBirdText: eBirdText,
+				githubUrl: C.CORE.GITHUB_URL,
+				appVersion: C.CORE.APP_VERSION
 			});
 
 			$("#mainPanel").html(tmpl);
@@ -285,6 +291,29 @@ define([
 		_selectTab("birdSpeciesTab");
 	};
 
+	var _addBirdSightingsSingleLocationTable = function(locationID) {
+		var searchObservationRecency = _lastSearchInfo.searchOptions.allAndNotable.observationRecency;
+
+		// contains 30 days of sightings
+		var currLocationSpeciesInfo = _getLocationSpeciesList(locationID, searchObservationRecency);
+
+		var html = _.template(singleBirdSightingsTableTemplate, {
+			isSingleLocation: true,
+			locationName: _birdData[locationID].n,
+			lat: _birdData[locationID].lat,
+			lng: _birdData[locationID].lng,
+			searchObservationRecency: searchObservationRecency,
+			sightings: sightings,
+			L: _L
+		});
+
+		// update the tab
+		$("#birdSpeciesTabContent").html(html);
+
+		// request the main panel change the tab
+		_selectTab("birdSpeciesTab");
+	};
+
 
 	var _onNotableMarkersAdded = function(msg) {
 		_lastNotableSearch = msg.data;
@@ -302,7 +331,8 @@ define([
 
 
 	var _onHotspotMarkersAdded = function(msg) {
-		$("#birdSpeciesTab").html("Bird Species").removeClass("btn").addClass("disabledTab");
+		_lastBirdSearch = msg.data;
+		$("#birdSpeciesTab").html(_L.bird_species).removeClass("btn").addClass("hidden disabledTab");
 	};
 
 
@@ -312,9 +342,8 @@ define([
 		}
 
 		var locationID = msg.data.locationID;
-
 		if (_lastSearchInfo.resultType === "all") {
-			// TODO
+			_addBirdSightingsSingleLocationTable(locationID);
 		} else if (_lastSearchInfo.resultType === "notable") {
 			_addNotableSightingsSingleLocationTable(locationID);
 		}
@@ -350,7 +379,7 @@ define([
 
 		var numSpecies = _getUniqueSpeciesCount();
 		if (numSpecies > 0) {
-			$("#birdSpeciesTab").html("Bird Sightings (" + numSpecies + ")").removeClass("disabledTab").addClass("btn");
+			$("#birdSpeciesTab").html(_L.bird_species + " (" + numSpecies + ")").removeClass("hidden disabledTab").addClass("btn");
 			_addBirdSightingsTable();
 		} else {
 
@@ -406,6 +435,15 @@ define([
 			$(".lastSeenDetails,.howManyDetails").addClass("hidden");
 		}
 	};
+
+
+	var _convertSingleLocationSightings = function(data) {
+
+		var currLocationSpeciesInfo = _getLocationSpeciesList(locationID, _birdSearchObsRecency);
+		console.log("----");
+		console.log(currLocationSpeciesInfo);
+	};
+
 
 
 	mediator.register(_MODULE_ID, {

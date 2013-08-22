@@ -143,3 +143,17 @@
 .lastSeenDetails, .howManyDetails {
 	font-size: 8pt;
 }
+
+#eBirdText {
+	float: right;
+	font-size: 8pt;
+	margin-right: 21px;
+	span {
+		background-color: #555555;
+		border-radius: 5px;
+		padding: 2px 8px;
+		color: white;
+		margin-right: 8px;
+		text-decoration: none;
+	}
+}

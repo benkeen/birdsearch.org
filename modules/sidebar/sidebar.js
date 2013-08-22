@@ -505,9 +505,8 @@ define([
 		if (_sidebarResultPanelOffsetHeight === null) {
 			var headerHeight  = $("header").height(); // won't change
 			var messageBar    = $("#messageBar").height(); // won't change
-			var footerHeight  = $("footer").height(); // won't change
 			var padding = 80;
-			_sidebarResultPanelOffsetHeight = headerHeight + messageBar + footerHeight + padding;
+			_sidebarResultPanelOffsetHeight = headerHeight + messageBar + padding;
 		}
 
 		var searchPanel  = $("#searchPanel").height();
@@ -699,7 +698,7 @@ define([
 	 * Helper function to update the location's row in the sidebar table and the map modal.
 	 */
 	var _updateVisibleLocationInfo = function(locationID, numSpecies) {
-		var title = L.num_species_seen_at_location.replace(/%1/, numSpecies);
+		var title = _L.num_species_seen_at_location.replace(/%1/, numSpecies);
 		title = title.replace(/%2/, _lastSearchObsRecency);
 
 		var row = $("#location_" + locationID);

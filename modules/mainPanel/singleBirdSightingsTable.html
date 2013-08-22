@@ -1,0 +1,30 @@
+<div class="fixedHeader">
+	<div>
+		<h1>
+			<a href="#" class="showNotableSightingsTable"><%=L.sightings%></a> <span class="joiner">&raquo;</span> <%= locationName %>
+		</h1>
+		<h2><%= L.last %> <%= searchObservationRecency%> <% if (searchObservationRecency == 1) { %><%= L.day %><% } else { %><%= L.days %><% } %></h2>
+		<div class="clear"></div>
+	</div>
+</div>
+
+<div class="fixedContent">
+	<table class="birdSightingsTable table table-striped table-hover">
+		<thead>
+			<th><%=L.species%></th>
+			<th><%=L.scientific_name%></th>
+			<th width="140"><%=L.last_seen%></th>
+			<th width="80"><%=L.num_reported%></th>
+		</thead>
+		<tbody>
+		<% _.each(sightings, function(sighting, index) { %>
+		<tr>
+			<td class="species"><%=sighting.comName%></td>
+			<td><%=sighting.sciName%></td>
+			<td nowrap><%=sighting.mostRecentObservationTime%></td>
+			<td><%=sighting.howManyCount%></td>
+		</tr>
+		<% }); %>
+		</tbody>
+	</table>
+</div>
