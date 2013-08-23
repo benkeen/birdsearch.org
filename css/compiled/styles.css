@@ -20,6 +20,9 @@ a:hover {
   color: #990000;
   text-decoration: none; }
 
+.tablesorter thead th {
+  cursor: pointer; }
+
 body .well {
   background: rgba(0, 0, 0, 0.3);
   box-shadow: 0 1px 4px rgba(40, 40, 40, 0.8);

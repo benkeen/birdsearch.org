@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 			'process-html-template': {
 				options: {
 					data: {
-						ENV: "DEV", // PROD / DEV
+						ENV: "PROD", // PROD / DEV
 						NOW: Math.round(new Date().getTime() / 1000)
 					}
 				},

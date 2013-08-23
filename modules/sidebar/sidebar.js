@@ -373,6 +373,11 @@ define([
 				height: _getSidebarResultsPanelHeight()
 			});
 			$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
+
+			try {
+				$("#hotspotTableBody").trigger("destroy");
+			} catch (e) { }
+			$("#hotspotTableBody").tablesorter();
 		} else {
 			$("#fullPageSearchResults").addClass("hidden");
 		}
@@ -586,7 +591,10 @@ define([
 
 		// if we didn't just put through a new request, the user just searched a subset of what's already been loaded
 		if (!hasAtLeastOneRequest) {
-			$('#hotspotTable').trigger("update").trigger("appendCache"); // for tablesort
+			try {
+				$("#hotspotTableBody").trigger("destroy");
+			} catch (e) { }
+			$("#hotspotTableBody").tablesorter();
 			helper.stopLoading();
 
 			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {

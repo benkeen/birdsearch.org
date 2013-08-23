@@ -23,6 +23,8 @@
     <script src="libs/html5shiv.js"></script>
     <script src="libs/modernizr-2.0.6.min.js"></script>
     <script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="libs/jquery.tablesorter.min.js"></script>
+	<script src="libs/jquery.tablesorter.widgets.js"></script>
     <script src="libs/spinners.min.js"></script>
     <script src="libs/gmaps.inverted.circle.min.js"></script>
     <script src="libs/bootstrap-modal.js"></script>
