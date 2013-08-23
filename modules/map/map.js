@@ -137,6 +137,7 @@ define([
 
 	var _addEventHandlers = function() {
 		$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
+		$(document).on("click", ".viewLocationSightingDetails", _onClickViewLocationSightings);
 	};
 
 	var _onClickViewFullNotableDetails = function(e) {
@@ -147,6 +148,16 @@ define([
 			locationID: locationID
 		});
 	};
+
+	var _onClickViewLocationSightings = function(e) {
+		e.preventDefault();
+		var locationID = $(e.target).data("locationId");
+
+		mediator.publish(_MODULE_ID, C.EVENT.MAP.VIEW_SIGHTINGS_SINGLE_LOCATION, {
+			locationID: locationID
+		});
+	};
+
 
 	var _onMapBoundsChange = function() {
 		if (_searchStarted) {

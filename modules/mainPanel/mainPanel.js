@@ -26,6 +26,7 @@ define([
 		subscriptions[C.EVENT.INIT_SEARCH] = _onInitSearch;
 		subscriptions[C.EVENT.SELECT_TAB] = _onRequestTabChange;
 		subscriptions[C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION] = _showNotableSightingsSingleLocationTable;
+		subscriptions[C.EVENT.MAP.VIEW_SIGHTINGS_SINGLE_LOCATION] = _showBirdSightingsSingleLocationTable;
 		subscriptions[C.EVENT.MAP.NOTABLE_MARKERS_ADDED] = _onNotableMarkersAdded;
 		subscriptions[C.EVENT.MAP.HOTSPOT_MARKERS_ADDED] = _onHotspotMarkersAdded;
 		subscriptions[C.EVENT.LOCATION_CLICK] = _onLocationClick;
@@ -77,6 +78,10 @@ define([
 			_addNotableSightingsTable();
 		});
 		$("#birdSpeciesTabContent").on('click', '.toggleBirdSpeciesLocations', _onClickToggleBirdSpeciesLocations);
+		$("#birdSpeciesTabContent").on("click", ".showBirdSightingsTable", function(e) {
+			e.preventDefault();
+			_addBirdSightingsTable();
+		});
 	};
 
 
@@ -255,6 +260,15 @@ define([
 		_addNotableSightingsSingleLocationTable(locationID);
 	};
 
+	/**
+	 * Shows bird sightings from a single location.
+	 * @param msg
+	 * @private
+	 */
+	var _showBirdSightingsSingleLocationTable = function(msg) {
+		var locationID = msg.data.locationID;
+		_addBirdSightingsSingleLocationTable(locationID);
+	};
 
 	var _addNotableSightingsSingleLocationTable = function(locationID) {
 		var searchObservationRecency = _lastNotableSearch.lastSearchObservationRecency;
@@ -295,7 +309,17 @@ define([
 		var searchObservationRecency = _lastSearchInfo.searchOptions.allAndNotable.observationRecency;
 
 		// contains 30 days of sightings
-		var currLocationSpeciesInfo = _getLocationSpeciesList(locationID, searchObservationRecency);
+		var results =_getLocationSpeciesList(locationID, searchObservationRecency);
+
+		// now convert the sightings into an array
+		var sightings = [];
+		for (var sciName in results.species) {
+			var observationDate = moment(results.species[sciName].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
+			results.species[sciName].obsDateFormatted = observationDate;
+			sightings.push(results.species[sciName]);
+		}
+
+		sightings.sort(function(a, b) { return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1; });
 
 		var html = _.template(singleBirdSightingsTableTemplate, {
 			isSingleLocation: true,
@@ -374,7 +398,7 @@ define([
 	};
 
 	var _onBirdSightingsLoaded = function(msg) {
-		_birdData = msg.data.birdData;
+		_birdData = $.extend(true, {}, msg.data.birdData);
 		_birdSearchObsRecency = msg.data.observationRecency;
 
 		var numSpecies = _getUniqueSpeciesCount();

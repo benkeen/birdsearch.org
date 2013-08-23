@@ -37,6 +37,7 @@ define([], function() {
 		day_or_days: "jour(s)",
 		limit_to_locations: "Limiter aux endroits avec les observations faites dans les",
 		search: "Rechercher",
+		please_enter_location_search_default: "Entrer un emplacement",
 		please_enter_location: "S'il vous plaît entrer un emplacement.",
 		please_select_location_from_dropdown: "S'il vous plaît sélectionnez un emplacement dans le champ Emplacement auto-complété.",
 		please_enter_more_specific_location: "S'il vous plaît entrer une localisation plus précise.",

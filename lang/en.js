@@ -37,6 +37,7 @@ define([], function() {
 		day_or_days: "day(s)",
 		limit_to_locations: "Limit to locations with observations made within last",
 		search: "Search",
+		please_enter_location_search_default: "Please enter a location",
 		please_enter_location: "Please enter a location.",
 		please_select_location_from_dropdown: "Please select a location from the auto-completed location field.",
 		please_enter_more_specific_location: "Please enter a more specific location.",

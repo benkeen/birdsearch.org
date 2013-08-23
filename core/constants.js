@@ -25,7 +25,8 @@ define([], function() {
 			BIRD_MARKERS_ADDED: 'map-bird-markers-added',
 			NOTABLE_MARKERS_ADDED: 'map-notable-markers-added',
 			HOTSPOT_MARKERS_ADDED: 'map-hotspot-markers-added',
-			VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION: 'view-notable-sighting-single-location'
+			VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION: 'view-notable-sighting-single-location',
+			VIEW_SIGHTINGS_SINGLE_LOCATION: 'view-sightings-single-location'
 		},
 
 		LOCATION_MOUSEOVER: 'location-mouseover',
