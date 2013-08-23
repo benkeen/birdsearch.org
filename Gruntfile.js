@@ -22,6 +22,8 @@ module.exports = function(grunt) {
 						'libs/html5shiv.js',
 						'libs/modernizr-2.0.6.min.js',
 						'libs/jquery-ui-1.10.3.custom.min.js',
+						'libs/jquery.tablesorter.min.js',
+						'libs/jquery.tablesorter.widgets.js',
 						'libs/spinners.min.js',
 						'libs/gmaps.inverted.circle.min.js',
 						'libs/bootstrap-modal.js',
