@@ -43,6 +43,7 @@ define([
 	// stores all map-related data, grouped by search type
 	var _data = {
 		all: {
+			defaultZoomLevel: 11,
 			circleRadius: 60000,
 			lastSearch: [],
 			infoWindows: {},
@@ -50,6 +51,7 @@ define([
 			markers: {}
 		},
 		notable: {
+			defaultZoomLevel: 7,
 			circleRadius: 250000,
 			lastSearch: [],
 			infoWindows: {},
@@ -57,6 +59,7 @@ define([
 			markers: {}
 		},
 		hotspots: {
+			defaultZoomLevel: 11,
 			circleRadius: 60000,
 			lastSearch: [],
 			infoWindows: {},
@@ -207,10 +210,12 @@ define([
 		_searchStarted = true;
 		if (msg.data.viewportObj) {
 			_map.fitBounds(msg.data.viewportObj);
+
 		} else {
 			_map.setCenter(msg.data.locationObj);
-			_map.setZoom(12); // good for notable...
 		}
+
+		_map.setZoom(_data[_lastSearch.searchType].defaultZoomLevel);
 
 		_addSearchRangeIndicator();
 
