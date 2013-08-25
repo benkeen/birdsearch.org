@@ -168,6 +168,9 @@ define([
 
 	var _onAutoComplete = function() {
 		var currPlace = _autoComplete.getPlace();
+		if (!currPlace.geometry) {
+			return;
+		}
 		_viewportObj = currPlace.geometry.viewport;
 		_locationObj = currPlace.geometry.location;
 
@@ -175,9 +178,6 @@ define([
 		// it may not be valid
 		_lastSearchNumAddressComponents = null;
 		if (_locationField[0].value !== '' && currPlace !== null) {
-			if (!currPlace.geometry) {
-				return;
-			}
 			_lastSearchNumAddressComponents = currPlace.address_components.length;
 		}
 	};
@@ -656,6 +656,10 @@ define([
 			var observationTime = parseInt(moment(response[i].obsDt, "YYYY-MM-DD HH:mm").format("X"), 10);
 			var difference = _CURRENT_SERVER_TIME - observationTime;
 			var daysAgo = Math.ceil(difference / _ONE_DAY_IN_SECONDS); // between 1 and 30
+
+			// sometimes users seem to be able to input future-dated observations (presumably by screwing up AM + PM)
+			// so daysAgo can, actually be zero. This prevents that edge case
+			var daysAgo = (daysAgo < 1) ? 1 : daysAgo;
 			sightingsData[daysAgo-1].obs.push(response[i]);
 		}
 
