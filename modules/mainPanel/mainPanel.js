@@ -348,6 +348,11 @@ define([
 
 		// request the main panel change the tab
 		_selectTab("birdSpeciesTab");
+
+		try {
+			$("#birdSightings").trigger("destroy");
+		} catch (e) { }
+		$("#birdSightings").tablesorter();
 	};
 
 

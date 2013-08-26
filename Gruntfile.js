@@ -6,12 +6,11 @@ module.exports = function(grunt) {
 			'process-html-template': {
 				options: {
 					data: {
-						ENV: "PROD", // PROD / DEV
-						NOW: Math.round(new Date().getTime() / 1000)
+						ENV: "DEV" // PROD / DEV
 					}
 				},
 				files: {
-					'index.html': ['index.template.tpl']
+					'index.php': ['index.template.tpl']
 				}
 			}
 		},

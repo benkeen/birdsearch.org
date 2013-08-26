@@ -59,6 +59,9 @@ define([], function() {
 		thanks_homies: "Merci!",
 		thanks_blurb: "Ce site est presque entièrement JS, CSS + HTML, avec un couple de pages côté serveur (PHP) jetés pour gérer la conversion de eBird données API en JSON. Ce qui suit est une liste de tous les scripts open source et les ressources utilisées. A <b>grand</b> merci à tous les développeurs pour vos travaux. Vous roche.",
 		thanks_footer: "Enfin, <span class=\"cornellThanks\"> un grand merci à la <b>Cornell Lab of Ornithology</b> pour créer leur <a href=\"https://confluence.cornell.edu/display/CLOISAPI/eBird+API+1.1\" target=\"blank\">API publique</a></span>, ce qui rend ce site possible.",
+		help_translate: "Help Translate",
+		translate_para1: "If you're interested in helping translate this site, I'd love to hear from you! The currently available languages are all generated via Google Translate, so they're probably pretty low quality. All the source code for this site (text included) is found on <a href=\"https://github.com/benkeen/birdsearch.org\" target=\"_blank\">github, here</a>. All you need to do is \"fork\" the repository (i.e. make a copy of it), add or modify a <a href=\"https://github.com/benkeen/birdsearch.org/tree/master/lang\">translation file</a> and send it back to me via a \"pull request\".",
+		translate_para2: "It sounds a little technical, but it's actually exceedingly simple. If you have any questions, feel free to <a href=\"mailto:ben.keen@gmail.com\">drop me a line</a>! :)",
 
 		// map
 		view_bird_species: "Voir les espèces d'oiseaux observées à cet endroit",

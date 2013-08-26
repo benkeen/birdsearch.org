@@ -8,7 +8,7 @@
     <link href="css/compiled/styles.css" rel="stylesheet" type="text/css" />
     <link href="css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
 </head>
-<body data-serverdatetime="<%=NOW%>">
+<body data-serverdatetime="<?php echo date('U'); ?>">
 
     <header></header>
     <section id="sidebar"></section>

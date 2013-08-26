@@ -145,7 +145,7 @@ body .well-pad {
     margin: -3px 5px 0px 4px; }
   #resultTypeGroup label {
     display: inline-block;
-    color: #666666; }
+    color: #777777; }
   #resultTypeGroup .selected label {
     color: #efefef;
     text-shadow: 1px 1px 3px black; }
@@ -191,7 +191,7 @@ body .well-pad {
 
 #searchOptionsLink {
   font-size: 11px;
-  color: #777777; }
+  color: #888888; }
   #searchOptionsLink:hover {
     color: #b2d0ff;
     text-decoration: none; }
