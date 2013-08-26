@@ -107,6 +107,11 @@ define([
 	var _addEventHandlers = function() {
 		_autoComplete = new google.maps.places.Autocomplete(_locationField[0]);
 		google.maps.event.addListener(_autoComplete, 'place_changed', _onAutoComplete);
+		$(_locationField[0]).on("keydown", function(e) {
+			if (e.keyCode == 13) {
+				e.preventDefault();
+			}
+		});
 
 		_searchBtn.on("click", _submitForm);
 		_observationRecencyField.on("change", _onChangeRecencyField);
