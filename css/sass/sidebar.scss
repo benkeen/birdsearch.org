@@ -95,7 +95,7 @@ body .well-pad {
 		margin-top: 2px;
 	}
 }
-#hotspotTableRows tr {
+#sidebarResultsTable tr {
 	cursor: pointer;
 	height: 22px;
 }
@@ -225,23 +225,21 @@ body .well-pad {
 	float: right;
 }
 
-#hotspotTable td, #hotspotTable th {
-	padding: 0px;
-	font-size: 12px;
-}
-#hotspotTable td label {
-	margin: 0px;
-	font-size: 12px;
-}
-#hotspotTableHeader {
-	margin-bottom: 0px;
-}
-#hotspotTableBody {
-	margin-bottom: 0px;
-}
-#hotspotTableRows {
+#sidebarResults {
 	overflow-y: auto;
 	label:hover {
 		color: white;
 	}
+}
+
+#sidebarResultsTable td, #sidebarResultsTable th {
+	padding: 0px;
+	font-size: 12px;
+}
+#sidebarResultsTable td label {
+	margin: 0px;
+	font-size: 12px;
+}
+#sidebarResultsTable {
+	margin-bottom: 0px;
 }

@@ -104,7 +104,7 @@ body .well-pad {
   .speciesCount canvas {
     margin-top: 2px; }
 
-#hotspotTableRows tr {
+#sidebarResultsTable tr {
   cursor: pointer;
   height: 22px; }
 
@@ -207,24 +207,21 @@ body .well-pad {
 #loadingSpinner {
   float: right; }
 
-#hotspotTable td, #hotspotTable th {
+#sidebarResults {
+  overflow-y: auto; }
+  #sidebarResults label:hover {
+    color: white; }
+
+#sidebarResultsTable td, #sidebarResultsTable th {
   padding: 0px;
   font-size: 12px; }
 
-#hotspotTable td label {
+#sidebarResultsTable td label {
   margin: 0px;
   font-size: 12px; }
 
-#hotspotTableHeader {
+#sidebarResultsTable {
   margin-bottom: 0px; }
-
-#hotspotTableBody {
-  margin-bottom: 0px; }
-
-#hotspotTableRows {
-  overflow-y: auto; }
-  #hotspotTableRows label:hover {
-    color: white; }
 
 #mapTabContent, #birdSpeciesTabContent {
   width: 100%;

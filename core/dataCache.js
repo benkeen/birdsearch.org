@@ -45,6 +45,7 @@ define([
 			locations[currLocationID].sightings.push({
 				comName: data[i].comName,
 				sciName: data[i].sciName,
+				obsDt_unixtime: moment(data[i].obsDt, 'YYYY-MM-DD HH:mm').unix(),
 				obsDt: moment(data[i].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, h:mm a'),
 				obsReviewed: data[i].obsReviewed,
 				obsValid: data[i].obsValid,
@@ -57,8 +58,6 @@ define([
 		for (var locID in locations) {
 			foundLocations.push(locations[locID]);
 		}
-
-		console.log(foundLocations);
 
 		return foundLocations;
 	};
@@ -82,6 +81,7 @@ define([
 			notableSightingsData[currLocationID].sightings.push({
 				comName: data[i].comName,
 				sciName: data[i].sciName,
+				obsDt_unixtime: moment(data[i].obsDt, 'YYYY-MM-DD HH:mm').unix(),
 				obsDt: moment(data[i].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, h:mm a'),
 				obsReviewed: data[i].obsReviewed,
 				obsValid: data[i].obsValid,

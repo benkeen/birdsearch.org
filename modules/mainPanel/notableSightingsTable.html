@@ -22,7 +22,7 @@
 				<th>#</th>
 				<th><%=L.scientific_name%></th>
 				<th><%=L.reported_by%></th>
-				<th><%=L.date%></th>
+				<th class="customdate"><%=L.date%></th>
 				<th><%=L.status%></th>
 			</tr>
 		</thead>
@@ -34,7 +34,7 @@
 			<td><%=sighting.howMany%></td>
 			<td><%=sighting.sciName%></td>
 			<td><%=sighting.reporterName%></td>
-			<td nowrap><%=sighting.obsDt%></td>
+			<td data-u="<%=sighting.obsDt_unixtime%>" nowrap><%=sighting.obsDt%></td>
 			<td>
 				<% if (sighting.obsValid) { %>
 					<span class="confirmed"><%=L.confirmed%></span>

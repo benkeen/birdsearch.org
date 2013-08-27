@@ -9,6 +9,33 @@ require([
 ], function(mediator) {
 	"use strict";
 
+	$.tablesorter.addParser({
+		// use a unique id
+		id: 'customdate',
+		is: function(s, table, cell) {
+			return true;
+		},
+		format: function(s, table, cell, cellIndex) {
+			var u = $(cell).data("u");
+			if (u) {
+				return parseInt(u, 10);
+			}
+		},
+		type: 'numeric'
+	});
+
+	$.tablesorter.addParser({
+		id: 'species',
+		is: function() {
+			return false;
+		},
+		format: function(s, table, cell) {
+			return $(cell).find("div").text();
+		},
+		type: 'numeric'
+	});
+
+
 	// start 'er up!
 	mediator.start();
 });

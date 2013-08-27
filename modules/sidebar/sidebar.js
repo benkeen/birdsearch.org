@@ -4,8 +4,7 @@ define([
 	"moduleHelper",
 	"text!sidebarTemplate",
 	"text!sidebarResultsTable",
-	"text!birdSightingsSidebarTableTemplate"
-], function(mediator, C, helper, sidebarTemplate, sidebarResultsTableTemplate, birdSightingsSidebarTableTemplate) {
+], function(mediator, C, helper, sidebarTemplate, sidebarResultsTableTemplate) {
 	"use strict";
 
 	var _MODULE_ID = "sidebar";
@@ -60,7 +59,8 @@ define([
 			_L = L;
 
 			var tmpl = _.template(sidebarTemplate, {
-				L: _L
+				L: _L,
+				resultsPanelHeight: _getSidebarResultsPanelHeight()
 			});
 
 			// render the template
@@ -119,10 +119,10 @@ define([
 		_resultTypeGroup.on("change", "li", _onClickResultTypeGroupRow);
 		_searchOptionsLink.on("click", _toggleSearchOptions);
 
-		var searchResults = $("#fullPageSearchResults");
-		searchResults.on("mouseover", "#hotspotTableBody tr", _onHoverLocationRow);
-		searchResults.on("mouseout", "#hotspotTableBody tr", _onHoverOutLocationRow);
-		searchResults.on("click", "#hotspotTableBody tr", _onClickHotspotRow);
+		var searchResults = $("#sidebarResults");
+		searchResults.on("mouseover", "#sidebarResultsTable tbody tr", _onHoverLocationRow);
+		searchResults.on("mouseout", "#sidebarResultsTable tbody tr", _onHoverOutLocationRow);
+		searchResults.on("click", "#sidebarResultsTable tbody tr", _onClickHotspotRow);
 	};
 
 
@@ -377,14 +377,15 @@ define([
 				L: _L,
 				height: _getSidebarResultsPanelHeight()
 			});
-			$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
+			$("#sidebarResults").html(tmpl).removeClass("hidden").fadeIn(300);
 
-			try {
-				$("#hotspotTableBody").trigger("destroy");
-			} catch (e) { }
-			$("#hotspotTableBody").tablesorter();
+//			try {
+//				$("#sidebarResultsTable").trigger("destroy");
+//			} catch (e) { }
+//			$("#sidebarResultsTable").tablesorter();
 		} else {
-			$("#fullPageSearchResults").addClass("hidden");
+
+			$("#sidebarResults").addClass("hidden");
 		}
 	};
 
@@ -407,12 +408,13 @@ define([
 		}
 
 		// add the table to the page
-		var tmpl = _.template(birdSightingsSidebarTableTemplate, {
+		var tmpl = _.template(sidebarResultsTableTemplate, {
 			L: _L,
-			height: _getSidebarResultsPanelHeight(),
+			asyncLoading: true,
+			showSpeciesColumn: true,
 			hotspots: templateData
 		});
-		$("#fullPageSearchResults").html(tmpl).removeClass("hidden").fadeIn(300);
+		$("#sidebarResults").html(tmpl).removeClass("hidden").fadeIn(300);
 
 		// instantiate any spinners for rows that haven't loaded yet
 		var notLoaded = $(".notLoaded .speciesCount");
@@ -426,7 +428,7 @@ define([
 				padding: 0,
 				rotation: 1400,
 				fadeOutSpeed: 0,
-				color: '#222222'
+				color: "#222222"
 			}).play();
 		}
 
@@ -441,7 +443,7 @@ define([
 			helper.startLoading();
 
 			var searchType = _getResultType();
-			if (searchType === "all" || searchType === "notasble") {
+			if (searchType === "all" || searchType === "notable") {
 				_lastSearchObsRecency = _observationRecencyField.val();
 			} else {
 				_lastSearchObsRecency = _hotspotActivity.val();
@@ -504,8 +506,7 @@ define([
 		} else {
 			$('#sidebar').css('height', 'auto');
 		}
-
-		$("#hotspotTableRows").css({
+		$("#hotspotTable").css({
 			height: _getSidebarResultsPanelHeight
 		});
 	};
@@ -554,6 +555,9 @@ define([
 
 	// TODO rename
 	var _onClickHotspotRow = function() {
+		if (_currentMouseoverLocationID === null) {
+			return;
+		}
 
 		var params = {
 			locationID: _currentMouseoverLocationID
@@ -596,10 +600,10 @@ define([
 
 		// if we didn't just put through a new request, the user just searched a subset of what's already been loaded
 		if (!hasAtLeastOneRequest) {
-			try {
-				$("#hotspotTableBody").trigger("destroy");
-			} catch (e) { }
-			$("#hotspotTableBody").tablesorter();
+//			try {
+//				$("#sidebarResultsTable").trigger("destroy");
+//			} catch (e) { }
+//			$("#sidebarResultsTable").tablesorter();
 			helper.stopLoading();
 
 			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
@@ -691,8 +695,14 @@ define([
 		_updateVisibleLocationInfo(locationID, response.length);
 
 		if (_checkAllObservationsLoaded()) {
-			// let the tablesort know to re-parse the hotspot table
-			$("#hotspotTable").trigger("update").trigger("appendCache");
+//			try {
+//				$("#sidebarResultsTable").trigger("destroy");
+//			} catch (e) { }
+//			$("#sidebarResultsTable").tablesorter({
+//				headers: {
+//					1: { sorter: 'species' }
+//				}
+//			});
 			helper.stopLoading();
 
 			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
@@ -752,6 +762,9 @@ define([
 		return allLoaded;
 	};
 
+	var _sortTable = function(el) {
+
+	};
 
 	mediator.register(_MODULE_ID, {
 		init: _init

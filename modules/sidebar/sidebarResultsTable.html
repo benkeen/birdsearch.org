@@ -1,23 +1,24 @@
-<div id="hotspotTable">
-	<table class="tablesorter tablesorter-bootstrap table table-striped" id="hotspotTableHeader">
+<table class="tablesorter tablesorter-bootstrap table table-striped" id="sidebarResultsTable">
 	<thead>
-		<tr>
-			<th><%=L.location.toUpperCase()%></th>
-			<% if (showSpeciesColumn) { %><th class="sorter-species" width="40"></th><% } %>
-		</tr>
+	<tr>
+		<th><%=L.location.toUpperCase()%></th>
+		<% if (showSpeciesColumn) { %><th width="40" class="sorter-species" style="text-align:right"><%=L.count.toUpperCase()%></th><% } %>
+	</tr>
 	</thead>
-	</table>
-
-	<div id="hotspotTableRows" style="height:<%=height%>px">
-		<table class="tablesorter tablesorter-bootstrap table table-striped" id="hotspotTableBody">
-		<tbody>
-		<% _.each(hotspots, function(hotspot, index) { %>
-			<tr id="location_<%=hotspot.locationID%>">
-				<td><label><%=hotspot.n%></label></td>
-				<% if (showSpeciesColumn) { %><td class="sp" width="40"><span class="speciesCount"><%=hotspot.sightings.length%></span></td><% } %>
-			</tr>
-		<% }); %>
-		</tbody>
-		</table>
-	</div>
-</div>
+	<tbody>
+	<% _.each(hotspots, function(hotspot, index) { %>
+		<tr id="location_<%=hotspot.locationID%>" class="<%=hotspot.rowClass%>">
+			<td class="loadingStatus"><label><%=hotspot.n%></label></td>
+			<% if (showSpeciesColumn) { %>
+			<td class="sp">
+				<% if (asyncLoading) { %>
+					<div id="spinner_<%=hotspot.locationID%>" class="speciesCount"><%=hotspot.numSpeciesWithinRange%></div>
+				<% } else { %>
+					<div class="speciesCount"><%=hotspot.sightings.length%></div>
+				<% } %>
+			</td>
+			<% } %>
+		</tr>
+	<% }); %>
+	</tbody>
+</table>

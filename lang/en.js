@@ -43,6 +43,7 @@ define([], function() {
 		please_enter_more_specific_location: "Please enter a more specific location.",
 		num_species_seen_at_location: "%1 bird species seen at this location in the last %2 days.",
 		no_results_found: "No results found",
+		count: "Count",
 
 		// about dialog
 		contact: "Contact",
