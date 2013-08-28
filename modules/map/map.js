@@ -486,7 +486,7 @@ define([
 	};
 
 	var _getBirdSightingInfoWindow = function(locInfo) {
-		var numSightings = locInfo.sightings.data[_lastSearch.observationRecency].numSpeciesRunningTotal;
+		var numSightings = locInfo.sightings.data[_lastSearch.observationRecency-1].numSpeciesRunningTotal;
 		var html = _.template(allSightingsInfoWindowTemplate, {
 			L: _L,
 			locationName: locInfo.n,

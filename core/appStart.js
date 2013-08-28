@@ -10,11 +10,8 @@ require([
 	"use strict";
 
 	$.tablesorter.addParser({
-		// use a unique id
-		id: 'customdate',
-		is: function(s, table, cell) {
-			return true;
-		},
+		id: "customdate",
+		is: function() { return false; },
 		format: function(s, table, cell, cellIndex) {
 			var u = $(cell).data("u");
 			if (u) {
@@ -26,15 +23,12 @@ require([
 
 	$.tablesorter.addParser({
 		id: 'species',
-		is: function() {
-			return false;
-		},
+		is: function() { return false; },
 		format: function(s, table, cell) {
 			return $(cell).find("div").text();
 		},
 		type: 'numeric'
 	});
-
 
 	// start 'er up!
 	mediator.start();

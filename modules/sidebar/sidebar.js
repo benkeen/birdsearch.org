@@ -60,7 +60,7 @@ define([
 
 			var tmpl = _.template(sidebarTemplate, {
 				L: _L,
-				resultsPanelHeight: _getSidebarResultsPanelHeight()
+				resultsPanelHeight: 0
 			});
 
 			// render the template
@@ -245,15 +245,18 @@ define([
 		var resultTypeValue = _getResultType();
 		if (resultTypeValue === "all" || resultTypeValue === "notable") {
 			if (_searchOptionsEnabled) {
-				$("#observationRecencySection").hide("blind");
+				// temporarily increase the height of the sidebar results so there isn't a gap as the options slide up
+				$("#sidebarResults").css({height: _getSidebarResultsPanelHeight() + 40 });
+				$("#observationRecencySection").hide("blind", _onSearchOptionsToggled);
 			} else {
-				$("#observationRecencySection").show("blind");
+				$("#observationRecencySection").show("blind", _onSearchOptionsToggled);
 			}
 		} else if (resultTypeValue === "hotspots") {
 			if (_searchOptionsEnabled) {
-				$("#hotspotActivitySection").hide("blind");
+				$("#sidebarResults").css({height: _getSidebarResultsPanelHeight() + 40 });
+				$("#hotspotActivitySection").hide("blind", _onSearchOptionsToggled);
 			} else {
-				$("#hotspotActivitySection").show("blind");
+				$("#hotspotActivitySection").show("blind", _onSearchOptionsToggled);
 			}
 		}
 
@@ -265,6 +268,10 @@ define([
 		}
 
 		_searchOptionsEnabled = !_searchOptionsEnabled;
+	};
+
+	var _onSearchOptionsToggled = function() {
+		$("#sidebarResults").css({height: _getSidebarResultsPanelHeight() });
 	};
 
 
@@ -374,15 +381,11 @@ define([
 				showCheckboxColumn: opts.showCheckboxColumn,
 				showSpeciesColumn: opts.showSpeciesColumn,
 				hotspots: visibleHotspots,
-				L: _L,
-				height: _getSidebarResultsPanelHeight()
+				asyncLoading: false,
+				L: _L
 			});
-			$("#sidebarResults").html(tmpl).removeClass("hidden").fadeIn(300);
-
-//			try {
-//				$("#sidebarResultsTable").trigger("destroy");
-//			} catch (e) { }
-//			$("#sidebarResultsTable").tablesorter();
+			$("#sidebarResults").html(tmpl).removeClass("hidden").css({height: _getSidebarResultsPanelHeight() }).fadeIn(300);
+			_sortTable("#sidebarResultsTable");
 		} else {
 
 			$("#sidebarResults").addClass("hidden");
@@ -414,7 +417,7 @@ define([
 			showSpeciesColumn: true,
 			hotspots: templateData
 		});
-		$("#sidebarResults").html(tmpl).removeClass("hidden").fadeIn(300);
+		$("#sidebarResults").html(tmpl).removeClass("hidden").css({height: _getSidebarResultsPanelHeight() }).fadeIn(300);
 
 		// instantiate any spinners for rows that haven't loaded yet
 		var notLoaded = $(".notLoaded .speciesCount");
@@ -502,7 +505,7 @@ define([
 
 	var _onResize = function(msg) {
 		if (msg.data.viewportMode === "desktop") {
-			$('#sidebar').css('height', msg.data.height - 77);
+			$('#sidebar').css('height', msg.data.height - 60);
 		} else {
 			$('#sidebar').css('height', 'auto');
 		}
@@ -514,15 +517,14 @@ define([
 
 	var _getSidebarResultsPanelHeight = function() {
 		if (_sidebarResultPanelOffsetHeight === null) {
-			var headerHeight  = $("header").height(); // won't change
-			var messageBar    = $("#messageBar").height(); // won't change
-			var padding = 80;
+			var headerHeight = $("header").height(); // won't change
+			var messageBar   = $("#messageBar").height(); // won't change
+			var padding      = 50;
 			_sidebarResultPanelOffsetHeight = headerHeight + messageBar + padding;
 		}
 
 		var searchPanel  = $("#searchPanel").height();
 		var windowHeight = $(window).height();
-
 		return windowHeight - (_sidebarResultPanelOffsetHeight + searchPanel);
 	};
 
@@ -600,10 +602,7 @@ define([
 
 		// if we didn't just put through a new request, the user just searched a subset of what's already been loaded
 		if (!hasAtLeastOneRequest) {
-//			try {
-//				$("#sidebarResultsTable").trigger("destroy");
-//			} catch (e) { }
-//			$("#sidebarResultsTable").tablesorter();
+			_sortTable("#sidebarResultsTable");
 			helper.stopLoading();
 
 			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
@@ -695,14 +694,7 @@ define([
 		_updateVisibleLocationInfo(locationID, response.length);
 
 		if (_checkAllObservationsLoaded()) {
-//			try {
-//				$("#sidebarResultsTable").trigger("destroy");
-//			} catch (e) { }
-//			$("#sidebarResultsTable").tablesorter({
-//				headers: {
-//					1: { sorter: 'species' }
-//				}
-//			});
+			_sortTable("#sidebarResultsTable"); // headers: { 1: { sorter: 'species' } }
 			helper.stopLoading();
 
 			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
@@ -763,8 +755,12 @@ define([
 	};
 
 	var _sortTable = function(el) {
-
+		try {
+			$(el).trigger("destroy");
+		} catch (e) { }
+		$(el).tablesorter();
 	};
+
 
 	mediator.register(_MODULE_ID, {
 		init: _init

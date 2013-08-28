@@ -158,11 +158,7 @@ define([
 		// update the tab
 		$("#birdSpeciesTab").html(_L.bird_sightings + " (" + sightings.length + ")");
 		$("#birdSpeciesTabContent").html(html);
-
-		try {
-			$("#notableSightings").trigger("destroy");
-		} catch (e) { }
-		$("#notableSightings").tablesorter();
+		_sortTable("#notableSightings");
 	};
 
 
@@ -250,10 +246,7 @@ define([
 
 		// update the tab
 		$("#birdSpeciesTabContent").html(html);
-		try {
-			$("#birdSightings").trigger("destroy");
-		} catch (e) { }
-		$("#birdSightings").tablesorter();
+		_sortTable("#birdSightings");
 	};
 
 
@@ -307,11 +300,7 @@ define([
 
 		// update the tab
 		$("#birdSpeciesTabContent").html(html);
-
-		try {
-			$("#notableSightings").trigger("destroy");
-		} catch (e) { }
-		$("#notableSightings").tablesorter();
+		_sortTable("#notableSightings");
 
 		// request the main panel change the tab
 		_selectTab("birdSpeciesTab");
@@ -348,11 +337,7 @@ define([
 
 		// request the main panel change the tab
 		_selectTab("birdSpeciesTab");
-
-		try {
-			$("#birdSightings").trigger("destroy");
-		} catch (e) { }
-		$("#birdSightings").tablesorter();
+		_sortTable("#birdSightings");
 	};
 
 
@@ -422,8 +407,6 @@ define([
 		if (numSpecies > 0) {
 			$("#birdSpeciesTab").html(_L.bird_species + " (" + numSpecies + ")").removeClass("hidden disabledTab").addClass("btn");
 			_addBirdSightingsTable();
-		} else {
-
 		}
 	};
 
@@ -438,10 +421,8 @@ define([
 
 		for (var locationID in _birdData) {
 			var sightingsData = _birdData[locationID].sightings.data;
-
 			for (var j=0; j<=_birdSearchObsRecency-1; j++) {
 				var currDaySightings = sightingsData[j].obs;
-
 				for (var k=0; k<currDaySightings.length; k++) {
 					if (!uniqueSpeciesInAllLocations.hasOwnProperty(currDaySightings[k].sciName)) {
 						uniqueSpeciesInAllLocations[currDaySightings[k].sciName] = null;
@@ -450,7 +431,6 @@ define([
 				}
 			}
 		}
-
 		return numUniqueSpeciesInAllLocations;
 	};
 
@@ -474,6 +454,14 @@ define([
 			$(".lastSeenSingle,.howManySingle").css("visibility", "visible");
 			$(".lastSeenDetails,.howManyDetails").addClass("hidden");
 		}
+	};
+
+
+	var _sortTable = function(el) {
+		try {
+			$(el).trigger("destroy");
+		} catch (e) { }
+		$(el).tablesorter();
 	};
 
 	mediator.register(_MODULE_ID, {

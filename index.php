@@ -16,21 +16,16 @@
     <footer></footer>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places,geometry"></script>
+    <script src="libs/require-jquery.min.js" data-main="appStartProd"></script>
     
-    <script src="libs/require-jquery.min.js" data-main="appStart"></script>
     <script src="core/requireConfig.js"></script>
+
     
-    <script src="libs/html5shiv.js"></script>
-    <script src="libs/modernizr-2.0.6.min.js"></script>
-    <script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
-	<script src="libs/jquery.tablesorter.min.js"></script>
-	<script src="libs/jquery.tablesorter.widgets.js"></script>
-    <script src="libs/spinners.min.js"></script>
-    <script src="libs/gmaps.inverted.circle.min.js"></script>
-    <script src="libs/bootstrap-modal.js"></script>
-    <script src="libs/bootstrap-transition.js"></script>
+
+	
+    <script src="libs/core-libs.min.js"></script>
     
-    
+
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -19,20 +19,24 @@
     <% if (ENV == "PROD") { %><script src="libs/require-jquery.min.js" data-main="appStartProd"></script><% } %>
     <% if (ENV == "DEV") { %><script src="libs/require-jquery.min.js" data-main="appStart"></script><% } %>
     <script src="core/requireConfig.js"></script>
+
     <% if (ENV == "DEV") { %>
     <script src="libs/html5shiv.js"></script>
     <script src="libs/modernizr-2.0.6.min.js"></script>
     <script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
 	<script src="libs/jquery.tablesorter.min.js"></script>
 	<script src="libs/jquery.tablesorter.widgets.js"></script>
+	<script src="libs/jquery.metadata.js"></script>
     <script src="libs/spinners.min.js"></script>
     <script src="libs/gmaps.inverted.circle.min.js"></script>
     <script src="libs/bootstrap-modal.js"></script>
     <script src="libs/bootstrap-transition.js"></script>
     <% } %>
-    <% if (ENV == "PROD") { %>
+
+	<% if (ENV == "PROD") { %>
     <script src="libs/core-libs.min.js"></script>
     <% } %>
+
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
