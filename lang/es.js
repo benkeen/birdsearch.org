@@ -43,6 +43,7 @@ define([], function() {
 		please_enter_more_specific_location: "Por favor, introduzca una ubicación más específica.",
 		num_species_seen_at_location: "%1 avistamiento de aves en este lugar en los últimos %2 días.",
 		no_results_found: "No hay resultados",
+		count: "Contar",
 
 		// about dialog
 		contact: "Contacto",
@@ -59,9 +60,9 @@ define([], function() {
 		thanks_homies: "¡Gracias!",
 		thanks_blurb: "Este sitio web es casi en su totalidad JS, CSS + HTML, con un par de páginas del lado del servidor (PHP) tirado para manejar la conversión de datos de eBird API en JSON. La siguiente es una lista de todos los scripts de código abierto y los recursos utilizados. A <b>grande</b>, gracias a todos los desarrolladores para su trabajo. You rock. Que tu primer hijo sea un chico, y todo eso.",
 		thanks_footer: "Por último, <span class=\"cornellThanks\">un enorme gracias a la <b>Cornell Lab of Ornithology</b> para la creación de su <a href=\"https://confluence.cornell.edu/display/CLOISAPI/eBird+API+1.1\" target=\"_blank\">API pública</a></span>, que hace posible este sitio.",
-		help_translate: "Help Translate",
-		translate_para1: "If you're interested in helping translate this site, I'd love to hear from you! The currently available languages are all generated via Google Translate, so they're probably pretty low quality. All the source code for this site (text included) is found on <a href=\"https://github.com/benkeen/birdsearch.org\" target=\"_blank\">github, here</a>. All you need to do is \"fork\" the repository (i.e. make a copy of it), add or modify a <a href=\"https://github.com/benkeen/birdsearch.org/tree/master/lang\">translation file</a> and send it back to me via a \"pull request\".",
-		translate_para2: "It sounds a little technical, but it's actually exceedingly simple. If you have any questions, feel free to <a href=\"mailto:ben.keen@gmail.com\">drop me a line</a>! :)",
+		help_translate: "Help Traducir",
+		translate_para1: "Si usted está interesado en ayudar a traducir este sitio, me encantaría saber de usted! Los idiomas disponibles son generados a través de Google Translate, por lo que son probablemente muy baja calidad. Todo el código fuente de este sitio (texto incluido) se encuentra en <a href=\"https://github.com/benkeen/birdsearch.org\" target=\"_blank\">github, aquí</a>. Todo lo que necesitas hacer es \"tenedor\" el repositorio (es decir, hacer una copia de la misma), añadir o modificar un <a href=\"https://github.com/benkeen/birdsearch.org/tree/master/lang\">archivo de traducción</a> y enviar de nuevo a mí a través de un \"pull request\".",
+		translate_para2: "Suena un poco técnico, pero en realidad es sumamente sencillo. Si usted tiene alguna pregunta, no dude en <a href=\"mailto:ben.keen@gmail.com\">mándenme una línea</a>! :)",
 
 		// map
 		view_bird_species: "Ver el avistamiento de aves en este lugar",
