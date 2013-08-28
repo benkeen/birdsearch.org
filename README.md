@@ -6,13 +6,12 @@ to birdsearch.org once 1.1.0 is complete.
 
 ## Versions
 
-### v1.1.0
-Currently under development (August 2013). This is a complete re-write of the script to better organize the code,
+### v1.1.1
+This is a complete re-write of the script to better organize the code,
 improve the site design and add some functionality. It includes the following additions over 1.0.0:
 
 - Three search types: "bird sightings", "notable sightings", "popular birding locations"
 - advanced search functionality
-- option to share search results, via URL
 - multi-language support
 - more accurate results based on lat/lng instead of human addresses (but the interface still has a simple address
 search)
@@ -37,13 +36,15 @@ After checking out this repo, in your command line go to the root folder and typ
 This command will look at the `package.json` file and ensure that all dependencies have been downloaded and are available.
 It creates a node_modules folder. Don't bother checking that in.
 
-`grunt`
-Running this command will execute the default tasks specified in your `gruntfile.js`. Take a look at the file to see.
+`grunt dev`
+`grunt prod`
+Running either of these commands will execute the default tasks specified in your `gruntfile.js` to set up the particular
+environment.
 
 In addition to doing the bundling of some core JS files, executing this command also *re-generates your index.php file*.
 This is important! To allow the script to run in both DEV and PROD modules (one without any bundling, one with), the
 `grunt-template` task re-generates the index.php file from `index.template.tpl`. To change this from PROD to DEV, just
-tweak that value in the `gruntfile.js.
+run `grunt dev`.
 
 ### Misc notes
 - James Burke (requireJS author) recommends using a custom build folder when running the optimizer, since it can overwrite

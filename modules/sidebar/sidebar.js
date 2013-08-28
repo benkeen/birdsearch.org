@@ -605,8 +605,9 @@ define([
 			_sortTable("#sidebarResultsTable");
 			helper.stopLoading();
 
+			var locations = _getVisibleLocationData();
 			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
-				birdData: _birdSearchHotspots,
+				birdData: locations,
 				observationRecency: _lastSearchObsRecency
 			});
 		}
@@ -694,14 +695,30 @@ define([
 		_updateVisibleLocationInfo(locationID, response.length);
 
 		if (_checkAllObservationsLoaded()) {
-			_sortTable("#sidebarResultsTable"); // headers: { 1: { sorter: 'species' } }
+			_sortTable("#sidebarResultsTable");
 			helper.stopLoading();
 
+			// get the subset of locations currently on the map
+			var locations = _getVisibleLocationData();
+
 			mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
-				birdData: _birdSearchHotspots,
+				birdData: locations, // _birdSearchHotspots,
 				observationRecency: _lastSearchObsRecency
 			});
 		}
+	};
+
+	var _getVisibleLocationData = function() {
+		var locIds = [];
+		for (var i=0; i<_visibleLocations.length; i++) {
+			locIds.push(_visibleLocations[i].locationID);
+		}
+
+		var locationData = {};
+		for (var i=0; i<locIds.length; i++) {
+			locationData[locIds[i]] = _birdSearchHotspots[locIds[i]];
+		}
+		return locationData;
 	};
 
 
