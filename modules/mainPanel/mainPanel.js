@@ -316,6 +316,7 @@ define([
 		var sightings = [];
 		for (var sciName in results.species) {
 			var observationDate = moment(results.species[sciName].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
+			results.species[sciName].obsDt_unixtime = moment(results.species[sciName].obsDt, 'YYYY-MM-DD HH:mm').unix();
 			results.species[sciName].obsDateFormatted = observationDate;
 			sightings.push(results.species[sciName]);
 		}
@@ -442,6 +443,7 @@ define([
 	var _onClickToggleBirdSpeciesLocations = function(e) {
 		e.preventDefault();
 
+
 		// find out if this is the header or just a table row
 		if ($(e.target).html() === '(+)') {
 			$(e.target).html("(-)");
@@ -462,6 +464,9 @@ define([
 			$(el).trigger("destroy");
 		} catch (e) { }
 		$(el).tablesorter();
+
+		// cancel the sort event for when the user clicks the +/-
+		$("#birdSpeciesTabContent .toggleBirdSpeciesLocations").on("mouseup", function(e) { e.stopImmediatePropagation(); });
 	};
 
 	mediator.register(_MODULE_ID, {

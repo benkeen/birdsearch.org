@@ -22,6 +22,7 @@ define([
 
 			var html = _.template(template, {
 				L: _L,
+				version: C.CORE.APP_VERSION,
 				className: className,
 				about_para1: aboutPara1,
 				about_para4: aboutPara4

@@ -13,7 +13,7 @@
 		<thead>
 			<th><%=L.species%></th>
 			<th><%=L.scientific_name%></th>
-			<th width="140"><%=L.last_seen%></th>
+			<th class="{ sorter: 'customdate' }" width="140"><%=L.last_seen%></th>
 			<th width="80"><%=L.num_reported%></th>
 		</thead>
 		<tbody>
@@ -21,7 +21,7 @@
 		<tr>
 			<td class="species"><%=sighting.comName%></td>
 			<td><%=sighting.sciName%></td>
-			<td nowrap><%=sighting.obsDateFormatted%></td>
+			<td data-u="<%=sighting.obsDt_unixtime%>" nowrap><%=sighting.obsDateFormatted%></td>
 			<td><%=sighting.howMany%></td>
 		</tr>
 		<% }); %>

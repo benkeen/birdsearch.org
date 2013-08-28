@@ -3,10 +3,20 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		template: {
-			'process-html-template': {
+			dev: {
 				options: {
 					data: {
-						ENV: "PROD" // PROD / DEV
+						ENV: "DEV"
+					}
+				},
+				files: {
+					'index.php': ['index.template.tpl']
+				}
+			},
+			prod: {
+				options: {
+					data: {
+						ENV: "PROD"
 					}
 				},
 				files: {
@@ -52,5 +62,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-template');
 	grunt.registerTask('default', ['uglify', 'requirejs', 'template']);
+	grunt.registerTask('dev', ['uglify', 'requirejs', 'template:dev']);
+	grunt.registerTask('prod', ['uglify', 'requirejs', 'template:prod']);
 
 };
