@@ -135,7 +135,8 @@ body .well-pad {
 
 #resultTypeGroup {
   margin: 0px 0px 4px;
-  padding: 0px; }
+  padding: 0px;
+  list-style-type: none; }
   #resultTypeGroup li:hover label {
     color: #b2d0ff;
     text-shadow: 1px 1px 3px black; }
