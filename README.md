@@ -1,14 +1,13 @@
 # birdsearch.org
 
 This is an experiment to try different ways of viewing eBird data to provide a better understanding of
-bird sightings and distribution. Right now the website is found at ebirdsearch.org, but it will soon be moved
-to birdsearch.org once 1.1.0 is complete.
+bird sightings and distribution.
 
 ## Versions
 
 ### v1.1.1
-This is a complete re-write of the script to better organize the code,
-improve the site design and add some functionality. It includes the following additions over 1.0.0:
+This is a complete re-write of the script to better organize the code, improve the site design and add a little
+functionality. It includes the following additions over 1.0.0:
 
 - Three search types: "bird sightings", "notable sightings", "popular birding locations"
 - advanced search functionality
