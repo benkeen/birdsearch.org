@@ -16,10 +16,7 @@
     <footer></footer>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places,geometry"></script>
-    <% if (ENV == "PROD") { %><script src="libs/require-jquery.min.js" data-main="appStartProd"></script><% } %>
-    <% if (ENV == "DEV") { %><script src="libs/require-jquery.min.js" data-main="appStart"></script><% } %>
-    <script src="core/requireConfig.js"></script>
-
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <% if (ENV == "DEV") { %>
     <script src="libs/html5shiv.js"></script>
     <script src="libs/modernizr-2.0.6.min.js"></script>
@@ -36,6 +33,10 @@
 	<% if (ENV == "PROD") { %>
     <script src="libs/core-libs.min.js"></script>
     <% } %>
+
+	<% if (ENV == "PROD") { %><script src="libs/require.min.js" data-main="appStartProd"></script><% } %>
+	<% if (ENV == "DEV") { %><script src="libs/require.min.js" data-main="appStart"></script><% } %>
+	<script src="core/requireConfig.js"></script>
 
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
