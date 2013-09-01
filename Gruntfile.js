@@ -60,6 +60,7 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-md5');
 	grunt.loadNpmTasks('grunt-template');
 	grunt.registerTask('default', ['uglify', 'requirejs', 'template']);
 	grunt.registerTask('dev', ['uglify', 'requirejs', 'template:dev']);
