@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
 
-	grunt.initConfig({
+
+	var config = {
 		pkg: grunt.file.readJSON('package.json'),
 		template: {
 			dev: {
@@ -10,24 +11,25 @@ module.exports = function(grunt) {
 					}
 				},
 				files: {
-					'index.php': ['index.template.tpl']
+					'index.php': ['grunt_templates/index.template.tpl']
 				}
 			},
 			prod: {
 				options: {
 					data: {
-						ENV: "PROD"
+						ENV: "PROD",
+						APP_START_PATH: ""
 					}
 				},
 				files: {
-					'index.php': ['index.template.tpl']
+					'index.php': ['grunt_templates/index.template.tpl']
 				}
 			}
 		},
 		uglify: {
 			my_target: {
 				files: {
-					'libs/core-libs.min.js': [
+					'build/core-js.min.js': [
 						'libs/html5shiv.js',
 						'libs/modernizr-2.0.6.min.js',
 						'libs/jquery-ui-1.10.3.custom.min.js',
@@ -37,26 +39,42 @@ module.exports = function(grunt) {
 						'libs/spinners.min.js',
 						'libs/gmaps.inverted.circle.min.js',
 						'libs/bootstrap-modal.js',
-						'libs/bootstrap-transition.js'
+						'libs/bootstrap-transition.js',
+						'libs/require.min.js',
+						'core/requireConfig.js'
 					]
 				}
 			},
 			options: {
 				report: "min",
-				compress: false
+					compress: false
+			}
+		},
+		md5: {
+			prod: {
+				files: {
+					'build/appStart.min.js': 'build/appStart.min.js'
+				},
+				options: {
+					after: function(fileChanges) {
+						config.template.prod.options.data.APP_START_PATH = fileChanges[0].newPath;
+					}
+				}
 			}
 		},
 		requirejs: {
 			compile: {
 				options: {
 					name: "core/appStart",
-					baseUrl: "./",
-					mainConfigFile: "core/requireConfig.js",
-					out: "./core/appStart.min.js"
+						baseUrl: "./",
+						mainConfigFile: "core/requireConfig.js",
+						out: "./build/appStart.min.js"
 				}
 			}
 		}
-	});
+	};
+
+	grunt.initConfig(config);
 
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -64,6 +82,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-template');
 	grunt.registerTask('default', ['uglify', 'requirejs', 'template']);
 	grunt.registerTask('dev', ['uglify', 'requirejs', 'template:dev']);
-	grunt.registerTask('prod', ['uglify', 'requirejs', 'template:prod']);
+	grunt.registerTask('prod', ['uglify', 'requirejs', 'md5', 'template:prod']);
 
 };

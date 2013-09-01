@@ -4,8 +4,6 @@ requirejs.config({
 
 		// core stuff
 		text: "libs/text",
-		appStart: "core/appStart",
-		appStartProd: "core/appStart.min",
 		mediator: "core/mediator",
 		dataCache: "core/dataCache",
 		page: "core/page",
@@ -18,10 +16,8 @@ requirejs.config({
 		sidebar: "modules/sidebar/sidebar",
 		sidebarTemplate: "modules/sidebar/sidebar.html",
 		sidebarResultsTable: "modules/sidebar/sidebarResultsTable.html",
-
 		aboutDialog: "modules/aboutDialog/about",
 		aboutTemplate: "modules/aboutDialog/about.html",
-
 		mainPanel: "modules/mainPanel/mainPanel",
 		mainPanelTemplate: "modules/mainPanel/mainPanel.html",
 		birdSightingsTableTemplate: "modules/mainPanel/birdSightingsTable.html",
