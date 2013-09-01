@@ -210,7 +210,6 @@ define([
 		_searchStarted = true;
 		if (msg.data.viewportObj) {
 			_map.fitBounds(msg.data.viewportObj);
-
 		} else {
 			_map.setCenter(msg.data.locationObj);
 		}

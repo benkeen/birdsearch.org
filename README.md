@@ -5,7 +5,9 @@ bird sightings and distribution.
 
 ## Versions
 
-### v1.1.1
+
+
+### v1.1.x
 This is a complete re-write of the script to better organize the code, improve the site design and add a little
 functionality. It includes the following additions over 1.0.0:
 
@@ -15,7 +17,11 @@ functionality. It includes the following additions over 1.0.0:
 - more accurate results based on lat/lng instead of human addresses (but the interface still has a simple address
 search)
 
-### v1.0.0 - initial release
+## v1.1.2
+- bug fix for when you select an option from the dropdown, but it still tells you to select something when you submit
+the form.
+
+### v1.0.x - initial release
 You can find 1.0.0 online here:
 http://ebirdsearch.org
 

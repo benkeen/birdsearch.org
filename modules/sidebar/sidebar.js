@@ -173,10 +173,11 @@ define([
 
 	var _onAutoComplete = function() {
 		var currPlace = _autoComplete.getPlace();
+
 		if (!currPlace.geometry) {
 			return;
 		}
-		_viewportObj = currPlace.geometry.viewport;
+		_viewportObj = currPlace.geometry.hasOwnProperty("viewport") ? currPlace.geometry.viewport : null;
 		_locationObj = currPlace.geometry.location;
 
 		// keep track of the specificity of the last search. Depending on the search type (all, notable, hotspots)
@@ -312,7 +313,7 @@ define([
 
 		} else {
 			helper.showMessage(_L.no_results_found, 'notification');
-			$("#searchResults").fadeOut(300);
+			$("#sidebarResults").fadeOut(300);
 			helper.stopLoading();
 		}
 	};
@@ -483,7 +484,7 @@ define([
 			helper.showMessage(_L.please_enter_location, "error");
 			return false;
 		}
-		if (!_viewportObj || !_locationObj) {
+		if (!_viewportObj && !_locationObj) {
 			helper.showMessage(_L.please_select_location_from_dropdown, "error");
 			return false;
 		}
