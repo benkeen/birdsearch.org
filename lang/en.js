@@ -66,6 +66,16 @@ define([], function() {
 
 		// help tab
 		help: "Help",
+		help_para1: "This site lets you browse bird observations that people have submitted to <a href=\"http://ebird.org\" target=\"_blank\">eBird.org</a>. It works worldwide, but the results depend on the reports in that region. Don't see any results in your area? Then <a href=\"http://ebird.org/content/ebird/about/\" target=\"_blank\">join eBird</a> and submit your sightings!",
+		help_para2: "Searching is done through the fields in the left sidebar. Here's what each field means.",
+		location_search_field: "Location search field",
+		help_para3: "Enter the location you're interested in searching. Start typing, then select the location from the pre-populated dropdown that appears. Note: you <i>can't select entire countries</i>. For performance reasons, it won't show very large regions: instead, select a city/town or address.",
+		search_options: "Search options",
+		help_search_type_bird_sightings: "<span class=\"helpSearchType\">Bird sightings</span> return all bird sightings in that area. Note: these are only sightings made at locations flagged as \"hotspots\" within the Ebird system. Sadly, this is currently a limitation with their API.",
+		help_search_type_notable_sightings: "<span class=\"helpSearchType\">Notable sightings</span> are sightings flagged as rare or unusual for that location at that date.",
+		help_search_type_popular_birding_locations: "<span class=\"helpSearchType\">Popular birding locations</span> lists all birding locations in a region where sightings have been reported.",
+		more_search_options2: "More Search Options",
+		help_para4: "If you click on the \"more search options\" link, a new section will slide open that provides a little more control over your search. The additional options change depending on your search type.",
 
 		// map
 		view_bird_species: "View bird species seen at this location",

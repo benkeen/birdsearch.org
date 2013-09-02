@@ -64,6 +64,19 @@ define([], function() {
 		translate_para1: "Si usted está interesado en ayudar a traducir este sitio, me encantaría saber de usted! Los idiomas disponibles son generados a través de Google Translate, por lo que son probablemente muy baja calidad. Todo el código fuente de este sitio (texto incluido) se encuentra en <a href=\"https://github.com/benkeen/birdsearch.org\" target=\"_blank\">github, aquí</a>. Todo lo que necesitas hacer es \"tenedor\" el repositorio (es decir, hacer una copia de la misma), añadir o modificar un <a href=\"https://github.com/benkeen/birdsearch.org/tree/master/lang\">archivo de traducción</a> y enviar de nuevo a mí a través de un \"pull request\".",
 		translate_para2: "Suena un poco técnico, pero en realidad es sumamente sencillo. Si usted tiene alguna pregunta, no dude en <a href=\"mailto:ben.keen@gmail.com\">mándenme una línea</a>! :)",
 
+		// help tab
+		help: "Ayudar",
+		help_para1: "Este sitio le permite navegar por las observaciones de aves que la gente ha presentado a <a href=\"http://ebird.org\" target=\"_blank\">eBird.org</a>. Funciona en todo el mundo, pero los resultados dependen de los informes en esa región. Si no ves resultados en su área? Entonces <a href=\"http://ebird.org/content/ebird/about/\" target=\"_blank\">join eBird</a> y enviar sus observaciones!",
+		help_para2: "La búsqueda se realiza a través de los campos en la barra lateral izquierda. Esto es lo que significa cada campo.",
+		location_search_field: "Campo de búsqueda Localización",
+		help_para3: "Introduzca la ubicación en la que está interesado en la búsqueda. Comience a escribir, a continuación, seleccione la ubicación en la lista desplegable rellenada previamente que aparece. Nota: No puede seleccionar <i>países enteros</i>. Por motivos de rendimiento, no se mostrará regiones muy grandes: en su lugar, seleccione una ciudad / pueblo o la dirección.",
+		search_options: "Opciones de búsqueda",
+		help_search_type_bird_sightings: "<span class=\"helpSearchType\">Bird avistamientos</span> volver todos los avistamientos de aves en la zona. Nota: éstos son sólo los avistamientos realizados en lugares marcados como \"hotspots\" en el sistema de eBird. Por desgracia, esta es actualmente una limitación de su API.",
+		help_search_type_notable_sightings: "<span class=\"helpSearchType\">Avistamientos notables</span> son avistamientos marcado como rara o poco común para ese lugar en esa fecha.",
+		help_search_type_popular_birding_locations: "<span class=\"helpSearchType\">Sugerencias de observación de aves</span> listas de todos los lugares de observación de aves en una región donde se han reportado avistamientos.",
+		more_search_options2: "Más opciones de búsqueda",
+		help_para4: "Si hace clic en el \"más opciones de búsqueda\" link, una nueva sección se deslizará abierto que proporciona un poco más de control sobre su búsqueda. Las opciones cambian según el tipo de búsqueda.",
+
 		// map
 		view_bird_species: "Ver el avistamiento de aves en este lugar",
 		view_full_info: "Vea la información completa",

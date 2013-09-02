@@ -18,22 +18,11 @@
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places,geometry"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     
-	<script src="libs/html5shiv.js"></script>
-	<script src="libs/modernizr-2.0.6.min.js"></script>
-	<script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
-	<script src="libs/jquery.tablesorter.min.js"></script>
-	<script src="libs/jquery.tablesorter.widgets.js"></script>
-	<script src="libs/jquery.metadata.js"></script>
-	<script src="libs/spinners.min.js"></script>
-	<script src="libs/gmaps.inverted.circle.min.js"></script>
-	<script src="libs/bootstrap-modal.js"></script>
-	<script src="libs/bootstrap-transition.js"></script>
-	<script src="libs/require.min.js"></script>
-	<script src="core/requireConfig.js"></script>
-	
+	<script src="build/core-js.min.js"></script>
+    
 
 	
-	<script>require(["core/appStart.js"], function() {});</script>
+	<script>require(["build/appStart.min-bdd975ef2dc432abf3ccedc5e5079b27.js"], function() {});</script>
 	
 
 	    <script>

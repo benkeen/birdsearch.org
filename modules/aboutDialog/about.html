@@ -11,35 +11,26 @@
 	<div class="modal-body">
 
 		<div class="modalTab" id="helpTabContent">
-			<h2>Help</h2>
-
+			<h2><%=L.help%></h2>
 			<p>
-				This site lets you browse bird observation data submitted to <a href="http://ebird.org">eBird.org</a>.
-				It works worldwide, but the results depend on who's been using it in that region. Don't see any results
-				in your area? Then <a href="http://ebird.org/content/ebird/about/">join eBird</a> and submit your sightings!
+				<%=L.help_para1%> <%=L.help_para2%>
 			</p>
-
 			<dl>
-				<dt>Location search field</dt>
-					<dd>This is where you enter the location you're interested in. Start typing, then select the location
-					you want from the autocomplete dropdown that appears. Note: you <i>can't select entire
-					countries</i>. For performance reasons, it won't show very large regions: instead, select a city/town
-					or address.</dd>
+				<dt><%=L.location_search_field%></dt>
+				<dd><%=L.help_para3%></dd>
 
-				<dt>Search options</dt>
-					<dd>
-						This is where you choose what results you're interested in. <b>Bird Sightings</b> return all bird
-						sightings in that area. Note: these are only sightings made at locations flagged as "hotspots"
-						within the Ebird system. Sadly, this is currently a limitation with their API.
-						<b>Notable Sightings</b> are sightings flagged as rare or unusual for that location at that date.
-						<b>Popular birding locations</b> lists all locations with reported sightings.
-					</dd>
+				<dt><%=L.search_options%></dt>
+				<dd>
+					<ul>
+						<li><%=L.help_search_type_bird_sightings%></li>
+						<li><%=L.help_search_type_notable_sightings%></li>
+						<li><%=L.help_search_type_popular_birding_locations%></li>
+					</ul>
+				</dd>
 
-				<dt>More Search Options</dt>
-					<dd>If you click on the "more search options" link, a new section will slide open that provides a
-					little more control over your search. The additional options change depending on your search type.</dd>
+				<dt><%=L.more_search_options2%></dt>
+				<dd><%=L.help_para4%></dd>
 			</dl>
-
 		</div>
 
 		<div class="modalTab hidden" id="aboutTabContent">

@@ -64,6 +64,19 @@ define([], function() {
 		translate_para1: "Wenn Sie daran interessiert zu helfen, übersetzen diese Webseite sind, würde ich gerne von Ihnen hören! Die derzeit verfügbaren Sprachen sind alle über Google Translate erzeugt, so dass sie wahrscheinlich ziemlich schlechter Qualität. Der gesamte Quellcode für diese Website (Text enthalten) auf <a href=\"https://github.com/benkeen/birdsearch.org\" target=\"_blank\">github gefunden, hier</a>. Alles, was Sie tun müssen, ist \"fork\" das Repository (dh eine Kopie davon), Hinzufügen oder Ändern einer <a href=\"https://github.com/benkeen/birdsearch.org/tree/master/lang\">Übersetzung Datei</a> und senden Sie es zurück zu mir über eine \"Pull Request\".",
 		translate_para2: "Es klingt ein wenig technisch, aber es ist tatsächlich überaus einfach. Wenn Sie irgendwelche Fragen haben, zögern Sie <a href=\"mailto:ben.keen@gmail.com\">kontaktieren Sie mich</a>! :)",
 
+		// help tab
+		help: "Hilfe",
+		help_para1: "Auf dieser Website können Sie sehen, dass die Menschen Vogelbeobachtungen haben eingereicht <a href=\"http://ebird.org\" target=\"_blank\">eBird.org</a>. Es funktioniert weltweit, aber die Ergebnisse sind abhängig von den Berichten in dieser Region. Sie sehen keine Ergebnisse in Ihrer Nähe? Dann <a href=\"http://ebird.org/content/ebird/about/\" target=\"_blank\">Join eBird</a> und senden Sie Ihre Beobachtungen!",
+		help_para2: "Die Suche wird durch die Felder in der linken Seitenleiste getan. Hier ist, was jedes Feld bedeutet.",
+		location_search_field: "Ort Suchfeld",
+		help_para3: "Geben Sie den Speicherort Sie interessiert bei der Suche. Beginnen Sie, und wählen Sie dann den Ort aus der Vor-besiedelte Dropdown, das erscheint. Hinweis: Sie können nicht wählen <i>ganze Länder</i>. Aus Performance-Gründen wird es nicht zeigen sehr große Regionen: Statt, wählen Sie eine Stadt / Gemeinde oder Adresse.",
+		search_options: "Suchoptionen",
+		help_search_type_bird_sightings: "<span class=\"helpSearchType\">Vogelbeobachtungen</span> zurückgeben alle Vogel-Sichtungen in diesem Bereich. Hinweis: dies sind nur Beobachtungen an Standorten Liste als \"Hotspots\" im eBird System vorgenommen. Leider ist dies derzeit eine Einschränkung mit ihren API.",
+		help_search_type_notable_sightings: "<span class=\"helpSearchType\">Bemerkenswerte Beobachtungen</span> sind Sichtungen Liste als selten oder ungewöhnlich für diesen Ort zu diesem Zeitpunkt.",
+		help_search_type_popular_birding_locations: "<span class=\"helpSearchType\">Beliebte Vogelbeobachtung Standorten</span> listet alle Vogelbeobachtung Standorten in einer Region, wo Sichtungen gemeldet wurden.",
+		more_search_options2: "Mehr Suchoptionen",
+		help_para4: "Wenn Sie auf den \"mehr Suchoptionen\"-Link, ein neuer Abschnitt gleitet offen, die ein wenig mehr Kontrolle über Ihre Suche bietet klicken. Die zusätzlichen Optionen ändern, je nach Art Ihrer Suche.",
+
 		// map
 		view_bird_species: "Sehen Vogelarten an diesem Ort gesehen",
 		view_full_info: "Detaillierte Informationen",
