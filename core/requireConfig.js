@@ -38,6 +38,7 @@ requirejs.config({
 		lang_de: "lang/de",
 		lang_es: "lang/es"
 	},
+	urlArgs: "v=2",
 	shim: {
 		'tablesorter': "jquery"
 	}

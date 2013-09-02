@@ -66,9 +66,9 @@ module.exports = function(grunt) {
 			compile: {
 				options: {
 					name: "core/appStart",
-						baseUrl: "./",
-						mainConfigFile: "core/requireConfig.js",
-						out: "./build/appStart.min.js"
+					baseUrl: "./",
+					mainConfigFile: "core/requireConfig.js",
+					out: "./build/appStart.min.js"
 				}
 			}
 		}
