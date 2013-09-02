@@ -1,7 +1,8 @@
 <div id="aboutDialog" class="modal hide <%=className%>" tabindex="-1" role="dialog" aria-labelledby="aboutDialog" aria-hidden="true">
 	<div class="modal-header">
 		<ul id="aboutDialogTabs">
-			<li data-tab="about" class="btn btn-primary"><%=L.about_birdsearch%></li>
+			<li data-tab="help" class="btn btn-primary"><%=L.help%></li>
+			<li data-tab="about" class="btn"><%=L.about_birdsearch%></li>
 			<li data-tab="thanks" class="btn"><%=L.thanks%></li>
 			<li data-tab="translate" class="btn"><%=L.help_translate%></li>
 			<li data-tab="contact" class="btn"><%=L.contact%></li>
@@ -9,7 +10,39 @@
 	</div>
 	<div class="modal-body">
 
-		<div class="modalTab" id="aboutTabContent">
+		<div class="modalTab" id="helpTabContent">
+			<h2>Help</h2>
+
+			<p>
+				This site lets you browse bird observation data submitted to <a href="http://ebird.org">eBird.org</a>.
+				It works worldwide, but the results depend on who's been using it in that region. Don't see any results
+				in your area? Then <a href="http://ebird.org/content/ebird/about/">join eBird</a> and submit your sightings!
+			</p>
+
+			<dl>
+				<dt>Location search field</dt>
+					<dd>This is where you enter the location you're interested in. Start typing, then select the location
+					you want from the autocomplete dropdown that appears. Note: you <i>can't select entire
+					countries</i>. For performance reasons, it won't show very large regions: instead, select a city/town
+					or address.</dd>
+
+				<dt>Search options</dt>
+					<dd>
+						This is where you choose what results you're interested in. <b>Bird Sightings</b> return all bird
+						sightings in that area. Note: these are only sightings made at locations flagged as "hotspots"
+						within the Ebird system. Sadly, this is currently a limitation with their API.
+						<b>Notable Sightings</b> are sightings flagged as rare or unusual for that location at that date.
+						<b>Popular birding locations</b> lists all locations with reported sightings.
+					</dd>
+
+				<dt>More Search Options</dt>
+					<dd>If you click on the "more search options" link, a new section will slide open that provides a
+					little more control over your search. The additional options change depending on your search type.</dd>
+			</dl>
+
+		</div>
+
+		<div class="modalTab hidden" id="aboutTabContent">
 			<h2><%=L.about_birdsearch%> <span id="appVersion">(<%=version%>)</span></h2>
 
 			<div class="decorationImage">

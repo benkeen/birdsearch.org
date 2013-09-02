@@ -6,7 +6,7 @@ define([
 ], function(mediator, C, helper, template) {
 
 	var _MODULE_ID = "aboutDialog";
-	var _currTab = "about";
+	var _currTab = "help";
 	var _L = {};
 
 	var _init = function() {
