@@ -22,7 +22,7 @@
     
 
 	
-	<script>require(["build/appStart.min-bdd975ef2dc432abf3ccedc5e5079b27.js"], function() {});</script>
+	<script>require(["build/appStart.min-a6cb95564a5b434ddcd070602602c08e.js"], function() {});</script>
 	
 
 	    <script>

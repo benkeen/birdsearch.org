@@ -13,6 +13,7 @@ define([
 		require([helper.getCurrentLangFile()], function(L) {
 			_L = L;
 			var aboutPara1 = L.about_para1.replace(/%1/, '<a href="http://ebird.org" target="_blank">eBird.org</a>');
+			var aboutPara3 = L.about_para3.replace(/%1/, '<a href="http://ebird.org/content/ebird/news/hotspot-explorer/">Hotspot Explorer</a>');
 			var aboutPara4 = L.about_para4.replace(/%1/, '<a href="' + C.CORE.GITHUB_URL + '" target="_blank">github</a>');
 
 			var className = "fade";
@@ -25,6 +26,7 @@ define([
 				version: C.CORE.APP_VERSION,
 				className: className,
 				about_para1: aboutPara1,
+				about_para3: aboutPara3,
 				about_para4: aboutPara4
 			});
 
