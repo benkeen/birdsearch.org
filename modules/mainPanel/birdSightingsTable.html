@@ -27,7 +27,7 @@
 		<tr>
 			<td class="species"><%=sighting.comName%></td>
 			<td><%=sighting.sciName%></td>
-			<td>
+			<td alt="<%= sighting.locations.join('\n') %>" title="<%= sighting.locations.join('\n') %>">
 				<%= L.seen_at %> <%= sighting.obs.length %> <% if (sighting.obs.length > 1) {%><%= L.locations.toLowerCase() %><% } else { %><%= L.location.toLowerCase() %><% } %>
 				<div class="birdLocations hidden"><%= sighting.locations.join("<br />") %></div>
 			</td>

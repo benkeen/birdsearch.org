@@ -17,14 +17,13 @@ functionality. It includes the following additions over 1.0.0:
 - more accurate results based on lat/lng instead of human addresses (but the interface still has a simple address
 search)
 
-## v1.1.2
+### v1.1.2
 - bug fix for when you select an option from the dropdown, but it still tells you to select something when you submit
 the form.
 - cache-busting hash added to app-start JS file via Grunt.
 
 ### v1.0.x - initial release
-You can find 1.0.0 online here:
-http://ebirdsearch.org
+Version 1.0.x is no longer available.
 
 ## Local dev / build instructions
 
