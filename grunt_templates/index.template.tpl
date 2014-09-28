@@ -15,8 +15,9 @@
 	<section id="mainPanel"></section>
 	<footer></footer>
 
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkl7BoiKPc5Kero35JCn7KilIFx-AWUg&sensor=false&libraries=places,geometry"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=true&libraries=places,geometry"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
     <% if (ENV == "DEV") { %>
 	<script src="libs/html5shiv.js"></script>
 	<script src="libs/modernizr-2.0.6.min.js"></script>
