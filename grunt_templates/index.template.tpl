@@ -26,7 +26,7 @@
 	<script src="libs/jquery.tablesorter.widgets.js"></script>
 	<script src="libs/jquery.metadata.js"></script>
 	<script src="libs/spinners.min.js"></script>
-	<script src="libs/gmaps.inverted.circle.min.js"></script>
+	<script src="libs/gmaps.inverted.circle.js"></script>
 	<script src="libs/bootstrap-modal.js"></script>
 	<script src="libs/bootstrap-transition.js"></script>
 	<script src="libs/require.min.js"></script>

@@ -161,7 +161,6 @@ define([
 		});
 	};
 
-
 	var _onMapBoundsChange = function() {
 		if (_searchStarted) {
 			return;
@@ -198,7 +197,7 @@ define([
 
 	var _onSearch = function(msg) {
 
-		// make a note of the search type
+    // make a note of the search type
 		_lastSearch.searchType = msg.data.resultType;
 
 		var lat = msg.data.locationObj.lat();
@@ -218,7 +217,8 @@ define([
 
 		_addSearchRangeIndicator();
 
-		if (_lastSearch.searchType === "all") {
+
+    if (_lastSearch.searchType === "all") {
 			_getBirdSightings({
 				lat: lat,
 				lng: lng,

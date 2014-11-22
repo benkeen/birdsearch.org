@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 						'libs/jquery.tablesorter.widgets.js',
 						'libs/jquery.metadata.js',
 						'libs/spinners.min.js',
-						'libs/gmaps.inverted.circle.min.js',
+						'libs/gmaps.inverted.circle.js',
 						'libs/bootstrap-modal.js',
 						'libs/bootstrap-transition.js',
 						'libs/require.min.js',
