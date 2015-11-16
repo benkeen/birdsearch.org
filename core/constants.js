@@ -5,8 +5,8 @@ define([], function() {
 	_CONSTANTS.DEBUG = false;
 
 	_CONSTANTS.CORE = {
-		APP_VERSION:  "1.1.6",
-		RELEASE_DATE: "Nov 21, 2014",
+		APP_VERSION:  "1.2.0 - BETA",
+		RELEASE_DATE: "Nov 15, 2015",
 		GITHUB_URL:   "https://github.com/benkeen/birdsearch.org"
 	};
 

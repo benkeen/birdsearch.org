@@ -19,11 +19,22 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     
-	<script src="build/core-js.min.js"></script>
-    
+	<script src="libs/html5shiv.js"></script>
+	<script src="libs/modernizr-2.0.6.min.js"></script>
+	<script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="libs/jquery.tablesorter.min.js"></script>
+	<script src="libs/jquery.tablesorter.widgets.js"></script>
+	<script src="libs/jquery.metadata.js"></script>
+	<script src="libs/spinners.min.js"></script>
+	<script src="libs/gmaps.inverted.circle.js"></script>
+	<script src="libs/bootstrap-modal.js"></script>
+	<script src="libs/bootstrap-transition.js"></script>
+	<script src="libs/require.min.js"></script>
+	<script src="core/requireConfig.js"></script>
+	
 
 	
-	<script>require(["build/appStart.min-0afab6ae1dc27ef1feeb8c67599f0b97.js"], function() {});</script>
+	<script>require(["core/appStart.js"], function() {});</script>
 	
 
     <script>

@@ -77,12 +77,15 @@ define([], function() {
 		more_search_options2: "More Search Options",
 		help_para4: "If you click on the \"more search options\" link, a new section will slide open that provides a little more control over your search. The additional options change depending on your search type.",
 
+		// login / accounts
+		login: "Login",
+
 		// map
 		view_bird_species: "View bird species seen at this location",
 		view_full_info: "View full information",
 
 		// footer
-		site_not_affiliated_with_ebird: "All data courtesy of %1"
+		site_not_affiliated_with_ebird: "Data courtesy of %1"
 	};
 
 	return L;
