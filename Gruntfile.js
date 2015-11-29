@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
 
+	/*
 	var config = {
 		pkg: grunt.file.readJSON('package.json'),
 		template: {
@@ -82,4 +83,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('default', ['uglify', 'requirejs', 'template']);
 	grunt.registerTask('dev', ['uglify', 'requirejs', 'template:dev']);
 	grunt.registerTask('prod', ['uglify', 'requirejs', 'md5', 'template:prod']);
+	*/
+
 };

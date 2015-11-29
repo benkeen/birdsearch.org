@@ -13,10 +13,10 @@ define([
 	var _map;
 	var _icon = "images/marker.png";
 	var _defaultMapOptions = {
-		zoom: 4,
+		zoom: 3,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		mapTypeControlOptions: { mapTypeIds: [] },
-		center: new google.maps.LatLng(40, -95),
+		center: new google.maps.LatLng(30, 0),
 		streetViewControl: false,
 		disableDefaultUI: true,
 		panControl: true,

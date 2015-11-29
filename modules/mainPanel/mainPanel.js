@@ -22,7 +22,6 @@ define([
 
 	var _init = function() {
 		var subscriptions = {};
-		subscriptions[C.EVENT.WINDOW_RESIZE] = _resizeMainPanel;
 		subscriptions[C.EVENT.INIT_SEARCH] = _onInitSearch;
 		subscriptions[C.EVENT.SELECT_TAB] = _onRequestTabChange;
 		subscriptions[C.EVENT.MAP.VIEW_NOTABLE_SIGHTING_SINGLE_LOCATION] = _showNotableSightingsSingleLocationTable;
@@ -67,6 +66,9 @@ define([
 
 
 	var _addMainPanelEvents = function() {
+		$("#searchNearby").on("click", _searchNearby);
+		$("#searchAnywhere").on("click", _searchAnywhere);
+
 		$("#panelTabs").on("click", "li", _onClickSelectTab);
 		$("#birdSpeciesTabContent").on("click", ".filterNotableSightingByLocation", function(e) {
 			e.preventDefault();
@@ -119,20 +121,6 @@ define([
 		mediator.publish(_MODULE_ID, C.EVENT.TAB_CHANGED, { tab: _currTabID });
 	};
 
-
-	var _resizeMainPanel = function(msg) {
-		/*if (msg.data.viewportMode === "desktop") {
-			$("#locationsTab").addClass("hidden");
-			$("#mainPanel").css({
-				height: msg.data.height - 54,
-				width: msg.data.width - 318
-			});
-		} else {
-			$("#locationsTab").removeClass("hidden");
-			var panelHeight = msg.data.height - 210;
-			$("#mainPanel").css({ height: panelHeight + "px", width: "100%" });
-		}*/
-	};
 
 	var _addNotableSightingsTable = function() {
 
@@ -443,7 +431,6 @@ define([
 	var _onClickToggleBirdSpeciesLocations = function(e) {
 		e.preventDefault();
 
-
 		// find out if this is the header or just a table row
 		if ($(e.target).html() === '(+)') {
 			$(e.target).html("(-)");
@@ -467,6 +454,17 @@ define([
 
 		// cancel the sort event for when the user clicks the +/-
 		$("#birdSpeciesTabContent .toggleBirdSpeciesLocations").on("mouseup", function(e) { e.stopImmediatePropagation(); });
+	};
+
+
+	var _searchNearby = function () {
+		navigator.geolocation.getCurrentPosition(function (location) {
+			console.log(location.coords);
+		});
+	};
+
+	var _searchAnywhere = function () {
+
 	};
 
 	mediator.register(_MODULE_ID, {
