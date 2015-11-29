@@ -5,7 +5,8 @@ bird sightings and distribution.
 
 ## Versions
 
-
+### v2.0.0
+In development, 2015. 
 
 ### v1.1.x
 This is a complete re-write of the script to better organize the code, improve the site design and add a little
@@ -55,7 +56,7 @@ run `grunt dev`.
 - James Burke (requireJS author) recommends using a custom build folder when running the optimizer, since it can overwrite
 files if you're not careful. While I generally agree, I didn't do this here: the grunt task generates a custom
 `core/appStart-min.js`, bundled file of all the JS modules, then the `grunt-template` task handles re-generation of the main
-index file to link to that file instead of the unbundled `appStart.js` file.
+index file to link to that file instead of the unbundled `app-start.jsx` file.
 - The checked-in code should always be production ready, so I can just do a simple `git pull` on the main website to get
 the latest content.
 

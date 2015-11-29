@@ -4,8 +4,10 @@
 	<title>birdsearch.org</title>
 	<meta name="description" content="birdsearch.org - browse worldwide birding locations and sightings" />
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/compiled/styles.css" rel="stylesheet" type="text/css" />
+
 </head>
 <body data-serverdatetime="<?php echo date('U'); ?>">
 
@@ -15,8 +17,10 @@
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=true&libraries=places,geometry"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="dist/bundle.js"></script>
 
+<!--
 <% if (ENV == "DEV") { %>
 <script src="libs/html5shiv.js"></script>
 <script src="libs/modernizr-2.0.6.min.js"></script>
@@ -39,6 +43,7 @@
 <% } else if (ENV == "PROD") { %>
 <script>require(["<%=APP_START_PATH%>"], function() {});</script>
 <% } %>
+-->
 
 <script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
