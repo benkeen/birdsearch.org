@@ -1,24 +1,40 @@
 <div class="navbar">
-	<div class="navbar-inner">
-		<div class="container">
-			<span class="brand">bird<span>search</span>.org</span>
-			<div class="nav-collapse">
-				<ul class="nav pull-right">
-					<li class="divider-vertical"></li>
-					<li><a href="#aboutDialog" data-toggle="modal"><%=L.help%></a></li>
-					<li class="divider-vertical"></li>
-					<li><a href="#loginDialog" data-toggle="modal"><%=L.login%></a></li>
-					<li class="divider-vertical"></li>
-					<li>
-						<select id="lang">
-							<option value="en"<% if (currentLangFile === "lang_en"){%> selected="selected"<% } %>>English</option>
-							<option value="fr"<% if (currentLangFile === "lang_fr"){%> selected="selected"<% } %>>Français</option>
-							<option value="de"<% if (currentLangFile === "lang_de"){%> selected="selected"<% } %>>Deutsch</option>
-							<option value="es"<% if (currentLangFile === "lang_es"){%> selected="selected"<% } %>>Español</option>
-						</select>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
+	<h1 class="brand">birdsearch.org</h1>
 </div>
+
+<ul id="mainTabs">
+	<li id="mapTab" class="active">
+		<a href="#map"><%=L.map%></a>
+	</li>
+	<li id="locationsTab" class="disabled">
+		<a href="#locations">Locations</a>
+	</li>
+	<li id="birdSpeciesTab" class="disabled">
+		<a href="#birds">Birds</a>
+	</li>
+	<li id="accountTab">
+		<a href="#account">Account</a>
+	</li>
+	<li id="aboutTab">
+		<a href="#about">About</a>
+	</li>
+	<li id="searchTab">
+		<a href="#search">
+			<i class="glyphicon glyphicon-search"></i>
+			Search
+		</a>
+	</li>
+</ul>
+
+<!--
+<ul class="nav pull-right">
+	<li>
+		<select id="lang">
+			<option value="en"<% if (currentLangFile === "lang_en"){%> selected="selected"<% } %>>English</option>
+			<option value="fr"<% if (currentLangFile === "lang_fr"){%> selected="selected"<% } %>>Français</option>
+			<option value="de"<% if (currentLangFile === "lang_de"){%> selected="selected"<% } %>>Deutsch</option>
+			<option value="es"<% if (currentLangFile === "lang_es"){%> selected="selected"<% } %>>Español</option>
+		</select>
+	</li>
+</ul>
+-->

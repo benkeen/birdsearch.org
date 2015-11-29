@@ -1,0 +1,11 @@
+body {
+  display: flex;
+  flex-direction: row; }
+
+#leftPanel {
+  flex: 0 0 310px; }
+
+#mainPanel {
+  flex: 1; }
+
+/*# sourceMappingURL=layout.css.map */

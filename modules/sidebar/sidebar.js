@@ -505,14 +505,14 @@ define([
 
 
 	var _onResize = function(msg) {
-		if (msg.data.viewportMode === "desktop") {
-			$('#sidebar').css('height', msg.data.height - 60);
-		} else {
-			$('#sidebar').css('height', 'auto');
-		}
-		$("#hotspotTable").css({
-			height: _getSidebarResultsPanelHeight
-		});
+		//if (msg.data.viewportMode === "desktop") {
+		//	$('#sidebar').css('height', msg.data.height - 60);
+		//} else {
+		//	$('#sidebar').css('height', 'auto');
+		//}
+		//$("#hotspotTable").css({
+		//	height: _getSidebarResultsPanelHeight
+		//});
 	};
 
 

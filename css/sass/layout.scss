@@ -1,0 +1,42 @@
+html, body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+#pageWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+#leftPanel {
+  flex: 0 0 310px;
+}
+#mainPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+#panelTabs {
+  flex: 0 0 auto;
+}
+#panelContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+#mapTabContent {
+  flex: 1;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  .navbar {
+    flex: 0 0 auto;
+  }
+  #mainTabs {
+    flex: 1;
+  }
+}

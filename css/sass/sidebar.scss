@@ -13,6 +13,9 @@ body .well-pad {
 	padding: 8px;
 }
 
+header .navbar {
+	margin: 0;
+}
 #backTop {
 	display: none;
 	padding: 6px 6px 6px 12px;
@@ -44,13 +47,6 @@ body .well-pad {
 	&.visible {
 		display: block;
 	}
-}
-
-#sidebar {
-	position: absolute;
-	top: 58px;
-	left: 6px;
-	width: 306px;
 }
 
 #sidebar form {

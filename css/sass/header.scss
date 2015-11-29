@@ -1,15 +1,74 @@
 @import "variables";
 
 body .navbar .brand {
-	padding: 15px 0px 13px 40px;
+	padding: 0 0 0 40px;
 	width: 170px;
 	background: transparent url(../../images/icon.png) left center no-repeat;
-	margin-left: 1px;
+	margin-left: 12px;
 	color: #e9f7ff;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 24px;
 	span {
 		color: #33b5e5;
 	}
 }
-body .navbar-inner {
-	padding-left: 12px;
+.tagLine {
+	font-size: 10px;
 }
+
+#mainTabs {
+	list-style-type: none;
+	margin: 31px 14px 7px 55px;
+	padding: 0;
+
+	li {
+		float: left;
+		margin: 1px 4px 0 0;
+		text-align: center;
+		border-radius: 4px 4px 0 0;
+		box-shadow: none;
+		font-size: 9pt;
+		padding: 0;
+		cursor: pointer;
+
+		&.disabledTab {
+			padding-top: 4px;
+			background: rgba(0, 0, 0, 0.3);
+			cursor: default;
+		}
+		a {
+			font-size: 14px;
+			padding: 10px 15px;
+			color: #cccccc;
+			border: 1px solid transparent;
+			&:hover {
+				color: #cccccc;
+				text-decoration: none;
+			}
+		}
+		&.active, &:hover {
+			a {
+				color: white;
+				background-color: #3e444c;
+				border: 1px solid #1c1e22;
+				border-radius: 4px 4px 0 0;
+			}
+		}
+		&.disabled {
+			a {
+				color: #666666;
+			}
+			&:hover {
+				background-color: transparent;
+			}
+		}
+	}
+}
+
+#searchTab a {
+	i {
+		margin-right: 3px;
+	}
+	color: green !important;
+}
+

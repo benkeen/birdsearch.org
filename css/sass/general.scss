@@ -1,14 +1,15 @@
 body {
-	padding: 0px;
-	font-family: sans-serif;
-	line-height: 17pt;
+	padding: 0;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	line-height: 20px;
+	font-size: 14pt;
 	color: #555555;
-	background-image: url(../../images/debut_dark.png);
-	background-repeat: repeat;
 	overflow: hidden;
+	background-color: #272b30;
+	background-image: none;
 }
 section {
-	padding: 0px;
+	padding: 0;
 }
 .hidden {
 	display: none;
@@ -20,7 +21,6 @@ a:hover {
 	color: #990000;
 	text-decoration: none;
 }
-
 .tablesorter thead th {
 	cursor: pointer;
 }

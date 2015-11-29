@@ -121,7 +121,7 @@ define([
 
 
 	var _resizeMainPanel = function(msg) {
-		if (msg.data.viewportMode === "desktop") {
+		/*if (msg.data.viewportMode === "desktop") {
 			$("#locationsTab").addClass("hidden");
 			$("#mainPanel").css({
 				height: msg.data.height - 54,
@@ -131,7 +131,7 @@ define([
 			$("#locationsTab").removeClass("hidden");
 			var panelHeight = msg.data.height - 210;
 			$("#mainPanel").css({ height: panelHeight + "px", width: "100%" });
-		}
+		}*/
 	};
 
 	var _addNotableSightingsTable = function() {

@@ -1,13 +1,31 @@
-<div id="eBirdText"><%= eBirdText %></div>
-<ul id="panelTabs">
-	<li id="mapTab" class="btn btn-primary"><%=L.map%></li>
-	<li id="locationsTab" class="hidden"><%=L.locations%></li>
-	<li id="birdSpeciesTab" class="hidden"><%=L.bird_species%></li>
-</ul>
 <div id="panelContent">
 	<div id="mapTabContent"></div>
 	<div id="locationsTabContent" class="hidden"></div>
 	<div id="birdSpeciesTabContent" class="hidden">
 		<div id="birdSpeciesTable"></div>
+	</div>
+</div>
+
+<div id="map-overlay"></div>
+
+<div id="initSearchControls">
+	<div class="tab-content">
+		<div>
+			<button class="btn btn-success">
+				<i class="glyphicon glyphicon-home"></i>
+				Search <b>Nearby</b>
+			</button>
+			Find bird sightings in your area.
+		</div>
+
+		<p class="or">OR</p>
+
+		<div>
+			<button class="btn btn-info">
+				<i class="glyphicon glyphicon-globe"></i>
+				Search <b>Anywhere</b>
+			</button>
+			Find bird sightings anywhere.
+		</div>
 	</div>
 </div>

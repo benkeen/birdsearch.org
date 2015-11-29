@@ -1,0 +1,132 @@
+#mapTabContent, #birdSpeciesTabContent {
+  width: 100%;
+  height: 100%;
+  border-top: 2px solid #0094c8; }
+
+#mainPanel {
+  position: absolute;
+  left: 318px;
+  top: 52px;
+  padding-top: 6px; }
+
+#panelContent {
+  height: 100%;
+  width: 100%;
+  clear: both; }
+
+#panelTabs {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px; }
+  #panelTabs li {
+    float: left;
+    margin: 1px 4px 0px 0px;
+    text-align: center;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    box-shadow: none;
+    font-size: 9pt;
+    padding: 3px 22px 3px;
+    cursor: pointer; }
+    #panelTabs li.disabledTab {
+      padding-top: 4px;
+      background: rgba(0, 0, 0, 0.3);
+      cursor: default; }
+    #panelTabs li a {
+      color: #555555;
+      line-height: 17pt;
+      display: block; }
+      #panelTabs li a:hover {
+        color: #cccccc;
+        text-decoration: none; }
+
+#birdSpeciesTabContent {
+  box-sizing: border-box;
+  overflow-y: scroll;
+  font-size: 13px;
+  color: #cccccc;
+  background: rgba(255, 255, 255, 0.1); }
+  #birdSpeciesTabContent h1 {
+    font-size: 18pt;
+    color: #ffffff;
+    margin: 0px 0px 10px 0px;
+    line-height: 26px;
+    float: left; }
+  #birdSpeciesTabContent h2 {
+    font-size: 10pt;
+    color: #666666;
+    margin: 2px 0px 0px 20px;
+    float: left;
+    padding: 3px 10px;
+    border-radius: 7px;
+    color: black;
+    background-color: #efefef;
+    line-height: 17px; }
+  #birdSpeciesTabContent table td, #birdSpeciesTabContent table th {
+    padding: 6px; }
+  #birdSpeciesTabContent table th {
+    color: #cccccc;
+    font-size: 14px;
+    text-shadow: 1px 2px 2px #222222; }
+  #birdSpeciesTabContent .species {
+    color: #ffffff; }
+
+.fixedHeader {
+  width: 100%;
+  position: fixed;
+  background-image: url(../../images/debut_dark.png);
+  background-repeat: repeat; }
+  .fixedHeader > div {
+    padding: 20px 20px 0px;
+    background: rgba(255, 255, 255, 0.1); }
+
+.fixedContent {
+  padding: 0px 15px;
+  margin-top: 60px; }
+  .fixedContent a {
+    display: block; }
+
+.sp {
+  width: 30px; }
+
+.notLoaded label {
+  color: #555555; }
+
+.joiner {
+  color: #999999; }
+
+.confirmed {
+  color: green; }
+
+.reviewed {
+  color: #9f3fcf; }
+
+.not_reviewed {
+  color: #995200; }
+
+.birdSightingsTable a {
+  display: inline; }
+
+.birdLocations {
+  font-size: 8pt;
+  color: #888888; }
+
+.lastSeenDetails, .howManyDetails {
+  font-size: 8pt; }
+
+#eBirdText {
+  float: right;
+  font-size: 8pt;
+  margin-right: 21px;
+  color: #999999; }
+  #eBirdText span {
+    background-color: #555555;
+    border-radius: 5px;
+    padding: 2px 8px;
+    color: white;
+    margin-right: 8px;
+    text-decoration: none; }
+
+/*# sourceMappingURL=mainPanel.css.map */

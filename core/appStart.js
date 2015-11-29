@@ -3,9 +3,9 @@ require([
 	"page",
 	"dataCache",
 	"header",
-	"sidebar",
-	"mainPanel",
-	"aboutDialog"
+	//"sidebar",
+	"mainPanel"
+	//"aboutDialog"
 ], function(mediator) {
 	"use strict";
 

@@ -1,0 +1,39 @@
+.table-striped tbody > tr:nth-child(odd) > td,
+.table-striped tbody > tr:nth-child(odd) > th {
+  background: rgba(100, 100, 100, 0.25); }
+
+body .table-hover tbody tr:hover > td {
+  background-color: #222222; }
+
+.modal {
+  width: 800px;
+  margin-left: -400px;
+  border-radius: 6px;
+  background-image: url(../../images/debut_dark.png);
+  background-repeat: repeat;
+  color: #888888; }
+
+.modal-header {
+  border-bottom: 2px solid #0094c8;
+  padding: 9px 0px 0px; }
+  .modal-header ul {
+    margin-bottom: 0px; }
+  .modal-header li {
+    font-size: 9pt;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    box-shadow: none;
+    padding: 5px 22px; }
+
+.modal-footer {
+  background-image: url(../../images/debut_dark.png);
+  background-repeat: repeat; }
+
+body .modal h2 {
+  margin-top: 2px;
+  font-size: 28px; }
+
+.modal-body {
+  max-height: 410px; }
+
+/*# sourceMappingURL=overrides.css.map */

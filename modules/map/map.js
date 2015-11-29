@@ -245,13 +245,13 @@ define([
 	};
 
 	var _resizeMap = function(msg) {
-		var data = msg.data;
-
-		if (data.viewportMode == "desktop") {
-			$("#panelContent").css("height", data.height - 88);
-		} else {
-			$("#panelContent").css("height", data.height - 40);
-		}
+		//var data = msg.data;
+    //
+		//if (data.viewportMode == "desktop") {
+		//	$("#panelContent").css("height", data.height - 88);
+		//} else {
+		//	$("#panelContent").css("height", data.height - 40);
+		//}
 	};
 
 	/**

@@ -10,10 +10,16 @@
 </head>
 <body data-serverdatetime="<?php echo date('U'); ?>">
 
-<header></header>
-	<section id="sidebar"></section>
-	<section id="mainPanel"></section>
-	<footer></footer>
+	<div id="pageWrapper">
+		<div id="leftPanel" style="display:none">
+			<section id="sidebar"></section>
+		</div>
+
+		<header></header>
+		<section id="mainPanel">
+
+		</section>
+	</div>
 
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=true&libraries=places,geometry"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
