@@ -3,12 +3,17 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: {
-    app: './core/app-start.jsx',
-    libs: './libs'
+    app: './core/init.jsx',
+    libs: [
+      './libs/bootstrap-modal.js',
+      './libs/bootstrap-transition.js',
+      './libs/gmaps.inverted.circle.js',
+      './libs/html5shiv.js'
+    ]
   },
   output: {
     path: path.join(__dirname, "dist"),
-    filename: '[name].js'
+    filename: '[name]-[hash].js'
   },
   module: {
     loaders: [
@@ -22,4 +27,13 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    function() {
+      this.plugin("done", function(stats) {
+        require("fs").writeFileSync(
+          path.join(__dirname, "./", "stats.json"),
+          JSON.stringify(stats.toJson()));
+      });
+    }
+  ]
 };
