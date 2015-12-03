@@ -4,5 +4,4 @@ tracking.php
 .idea*
 node_modules*
 database.php
-
-database.php
+dist/*

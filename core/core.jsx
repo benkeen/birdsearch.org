@@ -7,20 +7,18 @@ import CONSTANTS from 'constants';
 import EVENTS from 'events';
 import { getCurrentLangFile } from 'helpers';
 
-// TODO will need to figure out which language file is being used
-import LANG from '../lang/en';
+import LANG from '../lang/en'; // TODO, obviously
 
 // this'll need to be fed a full list of reducers, stores all over the place
 import selectedTab from '../components/header/reducer';
-
 
 var reducers = combineReducers({
   selectedTab
 });
 
-
 var store = createStore(reducers);
 
+// export
 export store;
 export CONSTANTS;
 export LANG = getCurrentLangFile();
@@ -28,7 +26,6 @@ export LANG = getCurrentLangFile();
 
 /*
 require([
- "mediator",
  "page",
  "dataCache",
  "header",

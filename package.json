@@ -24,6 +24,9 @@
     "webpack": "^1.12.9"
   },
   "dependencies": {
+    "clean-webpack-plugin": "^0.1.4",
+    "express": "^4.13.3",
+    "html-webpack-plugin": "^1.7.0",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
