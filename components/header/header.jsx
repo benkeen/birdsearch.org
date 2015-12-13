@@ -3,28 +3,16 @@ import ReactDOM from 'react-dom';
 import { C, store, L } from '../../core/core';
 
 
-export default class Header extends React.Component {
+class Header extends React.Component {
   render () {
-
-    //<ul class="nav pull-right">
-    //  <li>
-    //    <select id="lang">
-    //      <option value="en"<% if (currentLangFile === "lang_en"){%> selected="selected"<% } %>>English</option>
-    //      <option value="fr"<% if (currentLangFile === "lang_fr"){%> selected="selected"<% } %>>Français</option>
-    //      <option value="de"<% if (currentLangFile === "lang_de"){%> selected="selected"<% } %>>Deutsch</option>
-    //      <option value="es"<% if (currentLangFile === "lang_es"){%> selected="selected"<% } %>>Español</option>
-    //    </select>
-    //  </li>
-    //</ul>
-
     return (
       <div>
-        <div class="navbar">
-          <h1 class="brand">birdsearch.org</h1>
+        <div className="navbar">
+          <h1 className="brand">birdsearch.org</h1>
         </div>
 
         <ul id="mainTabs">
-          <li id="mapTab" class="active">
+          <li id="mapTab" className="active">
             <a href="#map">{L.map}</a>
           </li>
           <li id="accountTab">
@@ -35,13 +23,42 @@ export default class Header extends React.Component {
           </li>
           <li id="searchTab">
             <a href="#search">
-              <i class="glyphicon glyphicon-search"></i>
+              <i className="glyphicon glyphicon-search"></i>
               Search
             </a>
           </li>
         </ul>
+        <LanguageToggle langFile="en_us" />
       </div>
     );
   }
-};
+}
 
+// lang_en, lang_fr etc.
+class LanguageToggle extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
+  render () {
+    return (
+      <ul className="nav pull-right">
+        <li>
+          <select id="lang" value={this.props.langFile}>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+          </select>
+        </li>
+      </ul>
+    );
+  }
+}
+LanguageToggle.propTypes = {
+  langFile: React.PropTypes.string.isRequired
+};
+Counter.defaultProps = { langFile: 'lang_en' };
+
+
+export default Header;

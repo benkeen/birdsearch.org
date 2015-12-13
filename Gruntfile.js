@@ -1,8 +1,17 @@
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
+  var appFiles = [
+    './lang/*',
+    './core/*.js',
+    './core/*.jsx',
+    './components/**/*.js',
+    './components/**/*.jsx'
+  ];
+
   var config = {
 		pkg: grunt.file.readJSON('package.json'),
+
 
 		/*
 		template: {
@@ -40,13 +49,7 @@ module.exports = function(grunt) {
 				files: [{
 					expand: true,
 					cwd: './',
-					src: [
-            './lang/*',
-            './core/*.js',
-            './core/*.jsx',
-            './components/**/*.js',
-            './components/**/*.jsx'
-          ],
+					src: appFiles,
 					dest: 'dist',
 					ext: '.js'
 				}]
@@ -56,9 +59,6 @@ module.exports = function(grunt) {
     browserify: {
       dist: {
         cwd: './',
-        //options: {
-        //  transform: [["babelify", { "stage": 0 }]]
-        //},
         files: {
           "dist/bundle.js": "dist/core/start.js"
         }
@@ -67,8 +67,8 @@ module.exports = function(grunt) {
 
     watch: {
       scripts: {
-        files: ['core/*', 'components/**/*'],
-        tasks: ['babel:jsx']
+        files: appFiles,
+        tasks: ['babel:jsx', 'browserify']
       }
     }
 

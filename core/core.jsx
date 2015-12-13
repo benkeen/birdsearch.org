@@ -5,7 +5,7 @@
 import { createStore, combineReducers } from 'redux';
 import CONSTANTS from 'constants';
 import EVENTS from 'events';
-import { getCurrentLangFile } from 'helpers';
+//import { getCurrentLangFile } from 'helpers';
 
 import LANG from '../lang/en'; // TODO, obviously
 //var LANG = getCurrentLangFile();
@@ -15,7 +15,6 @@ import LANG from '../lang/en'; // TODO, obviously
 //var reducers = combineReducers({
 //  selectedTab
 //});
-
 
 // export
 //export var store = createStore(reducers);
