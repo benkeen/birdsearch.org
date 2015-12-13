@@ -1,8 +1,8 @@
-export default const EVENTS = {
+const EVENTS = {
   SELECT_TAB: "select-tab",
 
   ABOUT_LINK_CLICK: "aboutDialog-link-click",
-  //TAB_CHANGED: "tab-changed",
+
   WINDOW_RESIZE: "window-resize",
   TRIGGER_WINDOW_RESIZE: "trigger-window-resize",
   SEARCH_TYPE_CHANGED: 'search-type-changed',
@@ -22,3 +22,5 @@ export default const EVENTS = {
   LOCATION_MOUSEOUT: 'location-mouseout',
   LOCATION_CLICK: 'location-click'
 };
+
+export default EVENTS;

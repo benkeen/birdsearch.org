@@ -1,8 +1,10 @@
 module.exports = function(grunt) {
+  require('load-grunt-tasks')(grunt);
 
-	/*
-	var config = {
+  var config = {
 		pkg: grunt.file.readJSON('package.json'),
+
+		/*
 		template: {
 			dev: {
 				options: {
@@ -26,6 +28,51 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		*/
+
+		babel: {
+			options: {
+				plugins: ['transform-react-jsx'],
+				sourceMap: true,
+				presets: ['es2015', 'react']
+			},
+			jsx: {
+				files: [{
+					expand: true,
+					cwd: './',
+					src: [
+            './lang/*',
+            './core/*.js',
+            './core/*.jsx',
+            './components/**/*.js',
+            './components/**/*.jsx'
+          ],
+					dest: 'dist',
+					ext: '.js'
+				}]
+			}
+		},
+
+    browserify: {
+      dist: {
+        cwd: './',
+        //options: {
+        //  transform: [["babelify", { "stage": 0 }]]
+        //},
+        files: {
+          "dist/bundle.js": "dist/core/start.js"
+        }
+      }
+    },
+
+    watch: {
+      scripts: {
+        files: ['core/*', 'components/**/*'],
+        tasks: ['babel:jsx']
+      }
+    }
+
+		/*
 		uglify: {
 			my_target: {
 				files: {
@@ -50,6 +97,7 @@ module.exports = function(grunt) {
 					compress: false
 			}
 		},
+
 		md5: {
 			prod: {
 				files: {
@@ -62,6 +110,7 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+
 		requirejs: {
 			compile: {
 				options: {
@@ -72,17 +121,14 @@ module.exports = function(grunt) {
 				}
 			}
 		}
+	 */
 	};
 
 	grunt.initConfig(config);
 
-	grunt.loadNpmTasks('grunt-contrib-requirejs');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-md5');
-	grunt.loadNpmTasks('grunt-template');
+  grunt.registerTask('local', ['babel:jsx', 'browserify']);
 	grunt.registerTask('default', ['uglify', 'requirejs', 'template']);
 	grunt.registerTask('dev', ['uglify', 'requirejs', 'template:dev']);
 	grunt.registerTask('prod', ['uglify', 'requirejs', 'md5', 'template:prod']);
-	*/
 
 };

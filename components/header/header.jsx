@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { C, store, L } from '../../core/core.jsx';
+import { C, store, L } from '../../core/core';
+
 
 export default class Header extends React.Component {
   render () {

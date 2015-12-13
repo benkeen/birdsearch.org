@@ -8,20 +8,20 @@ import EVENTS from 'events';
 import { getCurrentLangFile } from 'helpers';
 
 import LANG from '../lang/en'; // TODO, obviously
+//var LANG = getCurrentLangFile();
 
 // this'll need to be fed a full list of reducers, stores all over the place
-import selectedTab from '../components/header/reducer';
+//import selectedTab from '../components/header/reducer';
+//var reducers = combineReducers({
+//  selectedTab
+//});
 
-var reducers = combineReducers({
-  selectedTab
-});
-
-var store = createStore(reducers);
 
 // export
-export store;
-export CONSTANTS;
-export LANG = getCurrentLangFile();
+//export var store = createStore(reducers);
+
+export { CONSTANTS };
+export { LANG as L };
 
 
 /*

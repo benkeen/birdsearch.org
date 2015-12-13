@@ -2,7 +2,7 @@
 // English language file
 // ------------------------------------------------------------------------------------------------
 
-export default const LANG = {
+const LANG = {
 	// header
 	about: "About",
 
@@ -89,3 +89,5 @@ export default const LANG = {
 	// footer
 	site_not_affiliated_with_ebird: "Data courtesy of %1"
 };
+
+export default LANG;
