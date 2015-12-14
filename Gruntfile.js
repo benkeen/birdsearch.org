@@ -6,7 +6,8 @@ module.exports = function(grunt) {
     './core/*.js',
     './core/*.jsx',
     './components/**/*.js',
-    './components/**/*.jsx'
+    './components/**/*.jsx',
+    './css/sass/*.scss'
   ];
 
   var config = {
@@ -68,7 +69,18 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         files: appFiles,
-        tasks: ['babel:jsx', 'browserify']
+        tasks: ['babel:jsx', 'browserify', 'sass']
+      }
+    },
+
+    sass: {
+      dist: {
+        options: {
+          style: 'expanded'
+        },
+        files: {
+          'dist/css/styles.css': 'css/sass/styles.scss'
+        }
       }
     }
 

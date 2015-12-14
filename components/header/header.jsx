@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { C, store, L } from '../../core/core';
+import { C, E, store, L } from '../../core/core';
 
 
 class Header extends React.Component {
   render () {
     return (
-      <div>
+      <div className="flex-body">
         <div className="navbar">
           <h1 className="brand">birdsearch.org</h1>
         </div>
@@ -40,11 +40,15 @@ class LanguageToggle extends React.Component {
     super(props);
   }
 
+  changeLang (e) {
+    console.log(e.target.value);
+  }
+
   render () {
     return (
       <ul className="nav pull-right">
         <li>
-          <select id="lang" value={this.props.langFile}>
+          <select id="lang" value={this.props.langFile} onChange={e => this.changeLang(e)}>
             <option value="en">English</option>
             <option value="fr">Français</option>
             <option value="de">Deutsch</option>
@@ -58,7 +62,48 @@ class LanguageToggle extends React.Component {
 LanguageToggle.propTypes = {
   langFile: React.PropTypes.string.isRequired
 };
-Counter.defaultProps = { langFile: 'lang_en' };
-
 
 export default Header;
+
+/*
+ define([
+ "mediator",
+ "constants",
+ "underscore",
+ "moduleHelper",
+ "text!headerTemplate"
+ ], function(mediator, C, _, helper, template) {
+ "use strict";
+
+ var _MODULE_ID = "header";
+ var _L = {};
+
+ var _run = function() {
+ var currentLangFile = helper.getCurrentLangFile();
+ require([currentLangFile], function(L) {
+ _L = L;
+ var tmpl = _.template(template, {
+ L: _L,
+ currentLangFile: currentLangFile
+ });
+ $("header").html(tmpl);
+ _addEventHandlers();
+ });
+ };
+
+ var _addEventHandlers = function() {
+ $("#aboutLink").on("click", function(e) {
+ e.preventDefault();
+ mediator.publish(_MODULE_ID, C.EVENT.ABOUT_LINK_CLICK);
+ });
+
+ $("#lang").on("change", function(e) {
+ window.location = "?lang=" + $(e.target).val();
+ });
+ };
+
+ mediator.register(_MODULE_ID, {
+ run: _run
+ });
+ });
+ */

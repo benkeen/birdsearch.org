@@ -2,7 +2,7 @@
 // English language file
 // ------------------------------------------------------------------------------------------------
 
-const LANG = {
+const L = {
 	// header
 	about: "About",
 
@@ -90,4 +90,4 @@ const LANG = {
 	site_not_affiliated_with_ebird: "Data courtesy of %1"
 };
 
-export default LANG;
+export default L;

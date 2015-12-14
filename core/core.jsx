@@ -1,26 +1,22 @@
 /**
- * One file to rule them all. This is the core JS file, included by all other files. It exposes a bunch of helpful
- * stuff like the store, constants, events and the appropriate language file.
+ *
  */
 import { createStore, combineReducers } from 'redux';
-import CONSTANTS from 'constants';
-import EVENTS from 'events';
-//import { getCurrentLangFile } from 'helpers';
+import L from '../lang/en'; // TODO, obviously
+import C from './constants';
+import E from './events';
 
-import LANG from '../lang/en'; // TODO, obviously
+//import { getCurrentLangFile } from 'helpers';
 //var LANG = getCurrentLangFile();
 
-// this'll need to be fed a full list of reducers, stores all over the place
-//import selectedTab from '../components/header/reducer';
-//var reducers = combineReducers({
-//  selectedTab
-//});
+import lang from '../components/header/reducers';
+var reducers = combineReducers({
+  lang
+});
 
-// export
-//export var store = createStore(reducers);
+var store = createStore(reducers);
 
-export { CONSTANTS };
-export { LANG as L };
+export { C, E, L, store };
 
 
 /*
