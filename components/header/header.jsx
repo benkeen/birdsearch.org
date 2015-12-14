@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as actions from './actions';
 import { C, E, store, L } from '../../core/core';
 
 
@@ -34,6 +35,7 @@ class Header extends React.Component {
   }
 }
 
+
 // lang_en, lang_fr etc.
 class LanguageToggle extends React.Component {
   constructor (props) {
@@ -41,6 +43,7 @@ class LanguageToggle extends React.Component {
   }
 
   changeLang (e) {
+    //store.dispatch();
     console.log(e.target.value);
   }
 

@@ -90,4 +90,4 @@ const L = {
 	site_not_affiliated_with_ebird: "Data courtesy of %1"
 };
 
-export default L;
+export { L };

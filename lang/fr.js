@@ -84,4 +84,4 @@ const LANG = {
 	site_not_affiliated_with_ebird: "Tous courtoisie de données %1"
 };
 
-export default LANG;
+export { LANG };

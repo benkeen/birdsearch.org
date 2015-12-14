@@ -2,17 +2,19 @@
  *
  */
 import { createStore, combineReducers } from 'redux';
-import L from '../lang/en'; // TODO, obviously
-import C from './constants';
-import E from './events';
+import { L } from '../lang/en';
+import { C } from './constants';
+import { E } from './events';
 
 //import { getCurrentLangFile } from 'helpers';
 //var LANG = getCurrentLangFile();
 
-import lang from '../components/header/reducers';
+import { selectLang } from '../components/header/reducers';
+
 var reducers = combineReducers({
-  lang
+  lang: selectLang
 });
+
 
 var store = createStore(reducers);
 

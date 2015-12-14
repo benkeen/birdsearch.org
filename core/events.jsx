@@ -3,7 +3,7 @@ const E = {
   SELECT_LANG: "SELECT_LANG"
 };
 
-export default { E };
+export { E };
 
 
 /*

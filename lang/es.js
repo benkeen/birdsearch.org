@@ -83,20 +83,4 @@ const LANG = {
 	site_not_affiliated_with_ebird: "Todos los datos son cortesía del %1"
 };
 
-export default LANG;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export { LANG };

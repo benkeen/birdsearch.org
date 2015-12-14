@@ -87,4 +87,4 @@ const LANG = {
 	site_not_affiliated_with_ebird: "Alle Daten mit freundlicher Genehmigung von %1"
 };
 
-export default LANG;
+export { LANG };
