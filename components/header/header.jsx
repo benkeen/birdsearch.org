@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import { FormattedMessage } from "react-intl"
 import * as actions from './actions';
-import { C, E, store, L } from '../../core/core';
+import { C, E, L } from '../../core/core';
 
 
 class Header extends React.Component {
   render () {
+
+    // injected by connect()
+    const { dispatch, lang } = this.props;
+
     return (
       <div className="flex-body">
         <div className="navbar">
@@ -29,29 +35,43 @@ class Header extends React.Component {
             </a>
           </li>
         </ul>
-        <LanguageToggle langFile="en_us" />
+        <LanguageToggle
+          lang={lang}
+          onChange={lang => dispatch(actions.selectLang(lang))} />
       </div>
     );
   }
 }
 
+function headerState(state) {
+  return {
+    lang: state.lang
+  };
+}
 
-// lang_en, lang_fr etc.
+// wrap the component to inject dispatch and state into it
+export default connect(headerState)(Header)
+
+
+
+
 class LanguageToggle extends React.Component {
-  constructor (props) {
-    super(props);
-  }
-
-  changeLang (e) {
-    //store.dispatch();
-    console.log(e.target.value);
+  onChange (e) {
+    e.preventDefault();
+    this.props.onChange(e.target.value);
   }
 
   render () {
+
     return (
       <ul className="nav pull-right">
         <li>
-          <select id="lang" value={this.props.langFile} onChange={e => this.changeLang(e)}>
+          <FormattedMessage
+            id="something"
+            description="Email Address label for the login form"
+            defaultMessage="Email address" />
+
+          <select id="lang" value={this.props.lang} onChange={e => this.onChange(e)}>
             <option value="en">English</option>
             <option value="fr">Français</option>
             <option value="de">Deutsch</option>
@@ -62,11 +82,12 @@ class LanguageToggle extends React.Component {
     );
   }
 }
+
 LanguageToggle.propTypes = {
-  langFile: React.PropTypes.string.isRequired
+  lang: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
 };
 
-export default Header;
 
 /*
  define([

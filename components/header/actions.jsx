@@ -10,6 +10,6 @@ function selectLang (lang) {
   };
 }
 
-export default {
+export {
   selectLang
 };
