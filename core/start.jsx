@@ -21,14 +21,12 @@ const whatever = {
 
 let header = document.getElementsByTagName('header')[0];
 ReactDOM.render(
-  <IntlProvider locale="en" messages={whatever}>
-    <Provider store={store}>
+  <Provider store={store}>
+    <IntlProvider locale="en" messages={whatever}>
       <Header />
-    </Provider>
-  </IntlProvider>,
+    </IntlProvider>
+  </Provider>,
   header
 );
 
 ReactDOM.render(<MainPanel />, document.getElementById('mainPanel'));
-
-
