@@ -5,6 +5,7 @@ module.exports = function(grunt) {
     './lang/*',
     './core/*.js',
     './core/*.jsx',
+		'./core/i18n/*.jsx',
     './components/**/*.js',
     './components/**/*.jsx'
   ];

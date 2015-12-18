@@ -1,4 +1,6 @@
-const LANG = {
+
+export default {
+
 	// header
 	about: "Acerca de",
 
@@ -82,5 +84,3 @@ const LANG = {
 	// footer
 	site_not_affiliated_with_ebird: "Todos los datos son cortesía del %1"
 };
-
-export { LANG };

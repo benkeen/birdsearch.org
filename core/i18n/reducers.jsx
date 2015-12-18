@@ -1,4 +1,4 @@
-import { E } from '../../core/events';
+import { E } from '../events';
 
 
 function selectLang (state = C.DEFAULT_LANG, action) {

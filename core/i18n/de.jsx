@@ -2,7 +2,7 @@
 // German language file
 // ------------------------------------------------------------------------------------------------
 
-const LANG = {
+export default {
 	// header
 	about: "Diese Website",
 
@@ -87,4 +87,3 @@ const LANG = {
 	site_not_affiliated_with_ebird: "Alle Daten mit freundlicher Genehmigung von %1"
 };
 
-export { LANG };

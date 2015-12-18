@@ -1,4 +1,8 @@
-const LANG = {
+// ------------------------------------------------------------------------------------------------
+// French language file
+// ------------------------------------------------------------------------------------------------
+
+export default {
 
 	// header
 	about: "Sur",
@@ -83,5 +87,3 @@ const LANG = {
 	// footer
 	site_not_affiliated_with_ebird: "Tous courtoisie de données %1"
 };
-
-export { LANG };

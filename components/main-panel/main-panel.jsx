@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { C, store, L } from '../../core/core';
 
 
 class MainPanel extends React.Component {

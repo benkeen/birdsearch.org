@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { C, E, store, L } from '../../core/core';
+import { C, E } from '../../core/core';
 
 
-function selectLang (lang) {
+function setLocale (locale) {
   return {
     type: E.SELECT_LANG,
-    lang
+    locale
   };
 }
 
 export {
-  selectLang
+  setLocale
 };
