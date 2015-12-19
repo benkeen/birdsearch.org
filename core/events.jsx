@@ -1,6 +1,6 @@
 const E = {
-  SELECT_TAB: "SELECT_TAB",
-  SELECT_LANG: "SELECT_LANG"
+  SELECT_TAB: 'SELECT_TAB',
+  SET_LOCALE: 'SET_LOCALE'
 };
 
 export { E };

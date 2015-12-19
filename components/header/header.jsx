@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from "react-intl"
+import { Link } from 'react-router';
 import * as actions from './actions';
 
 
@@ -17,19 +18,19 @@ class Header extends React.Component {
 
         <ul id="mainTabs">
           <li id="mapTab" className="active">
-            <a href="#map"><FormattedMessage id="map" /></a>
+            <Link to="/"><FormattedMessage id="map" /></Link>
           </li>
           <li id="accountTab">
-            <a href="#account"><FormattedMessage id="login" /></a>
+            <Link to="/account"><FormattedMessage id="login" /></Link>
           </li>
           <li id="aboutTab">
-            <a href="#about"><FormattedMessage id="help" /></a>
+            <Link to="/about"><FormattedMessage id="help" /></Link>
           </li>
           <li id="searchTab">
-            <a href="#search">
+            <Link to="/search">
               <i className="glyphicon glyphicon-search"></i>
               <FormattedMessage id="search" />
-            </a>
+            </Link>
           </li>
         </ul>
 
@@ -41,13 +42,7 @@ class Header extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    locale: state.locale
-  };
-}
-
-export default connect(mapStateToProps)(Header)
+export default connect(state => ({ locale: state.locale }))(Header)
 
 
 

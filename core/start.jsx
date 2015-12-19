@@ -1,24 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
-import { Router, Route, Link } from 'react-router'
+import { Router, Route } from 'react-router';
 import { Provider, connect } from 'react-redux';
-import Header from '../components/header/header';
-import MainPanel from '../components/main-panel/main-panel';
+import * as components from '../components/index';
 import initStore from './utils';
 import * as i18n from './i18n/index';
 import * as storage from './storage';
+import { C } from './core';
 
 // locale information for react-intl
 import en from 'react-intl/dist/locale-data/en';
 import es from 'react-intl/dist/locale-data/es';
 import fr from 'react-intl/dist/locale-data/fr';
+import de from 'react-intl/dist/locale-data/de';
 addLocaleData(en);
 addLocaleData(es);
 addLocaleData(fr);
+addLocaleData(de);
 
-// initialize the store with the appropriate lang (defaulting to English)
-const store = initStore({ locale: storage.get('locale') || 'en' });
+const {
+  Header,
+  MainPanel
+} = components;
+
+// initialize the store with the appropriate lang
+const store = initStore({ locale: storage.get('locale') || C.DEFAULT_LOCALE });
 
 class I18NWrapper extends React.Component {
   render () {
@@ -36,7 +43,7 @@ class I18NWrapper extends React.Component {
   }
 }
 
-// MOVE
+// our top level component. This is the wrapper for the whole site
 const App = React.createClass({
   render () {
     return (

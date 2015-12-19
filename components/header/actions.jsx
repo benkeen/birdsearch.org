@@ -5,7 +5,7 @@ import { C, E } from '../../core/core';
 
 function setLocale (locale) {
   return {
-    type: E.SELECT_LANG,
+    type: E.SET_LOCALE,
     locale
   };
 }

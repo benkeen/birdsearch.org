@@ -77,6 +77,9 @@ export default {
 	more_search_options2: "Más opciones de búsqueda",
 	help_para4: "Si hace clic en el \"más opciones de búsqueda\" link, una nueva sección se deslizará abierto que proporciona un poco más de control sobre su búsqueda. Las opciones cambian según el tipo de búsqueda.",
 
+	// login / accounts
+	login: "Iniciar",
+
 	// map
 	view_bird_species: "Ver el avistamiento de aves en este lugar",
 	view_full_info: "Vea la información completa",

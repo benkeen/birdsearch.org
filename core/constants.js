@@ -1,10 +1,10 @@
 const C = {
 	DEBUG: false,
-	DEFAULT_LANG: 'en',
+	DEFAULT_LOCALE: 'en',
 
 	CORE: {
 		APP_VERSION: "2.0.0 - BETA",
-		RELEASE_DATE: "Dec 12, 2015",
+		RELEASE_DATE: "Dec 19, 2015",
 		GITHUB_URL: "https://github.com/benkeen/birdsearch.org"
 	},
 	SETTINGS: {

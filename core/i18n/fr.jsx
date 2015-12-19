@@ -80,6 +80,9 @@ export default {
 	more_search_options2: "Plus d'options de recherche",
 	help_para4: "Si vous cliquez sur le \"plus d'options de recherche\" lien, une nouvelle section va glisser ouvert qui offre un peu plus de contrôle sur votre recherche. Les options supplémentaires changent en fonction de votre type de recherche.",
 
+  // login / accounts
+  login: "Entrer",
+
 	// map
 	view_bird_species: "Voir les espèces d'oiseaux observées à cet endroit",
 	view_full_info: "Voir une information complète",
