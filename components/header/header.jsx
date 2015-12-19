@@ -9,28 +9,26 @@ class Header extends React.Component {
   render () {
     const { dispatch, locale } = this.props;
 
-    console.log("new locale: ", locale);
-
     return (
-      <div className="flex-body">
+      <header className="flex-body">
         <div className="navbar">
           <h1 className="brand">birdsearch.org</h1>
         </div>
 
         <ul id="mainTabs">
           <li id="mapTab" className="active">
-            <a href="#map">Map</a>
+            <a href="#map"><FormattedMessage id="map" /></a>
           </li>
           <li id="accountTab">
-            <a href="#account">Login</a>
+            <a href="#account"><FormattedMessage id="login" /></a>
           </li>
           <li id="aboutTab">
-            <a href="#about">Help</a>
+            <a href="#about"><FormattedMessage id="help" /></a>
           </li>
           <li id="searchTab">
             <a href="#search">
               <i className="glyphicon glyphicon-search"></i>
-              Search
+              <FormattedMessage id="search" />
             </a>
           </li>
         </ul>
@@ -38,7 +36,7 @@ class Header extends React.Component {
         <LanguageToggle
           locale={locale}
           onChange={locale => dispatch(actions.setLocale(locale))} />
-      </div>
+      </header>
     );
   }
 }
@@ -60,15 +58,9 @@ class LanguageToggle extends React.Component {
   }
 
   render () {
-
     return (
       <ul className="nav pull-right">
         <li>
-          <FormattedMessage
-            id="bird_species"
-            description="Email Address label for the login form"
-            defaultMessage="Email address" />
-
           <select id="lang" value={this.props.locale} onChange={e => this.onChange(e)}>
             <option value="en">English</option>
             <option value="fr">Français</option>

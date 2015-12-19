@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
+import { Router, Route, Link } from 'react-router'
 import { Provider, connect } from 'react-redux';
 import Header from '../components/header/header';
 import MainPanel from '../components/main-panel/main-panel';
 import initStore from './utils';
 import * as i18n from './i18n/index';
+import * as storage from './storage';
 
 // locale information for react-intl
 import en from 'react-intl/dist/locale-data/en';
@@ -15,42 +17,42 @@ addLocaleData(en);
 addLocaleData(es);
 addLocaleData(fr);
 
+// initialize the store with the appropriate lang (defaulting to English)
+const store = initStore({ locale: storage.get('locale') || 'en' });
 
-const initialState = {
-  locale: 'en' // storage.get('locale') || 'en'
-};
-const store = initStore(initialState);
-
-
-function getRootChildren (props) {
-  const intlData = {
-    locale: props.locale,
-    messages: i18n[props.locale]
-  };
-
-  const children = [
-    <IntlProvider key="intl" {...intlData}>
-      <Header />
-    </IntlProvider>
-  ];
-
-  return children;
-}
-
-
-class Root extends React.Component {
+class I18NWrapper extends React.Component {
   render () {
+    const { locale } = this.props;
+
     return (
-      <div>{getRootChildren(this.props)}</div>
+      <IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
+        <Router>
+          <Route component={App}>
+            <Route path="/" component={MainPanel} />
+          </Route>
+        </Router>
+      </IntlProvider>
     );
   }
 }
 
-let header = document.getElementsByTagName('header')[0];
+// MOVE
+const App = React.createClass({
+  render () {
+    return (
+      <div id="page-wrapper">
+        <Header />
+        {this.props.children}
+      </div>
+    )
+  }
+});
+
+var ConnectedI18nWrapper = connect(state => ({ locale: state.locale }))(I18NWrapper);
 
 ReactDOM.render(
   <Provider store={store}>
-    <Root locale={store.getState().locale} />
+    <ConnectedI18nWrapper />
   </Provider>,
-  header
+  document.getElementById('app')
 );

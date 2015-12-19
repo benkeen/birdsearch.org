@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 class MainPanel extends React.Component {
   render () {
     return (
-      <div>
+      <section id="mainPanel">
         <div id="panelContent">
           <Map />
           <div id="locationsTabContent" className="hidden"></div>
@@ -37,8 +37,7 @@ class MainPanel extends React.Component {
             </div>
           </div>
         </div>
-
-      </div>
+      </section>
     );
   }
 }
