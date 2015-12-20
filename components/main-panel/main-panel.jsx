@@ -7,15 +7,26 @@ class MainPanel extends React.Component {
     return (
       <section id="mainPanel">
         <div id="panelContent">
+
           <Map />
+
           <div id="locationsTabContent" className="hidden"></div>
           <div id="birdSpeciesTabContent" className="hidden">
             <div id="birdSpeciesTable"></div>
           </div>
         </div>
 
-        <div id="map-overlay"></div>
+        <IntroOverlay visible={true} />
+      </section>
+    );
+  }
+}
 
+class IntroOverlay extends React.Component {
+  render () {
+    return (
+      <div>
+        <div id="map-overlay"></div>
         <div id="initSearchControls">
           <div className="tab-content">
             <div>
@@ -37,22 +48,37 @@ class MainPanel extends React.Component {
             </div>
           </div>
         </div>
-      </section>
+      </div>
     );
   }
 }
 
 
+
 class Map extends React.Component {
   componentDidMount () {
 
+    google.maps.visualRefresh = true;
+
+    // move to props?
+    var defaultMapOptions = {
+      zoom: 3,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      mapTypeControlOptions: { mapTypeIds: [] },
+      center: new google.maps.LatLng(30, 0),
+      streetViewControl: false,
+      disableDefaultUI: true,
+      panControl: true,
+      zoomControl: true,
+      scaleControl: true,
+      overviewMapControl: true
+    };
+
+    var mapCanvas = ReactDOM.findDOMNode(this);
+    var map       = new google.maps.Map(mapCanvas, defaultMapOptions);
   }
 
   render () {
-    //google.maps.visualRefresh = true;
-    //
-    //_mapCanvas = $('#mapTabContent')[0];
-    //_map       = new google.maps.Map(_mapCanvas, _defaultMapOptions);
     //_addCustomControls();
     //_addEventHandlers();
     //

@@ -13,7 +13,6 @@ module.exports = function(grunt) {
   var config = {
 		pkg: grunt.file.readJSON('package.json'),
 
-
 		/*
 		template: {
 			dev: {
@@ -82,7 +81,18 @@ module.exports = function(grunt) {
           'dist/css/styles.css': 'css/sass/styles.scss'
         }
       }
-    }
+    },
+
+		copy: {
+			// fonts need to be loaded real-time because they're browser-dependent
+			fonts: {
+				src: './css/fonts/*',
+				dest: 'dist/fonts/',
+				flatten: true,
+				expand: true,
+				filter: 'isFile'
+			}
+		}
 
 		/*
 		uglify: {
@@ -137,10 +147,10 @@ module.exports = function(grunt) {
 	};
 
 	grunt.initConfig(config);
+  grunt.registerTask('local', ['babel:jsx', 'browserify', 'sass', 'copy:fonts']);
 
-  grunt.registerTask('local', ['babel:jsx', 'browserify']);
-	grunt.registerTask('default', ['uglify', 'requirejs', 'template']);
-	grunt.registerTask('dev', ['uglify', 'requirejs', 'template:dev']);
-	grunt.registerTask('prod', ['uglify', 'requirejs', 'md5', 'template:prod']);
+	//grunt.registerTask('default', ['uglify', 'requirejs', 'template']);
+	//grunt.registerTask('dev', ['uglify', 'requirejs', 'template:dev']);
+	//grunt.registerTask('prod', ['uglify', 'requirejs', 'md5', 'template:prod']);
 
 };
