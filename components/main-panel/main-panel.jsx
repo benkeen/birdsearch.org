@@ -5,22 +5,19 @@ import ReactDOM from 'react-dom';
 class MainPanel extends React.Component {
   render () {
     return (
-      <section id="mainPanel">
-        <div id="panelContent">
-
-          <Map />
-
-          <div id="locationsTabContent" className="hidden"></div>
-          <div id="birdSpeciesTabContent" className="hidden">
-            <div id="birdSpeciesTable"></div>
-          </div>
-        </div>
-
+      <section id="mainPanel" className="flex-body">
+        <Map />
         <IntroOverlay visible={true} />
       </section>
     );
+
+    //<div id="locationsTabContent" className="hidden"></div>
+    //<div id="birdSpeciesTabContent" className="hidden">
+    //  <div id="birdSpeciesTable"></div>
+    //  </div>
   }
 }
+
 
 class IntroOverlay extends React.Component {
   render () {
@@ -52,7 +49,6 @@ class IntroOverlay extends React.Component {
     );
   }
 }
-
 
 
 class Map extends React.Component {
@@ -89,7 +85,7 @@ class Map extends React.Component {
     //mediator.publish(_MODULE_ID, C.EVENT.TRIGGER_WINDOW_RESIZE);
 
     return (
-      <div></div>
+      <div className="flex-body"></div>
     );
   }
 }

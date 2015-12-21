@@ -16,6 +16,17 @@ body .navbar .brand {
 	font-size: 10px;
 }
 
+header {
+	border-bottom: 2px solid #0094c8;
+	.nav {
+		margin-bottom: 0;
+	}
+	#select-locale {
+		margin: 15px 15px 15px 0;
+		width: 90px;
+	}
+}
+
 #mainTabs {
 	list-style-type: none;
 	margin: 31px 14px 7px 55px;
@@ -38,7 +49,7 @@ body .navbar .brand {
 		}
 		a {
 			font-size: 14px;
-			padding: 10px 15px;
+			padding: 10px 15px 10px;
 			color: #cccccc;
 			border: 1px solid transparent;
 			&:hover {
@@ -52,6 +63,7 @@ body .navbar .brand {
 				background-color: #3e444c;
 				border: 1px solid #1c1e22;
 				border-radius: 4px 4px 0 0;
+				border-bottom: 0;
 			}
 		}
 		&.disabled {

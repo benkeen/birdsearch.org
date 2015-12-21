@@ -3,12 +3,14 @@
 // ------------------------------------------------------------------------------------------------
 
 export default {
-	// header
 	about: "About",
-
-	// main panel
-	map: "Map",
+	help: "Help",
 	locations: "Locations",
+	login: "Login",
+	search: "Search",
+	start: "Start"
+
+	/*
 	bird_species: "Bird Species",
 	notable_sightings: "Notable sightings",
 	species: "Species",
@@ -38,7 +40,6 @@ export default {
 	show_obs_made_within_last: "Show observations made within last",
 	day_or_days: "day(s)",
 	limit_to_locations: "Limit to locations with observations made within last",
-	search: "Search",
 	please_enter_location_search_default: "Please enter a location",
 	please_enter_location: "Please enter a location.",
 	please_select_location_from_dropdown: "Please select a location from the auto-completed location field.",
@@ -66,8 +67,6 @@ export default {
 	translate_para1: "If you're interested in helping translate this site, I'd love to hear from you! The currently available languages are all generated via Google Translate, so they're probably pretty low quality. All the source code for this site (text included) is found on <a href=\"https://github.com/benkeen/birdsearch.org\" target=\"_blank\">github, here</a>. All you need to do is \"fork\" the repository (i.e. make a copy of it), add or modify a <a href=\"https://github.com/benkeen/birdsearch.org/tree/master/lang\">translation file</a> and send it back to me via a \"pull request\".",
 	translate_para2: "It sounds a little technical, but it's actually exceedingly simple. If you have any questions, feel free to <a href=\"mailto:ben.keen@gmail.com\">drop me a line</a>! :)",
 
-	// help tab
-	help: "Help",
 	help_para1: "This site lets you browse bird observations that people have submitted to <a href=\"http://ebird.org\" target=\"_blank\">eBird.org</a>. It works worldwide, but the results depend on the reports in that region. Don't see any results in your area? Then <a href=\"http://ebird.org/content/ebird/about/\" target=\"_blank\">join eBird</a> and submit your sightings!",
 	help_para2: "Searching is done through the fields in the left sidebar. Here's what each field means.",
 	location_search_field: "Location search field",
@@ -80,12 +79,11 @@ export default {
 	help_para4: "If you click on the \"more search options\" link, a new section will slide open that provides a little more control over your search. The additional options change depending on your search type.",
 
 	// login / accounts
-	login: "Login",
-
 	// map
 	view_bird_species: "View bird species seen at this location",
 	view_full_info: "View full information",
 
 	// footer
 	site_not_affiliated_with_ebird: "Data courtesy of %1"
+	*/
 };
