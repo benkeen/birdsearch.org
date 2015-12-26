@@ -34,9 +34,12 @@
     "redux-devtools": "^2.1.5"
   },
   "dependencies": {
+    "lodash": "^3.10.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
-    "redux": "^3.0.4"
+    "redux": "^3.0.4",
+    "underscore": "^1.8.3",
+    "velocity-react": "^1.1.1"
   }
 }

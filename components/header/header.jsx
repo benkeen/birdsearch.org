@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { FormattedMessage } from "react-intl"
+import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router';
 import * as actions from './actions';
 
@@ -17,17 +17,11 @@ class Header extends React.Component {
         </div>
 
         <ul id="mainTabs">
-          <li className="active">
-            <Link to="/"><FormattedMessage id="start" /></Link>
-          </li>
-          <li id="searchTab">
-            <Link to="/search">
-              <i className="glyphicon glyphicon-search"></i>
-              <FormattedMessage id="search" />
-            </Link>
-          </li>
           <li>
             <Link to="/account"><FormattedMessage id="login" /></Link>
+          </li>
+          <li>
+            <Link to="/about"><FormattedMessage id="about" /></Link>
           </li>
           <li>
             <Link to="/about"><FormattedMessage id="help" /></Link>

@@ -1,0 +1,57 @@
+#initSearchControls {
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 120px;
+  width: 488px;
+
+  .close-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #b9b9b9;
+    font-size: 18px;
+    cursor: pointer;
+    &:hover {
+      color: #333333;
+    }
+  }
+
+  .tab-content {
+    position: relative;
+    background-color: white;
+    border-radius: 6px;
+    padding: 40px;
+    color: black;
+    font-size: 14px;
+  }
+  input {
+    padding: 8px;
+    width: 300px;
+  }
+  button {
+    box-shadow: none;
+    margin-top: -4px;
+    width: 180px;
+    margin-right: 15px;
+    padding: 7px 16px;
+    i {
+      margin-right: 6px;
+    }
+    &.btn-info {
+      border-color: #4ab9db;
+      background-image: linear-gradient(#74cae3, #5bc0de 60%, #4ab9db);
+      &:hover {
+        background-color: #31b0d5;
+      }
+    }
+  }
+  .or {
+    font-weight: bold;
+    text-align: center;
+    margin: 10px;
+  }
+}

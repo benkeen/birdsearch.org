@@ -1,6 +1,7 @@
 const C = {
 	DEBUG: false,
 	DEFAULT_LOCALE: 'en',
+	TRANSITION_SPEED: 300,
 
 	CORE: {
 		APP_VERSION: "2.0.0 - BETA",
@@ -11,6 +12,7 @@ const C = {
 		DEFAULT_SEARCH_DAY: 7,
 		NUM_SEARCH_DAYS: 30
 	}
+
 };
 
 export { C };

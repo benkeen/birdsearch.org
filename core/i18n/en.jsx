@@ -3,16 +3,23 @@
 // ------------------------------------------------------------------------------------------------
 
 export default {
-	about: "About",
-	help: "Help",
-	locations: "Locations",
-	login: "Login",
-	search: "Search",
-	start: "Start"
+	about: 'About',
+	birdSightings: 'Bird sightings',
+	birdSpecies: 'Bird Species',
+	findInArea: 'Find bird sightings in your area.',
+	findAnywhere: 'Find bird sightings anywhere.',
+	help: 'Help',
+	locations: 'Locations',
+	login: 'Login',
+	notableSightings: 'Notable sightings',
+	or: 'OR',
+	popularBirdingLocations: "Popular birding locations",
+	search: 'Search',
+	searchNearby: 'Search Nearby',
+	searchAnywhere: 'Search Anywhere'
+
 
 	/*
-	bird_species: "Bird Species",
-	notable_sightings: "Notable sightings",
 	species: "Species",
 	date: "Date",
 	scientific_name: "Scientific Name",
@@ -31,10 +38,6 @@ export default {
 	not_reviewed: "Not reviewed",
 
 	// sidebar
-	bird_sightings: "Bird sightings",
-	popular_birding_locations: "Popular birding locations",
-	more_search_options: "More search options &raquo;",
-	hide_search_options: "&laquo; Hide search options",
 	location: "Location",
 	select_unselect_all: "Select / Unselect all",
 	show_obs_made_within_last: "Show observations made within last",

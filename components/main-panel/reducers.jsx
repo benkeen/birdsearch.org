@@ -3,14 +3,13 @@ import { E } from '../../core/events';
 import * as storage from '../../core/storage';
 
 
-function getLocale (state = C.DEFAULT_LOCALE, action) {
+function getIntroOverlayVisibility (state = true, action) {
   switch (action.type) {
-    case E.SET_LOCALE:
-      storage.set('locale', action.locale);
-      return action.locale;
+    case E.SET_INTRO_OVERLAY_VISIBILITY:
+      return action.visible;
     default:
       return state;
   }
 }
 
-export { getLocale };
+export { getIntroOverlayVisibility };
