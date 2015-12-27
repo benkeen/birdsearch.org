@@ -1,10 +1,13 @@
 import { createStore, combineReducers } from 'redux';
-import { getLocale } from '../components/header/reducers';
-import { getIntroOverlayVisibility } from '../components/main-panel/reducers';
+import { locale } from '../components/header/reducers';
+import { introOverlayVisible, isRequestingUserLocation} from '../components/main-panel/reducers';
+import { sidebarVisible } from '../components/sidebar/reducers';
 
 var reducers = combineReducers({
-  locale: getLocale,
-  introOverlayVisible: getIntroOverlayVisibility
+  locale,
+  sidebarVisible,
+  introOverlayVisible,
+  isRequestingUserLocation
 });
 
 export default function initStore (initialState) {

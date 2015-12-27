@@ -9,14 +9,17 @@ export default {
 	findInArea: 'Find bird sightings in your area.',
 	findAnywhere: 'Find bird sightings anywhere.',
 	help: 'Help',
+	limitToLocations: "Limit to locations with observations made within last {days, plural\n  =0 (<b>0</b> day)\n  =1 { <b>1</b> day }\n  other { <b>#</b> days }}",
 	locations: 'Locations',
 	login: 'Login',
 	notableSightings: 'Notable sightings',
 	or: 'OR',
+	pleaseEnterLocationSearchDefault: 'Please enter a location',
 	popularBirdingLocations: "Popular birding locations",
 	search: 'Search',
 	searchNearby: 'Search Nearby',
-	searchAnywhere: 'Search Anywhere'
+	searchAnywhere: 'Search Anywhere',
+	searchRightArrow: 'Search &raquo;'
 
 
 	/*
@@ -42,8 +45,6 @@ export default {
 	select_unselect_all: "Select / Unselect all",
 	show_obs_made_within_last: "Show observations made within last",
 	day_or_days: "day(s)",
-	limit_to_locations: "Limit to locations with observations made within last",
-	please_enter_location_search_default: "Please enter a location",
 	please_enter_location: "Please enter a location.",
 	please_select_location_from_dropdown: "Please select a location from the auto-completed location field.",
 	please_enter_more_specific_location: "Please enter a more specific location.",

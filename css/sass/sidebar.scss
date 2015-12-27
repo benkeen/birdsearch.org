@@ -1,21 +1,6 @@
 @import "variables";
 
-body .well {
-	background: rgba(0, 0, 0, 0.3);
-	box-shadow: 0 1px 4px rgba(40, 40, 40, 0.8);
-	border: 0px;
-	margin-bottom: 6px;
-	padding: 4px;
-	position: relative;
-	clear: both;
-}
-body .well-pad {
-	padding: 8px;
-}
-
-header .navbar {
-	margin: 0;
-}
+/*
 #backTop {
 	display: none;
 	padding: 6px 6px 6px 12px;
@@ -188,7 +173,6 @@ header .navbar {
 		padding: 8px 0px 4px;
 	}
 }
-/* for browsers that don't support the range element, this styles the jQuery slider */
 #hotspotActivitySection .ui-slider-horizontal {
 	margin-bottom: 10px;
 }
@@ -234,4 +218,31 @@ header .navbar {
 }
 #sidebarResultsTable {
 	margin-bottom: 0px;
+}
+*/
+
+#sidebar {
+  width: 300px;
+}
+
+#search-panel {
+  border-radius: 4px;
+  padding: 20px;
+  color: white;
+
+  #location {
+    width: 100%;
+    padding: 6px;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    label {
+      display: inline-block;
+      color: white;
+      margin-left: 8px;
+    }
+  }
 }

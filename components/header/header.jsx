@@ -16,21 +16,22 @@ class Header extends React.Component {
           <h1 className="brand">birdsearch.org</h1>
         </div>
 
-        <ul id="mainTabs">
+        <HeaderSearch disabled={true} />
+
+        <ul className="nav-items">
           <li>
             <Link to="/account"><FormattedMessage id="login" /></Link>
           </li>
           <li>
             <Link to="/about"><FormattedMessage id="about" /></Link>
           </li>
-          <li>
-            <Link to="/about"><FormattedMessage id="help" /></Link>
+          <li className="lang-toggle">
+            <LanguageToggle
+              locale={locale}
+              onChange={locale => dispatch(actions.setLocale(locale))} />
           </li>
         </ul>
 
-        <LanguageToggle
-          locale={locale}
-          onChange={locale => dispatch(actions.setLocale(locale))} />
       </header>
     );
   }
@@ -38,6 +39,27 @@ class Header extends React.Component {
 
 export default connect(state => ({ locale: state.locale }))(Header)
 
+
+class HeaderSearch extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
+  render () {
+    var searchBtnClasses = 'btn' + (!this.props.disabled ? ' btn-success' : '');
+
+    return (
+      <div className="header-search">
+        <input type="text" placeholder="Enter Location" />
+        <button className={searchBtnClasses}>Search</button>
+        <Link className="advanced-search-link" to="/advanced-search">advanced search</Link>
+      </div>
+    );
+  }
+}
+HeaderSearch.PropTypes = {
+  disabled: React.PropTypes.bool.isRequired
+};
 
 
 class LanguageToggle extends React.Component {
@@ -48,16 +70,12 @@ class LanguageToggle extends React.Component {
 
   render () {
     return (
-      <ul className="nav pull-right">
-        <li>
-          <select id="select-locale" value={this.props.locale} onChange={e => this.onChange(e)}>
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="es">Español</option>
-          </select>
-        </li>
-      </ul>
+      <select id="select-locale" value={this.props.locale} onChange={e => this.onChange(e)}>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="es">Español</option>
+      </select>
     );
   }
 }

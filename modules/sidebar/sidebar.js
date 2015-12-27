@@ -86,9 +86,6 @@ define([
 			// add all relevant event handlers for the sidebar content
 			_addEventHandlers();
 
-			// if need be, progressively enhance the slider for browser that don't support that element
-			_fixSliders();
-
 			// initialize the main spinner
 			helper.initSpinner();
 
@@ -123,51 +120,6 @@ define([
 		searchResults.on("mouseover", "#sidebarResultsTable tbody tr", _onHoverLocationRow);
 		searchResults.on("mouseout", "#sidebarResultsTable tbody tr", _onHoverOutLocationRow);
 		searchResults.on("click", "#sidebarResultsTable tbody tr", _onClickHotspotRow);
-	};
-
-
-	// if there's no native support for the range element, offer the jQuery slider. Be nice if this dynamically downloaded the
-	// resource as required... why penalize newer browsers?
-	var _fixSliders = function() {
-		if (!Modernizr.inputtypes.range){
-			$("input[type=range]").each(function() {
-				if ($(this).nextAll(".slider").length) {
-					return;
-				}
-				var range = $(this);
-				var id    = $(this).attr("id");
-
-				var sliderDiv = $("<div class=\"slider\" />");
-				sliderDiv.width(range.width());
-				range.after(sliderDiv.slider({
-					min:   parseFloat(range.attr("min")),
-					max:   parseFloat(range.attr("max")),
-					value: parseFloat(range.val()),
-					step:  parseFloat(range.attr("step")),
-					slide: function(e, ui) {
-						range.val(ui.value);
-
-						// this kind of sucks, but ...
-						if (id === "observationRecency") {
-							_observationRecencyDisplay.html(ui.value);
-						} else if (id === "hotspotActivity") {
-							_hotspotActivityRecencyDisplay.html(ui.value);
-							_limitHotspotsByObservationRecency.prop("checked", true);
-						}
-					},
-
-					change: function(e, ui) {
-						range.val(ui.value);
-						if (id === "observationRecency") {
-							_observationRecencyDisplay.html(ui.value);
-						} else if (id === "hotspotActivity") {
-							_hotspotActivityRecencyDisplay.html(ui.value);
-							_limitHotspotsByObservationRecency.prop("checked", true);
-						}
-					}
-				}));
-			}).hide();
-		}
 	};
 
 

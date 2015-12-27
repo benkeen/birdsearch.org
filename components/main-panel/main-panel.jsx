@@ -10,22 +10,29 @@ import * as actions from './actions';
 
 class MainPanel extends React.Component {
   render () {
-    const { dispatch, introOverlayVisible } = this.props;
+    const { dispatch, sidebarVisible, isRequestingUserLocation, introOverlayVisible } = this.props;
 
     return (
       <section id="mainPanel" className="flex-body">
-        <Sidebar />
+        <Sidebar
+          visible={sidebarVisible} />
         <Map />
         <IntroOverlay
           visible={introOverlayVisible}
-          onClose={() => dispatch(actions.setIntroOverlayVisiblity(false))}
+          loading={isRequestingUserLocation}
+          onClose={() => dispatch(actions.setIntroOverlayVisibility(false))}
+          searchNearby={() => dispatch(actions.getUserLocation())}
         />
       </section>
     );
   }
 }
 
-export default connect(state => ({ introOverlayVisible: state.introOverlayVisible }))(MainPanel);
+export default connect(state => ({
+  introOverlayVisible: state.introOverlayVisible,
+  isRequestingUserLocation: state.isRequestingUserLocation,
+  sidebarVisible: state.sidebarVisible
+}))(MainPanel);
 
 
 
@@ -34,15 +41,17 @@ class IntroOverlay extends React.Component {
     super(props);
   }
 
-  searchNearby () {
-
-  }
-
   searchAnywhere () {
 
   }
+  //
+  //positionAvailable (position) {
+  //  console.log(position);
+  //}
 
   render () {
+    console.log(this.props.loading);
+
     return (
       <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
         <div>
@@ -52,7 +61,7 @@ class IntroOverlay extends React.Component {
               <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.props.onClose}></span>
 
               <div>
-                <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby.bind(this)}>
+                <button className="btn btn-success" id="searchNearby" onClick={this.props.searchNearby}>
                   <i className="glyphicon glyphicon-home"></i>
                   <FormattedMessage id="searchNearby" />
                 </button>
@@ -76,67 +85,7 @@ class IntroOverlay extends React.Component {
   }
 }
 
-class SearchPanel extends React.Component {
 
-  render () {
-    return (
-      <div>
-        <div id="searchPanel">
-          <input type="text" id="location" placeholder={L.please_enter_location_search_default} />
-
-          <ul id="resultTypeGroup">
-            <li class="selected">
-              <input type="radio" name="resultType" id="rt1" value="all" checked={true} />
-              <label for="rt1"><FormattedMessage id="birdSightings" /></label>
-            </li>
-            <li>
-              <input type="radio" name="resultType" id="rt2" value="notable" />
-              <label for="rt2"><FormattedMessage id="notableSightings" /></label>
-            </li>
-            <li>
-              <input type="radio" name="resultType" id="rt3" value="hotspots" />
-              <label for="rt3"><FormattedMessage id="popularBirdingLocations" /></label>
-            </li>
-          </ul>
-
-          <div id="observationRecencySection" style="display:none">
-            <label for="observationRecency">
-              {L.show_obs_made_within_last} <span id="observationRecencyDisplay">7</span> {L.day_or_days}
-            </label>
-            <ol class="rangeTip">
-              <li class="rangeTipLeft">1</li>
-              <li>
-                <input type="range" id="observationRecency" min="1" max="30" value="7" />
-              </li>
-              <li class="rangeTipRight">30</li>
-            </ol>
-            <div class="clear"></div>
-          </div>
-
-          <div id="hotspotActivitySection" style="display:none">
-            <input type="checkbox" id="limitHotspotsByObservationRecency" />
-            <label for="limitHotspotsByObservationRecency">
-              {L.limit_to_locations} <span id="hotspotActivityRecencyDisplay">7</span> {L.day_or_days}
-            </label>
-            <ol class="rangeTip">
-              <li class="rangeTipLeft">1</li>
-              <li>
-                <input type="range" id="hotspotActivity" min="1" max="30" value="7" />
-              </li>
-              <li class="rangeTipRight">30</li>
-            </ol>
-          </div>
-
-          <div>
-            <input type="submit" class="btn btn-primary" id="searchBtn" value="<%=L.search%> &raquo;" />
-            <span id="loadingSpinner" />
-          </div>
-        </div>
-
-      </div>
-    );
-  }
-}
 
 
 class Map extends React.Component {
@@ -159,13 +108,53 @@ class Map extends React.Component {
 
 
     var mapCanvas = ReactDOM.findDOMNode(this);
-    var map       = new google.maps.Map(mapCanvas, defaultMapOptions);
+    this.map = new google.maps.Map(mapCanvas, defaultMapOptions);
+
+    this.addCustomControls();
+    this.addEventHandlers();
+  }
+
+  addCustomControls () {
+    var btn1 = $('<div class="mapBtn">Terrain</div>')[0];
+    var btn2 = $('<div class="mapBtn mapBtnSelected">Road Map</div>')[0];
+    var btn3 = $('<div class="mapBtn">Satellite</div>')[0];
+    var btn4 = $('<div class="mapBtn">Hybrid</div>')[0];
+
+    // add the controls to the map
+    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
+    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
+    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
+    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
+
+    // add the appropriate event handlers
+    google.maps.event.addDomListener(btn1, 'click', function () {
+      this.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+      $(".mapBtn").removeClass('mapBtnSelected');
+      $(btn1).addClass('mapBtnSelected');
+    });
+    google.maps.event.addDomListener(btn2, 'click', function () {
+      this.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+      $(".mapBtn").removeClass('mapBtnSelected');
+      $(btn2).addClass('mapBtnSelected');
+    });
+    google.maps.event.addDomListener(btn3, 'click', function () {
+      this.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+      $(".mapBtn").removeClass('mapBtnSelected');
+      $(btn3).addClass('mapBtnSelected');
+    });
+    google.maps.event.addDomListener(btn4, 'click', function () {
+      this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      $(".mapBtn").removeClass('mapBtnSelected');
+      $(btn4).addClass('mapBtnSelected');
+    });
+  };
+
+  addEventHandlers () {
+    //$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
+    //$(document).on("click", ".viewLocationSightingDetails", _onClickViewLocationSightings);
   }
 
   render () {
-    //_addCustomControls();
-    //_addEventHandlers();
-    //
     //// called any time the map has had its bounds changed
     //google.maps.event.addListener(_map, "dragend", _onMapBoundsChange);
     //google.maps.event.addListener(_map, "zoom_changed", _onMapBoundsChange);

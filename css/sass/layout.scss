@@ -5,6 +5,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+
 #app {
   flex: 1;
   display: flex;
@@ -15,35 +16,23 @@ body {
   display: flex;
   flex-direction: column;
 }
-#leftPanel {
-  flex: 0 0 310px;
-}
-#mainPanel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-#panelTabs {
-  flex: 0 0 auto;
-}
-#panelContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-#mapTabContent {
-  flex: 1;
-}
 
 header {
   display: flex;
   flex-direction: row;
   .navbar {
-    flex: 0 0 auto;
+    flex: 0 0 315px;
+    margin: 0;
   }
-  #mainTabs {
+  .header-search {
     flex: 1;
   }
+}
+
+#mainPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
 }
 
 .flex-body {

@@ -5,3 +5,7 @@ tracking.php
 node_modules*
 database.php
 dist/*
+
+*.scssc
+
+*.scssc

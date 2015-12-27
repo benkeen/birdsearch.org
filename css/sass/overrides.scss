@@ -1,3 +1,4 @@
+/*
 .table-striped tbody>tr:nth-child(odd)>td,
 .table-striped tbody>tr:nth-child(odd)>th {
 	background: rgba(100,100,100,0.25);
@@ -38,4 +39,9 @@ body .modal h2 {
 }
 .modal-body {
 	max-height: 410px;
+}
+*/
+
+button.btn {
+	box-shadow: none;
 }
