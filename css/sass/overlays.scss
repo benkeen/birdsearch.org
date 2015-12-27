@@ -1,4 +1,4 @@
-#initSearchControls {
+#intro-overlay {
   position: absolute;
   margin: auto;
   left: 0;
@@ -7,6 +7,17 @@
   bottom: 0;
   height: 120px;
   width: 488px;
+
+  .css-loader {
+    position: absolute;
+    top: 92px;
+  }
+
+  &.loading {
+    .close-panel, .tab-content > * {
+      opacity: 0.2;
+    }
+  }
 
   .close-panel {
     position: absolute;
@@ -20,13 +31,15 @@
     }
   }
 
-  .tab-content {
+  .tab-wrapper {
     position: relative;
+    color: black;
+    font-size: 14px;
+  }
+  .tab-content {
     background-color: white;
     border-radius: 6px;
     padding: 40px;
-    color: black;
-    font-size: 14px;
   }
   input {
     padding: 8px;

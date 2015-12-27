@@ -12,7 +12,7 @@ function setIntroOverlayVisibility (visible) {
 
 function getUserLocation () {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(this.positionAvailable);
+    navigator.geolocation.getCurrentPosition(function (pos) { console.log(pos); });
   }
 
   return {

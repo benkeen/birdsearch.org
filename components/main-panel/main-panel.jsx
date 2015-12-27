@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import Sidebar from '../sidebar/sidebar';
+import { Loader } from '../general/general';
 import { VelocityComponent } from 'velocity-react';
 import { C, E } from '../../core/core';
 import * as actions from './actions';
@@ -22,7 +23,7 @@ class MainPanel extends React.Component {
           loading={isRequestingUserLocation}
           onClose={() => dispatch(actions.setIntroOverlayVisibility(false))}
           searchNearby={() => dispatch(actions.getUserLocation())}
-        />
+          searchAnywhere={() => dispatch(actions.setIntroOverlayVisibility(false))} />
       </section>
     );
   }
@@ -41,41 +42,48 @@ class IntroOverlay extends React.Component {
     super(props);
   }
 
-  searchAnywhere () {
-
+  whatever () {
+    if (!this.props.visible) {
+      console.log("Hidden.");
+    }
   }
-  //
-  //positionAvailable (position) {
-  //  console.log(position);
-  //}
+
+  getLoader () {
+    if (this.props.loading) {
+      return (<Loader />);
+    }
+  }
 
   render () {
-    console.log(this.props.loading);
-
+    var overlayClass = (this.props.loading) ? 'loading' : '';
     return (
-      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
+      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED} complete={this.whatever.bind(this)}>
         <div>
           <div id="map-overlay"></div>
-          <div id="initSearchControls">
-            <div className="tab-content">
-              <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.props.onClose}></span>
+          <div id="intro-overlay" className={overlayClass}>
+            <div className="tab-wrapper">
+              {this.getLoader()}
 
-              <div>
-                <button className="btn btn-success" id="searchNearby" onClick={this.props.searchNearby}>
-                  <i className="glyphicon glyphicon-home"></i>
-                  <FormattedMessage id="searchNearby" />
-                </button>
-                <FormattedMessage id="findInArea" />
-              </div>
+              <div className="tab-content">
+                <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.props.onClose}></span>
 
-              <p className="or"><FormattedMessage id="or" /></p>
+                <div>
+                  <button className="btn btn-success" id="searchNearby" onClick={this.props.searchNearby}>
+                    <i className="glyphicon glyphicon-home"></i>
+                    <FormattedMessage id="searchNearby" />
+                  </button>
+                  <FormattedMessage id="findInArea" />
+                </div>
 
-              <div>
-                <button className="btn btn-info" id="searchAnywhere" onClick={this.searchAnywhere.bind(this)}>
-                  <i className="glyphicon glyphicon-globe"></i>
-                  <FormattedMessage id="searchAnywhere" />
-                </button>
-                <FormattedMessage id="findAnywhere" />
+                <p className="or"><FormattedMessage id="or" /></p>
+
+                <div>
+                  <button className="btn btn-info" id="searchAnywhere" onClick={this.props.searchAnywhere}>
+                    <i className="glyphicon glyphicon-globe"></i>
+                    <FormattedMessage id="searchAnywhere" />
+                  </button>
+                  <FormattedMessage id="findAnywhere" />
+                </div>
               </div>
             </div>
           </div>
@@ -84,7 +92,9 @@ class IntroOverlay extends React.Component {
     );
   }
 }
-
+IntroOverlay.PropTypes = {
+  loading: React.PropTypes.bool.isRequired
+};
 
 
 

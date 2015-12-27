@@ -1,11 +1,7 @@
-resources/.DS_Store
-tracking.php
 .DS_Store
 .idea*
 node_modules*
 database.php
 dist/*
-
 *.scssc
-
-*.scssc
+.sass-cache*
