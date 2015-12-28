@@ -3,25 +3,27 @@ import { E } from '../../core/events';
 import * as storage from '../../core/storage';
 
 
-function introOverlayVisible (state = true, action) {
-  switch (action.type) {
-    case E.SET_INTRO_OVERLAY_VISIBILITY:
-      return action.visible;
-    default:
-      return state;
-  }
-}
-
-function isRequestingUserLocation (state = false, action) {
+function userLocation (state = {
+  isFetching: false,
+  lat: null,
+  lng: null
+}, action) {
   switch (action.type) {
     case E.REQUEST_USER_LOCATION:
-      return action.isRequestingUserLocation;
+      return Object.assign({}, state, { isFetching: true });
+    break;
+
+    case E.RECEIVED_USER_LOCATION:
+      return Object.assign({}, state, {
+        isFetching: false,
+        lat: action.lat,
+        lng: action.lng
+      });
     default:
-      return state;
+      return state
   }
 }
 
 export {
-  introOverlayVisible,
-  isRequestingUserLocation
+  userLocation
 };

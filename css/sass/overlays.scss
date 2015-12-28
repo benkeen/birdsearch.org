@@ -1,3 +1,6 @@
+@import "variables";
+
+
 #intro-overlay {
   position: absolute;
   margin: auto;
@@ -8,6 +11,18 @@
   height: 120px;
   width: 488px;
 
+  .loader {
+    position: absolute;
+    width: 100%;
+    top: 85px;
+  }
+  .loader-label {
+    text-align: center;
+    letter-spacing: 2px;
+    color: $blue;
+    margin-top: 40px;
+  }
+
   .css-loader {
     position: absolute;
     top: 92px;
@@ -15,7 +30,7 @@
 
   &.loading {
     .close-panel, .tab-content > * {
-      opacity: 0.2;
+      opacity: 0.1;
     }
   }
 

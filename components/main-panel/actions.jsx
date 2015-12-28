@@ -10,18 +10,44 @@ function setIntroOverlayVisibility (visible) {
   };
 }
 
-function getUserLocation () {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (pos) { console.log(pos); });
-  }
+function requestUserLocation () {
+  return { type: E.REQUEST_USER_LOCATION };
+}
 
-  return {
-    type: E.REQUEST_USER_LOCATION,
-    isRequestingUserLocation: true
+// this actually does the work of querying for the geolocation
+function requestGeoLocation () {
+  return function (dispatch) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      dispatch({
+        type: E.RECEIVED_USER_LOCATION,
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      });
+    });
   };
+}
+
+function getGeoLocation() {
+  return function (dispatch) {
+    dispatch(requestUserLocation());
+
+    // if the browser doesn't support geolocation, make a note of it
+    if (!navigator.geolocation) {
+      //return dispatch({
+      //  type: E.RECEIVED_USER_LOCATION,
+      //  coords: {
+      //    isFetching: true,
+      //    latitude: null,
+      //    longitude: null
+      //  }
+      //});
+    }
+
+    return dispatch(requestGeoLocation());
+  }
 }
 
 export {
   setIntroOverlayVisibility,
-  getUserLocation
+  getGeoLocation
 };

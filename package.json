@@ -31,7 +31,8 @@
     "load-grunt-tasks": "^3.3.0",
     "react-intl": "^2.0.0-beta-2",
     "react-router": "^1.0.2",
-    "redux-devtools": "^2.1.5"
+    "redux-devtools": "^2.1.5",
+    "redux-thunk": "^1.0.2"
   },
   "dependencies": {
     "lodash": "^3.10.1",

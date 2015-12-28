@@ -10,6 +10,15 @@ function setLocale (locale) {
   };
 }
 
+function setSearchLocation (location) {
+  return {
+    type: E.SET_SEARCH_LOCATION,
+    location
+  };
+}
+
+
 export {
-  setLocale
+  setLocale,
+  setSearchLocation
 };

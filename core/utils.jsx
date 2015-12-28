@@ -1,15 +1,24 @@
-import { createStore, combineReducers } from 'redux';
+import thunk from 'redux-thunk';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { locale } from '../components/header/reducers';
-import { introOverlayVisible, isRequestingUserLocation} from '../components/main-panel/reducers';
+import { userLocation } from '../components/main-panel/reducers';
 import { sidebarVisible } from '../components/sidebar/reducers';
+import { searchSettings, overlays } from './reducers';
+
+// react-thunk allows
+const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
 var reducers = combineReducers({
   locale,
+
   sidebarVisible,
-  introOverlayVisible,
-  isRequestingUserLocation
+
+  userLocation,
+  overlays,
+  searchSettings
 });
 
+
 export default function initStore (initialState) {
-  return createStore(reducers, initialState);
+  return createStoreWithMiddleware(reducers, initialState);
 }

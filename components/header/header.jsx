@@ -8,7 +8,7 @@ import * as actions from './actions';
 
 class Header extends React.Component {
   render () {
-    const { dispatch, locale } = this.props;
+    const { dispatch, locale, searchSettings, overlays } = this.props;
 
     return (
       <header className="flex-fill">
@@ -16,7 +16,10 @@ class Header extends React.Component {
           <h1 className="brand">birdsearch.org</h1>
         </div>
 
-        <HeaderSearch disabled={true} />
+        <HeaderSearch
+          disabled={overlays.intro || overlays.advancedSearch}
+          location={searchSettings.location}
+          onChange={str => dispatch(actions.setSearchLocation(str))} />
 
         <ul className="nav-items">
           <li>
@@ -37,7 +40,11 @@ class Header extends React.Component {
   }
 }
 
-export default connect(state => ({ locale: state.locale }))(Header)
+export default connect(state => ({
+  locale: state.locale,
+  overlays: state.overlays,
+  searchSettings: state.searchSettings
+}))(Header);
 
 
 class HeaderSearch extends React.Component {
@@ -45,12 +52,17 @@ class HeaderSearch extends React.Component {
     super(props);
   }
 
+  onChangeLocation (e) {
+    e.preventDefault();
+    this.props.onChange(e.target.value);
+  }
+
   render () {
     var searchBtnClasses = 'btn' + (!this.props.disabled ? ' btn-success' : '');
 
     return (
       <div className="header-search">
-        <input type="text" placeholder="Enter Location" />
+        <input type="text" placeholder="Enter Location" value={this.props.location} onChange={this.onChangeLocation.bind(this)} />
         <button className={searchBtnClasses}>Search</button>
         <Link className="advanced-search-link" to="/advanced-search">advanced search</Link>
       </div>
@@ -58,7 +70,9 @@ class HeaderSearch extends React.Component {
   }
 }
 HeaderSearch.PropTypes = {
-  disabled: React.PropTypes.bool.isRequired
+  disabled: React.PropTypes.bool.isRequired,
+  location: React.PropTypes.string.isRequired,
+  onChangeLocation: React.PropTypes.func.isRequired
 };
 
 

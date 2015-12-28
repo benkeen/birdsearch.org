@@ -22,7 +22,7 @@ class MainPanel extends React.Component {
           visible={introOverlayVisible}
           loading={isRequestingUserLocation}
           onClose={() => dispatch(actions.setIntroOverlayVisibility(false))}
-          searchNearby={() => dispatch(actions.getUserLocation())}
+          searchNearby={() => dispatch(actions.getGeoLocation())}
           searchAnywhere={() => dispatch(actions.setIntroOverlayVisibility(false))} />
       </section>
     );
@@ -30,8 +30,8 @@ class MainPanel extends React.Component {
 }
 
 export default connect(state => ({
-  introOverlayVisible: state.introOverlayVisible,
-  isRequestingUserLocation: state.isRequestingUserLocation,
+  introOverlayVisible: state.overlays.intro,
+  isRequestingUserLocation: state.userLocation.isFetching,
   sidebarVisible: state.sidebarVisible
 }))(MainPanel);
 
@@ -40,26 +40,36 @@ export default connect(state => ({
 class IntroOverlay extends React.Component {
   constructor (props) {
     super(props);
+    this.state = { visible: props.visible };
   }
 
-  whatever () {
+  transitionComplete () {
     if (!this.props.visible) {
-      console.log("Hidden.");
+      this.setState({ visible: false });
     }
   }
 
   getLoader () {
     if (this.props.loading) {
-      return (<Loader />);
+      return (<Loader label="FINDING LOCATION..." />);
     }
+  }
+
+  // may generalize this sucker
+  getOverlay () {
+    if (!this.state.visible) {
+      return null;
+    }
+    return (<div id="map-overlay"></div>);
   }
 
   render () {
     var overlayClass = (this.props.loading) ? 'loading' : '';
+
     return (
-      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED} complete={this.whatever.bind(this)}>
+      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED} complete={this.transitionComplete.bind(this)}>
         <div>
-          <div id="map-overlay"></div>
+          {this.getOverlay()}
           <div id="intro-overlay" className={overlayClass}>
             <div className="tab-wrapper">
               {this.getLoader()}
@@ -68,7 +78,7 @@ class IntroOverlay extends React.Component {
                 <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.props.onClose}></span>
 
                 <div>
-                  <button className="btn btn-success" id="searchNearby" onClick={this.props.searchNearby}>
+                  <button className="btn btn-success" id="searchNearby" onClick={this.props.searchNearby} disabled={this.props.loading}>
                     <i className="glyphicon glyphicon-home"></i>
                     <FormattedMessage id="searchNearby" />
                   </button>
@@ -78,7 +88,7 @@ class IntroOverlay extends React.Component {
                 <p className="or"><FormattedMessage id="or" /></p>
 
                 <div>
-                  <button className="btn btn-info" id="searchAnywhere" onClick={this.props.searchAnywhere}>
+                  <button className="btn btn-info" id="searchAnywhere" onClick={this.props.searchAnywhere} disabled={this.props.loading}>
                     <i className="glyphicon glyphicon-globe"></i>
                     <FormattedMessage id="searchAnywhere" />
                   </button>
