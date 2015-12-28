@@ -4,6 +4,7 @@ These just don't seem to belong to the individual components, so I'm going to st
 
 import { E } from './events';
 
+
 function overlays (state = {
   intro: true,
   advancedSearch: false
@@ -58,8 +59,29 @@ function searchSettings (state = {
 }
 
 
+function mapSettings (state = {
+    zoom: 3,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    lat: 30,
+    lng: 0
+  }, action) {
+
+  switch (action.type) {
+    case E.SEARCH_REQUEST_STARTED:
+      return Object.assign({}, state, {
+        lat: action.lat,
+        lng: action.lng
+      });
+
+    default:
+      return state;
+  }
+}
+
+
 export {
   searchSettings,
+  mapSettings,
   overlays
 };
 

@@ -14,7 +14,6 @@ function requestUserLocation () {
   return { type: E.REQUEST_USER_LOCATION };
 }
 
-// this actually does the work of querying for the geolocation
 function requestGeoLocation () {
   return function (dispatch) {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -31,7 +30,7 @@ function getGeoLocation() {
   return function (dispatch) {
     dispatch(requestUserLocation());
 
-    // if the browser doesn't support geolocation, make a note of it
+    // TODO if the browser doesn't support geolocation, make a note of it
     if (!navigator.geolocation) {
       //return dispatch({
       //  type: E.RECEIVED_USER_LOCATION,

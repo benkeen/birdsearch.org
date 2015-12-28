@@ -5,7 +5,7 @@ const C = {
 
 	CORE: {
 		APP_VERSION: "2.0.0 - BETA",
-		RELEASE_DATE: "Dec 19, 2015",
+		RELEASE_DATE: "Dec 27, 2015",
 		GITHUB_URL: "https://github.com/benkeen/birdsearch.org"
 	},
 	SETTINGS: {

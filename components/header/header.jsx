@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router';
-import * as actions from './actions';
+import * as actions from './../../core/actions';
 
 
 class Header extends React.Component {
@@ -19,7 +19,8 @@ class Header extends React.Component {
         <HeaderSearch
           disabled={overlays.intro || overlays.advancedSearch}
           location={searchSettings.location}
-          onChange={str => dispatch(actions.setSearchLocation(str))} />
+          onChange={str => dispatch(actions.setSearchLocation(str))}
+          onSubmit={() => dispatch(actions.search(searchSettings))} />
 
         <ul className="nav-items">
           <li>
@@ -34,7 +35,6 @@ class Header extends React.Component {
               onChange={locale => dispatch(actions.setLocale(locale))} />
           </li>
         </ul>
-
       </header>
     );
   }
@@ -50,6 +50,14 @@ export default connect(state => ({
 class HeaderSearch extends React.Component {
   constructor (props) {
     super(props);
+    this.state = { showErrors: false };
+  }
+
+  componentDidMount () {
+    var autoComplete = new google.maps.places.Autocomplete(ReactDOM.findDOMNode(this.refs.searchField));
+    google.maps.event.addListener(autoComplete, 'place_changed', function () {
+      console.log("publish something here so the map can listen to it.");
+    });
   }
 
   onChangeLocation (e) {
@@ -57,14 +65,21 @@ class HeaderSearch extends React.Component {
     this.props.onChange(e.target.value);
   }
 
+  search () {
+    if (this.props.location.trim() === '') {
+      this.setState({ showErrors: true });
+      return;
+    }
+    this.props.onSubmit();
+  }
+
   render () {
     var searchBtnClasses = 'btn' + (!this.props.disabled ? ' btn-success' : '');
-
     return (
       <div className="header-search">
-        <input type="text" placeholder="Enter Location" value={this.props.location} onChange={this.onChangeLocation.bind(this)} />
-        <button className={searchBtnClasses}>Search</button>
-        <Link className="advanced-search-link" to="/advanced-search">advanced search</Link>
+        <input type="text" placeholder="Enter Location" ref="searchField" value={this.props.location} onChange={this.onChangeLocation.bind(this)} />
+        <button className={searchBtnClasses} onClick={this.search.bind(this)}><FormattedMessage id="search" /></button>
+        <Link className="advanced-search-link" to="/advanced-search"><FormattedMessage id="advancedSearch" /></Link>
       </div>
     );
   }
@@ -72,8 +87,10 @@ class HeaderSearch extends React.Component {
 HeaderSearch.PropTypes = {
   disabled: React.PropTypes.bool.isRequired,
   location: React.PropTypes.string.isRequired,
-  onChangeLocation: React.PropTypes.func.isRequired
+  onChangeLocation: React.PropTypes.func.isRequired,
+  onSubmit: React.PropTypes.func.onSubmit
 };
+
 
 
 class LanguageToggle extends React.Component {

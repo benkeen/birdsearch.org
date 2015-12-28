@@ -4,6 +4,7 @@
 
 export default {
 	about: 'About',
+	advancedSearch: 'advanced search',
 	birdSightings: 'Bird sightings',
 	birdSpecies: 'Bird Species',
 	findInArea: 'Find bird sightings in your area.',
