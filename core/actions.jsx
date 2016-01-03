@@ -28,16 +28,20 @@ function searchRequest (searchSettings) {
 function search (searchSettings) {
   return function (dispatch) {
     dispatch(searchRequest(searchSettings));
-
     return dispatch(function () {
 
     });
   }
 }
 
+function searchAutoComplete () {
+
+}
+
 
 export {
   setLocale,
   setSearchLocation,
-  search
+  search,
+  searchAutoComplete
 };

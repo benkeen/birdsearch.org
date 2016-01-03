@@ -3,10 +3,23 @@ import { E } from '../../core/events';
 import * as storage from '../../core/storage';
 
 
+/**
+ * Reminder: this adds an object property to the redux store with the following shape:
+ *
+ * userLocation: {
+ *    isFetching: ...,
+ *    reverseGeocodeSuccess: ...,
+ *    lat: ...,
+ *    lng: ...',
+ *    address: ...
+ * }
+ */
 function userLocation (state = {
   isFetching: false,
+  reverseGeocodeSuccess: false,
   lat: null,
-  lng: null
+  lng: null,
+  address: ''
 }, action) {
   switch (action.type) {
     case E.REQUEST_USER_LOCATION:
@@ -16,8 +29,10 @@ function userLocation (state = {
     case E.RECEIVED_USER_LOCATION:
       return Object.assign({}, state, {
         isFetching: false,
+        reverseGeocodeSuccess: action.reverseGeocodeSuccess,
         lat: action.lat,
-        lng: action.lng
+        lng: action.lng,
+        address: action.address
       });
     default:
       return state

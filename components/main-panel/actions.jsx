@@ -17,14 +17,35 @@ function requestUserLocation () {
 function requestGeoLocation () {
   return function (dispatch) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      dispatch({
-        type: E.RECEIVED_USER_LOCATION,
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      });
+      convertLatLngToAddress(dispatch, position.coords.latitude, position.coords.longitude);
     });
   };
 }
+
+
+function convertLatLngToAddress (dispatch, lat, lng) {
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ latLng: { lat: lat, lng: lng }}, function (results, status) {
+
+    var reverseGeocodeSuccess = false;
+    var address = '';
+    if (status === google.maps.GeocoderStatus.OK) {
+      if (results[1]) {
+        reverseGeocodeSuccess = true;
+        address = results[1].formatted_address;
+      }
+    }
+
+    dispatch({
+      type: E.RECEIVED_USER_LOCATION,
+      reverseGeocodeSuccess: reverseGeocodeSuccess,
+      lat: lat,
+      lng: lng,
+      address: address
+    });
+  });
+}
+
 
 function getGeoLocation() {
   return function (dispatch) {

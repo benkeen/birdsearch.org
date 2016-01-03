@@ -16,6 +16,7 @@ function overlays (state = {
         intro: action.visible
       });
 
+    // after a user's location is found, hide the Intro overlay
     case E.RECEIVED_USER_LOCATION:
       return Object.assign({}, state, {
         intro: false
@@ -46,9 +47,15 @@ function searchSettings (state = {
         location: action.location
       });
 
+
     case E.RECEIVED_USER_LOCATION:
+
+      // if an address was included, it means Google was able to reverse geocode the lat/lng into an intelligible
+      // address. Favour that over the raw lat/lng, which is kinda klutzy to see in the UI
+      var location = (action.address) ? action.address : action.lat + ',' + action.lng;
+
       return Object.assign({}, state, {
-        location: action.lat + ',' + action.lng,
+        location: location,
         lat: action.lat,
         lng: action.lng
       });

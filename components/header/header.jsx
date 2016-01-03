@@ -17,6 +17,7 @@ class Header extends React.Component {
         </div>
 
         <HeaderSearch
+          dispatch={dispatch}
           disabled={overlays.intro || overlays.advancedSearch}
           location={searchSettings.location}
           onChange={str => dispatch(actions.setSearchLocation(str))}
@@ -56,7 +57,14 @@ class HeaderSearch extends React.Component {
   componentDidMount () {
     var autoComplete = new google.maps.places.Autocomplete(ReactDOM.findDOMNode(this.refs.searchField));
     google.maps.event.addListener(autoComplete, 'place_changed', function () {
-      console.log("publish something here so the map can listen to it.");
+      var currPlace = autoComplete.getPlace();
+      if (!currPlace.geometry) {
+        return;
+      }
+      //_viewportObj = currPlace.geometry.hasOwnProperty("viewport") ? currPlace.geometry.viewport : null;
+      //_locationObj = currPlace.geometry.location;
+
+      this.props.dispatch(actions.searchAutoComplete());
     });
   }
 
