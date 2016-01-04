@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import Sidebar from '../sidebar/sidebar';
-import { Loader } from '../general/general';
+import { Loader, ClosePanel } from '../general/general';
 import Map from '../map/map';
 import { VelocityComponent } from 'velocity-react';
 import { C, E } from '../../core/core';
@@ -16,19 +15,31 @@ class MainPanel extends React.Component {
 
     return (
       <section id="mainPanel" className="flex-body">
-        <Sidebar
-          visible={sidebarVisible} />
         <Map
           zoom={mapSettings.zoom}
           mapTypeId={mapSettings.mapTypeId}
           lat={mapSettings.lat}
           lng={mapSettings.lng} />
+
         <IntroOverlay
           visible={introOverlayVisible}
           loading={isRequestingUserLocation}
           onClose={() => dispatch(actions.setIntroOverlayVisibility(false))}
           searchNearby={() => dispatch(actions.getGeoLocation())}
           searchAnywhere={() => dispatch(actions.setIntroOverlayVisibility(false))} />
+
+        <div id="map-panels">
+          <div id="panels">
+            <div id="left-panel">
+              <OverviewPanel
+                visible={!introOverlayVisible} />
+              <LocationPanel />
+            </div>
+            <SpeciesPanel />
+          </div>
+        </div>
+
+        <PanelToggleButtons />
       </section>
     );
   }
@@ -57,7 +68,7 @@ class IntroOverlay extends React.Component {
 
   getLoader () {
     if (this.props.loading) {
-      return (<Loader label="FINDING LOCATION..." />);
+      return (<Loader label="FINDING YOUR LOCATION..." />);
     }
   }
 
@@ -73,7 +84,8 @@ class IntroOverlay extends React.Component {
     var overlayClass = (this.props.loading) ? 'loading' : '';
 
     return (
-      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED} complete={this.transitionComplete.bind(this)}>
+      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}
+          complete={this.transitionComplete.bind(this)}>
         <div>
           {this.getOverlay()}
           <div id="intro-overlay" className={overlayClass}>
@@ -81,7 +93,7 @@ class IntroOverlay extends React.Component {
               {this.getLoader()}
 
               <div className="tab-content">
-                <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.props.onClose}></span>
+                <ClosePanel onClose={this.props.onClose} />
 
                 <div>
                   <button className="btn btn-success" id="searchNearby" onClick={this.props.searchNearby} disabled={this.props.loading}>
@@ -113,4 +125,50 @@ IntroOverlay.PropTypes = {
 };
 
 
+class OverviewPanel extends React.Component {
 
+  render () {
+    return (
+      <div id="overview-panel" className="panel">
+        <ClosePanel onClose={this.props.onClose} />
+        <h1>Locations: <span></span></h1>
+        <h1>Species: <span></span></h1>
+      </div>
+    )
+  }
+}
+
+class LocationPanel extends React.Component {
+  render () {
+    return (
+      <div id="locations-panel" className="panel">
+        <ClosePanel onClose={this.props.onClose} />
+        location panel
+      </div>
+    );
+  }
+}
+
+class SpeciesPanel extends React.Component {
+  render () {
+    return (
+      <div id="species-panel" className="panel">
+        <ClosePanel onClose={this.props.onClose} />
+        species panel
+      </div>
+    );
+  }
+}
+
+
+class PanelToggleButtons extends React.Component {
+  render () {
+    return (
+      <div id="panel-toggle-buttons" className="panel">
+        <span><a href="" className="label label-success">overview</a></span>
+        <span><a href="" className="label label-warning">locations</a></span>
+        <span><a href="" className="label label-primary">birds</a></span>
+      </div>
+    )
+  }
+}

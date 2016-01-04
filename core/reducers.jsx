@@ -2,6 +2,7 @@
 These just don't seem to belong to the individual components, so I'm going to stick them here and see how things roll.
 */
 
+import { C } from './constants';
 import { E } from './events';
 
 
@@ -38,7 +39,7 @@ function searchSettings (state = {
     location: '',
     lat: null,
     lng: null,
-    observationRecency: null
+    observationRecency: C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS
   }, action) {
 
   switch (action.type) {
@@ -47,9 +48,15 @@ function searchSettings (state = {
         location: action.location
       });
 
+    case E.SEARCH_AUTO_COMPLETE:
+      return Object.assign({}, state, {
+        location: action.location,
+        lat: action.lat,
+        lng: action.lng
+      });
+      break;
 
     case E.RECEIVED_USER_LOCATION:
-
       // if an address was included, it means Google was able to reverse geocode the lat/lng into an intelligible
       // address. Favour that over the raw lat/lng, which is kinda klutzy to see in the UI
       var location = (action.address) ? action.address : action.lat + ',' + action.lng;

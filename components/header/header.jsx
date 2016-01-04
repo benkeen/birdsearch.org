@@ -56,15 +56,21 @@ class HeaderSearch extends React.Component {
 
   componentDidMount () {
     var autoComplete = new google.maps.places.Autocomplete(ReactDOM.findDOMNode(this.refs.searchField));
+    var dispatch = this.props.dispatch;
     google.maps.event.addListener(autoComplete, 'place_changed', function () {
       var currPlace = autoComplete.getPlace();
       if (!currPlace.geometry) {
         return;
       }
+
       //_viewportObj = currPlace.geometry.hasOwnProperty("viewport") ? currPlace.geometry.viewport : null;
       //_locationObj = currPlace.geometry.location;
 
-      this.props.dispatch(actions.searchAutoComplete());
+      dispatch(actions.searchAutoComplete({
+        lat: currPlace.geometry.location.lat(),
+        lng: currPlace.geometry.location.lng(),
+        location: currPlace.formatted_address
+      }));
     });
   }
 

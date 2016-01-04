@@ -34,8 +34,13 @@ function search (searchSettings) {
   }
 }
 
-function searchAutoComplete () {
-
+function searchAutoComplete (info) {
+  return {
+    type: E.SEARCH_AUTO_COMPLETE,
+    location: info.location,
+    lat: info.lat,
+    lng: info.lng
+  };
 }
 
 

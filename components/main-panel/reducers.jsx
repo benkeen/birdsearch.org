@@ -39,6 +39,22 @@ function userLocation (state = {
   }
 }
 
+function panelVisibility (state = {
+  overview: false,
+  locations: false,
+  species: false
+}, action) {
+  switch (action.type) {
+    case E.TOGGLE_PANEL_VISIBILITY:
+      return Object.assign({}, state, {
+        address: action.address
+      });
+    default:
+      return state
+  }
+}
+
 export {
-  userLocation
+  userLocation,
+  panelVisibility
 };

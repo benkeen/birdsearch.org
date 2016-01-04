@@ -145,3 +145,57 @@
 	opacity: 0.3;
 }
 
+#map-panels {
+	z-index: 1;
+	position: absolute;
+	top: 72px;
+	bottom: 10px;
+	left: 10px;
+	right: 10px;
+	.panel {
+		background: rgba(0, 117, 186, 0.3);
+		border-radius: 5px;
+		padding: 12px;
+	}
+}
+
+#panels {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+	width: 100%;
+}
+#left-panel {
+	display: flex;
+	flex-direction: column;
+	margin-right: 10px;
+	width: 300px;
+}
+#overview-panel {
+	flex: 0 0 auto;
+	margin-bottom: 10px;
+	h1 {
+		font-size: 30px;
+	}
+}
+#locations-panel {
+	flex: 1;
+	margin-bottom: 45px;
+}
+#species-panel {
+	flex: 1;
+}
+
+
+#panel-toggle-buttons {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	padding: 4px;
+	border-top-right-radius: 3px;
+	display: flex;
+	flex-direction: row;
+	&>span {
+		flex: 1 1 33%;
+	}
+}
