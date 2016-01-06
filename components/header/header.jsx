@@ -66,6 +66,7 @@ class HeaderSearch extends React.Component {
       //_viewportObj = currPlace.geometry.hasOwnProperty("viewport") ? currPlace.geometry.viewport : null;
       //_locationObj = currPlace.geometry.location;
 
+
       dispatch(actions.searchAutoComplete({
         lat: currPlace.geometry.location.lat(),
         lng: currPlace.geometry.location.lng(),

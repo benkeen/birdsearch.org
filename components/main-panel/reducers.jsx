@@ -46,9 +46,10 @@ function panelVisibility (state = {
 }, action) {
   switch (action.type) {
     case E.TOGGLE_PANEL_VISIBILITY:
-      return Object.assign({}, state, {
-        address: action.address
-      });
+      var panel = action.panel;
+      var settings = {};
+      settings[panel] = !settings[panel];
+      return Object.assign({}, state, settings);
     default:
       return state
   }

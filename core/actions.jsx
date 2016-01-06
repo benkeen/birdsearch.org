@@ -44,6 +44,7 @@ function searchAutoComplete (info) {
 }
 
 
+
 export {
   setLocale,
   setSearchLocation,

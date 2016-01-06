@@ -34,17 +34,22 @@ Loader.defaultProps = {
 
 
 class ClosePanel extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
   render () {
     return (
       <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.props.onClose}></span>
     );
   }
 }
-Loader.PropTypes = {
+ClosePanel.PropTypes = {
   onClose: React.PropTypes.func.isRequired
 };
 
 
 export {
-  Loader
+  Loader,
+  ClosePanel
 };

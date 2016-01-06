@@ -11,7 +11,7 @@ import * as actions from './actions';
 
 class MainPanel extends React.Component {
   render () {
-    const { dispatch, sidebarVisible, isRequestingUserLocation, introOverlayVisible, mapSettings } = this.props;
+    const { dispatch, isRequestingUserLocation, introOverlayVisible, mapSettings } = this.props;
 
     return (
       <section id="mainPanel" className="flex-body">
@@ -39,7 +39,7 @@ class MainPanel extends React.Component {
           </div>
         </div>
 
-        <PanelToggleButtons />
+        <PanelToggleButtons dispatch={dispatch} />
       </section>
     );
   }
@@ -48,8 +48,7 @@ class MainPanel extends React.Component {
 export default connect(state => ({
   mapSettings: state.mapSettings,
   introOverlayVisible: state.overlays.intro,
-  isRequestingUserLocation: state.userLocation.isFetching,
-  sidebarVisible: state.sidebarVisible
+  isRequestingUserLocation: state.userLocation.isFetching
 }))(MainPanel);
 
 
@@ -67,25 +66,18 @@ class IntroOverlay extends React.Component {
   }
 
   getLoader () {
-    if (this.props.loading) {
-      return (<Loader label="FINDING YOUR LOCATION..." />);
-    }
+    return (this.props.loading) ? (<Loader label="FINDING YOUR LOCATION..." />) : null;
   }
 
-  // may generalize this sucker
   getOverlay () {
-    if (!this.state.visible) {
-      return null;
-    }
-    return (<div id="map-overlay"></div>);
+    return (this.state.visible) ? (<div id="map-overlay"></div>) : null;
   }
 
   render () {
     var overlayClass = (this.props.loading) ? 'loading' : '';
 
     return (
-      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}
-          complete={this.transitionComplete.bind(this)}>
+      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED} complete={this.transitionComplete.bind(this)}>
         <div>
           {this.getOverlay()}
           <div id="intro-overlay" className={overlayClass}>
@@ -143,7 +135,7 @@ class LocationPanel extends React.Component {
     return (
       <div id="locations-panel" className="panel">
         <ClosePanel onClose={this.props.onClose} />
-        location panel
+
       </div>
     );
   }
@@ -154,7 +146,7 @@ class SpeciesPanel extends React.Component {
     return (
       <div id="species-panel" className="panel">
         <ClosePanel onClose={this.props.onClose} />
-        species panel
+
       </div>
     );
   }
@@ -163,11 +155,14 @@ class SpeciesPanel extends React.Component {
 
 class PanelToggleButtons extends React.Component {
   render () {
+
     return (
       <div id="panel-toggle-buttons" className="panel">
-        <span><a href="" className="label label-success">overview</a></span>
-        <span><a href="" className="label label-warning">locations</a></span>
-        <span><a href="" className="label label-primary">birds</a></span>
+        <nav>
+          <a href="" className="label label-success">overview</a>
+          <a href="" className="label label-warning">locations</a>
+          <a href="" className="label label-primary">birds</a>
+        </nav>
       </div>
     )
   }
