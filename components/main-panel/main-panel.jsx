@@ -11,7 +11,7 @@ import * as actions from './actions';
 
 class MainPanel extends React.Component {
   render () {
-    const { dispatch, isRequestingUserLocation, introOverlayVisible, mapSettings } = this.props;
+    const { dispatch, isRequestingUserLocation, introOverlayVisible, mapSettings, panelVisibility } = this.props;
 
     return (
       <section id="mainPanel" className="flex-body">
@@ -31,15 +31,16 @@ class MainPanel extends React.Component {
         <div id="map-panels">
           <div id="panels">
             <div id="left-panel">
-              <OverviewPanel
-                visible={!introOverlayVisible} />
-              <LocationPanel />
+              <OverviewPanel visible={panelVisibility.overview} />
+              <LocationPanel visible={panelVisibility.location} />
             </div>
-            <SpeciesPanel />
+            <SpeciesPanel visible={panelVisibility.species} />
           </div>
         </div>
 
-        <PanelToggleButtons dispatch={dispatch} />
+        <PanelToggleButtons
+          dispatch={dispatch}
+          panelVisibility={panelVisibility} />
       </section>
     );
   }
@@ -48,6 +49,7 @@ class MainPanel extends React.Component {
 export default connect(state => ({
   mapSettings: state.mapSettings,
   introOverlayVisible: state.overlays.intro,
+  panelVisibility: state.panelVisibility,
   isRequestingUserLocation: state.userLocation.isFetching
 }))(MainPanel);
 
@@ -118,44 +120,58 @@ IntroOverlay.PropTypes = {
 
 
 class OverviewPanel extends React.Component {
-
   render () {
     return (
-      <div id="overview-panel" className="panel">
-        <ClosePanel onClose={this.props.onClose} />
-        <h1>Locations: <span></span></h1>
-        <h1>Species: <span></span></h1>
-      </div>
-    )
+      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
+        <div id="overview-panel" className="panel">
+          <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility('overview'))} />
+          <h1>Locations: <span></span></h1>
+          <h1>Species: <span></span></h1>
+        </div>
+      </VelocityComponent>
+    );
   }
 }
+OverviewPanel.PropTypes = {
+  visible: React.PropTypes.bool.isRequired
+};
+
 
 class LocationPanel extends React.Component {
   render () {
     return (
-      <div id="locations-panel" className="panel">
-        <ClosePanel onClose={this.props.onClose} />
-
-      </div>
+      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
+        <div id="locations-panel" className="panel">
+          <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility('locations'))} />
+        </div>
+      </VelocityComponent>
     );
   }
 }
+LocationPanel.PropTypes = {
+  visible: React.PropTypes.bool.isRequired
+};
+
 
 class SpeciesPanel extends React.Component {
   render () {
     return (
-      <div id="species-panel" className="panel">
-        <ClosePanel onClose={this.props.onClose} />
-
-      </div>
+      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
+        <div id="species-panel" className="panel">
+          <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility('species'))} />
+        </div>
+      </VelocityComponent>
     );
   }
 }
+SpeciesPanel.PropTypes = {
+  visible: React.PropTypes.bool.isRequired
+};
+
 
 
 class PanelToggleButtons extends React.Component {
   render () {
-
     return (
       <div id="panel-toggle-buttons" className="panel">
         <nav>

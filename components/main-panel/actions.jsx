@@ -47,7 +47,7 @@ function convertLatLngToAddress (dispatch, lat, lng) {
 }
 
 
-function getGeoLocation() {
+function getGeoLocation () {
   return function (dispatch) {
     dispatch(requestUserLocation());
 
@@ -67,7 +67,15 @@ function getGeoLocation() {
   }
 }
 
+function togglePanelVisibility (panel) {
+  return {
+    type: E.TOGGLE_PANEL_VISIBILITY,
+    panel: panel
+  };
+}
+
 export {
   setIntroOverlayVisibility,
-  getGeoLocation
+  getGeoLocation,
+  togglePanelVisibility
 };
