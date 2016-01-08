@@ -3,6 +3,11 @@ const C = {
 	DEFAULT_LOCALE: 'en',
 	TRANSITION_SPEED: 300,
 
+	PANELS: {
+		OVERVIEW: 'overview',
+		LOCATIONS: 'locations',
+		SPECIES: 'species'
+	},
 	CORE: {
 		APP_VERSION: "2.0.0 - BETA",
 		RELEASE_DATE: "Dec 27, 2015",

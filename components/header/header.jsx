@@ -8,7 +8,7 @@ import * as actions from './../../core/actions';
 
 class Header extends React.Component {
   render () {
-    const { dispatch, locale, searchSettings, overlays } = this.props;
+    const { dispatch, locale, searchSettings, overlayVisibility } = this.props;
 
     return (
       <header className="flex-fill">
@@ -18,7 +18,7 @@ class Header extends React.Component {
 
         <HeaderSearch
           dispatch={dispatch}
-          disabled={overlays.intro || overlays.advancedSearch}
+          disabled={overlayVisibility.intro || overlayVisibility.advancedSearch}
           location={searchSettings.location}
           onChange={str => dispatch(actions.setSearchLocation(str))}
           onSubmit={() => dispatch(actions.search(searchSettings))} />
@@ -43,7 +43,7 @@ class Header extends React.Component {
 
 export default connect(state => ({
   locale: state.locale,
-  overlays: state.overlays,
+  overlayVisibility: state.overlayVisibility,
   searchSettings: state.searchSettings
 }))(Header);
 

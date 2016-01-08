@@ -200,17 +200,22 @@
 	left: 10px;
 	padding: 0;
 	width: 300px;
+	z-index: 1;
 
 	nav {
 		display: flex;
 		flex-direction: row;
 		&>a {
 			flex: 1 1 33%;
+			cursor: pointer;
 			text-align: center;
 			font-weight: normal;
 			margin-right: 6px;
 			&:last-child {
 				margin-right: 0;
+			}
+			&.disabled {
+				background-color: #919191;
 			}
 		}
 

@@ -4,30 +4,14 @@ These just don't seem to belong to the individual components, so I'm going to st
 
 import { C } from './constants';
 import { E } from './events';
+import * as storage from './storage';
 
 
-function overlays (state = {
-  intro: true,
-  advancedSearch: false
-}, action) {
-
+function locale (state = C.DEFAULT_LOCALE, action) {
   switch (action.type) {
-    case E.SET_INTRO_OVERLAY_VISIBILITY:
-      return Object.assign({}, state, {
-        intro: action.visible
-      });
-
-    // after a user's location is found, hide the Intro overlay
-    case E.RECEIVED_USER_LOCATION:
-      return Object.assign({}, state, {
-        intro: false
-      });
-
-    case E.SET_ADVANCED_SEARCH_VISIBILITY:
-      return Object.assign({}, state, {
-        advancedSearch: action.visible
-      });
-
+    case E.SET_LOCALE:
+      storage.set('locale', action.locale);
+      return action.locale;
     default:
       return state;
   }
@@ -93,9 +77,93 @@ function mapSettings (state = {
 }
 
 
+function overlayVisibility (state = {
+  intro: true,
+  advancedSearch: false
+}, action) {
+
+  switch (action.type) {
+    case E.SET_INTRO_OVERLAY_VISIBILITY:
+      return Object.assign({}, state, {
+        intro: action.visible
+      });
+
+    // after a user's location is found, hide the Intro overlay
+    case E.RECEIVED_USER_LOCATION:
+      return Object.assign({}, state, {
+        intro: false
+      });
+
+    case E.SET_ADVANCED_SEARCH_VISIBILITY:
+      return Object.assign({}, state, {
+        advancedSearch: action.visible
+      });
+
+    default:
+      return state;
+  }
+}
+
+
+/**
+ * Reminder: this adds an object property to the redux store with the following shape:
+ *
+ * userLocation: {
+ *    isFetching: ...,
+ *    reverseGeocodeSuccess: ...,
+ *    lat: ...,
+ *    lng: ...',
+ *    address: ...
+ * }
+ */
+function userLocation (state = {
+  isFetching: false,
+  reverseGeocodeSuccess: false,
+  lat: null,
+  lng: null,
+  address: ''
+}, action) {
+  switch (action.type) {
+    case E.REQUEST_USER_LOCATION:
+      return Object.assign({}, state, { isFetching: true });
+      break;
+
+    case E.RECEIVED_USER_LOCATION:
+      return Object.assign({}, state, {
+        isFetching: false,
+        reverseGeocodeSuccess: action.reverseGeocodeSuccess,
+        lat: action.lat,
+        lng: action.lng,
+        address: action.address
+      });
+    default:
+      return state
+  }
+}
+
+function panelVisibility (state = {
+  overview: false,
+  locations: false,
+  species: false
+}, action) {
+  switch (action.type) {
+    case E.TOGGLE_PANEL_VISIBILITY:
+      var panel = action.panel;
+      var settings = {};
+      settings[panel] = !state[panel];
+      return Object.assign({}, state, settings);
+    default:
+      return state
+  }
+}
+
+
 export {
+  locale,
   searchSettings,
   mapSettings,
-  overlays
+  userLocation,
+  overlayVisibility,
+  panelVisibility
 };
 

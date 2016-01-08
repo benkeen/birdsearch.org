@@ -68,6 +68,7 @@ function getGeoLocation () {
 }
 
 function togglePanelVisibility (panel) {
+  console.log("panel: ", panel);
   return {
     type: E.TOGGLE_PANEL_VISIBILITY,
     panel: panel
