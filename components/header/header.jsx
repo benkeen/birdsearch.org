@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router';
+import * as core from './../../core/core';
 import * as actions from './../../core/actions';
 
 
@@ -63,14 +64,11 @@ class HeaderSearch extends React.Component {
         return;
       }
 
-      //_viewportObj = currPlace.geometry.hasOwnProperty("viewport") ? currPlace.geometry.viewport : null;
-      //_locationObj = currPlace.geometry.location;
-
-
       dispatch(actions.searchAutoComplete({
         lat: currPlace.geometry.location.lat(),
         lng: currPlace.geometry.location.lng(),
-        location: currPlace.formatted_address
+        location: currPlace.formatted_address,
+        bounds: core.helpers.getBestBounds(currPlace.geometry.viewport, currPlace.geometry.bounds)
       }));
     });
   }

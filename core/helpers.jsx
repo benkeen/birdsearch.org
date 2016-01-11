@@ -1,9 +1,31 @@
-/**
- * This contains assorted helper functionality for use by the module. It includes stuff like
- * hiding/showing the loading spinner and getting the language strings in whatever language
- * is currently selected.
- */
 
+/**
+ * Helper function to get the raw n/s/e/w coords for a particular Google Maps search result. See calling instances
+ * for how it's used. With Google maps results `viewport` contains the recommended lat/lng bounds for the location.
+ * In most cases it's the same as `bounds`; this method just wraps it and returns an object literal containing the
+ * raw lat/lng coords.
+ * @param viewport
+ * @param bounds
+ */
+function getBestBounds (viewport, bounds) {
+	var locationObj = (viewport) ? viewport : bounds;
+	var topRight = locationObj.getNorthEast();
+	var bottomLeft = locationObj.getSouthWest();
+	return {
+		north: topRight.lat(),
+		south: bottomLeft.lat(),
+		east: topRight.lng(),
+		west: bottomLeft.lng()
+	};
+}
+
+export {
+		getBestBounds
+};
+
+
+
+/*
 var _spinner = null;
 
 var _init = function () { };
@@ -26,9 +48,6 @@ var _initSpinner = function() {
 	}).pause();
 };
 
-/**
- * Shows the large message section in the left sidebar (desktop only).
- */
 var _showMessage = function(message, messageType) {
 	var $messageBar = $("#messageBar");
 	if ($messageBar.hasClass('visible')) {
@@ -80,3 +99,4 @@ export function getCurrentLangFile () {
 //	startLoading: _startLoading,
 //	stopLoading: _stopLoading
 //};
+*/

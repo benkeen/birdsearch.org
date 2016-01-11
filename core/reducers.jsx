@@ -61,7 +61,8 @@ function mapSettings (state = {
     zoom: 3,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     lat: 30,
-    lng: 0
+    lng: 0,
+    bounds: null
   }, action) {
 
   switch (action.type) {
@@ -70,6 +71,14 @@ function mapSettings (state = {
         lat: action.lat,
         lng: action.lng
       });
+
+    case E.RECEIVED_USER_LOCATION:
+      return Object.assign({}, state, {
+        lat: action.lat,
+        lng: action.lng,
+        bounds: action.bounds
+      });
+    break;
 
     default:
       return state;

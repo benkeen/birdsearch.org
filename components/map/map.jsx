@@ -5,15 +5,13 @@ import ReactDOM from 'react-dom';
 class Map extends React.Component {
 
   componentDidMount () {
-    const { dispatch, lat, lng, zoom, mapTypeId } = this.props;
-
     google.maps.visualRefresh = true;
     var defaultMapOptions = {
 
       // customizable
-      zoom: zoom,
-      mapTypeId: mapTypeId,
-      center: new google.maps.LatLng(lat, lng),
+      zoom: this.props.zoom,
+      mapTypeId: this.props.mapTypeId,
+      center: new google.maps.LatLng(this.props.lat, this.props.lng),
 
       // not customizable
       mapTypeControlOptions: { mapTypeIds: [] },
@@ -36,13 +34,19 @@ class Map extends React.Component {
       this.map.setZoom(this.props.zoom);
     }
 
-    //if (msg.data.viewportObj) {
-    //  _map.fitBounds(msg.data.viewportObj);
-    //} else {
-    //  _map.setCenter(msg.data.locationObj);
-    //}
+    this.map.setCenter({
+      lat: this.props.lat,
+      lng: this.props.lng
+    });
 
-    // this.map.setCenter(msg.data.locationObj);
+    if (this.props.bounds !== null) {
+      this.map.fitBounds({
+        north: this.props.bounds.north,
+        south: this.props.bounds.south,
+        east: this.props.bounds.east,
+        west: this.props.bounds.west
+      });
+    }
   }
 
   addCustomControls () {

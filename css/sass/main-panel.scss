@@ -153,7 +153,7 @@
 	left: 10px;
 	right: 10px;
 	.panel {
-		background: rgba(25, 25, 10, 0.5);
+		background: rgba(255, 255, 245, 0.8);
 		border-radius: 5px;
 		padding: 12px;
 		.close-panel {
@@ -179,7 +179,9 @@
 }
 #overview-panel {
 	flex: 0 0 auto;
-	margin-bottom: 10px;
+	.panel {
+		margin-bottom: 10px;
+	}
 	h1 {
 		font-size: 20px;
 		margin: 0;

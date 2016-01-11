@@ -17,9 +17,10 @@ class MainPanel extends React.Component {
       <section id="mainPanel" className="flex-body">
         <Map
           zoom={mapSettings.zoom}
-          mapTypeId={mapSettings.mapTypeId}
           lat={mapSettings.lat}
-          lng={mapSettings.lng} />
+          lng={mapSettings.lng}
+          mapTypeId={mapSettings.mapTypeId}
+          bounds={mapSettings.bounds} />
 
         <IntroOverlay
           visible={overlayVisibility.intro}
@@ -28,8 +29,7 @@ class MainPanel extends React.Component {
           searchNearby={() => dispatch(actions.getGeoLocation())}
           searchAnywhere={() => dispatch(actions.setIntroOverlayVisibility(false))} />
 
-        <AdvancedSearchOverlay
-          />
+        <AdvancedSearchOverlay />
 
         <div id="map-panels">
           <div id="panels">
@@ -144,14 +144,34 @@ class AdvancedSearchOverlay extends React.Component {
 }
 
 class OverviewPanel extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
+  transitionBegin () {
+    if (this.props.visible) {
+      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
+    }
+  }
+
+  transitionComplete () {
+    if (!this.props.visible) {
+      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
+    }
+  }
+
   render () {
     const { dispatch, visible } = this.props;
+
     return (
-      <VelocityComponent animation={{ opacity: visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
-        <div id="overview-panel" className="panel">
-          <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.OVERVIEW))} />
-          <h1>Locations: <span></span></h1>
-          <h1>Species: <span></span></h1>
+      <VelocityComponent animation={{ opacity: visible ? 1 : 0, height: visible ? 115 : 0 }} duration={C.TRANSITION_SPEED}
+         complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
+        <div id="overview-panel" ref="panel">
+          <div className="panel">
+            <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.OVERVIEW))} />
+            <h1>Locations: <span></span></h1>
+            <h1>Species: <span></span></h1>
+          </div>
         </div>
       </VelocityComponent>
     );
@@ -163,11 +183,24 @@ OverviewPanel.PropTypes = {
 
 
 class LocationPanel extends React.Component {
+  transitionBegin () {
+    if (this.props.visible) {
+      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
+    }
+  }
+
+  transitionComplete () {
+    if (!this.props.visible) {
+      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
+    }
+  }
+
   render () {
     const { dispatch, visible } = this.props;
     return (
-      <VelocityComponent animation={{ opacity: visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
-        <div id="locations-panel" className="panel">
+      <VelocityComponent animation={{ opacity: visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}
+          complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
+        <div id="locations-panel" className="panel" ref="panel">
           <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))} />
         </div>
       </VelocityComponent>

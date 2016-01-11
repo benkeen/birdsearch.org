@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { C, E } from '../../core/core';
+import { C, E, helpers } from '../../core/core';
 
 
 function setIntroOverlayVisibility (visible) {
@@ -29,10 +29,12 @@ function convertLatLngToAddress (dispatch, lat, lng) {
 
     var reverseGeocodeSuccess = false;
     var address = '';
+    var bounds = null;
     if (status === google.maps.GeocoderStatus.OK) {
       if (results[1]) {
         reverseGeocodeSuccess = true;
         address = results[1].formatted_address;
+        bounds = helpers.getBestBounds(results[1].geometry.viewport, results[1].geometry.bounds);
       }
     }
 
@@ -41,7 +43,8 @@ function convertLatLngToAddress (dispatch, lat, lng) {
       reverseGeocodeSuccess: reverseGeocodeSuccess,
       lat: lat,
       lng: lng,
-      address: address
+      address: address,
+      bounds: bounds
     });
   });
 }
