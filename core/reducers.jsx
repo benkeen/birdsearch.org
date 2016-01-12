@@ -167,12 +167,28 @@ function panelVisibility (state = {
 }
 
 
+function results (state = {
+  isFetching: false,
+  numLocations: 0,
+  locations: []
+}, action) {
+  switch (action.type) {
+    case E.SEARCH_REQUEST_ENDED:
+      return Object.assign({}, state, {
+        isFetching: false
+      });
+    default:
+      return state;
+  }
+}
+
 export {
   locale,
   searchSettings,
   mapSettings,
   userLocation,
   overlayVisibility,
-  panelVisibility
+  panelVisibility,
+  results
 };
 
