@@ -9,7 +9,7 @@ if (!isset($_POST["lat"]) || empty($_POST["lat"]) ||
 
 $lat = $_POST["lat"];
 $lng = $_POST["lng"];
-$limitByObservationRecency = $_POST["limitByObservationRecency"];
+$limitByObservationRecency = "false"; // $_POST["limitByObservationRecency"];
 $observationRecency = $_POST["observationRecency"];
 
 //$lat = "49.376765299999995";
@@ -18,7 +18,6 @@ $observationRecency = $_POST["observationRecency"];
 //$observationRecency = 30;
 
 echo getHotspotLocations($lat, $lng, $limitByObservationRecency, $observationRecency);
-
 
 function getHotspotLocations($lat, $lng, $limitByObservationRecency, $observationRecency) {
 	$url = "http://ebird.org/ws1.1/ref/hotspot/geo?lat=$lat&lng=$lng&dist=50&fmt=xml";

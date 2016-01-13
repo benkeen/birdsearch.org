@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { C, E } from './core';
+import { C, E, helpers, _ } from './core';
+//import fetch from 'isomorphic-fetch';
 
 
 function setLocale (locale) {
@@ -18,9 +19,6 @@ function setSearchLocation (location) {
 }
 
 function startSearchRequest (searchSettings) {
-  console.log("start search request");
-
-  dispatch(search(searchSettings));
   return {
     type: E.SEARCH_REQUEST_STARTED,
     lat: searchSettings.lat,
@@ -34,9 +32,16 @@ function searchRequestComplete () {
 
 function search (searchSettings) {
   return function (dispatch) {
-    return fetchBirdSightings(searchSettings).then(
-      locations => dispatch(searchLocationsFound(dispatch, location)),
-      error     => dispatch(searchLocationRequestError(dispatch, error))
+    dispatch(startSearchRequest(searchSettings));
+
+    // holy good lord. This obscenity makes a request for the hotspots, converts the results to JSON (which is async
+    // for some reason...?) then publishes the appropriate action
+    return fetchBirdSightings(searchSettings)
+      .then(res => res.json())
+      .then(
+        json  => dispatch(searchLocationsFound(dispatch, json),
+        error => dispatch(searchLocationRequestError(dispatch, error))
+      )
     );
   }
 }
@@ -47,7 +52,8 @@ function searchAutoComplete (info) {
     type: E.SEARCH_AUTO_COMPLETE,
     location: info.location,
     lat: info.lat,
-    lng: info.lng
+    lng: info.lng,
+    bounds: info.bounds
   };
 }
 
@@ -55,14 +61,20 @@ function searchLocationsFound (dispatch, locations) {
   dispatch(searchRequestComplete());
   return {
     type: E.SEARCH_LOCATIONS_RETURNED,
+    success: true,
     locations
   };
 }
 
 function searchLocationRequestError (dispatch, error) {
   dispatch(searchRequestComplete());
-  console.log("error: ", error);
+  return {
+    type: E.SEARCH_LOCATIONS_RETURNED,
+    success: false,
+    error: error
+  };
 }
+
 
 /**
  * Searches a region for bird sightings.
@@ -97,12 +109,16 @@ var _getBirdSightings = function(searchParams) {
 
 
 function fetchBirdSightings (searchParams) {
+  var formData = new FormData();
+  _.each(searchParams, function (val, key) {
+    formData.append(key, val);
+  });
+
   return fetch('/birdsearch.org/ajax/getHotspotLocations.php', {
     method: 'POST',
-    body: JSON.stringify(searchParams)
+    body: formData
   });
 }
-
 
 function setIntroOverlayVisibility (visible) {
   return {
@@ -111,19 +127,19 @@ function setIntroOverlayVisibility (visible) {
   };
 }
 
-function requestUserLocation () {
-  return { type: E.REQUEST_USER_LOCATION };
+function requestingUserLocation () {
+  return { type: E.REQUESTING_USER_LOCATION };
 }
 
-function requestGeoLocation () {
+function requestGeoLocation (searchInfo) {
   return function (dispatch) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      convertLatLngToAddress(dispatch, position.coords.latitude, position.coords.longitude);
+      convertLatLngToAddress(dispatch, searchInfo, position.coords.latitude, position.coords.longitude);
     });
   };
 }
 
-function convertLatLngToAddress (dispatch, lat, lng) {
+function convertLatLngToAddress (dispatch, searchInfo, lat, lng) {
   var geocoder = new google.maps.Geocoder();
   geocoder.geocode({ latLng: { lat: lat, lng: lng }}, function (results, status) {
     var reverseGeocodeSuccess = false;
@@ -137,8 +153,6 @@ function convertLatLngToAddress (dispatch, lat, lng) {
       }
     }
 
-    dispatch();
-
     dispatch({
       type: E.RECEIVED_USER_LOCATION,
       reverseGeocodeSuccess: reverseGeocodeSuccess,
@@ -147,27 +161,34 @@ function convertLatLngToAddress (dispatch, lat, lng) {
       address: address,
       bounds: bounds
     });
+
+    // Urgh! at this point I want to fire off an actual search request. But in order to do that, I need all the search
+    // settings info. So we either:
+    // - pass that info down the chain of method calls to here, or
+    // - somehow listen to the RECEIVED_USER_LOCATION event (in a reducer, I guess), change something in the store which
+    // a component would listen to, then in its componentDidUpdate() method call the search? Jesus. This is awful.
+
+
+//lat: 49.376765299999995
+//lng: -123.37015410000001
+//location: "Bowen Island, BC, Canada"
+//observationRecency: 30
+//searchType: "all"
+
+
   });
 }
 
 
-function getGeoLocation () {
+function getGeoLocation (searchInfo) {
   return function (dispatch) {
-    dispatch(requestUserLocation());
+    dispatch(requestingUserLocation());
 
     // TODO if the browser doesn't support geolocation, make a note of it
-    if (!navigator.geolocation) {
-      //return dispatch({
-      //  type: E.RECEIVED_USER_LOCATION,
-      //  coords: {
-      //    isFetching: true,
-      //    latitude: null,
-      //    longitude: null
-      //  }
-      //});
-    }
+    //if (!navigator.geolocation) {
+    //}
 
-    return dispatch(requestGeoLocation());
+    return dispatch(requestGeoLocation(searchInfo));
   }
 }
 
@@ -178,8 +199,6 @@ function togglePanelVisibility (panel) {
     panel: panel
   };
 }
-
-
 
 
 export {

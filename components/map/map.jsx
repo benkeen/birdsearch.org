@@ -47,6 +47,64 @@ class Map extends React.Component {
         west: this.props.bounds.west
       });
     }
+    if (this.props.results.length !== prevProps.results.length) {
+      this.clearHotspots();
+      this.addMarkers();
+
+      _addMarkers("all", _data.all.lastSearch);
+    }
+  }
+
+  clearHotspots () {
+    //for (var locationID in _data.all.markers) {
+    //  _data.all.markers[locationID].setMap(null);
+    //}
+    //for (var locationID in _data.notable.markers) {
+    //  _data.notable.markers[locationID].setMap(null);
+    //}
+    //for (var locationID in _data.hotspots.markers) {
+    //  _data.hotspots.markers[locationID].setMap(null);
+    //}
+  }
+
+  /**
+   * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
+   * param specifies the search type; the second is a standardized array of hotspot data. Format:
+   *   {
+	 *		locationID: ...
+	 *		lat: ...
+	 *		lng: ...
+	 *		n: ... (location name)
+	 *   }
+   * The objects can contain any additional info needed; they're just ignored.
+   *
+   * @param searchType
+   * @param hotspots
+   * @private
+   */
+  addMarkers (searchType, data) {
+    var mapBoundary = _map.getBounds();
+    var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
+    _visibleHotspots = [];
+
+    for (var i=0; i<data.length; i++) {
+      var currMarkerInfo = data[i];
+      var locationID = currMarkerInfo.locationID;
+      var latlng = new google.maps.LatLng(currMarkerInfo.lat, currMarkerInfo.lng);
+      if (!boundsObj.contains(latlng)) {
+        continue;
+      }
+
+      if (searchType === "all") {
+        _addBirdMarker(locationID, latlng, currMarkerInfo);
+      } else if (searchType === "notable") {
+        _addNotableMarker(locationID, latlng, currMarkerInfo);
+      } else if (searchType === "hotspots") {
+        _addHotspotMarker(locationID, latlng, currMarkerInfo);
+      }
+
+      _visibleHotspots.push(currMarkerInfo);
+    }
   }
 
   addCustomControls () {
@@ -118,5 +176,8 @@ class Map extends React.Component {
     );
   }
 }
+Map.PropTypes = {
+  results: React.PropTypes.array.isRequired
+};
 
 export default Map;

@@ -80,6 +80,14 @@ function mapSettings (state = {
       });
     break;
 
+    //case E.SEARCH_AUTO_COMPLETE:
+    //  return Object.assign({}, state, {
+    //    location: action.location,
+    //    lat: action.lat,
+    //    lng: action.lng
+    //  });
+    //break;
+
     default:
       return state;
   }
@@ -133,7 +141,7 @@ function userLocation (state = {
   address: ''
 }, action) {
   switch (action.type) {
-    case E.REQUEST_USER_LOCATION:
+    case E.REQUESTING_USER_LOCATION:
       return Object.assign({}, state, { isFetching: true });
       break;
 
@@ -161,6 +169,14 @@ function panelVisibility (state = {
       var settings = {};
       settings[panel] = !state[panel];
       return Object.assign({}, state, settings);
+
+    case E.SEARCH_LOCATIONS_RETURNED:
+      return Object.assign({}, state, {
+        overview: true,
+        locations: true
+      });
+    break;
+
     default:
       return state
   }
@@ -177,6 +193,13 @@ function results (state = {
       return Object.assign({}, state, {
         isFetching: false
       });
+
+    case E.SEARCH_LOCATIONS_RETURNED:
+      return Object.assign({}, state, {
+        locations: action.locations
+      });
+    break;
+
     default:
       return state;
   }

@@ -63,6 +63,7 @@ class HeaderSearch extends React.Component {
       if (!currPlace.geometry) {
         return;
       }
+      console.log(currPlace);
 
       dispatch(actions.searchAutoComplete({
         lat: currPlace.geometry.location.lat(),

@@ -5,13 +5,13 @@ import { FormattedMessage } from 'react-intl';
 import { Loader, ClosePanel } from '../general/general';
 import Map from '../map/map';
 import { VelocityComponent } from 'velocity-react';
-import { C, E } from '../../core/core';
-import * as actions from './actions';
+import { C, E, _ } from '../../core/core';
+import * as actions from '../../core/actions';
 
 
 class MainPanel extends React.Component {
   render () {
-    const { dispatch, isRequestingUserLocation, overlayVisibility, mapSettings, panelVisibility } = this.props;
+    const { dispatch, isRequestingUserLocation, overlayVisibility, mapSettings, searchSettings, panelVisibility, results } = this.props;
 
     return (
       <section id="mainPanel" className="flex-body">
@@ -20,13 +20,17 @@ class MainPanel extends React.Component {
           lat={mapSettings.lat}
           lng={mapSettings.lng}
           mapTypeId={mapSettings.mapTypeId}
-          bounds={mapSettings.bounds} />
+          bounds={mapSettings.bounds}
+          results={results} />
 
         <IntroOverlay
           visible={overlayVisibility.intro}
           loading={isRequestingUserLocation}
           onClose={() => dispatch(actions.setIntroOverlayVisibility(false))}
-          searchNearby={() => dispatch(actions.getGeoLocation())}
+          searchNearby={() => dispatch(actions.getGeoLocation({
+            searchType: searchSettings.searchType,
+            observationRecency: searchSettings.observationRecency
+          }))}
           searchAnywhere={() => dispatch(actions.setIntroOverlayVisibility(false))} />
 
         <AdvancedSearchOverlay />
@@ -36,10 +40,12 @@ class MainPanel extends React.Component {
             <div id="left-panel">
               <OverviewPanel
                 dispatch={dispatch}
-                visible={panelVisibility.overview} />
+                visible={panelVisibility.overview}
+                numLocations={results.locations.length} />
               <LocationPanel
                 dispatch={dispatch}
-                visible={panelVisibility.locations} />
+                visible={panelVisibility.locations}
+                locations={results.locations} />
             </div>
             <SpeciesPanel
               dispatch={dispatch}
@@ -57,9 +63,11 @@ class MainPanel extends React.Component {
 
 export default connect(state => ({
   mapSettings: state.mapSettings,
+  searchSettings: state.searchSettings,
   overlayVisibility: state.overlayVisibility,
   panelVisibility: state.panelVisibility,
-  isRequestingUserLocation: state.userLocation.isFetching
+  isRequestingUserLocation: state.userLocation.isFetching,
+  results: state.results
 }))(MainPanel);
 
 
@@ -161,7 +169,7 @@ class OverviewPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, visible } = this.props;
+    const { dispatch, visible, numLocations } = this.props;
 
     return (
       <VelocityComponent animation={{ opacity: visible ? 1 : 0, height: visible ? 115 : 0 }} duration={C.TRANSITION_SPEED}
@@ -169,8 +177,12 @@ class OverviewPanel extends React.Component {
         <div id="overview-panel" ref="panel">
           <div className="panel">
             <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.OVERVIEW))} />
-            <h1>Locations: <span></span></h1>
-            <h1>Species: <span></span></h1>
+            <h1>
+              Locations: <span className="num-locations">{numLocations}</span>
+            </h1>
+            <h1>
+              Species: <span className="num-species">0</span>
+            </h1>
           </div>
         </div>
       </VelocityComponent>
@@ -178,7 +190,8 @@ class OverviewPanel extends React.Component {
   }
 }
 OverviewPanel.PropTypes = {
-  visible: React.PropTypes.bool.isRequired
+  visible: React.PropTypes.bool.isRequired,
+  numLocations: React.PropTypes.number.isRequired
 };
 
 
@@ -195,6 +208,31 @@ class LocationPanel extends React.Component {
     }
   }
 
+  getLocationRows () {
+    return _.map(this.props.locations, function (location) {
+      return (<LocationRow location={location} key={location.i} />);
+    });
+  }
+
+  getLocationList () {
+    if (!this.props.locations.length) {
+      return (
+        <p>No locations.</p>
+      );
+    }
+    return (
+      <table>
+        <thead>
+          <th>Location</th>
+          <th>Count</th>
+        </thead>
+        <tbody>
+          {this.getLocationRows()}
+        </tbody>
+      </table>
+    );
+  }
+
   render () {
     const { dispatch, visible } = this.props;
     return (
@@ -202,14 +240,29 @@ class LocationPanel extends React.Component {
           complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
         <div id="locations-panel" className="panel" ref="panel">
           <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))} />
+          {this.getLocationList()}
         </div>
       </VelocityComponent>
     );
   }
 }
+
 LocationPanel.PropTypes = {
-  visible: React.PropTypes.bool.isRequired
+  visible: React.PropTypes.bool.isRequired,
+  locations: React.PropTypes.array.isRequired
 };
+
+
+class LocationRow extends React.Component {
+  render () {
+    return (
+      <tr>
+        <td>{this.props.location.n}</td>
+        <td>?</td>
+      </tr>
+    );
+  }
+}
 
 
 class SpeciesPanel extends React.Component {
