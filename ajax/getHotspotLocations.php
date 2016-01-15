@@ -12,11 +12,6 @@ $lng = $_POST["lng"];
 $limitByObservationRecency = "false"; // $_POST["limitByObservationRecency"];
 $observationRecency = $_POST["observationRecency"];
 
-//$lat = "49.376765299999995";
-//$lng = "-123.37015410000001";
-//$limitByObservationRecency = "true";
-//$observationRecency = 30;
-
 echo getHotspotLocations($lat, $lng, $limitByObservationRecency, $observationRecency);
 
 function getHotspotLocations($lat, $lng, $limitByObservationRecency, $observationRecency) {

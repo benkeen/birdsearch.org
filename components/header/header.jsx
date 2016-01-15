@@ -18,11 +18,10 @@ class Header extends React.Component {
         </div>
 
         <HeaderSearch
-          dispatch={dispatch}
           disabled={overlayVisibility.intro || overlayVisibility.advancedSearch}
           location={searchSettings.location}
           onChange={str => dispatch(actions.setSearchLocation(str))}
-          onSubmit={() => dispatch(actions.search(searchSettings))} />
+          onSubmit={locationInfo => dispatch(actions.search(searchSettings, locationInfo))} />
 
         <ul className="nav-items">
           <li>
@@ -56,21 +55,20 @@ class HeaderSearch extends React.Component {
   }
 
   componentDidMount () {
+    const { onSubmit } = this.props;
+
     var autoComplete = new google.maps.places.Autocomplete(ReactDOM.findDOMNode(this.refs.searchField));
-    var dispatch = this.props.dispatch;
     google.maps.event.addListener(autoComplete, 'place_changed', function () {
       var currPlace = autoComplete.getPlace();
       if (!currPlace.geometry) {
         return;
       }
-      console.log(currPlace);
-
-      dispatch(actions.searchAutoComplete({
+      onSubmit({
         lat: currPlace.geometry.location.lat(),
         lng: currPlace.geometry.location.lng(),
         location: currPlace.formatted_address,
         bounds: core.helpers.getBestBounds(currPlace.geometry.viewport, currPlace.geometry.bounds)
-      }));
+      });
     });
   }
 
@@ -79,20 +77,10 @@ class HeaderSearch extends React.Component {
     this.props.onChange(e.target.value);
   }
 
-  search () {
-    if (this.props.location.trim() === '') {
-      this.setState({ showErrors: true });
-      return;
-    }
-    this.props.onSubmit();
-  }
-
   render () {
-    var searchBtnClasses = 'btn' + (!this.props.disabled ? ' btn-success' : '');
     return (
       <div className="header-search">
         <input type="text" placeholder="Enter Location" ref="searchField" value={this.props.location} onChange={this.onChangeLocation.bind(this)} />
-        <button className={searchBtnClasses} onClick={this.search.bind(this)}><FormattedMessage id="search" /></button>
         <Link className="advanced-search-link" to="/advanced-search"><FormattedMessage id="advancedSearch" /></Link>
       </div>
     );

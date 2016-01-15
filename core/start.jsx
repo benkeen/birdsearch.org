@@ -28,8 +28,8 @@ const {
 const store = initStore({ locale: storage.get('locale') || C.DEFAULT_LOCALE });
 
 // debugging
-console.log("initial store state: ", store.getState());
-store.subscribe(() => console.log("store just changed: ", store.getState()));
+//console.log("initial store state: ", store.getState());
+//store.subscribe(() => console.log("store just changed: ", store.getState()));
 
 
 class I18NWrapper extends React.Component {

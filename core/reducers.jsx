@@ -23,6 +23,7 @@ function searchSettings (state = {
     location: '',
     lat: null,
     lng: null,
+    limitByObservationRecency: false,
     observationRecency: C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS
   }, action) {
 
@@ -31,14 +32,6 @@ function searchSettings (state = {
       return Object.assign({}, state, {
         location: action.location
       });
-
-    case E.SEARCH_AUTO_COMPLETE:
-      return Object.assign({}, state, {
-        location: action.location,
-        lat: action.lat,
-        lng: action.lng
-      });
-      break;
 
     case E.RECEIVED_USER_LOCATION:
       // if an address was included, it means Google was able to reverse geocode the lat/lng into an intelligible
@@ -69,8 +62,10 @@ function mapSettings (state = {
     case E.SEARCH_REQUEST_STARTED:
       return Object.assign({}, state, {
         lat: action.lat,
-        lng: action.lng
+        lng: action.lng,
+        bounds: action.bounds
       });
+      break;
 
     case E.RECEIVED_USER_LOCATION:
       return Object.assign({}, state, {
@@ -78,15 +73,7 @@ function mapSettings (state = {
         lng: action.lng,
         bounds: action.bounds
       });
-    break;
-
-    //case E.SEARCH_AUTO_COMPLETE:
-    //  return Object.assign({}, state, {
-    //    location: action.location,
-    //    lat: action.lat,
-    //    lng: action.lng
-    //  });
-    //break;
+      break;
 
     default:
       return state;
@@ -186,7 +173,8 @@ function panelVisibility (state = {
 function results (state = {
   isFetching: false,
   numLocations: 0,
-  locations: []
+  allLocations: [], // stores every
+  visibleLocations: []
 }, action) {
   switch (action.type) {
     case E.SEARCH_REQUEST_ENDED:
@@ -196,7 +184,7 @@ function results (state = {
 
     case E.SEARCH_LOCATIONS_RETURNED:
       return Object.assign({}, state, {
-        locations: action.locations
+        allLocations: action.locations
       });
     break;
 

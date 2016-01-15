@@ -41,11 +41,11 @@ class MainPanel extends React.Component {
               <OverviewPanel
                 dispatch={dispatch}
                 visible={panelVisibility.overview}
-                numLocations={results.locations.length} />
+                numLocations={results.allLocations.length} />
               <LocationPanel
                 dispatch={dispatch}
                 visible={panelVisibility.locations}
-                locations={results.locations} />
+                locations={results.allLocations} />
             </div>
             <SpeciesPanel
               dispatch={dispatch}
@@ -223,8 +223,10 @@ class LocationPanel extends React.Component {
     return (
       <table>
         <thead>
-          <th>Location</th>
-          <th>Count</th>
+          <tr>
+            <th>Location</th>
+            <th>Count</th>
+          </tr>
         </thead>
         <tbody>
           {this.getLocationRows()}

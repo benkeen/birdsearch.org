@@ -18,11 +18,13 @@ function setSearchLocation (location) {
   };
 }
 
-function startSearchRequest (searchSettings) {
+function startSearchRequest (searchSettings, locationInfo) {
   return {
     type: E.SEARCH_REQUEST_STARTED,
-    lat: searchSettings.lat,
-    lng: searchSettings.lng
+    lat: locationInfo.lat,
+    lng: locationInfo.lng,
+    location: locationInfo.location,
+    bounds: locationInfo.bounds
   };
 }
 
@@ -30,13 +32,20 @@ function searchRequestComplete () {
   return { type: E.SEARCH_REQUEST_ENDED };
 }
 
-function search (searchSettings) {
+function search (searchSettings, locationInfo) {
   return function (dispatch) {
-    dispatch(startSearchRequest(searchSettings));
+    dispatch(startSearchRequest(searchSettings, locationInfo));
 
-    // holy good lord. This obscenity makes a request for the hotspots, converts the results to JSON (which is async
+    var searchParams = {
+      lat: locationInfo.lat,
+      lng: locationInfo.lng,
+      limitByObservationRecency: searchSettings.limitByObservationRecency,
+      observationRecency: searchSettings.observationRecency
+    };
+
+    // holy good lord. This monstrosity makes a request for the hotspots, converts the results to JSON (which is async
     // for some reason...?) then publishes the appropriate action
-    return fetchBirdSightings(searchSettings)
+    return fetchBirdSightings(searchParams)
       .then(res => res.json())
       .then(
         json  => dispatch(searchLocationsFound(dispatch, json),
@@ -44,17 +53,6 @@ function search (searchSettings) {
       )
     );
   }
-}
-
-function searchAutoComplete (info) {
-  //dispatch(startSearchRequest(searchSettings));
-  return {
-    type: E.SEARCH_AUTO_COMPLETE,
-    location: info.location,
-    lat: info.lat,
-    lng: info.lng,
-    bounds: info.bounds
-  };
 }
 
 function searchLocationsFound (dispatch, locations) {
@@ -74,39 +72,6 @@ function searchLocationRequestError (dispatch, error) {
     error: error
   };
 }
-
-
-/**
- * Searches a region for bird sightings.
-var _getBirdSightings = function(searchParams) {
-  $.ajax({
-    url: "ajax/getHotspotLocations.php",
-    data: searchParams,
-    type: "POST",
-    dataType: "json",
-    success: function(response) {
-
-      _data.all.lastSearch = dataCache.formatHotspotData(response);
-      _clearHotspots();
-
-      // this adds as many as possible to the map - but many may be out of bounds.
-      _addMarkers("all", _data.all.lastSearch);
-      _searchStarted = false;
-      helper.stopLoading();
-
-      mediator.publish(_MODULE_ID, C.EVENT.MAP.BIRD_MARKERS_ADDED, {
-        locations: _visibleHotspots,
-        lastSearchObservationRecency: _lastSearch.observationRecency
-      });
-
-    },
-    error: function(response) {
-      helper.stopLoading();
-    }
-  });
-};
-*/
-
 
 function fetchBirdSightings (searchParams) {
   var formData = new FormData();
@@ -205,7 +170,6 @@ export {
   setLocale,
   setSearchLocation,
   search,
-  searchAutoComplete,
   setIntroOverlayVisibility,
   getGeoLocation,
   togglePanelVisibility

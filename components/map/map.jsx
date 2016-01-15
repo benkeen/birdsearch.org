@@ -1,6 +1,99 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+var _icon = "images/marker.png";
+
+// stores all map-related data, grouped by search type
+var _map;
+var _data = {
+  all: {
+    defaultZoomLevel: 11,
+    circleRadius: 60000,
+    lastSearch: [],
+    infoWindows: {},
+    openInfoWindows: [],
+    markers: {}
+  },
+  notable: {
+    defaultZoomLevel: 7,
+    circleRadius: 250000,
+    lastSearch: [],
+    infoWindows: {},
+    openInfoWindows: [],
+    markers: {}
+  },
+  hotspots: {
+    defaultZoomLevel: 11,
+    circleRadius: 60000,
+    lastSearch: [],
+    infoWindows: {},
+    openInfoWindows: [],
+    markers: {}
+  }
+};
+var _visibleHotspots = [];
+
+
+/**
+ * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
+ * param specifies the search type; the second is a standardized array of hotspot data. Format:
+ *   {
+ *		i: ...
+ *		lat: ...
+ *		lng: ...
+ *		n: ... (location name)
+ *   }
+ * The objects can contain any additional info needed; they're just ignored.
+ */
+var addMarkers = function (allLocations) {
+  var mapBoundary = _map.getBounds();
+  var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
+  _visibleHotspots = [];
+
+  allLocations.forEach(function (locInfo) {
+    var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
+    if (!boundsObj.contains(latlng)) {
+      return;
+    }
+//      if (this.props.searchType === "all") {
+    addBirdMarker(locInfo.i, latlng, locInfo);
+    //    }
+    _visibleHotspots.push(locInfo);
+  });
+
+  //if (searchType === "all") {
+  //  _addBirdMarker(locationID, latlng, currMarkerInfo);
+  //} else if (searchType === "notable") {
+  //  _addNotableMarker(locationID, latlng, currMarkerInfo);
+  //} else if (searchType === "hotspots") {
+  //  _addHotspotMarker(locationID, latlng, currMarkerInfo);
+  //}
+};
+
+var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
+  if (_data.all.markers.hasOwnProperty(locationID)) {
+    if (_data.all.markers[locationID].map === null) {
+      _data.all.markers[locationID].setMap(_map);
+    }
+  } else {
+    _data.all.markers[locationID] = new google.maps.Marker({
+      position: latlng,
+      map: _map,
+      title: currMarkerInfo.n,
+      icon: _icon,
+      locationID: locationID
+    });
+    _data.all.infoWindows[locationID] = new google.maps.InfoWindow();
+
+    (function(marker, infoWindow, locInfo) {
+      google.maps.event.addListener(marker, "click", function() {
+        //infoWindow.setContent(_getBirdSightingInfoWindow(locInfo));
+        //infoWindow.open(_map, this);
+      });
+    })(_data.all.markers[locationID], _data.all.infoWindows[locationID], currMarkerInfo);
+  }
+};
+
 
 class Map extends React.Component {
 
@@ -23,35 +116,35 @@ class Map extends React.Component {
       overviewMapControl: true
     };
 
-    this.map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
-
+    _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
     this.addCustomControls();
     this.addEventHandlers();
   }
 
   componentDidUpdate (prevProps) {
     if (prevProps.zoom !== this.props.zoom) {
-      this.map.setZoom(this.props.zoom);
+      _map.setZoom(this.props.zoom);
     }
 
-    this.map.setCenter({
+    _map.setCenter({
       lat: this.props.lat,
       lng: this.props.lng
     });
 
     if (this.props.bounds !== null) {
-      this.map.fitBounds({
+      _map.fitBounds({
         north: this.props.bounds.north,
         south: this.props.bounds.south,
         east: this.props.bounds.east,
         west: this.props.bounds.west
       });
     }
-    if (this.props.results.length !== prevProps.results.length) {
-      this.clearHotspots();
-      this.addMarkers();
 
-      _addMarkers("all", _data.all.lastSearch);
+    // TODO this won't always work
+    if (this.props.results.allLocations.length !== prevProps.results.allLocations.length) {
+      //this.clearHotspots();
+      addMarkers(this.props.results.allLocations);
+  //    _addMarkers("all", _data.all.lastSearch);
     }
   }
 
@@ -67,45 +160,7 @@ class Map extends React.Component {
     //}
   }
 
-  /**
-   * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
-   * param specifies the search type; the second is a standardized array of hotspot data. Format:
-   *   {
-	 *		locationID: ...
-	 *		lat: ...
-	 *		lng: ...
-	 *		n: ... (location name)
-	 *   }
-   * The objects can contain any additional info needed; they're just ignored.
-   *
-   * @param searchType
-   * @param hotspots
-   * @private
-   */
-  addMarkers (searchType, data) {
-    var mapBoundary = _map.getBounds();
-    var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-    _visibleHotspots = [];
 
-    for (var i=0; i<data.length; i++) {
-      var currMarkerInfo = data[i];
-      var locationID = currMarkerInfo.locationID;
-      var latlng = new google.maps.LatLng(currMarkerInfo.lat, currMarkerInfo.lng);
-      if (!boundsObj.contains(latlng)) {
-        continue;
-      }
-
-      if (searchType === "all") {
-        _addBirdMarker(locationID, latlng, currMarkerInfo);
-      } else if (searchType === "notable") {
-        _addNotableMarker(locationID, latlng, currMarkerInfo);
-      } else if (searchType === "hotspots") {
-        _addHotspotMarker(locationID, latlng, currMarkerInfo);
-      }
-
-      _visibleHotspots.push(currMarkerInfo);
-    }
-  }
 
   addCustomControls () {
     var btn1 = $('<div class="mapBtn">Terrain</div>')[0];
@@ -114,29 +169,29 @@ class Map extends React.Component {
     var btn4 = $('<div class="mapBtn">Hybrid</div>')[0];
 
     // add the controls to the map
-    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
-    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
-    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
-    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
+    _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
+    _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
+    _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
+    _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
 
     // add the appropriate event handlers
     google.maps.event.addDomListener(btn1, 'click', function () {
-      this.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+      _map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
       $(".mapBtn").removeClass('mapBtnSelected');
       $(btn1).addClass('mapBtnSelected');
     });
     google.maps.event.addDomListener(btn2, 'click', function () {
-      this.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+      _map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
       $(".mapBtn").removeClass('mapBtnSelected');
       $(btn2).addClass('mapBtnSelected');
     });
     google.maps.event.addDomListener(btn3, 'click', function () {
-      this.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+      _map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
       $(".mapBtn").removeClass('mapBtnSelected');
       $(btn3).addClass('mapBtnSelected');
     });
     google.maps.event.addDomListener(btn4, 'click', function () {
-      this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      _map.setMapTypeId(google.maps.MapTypeId.HYBRID);
       $(".mapBtn").removeClass('mapBtnSelected');
       $(btn4).addClass('mapBtnSelected');
     });
