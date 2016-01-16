@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { _, actions } from '../../core/core';
+
 
 var _icon = "images/marker.png";
 
@@ -34,47 +36,13 @@ var _data = {
 var _visibleHotspots = [];
 
 
-/**
- * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
- * param specifies the search type; the second is a standardized array of hotspot data. Format:
- *   {
- *		i: ...
- *		lat: ...
- *		lng: ...
- *		n: ... (location name)
- *   }
- * The objects can contain any additional info needed; they're just ignored.
- */
-var addMarkers = function (allLocations) {
-  var mapBoundary = _map.getBounds();
-  var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-  _visibleHotspots = [];
-
-  allLocations.forEach(function (locInfo) {
-    var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
-    if (!boundsObj.contains(latlng)) {
-      return;
-    }
-//      if (this.props.searchType === "all") {
-    addBirdMarker(locInfo.i, latlng, locInfo);
-    //    }
-    _visibleHotspots.push(locInfo);
-  });
-
-  //if (searchType === "all") {
-  //  _addBirdMarker(locationID, latlng, currMarkerInfo);
-  //} else if (searchType === "notable") {
-  //  _addNotableMarker(locationID, latlng, currMarkerInfo);
-  //} else if (searchType === "hotspots") {
-  //  _addHotspotMarker(locationID, latlng, currMarkerInfo);
-  //}
-};
 
 var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
-  if (_data.all.markers.hasOwnProperty(locationID)) {
+  if (_.has(_data.all.markers, locationID)) {
     if (_data.all.markers[locationID].map === null) {
       _data.all.markers[locationID].setMap(_map);
     }
+
   } else {
     _data.all.markers[locationID] = new google.maps.Marker({
       position: latlng,
@@ -93,6 +61,7 @@ var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
     })(_data.all.markers[locationID], _data.all.infoWindows[locationID], currMarkerInfo);
   }
 };
+
 
 
 class Map extends React.Component {
@@ -140,27 +109,69 @@ class Map extends React.Component {
       });
     }
 
-    // TODO this won't always work
+    // TODO
     if (this.props.results.allLocations.length !== prevProps.results.allLocations.length) {
-      //this.clearHotspots();
-      addMarkers(this.props.results.allLocations);
-  //    _addMarkers("all", _data.all.lastSearch);
+      this.clearHotspots();
+      this.addMarkers();
     }
   }
 
-  clearHotspots () {
-    //for (var locationID in _data.all.markers) {
-    //  _data.all.markers[locationID].setMap(null);
-    //}
-    //for (var locationID in _data.notable.markers) {
-    //  _data.notable.markers[locationID].setMap(null);
-    //}
-    //for (var locationID in _data.hotspots.markers) {
-    //  _data.hotspots.markers[locationID].setMap(null);
-    //}
+  /**
+   * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
+   * param specifies the search type; the second is a standardized array of hotspot data. Format:
+   *   {
+   *		 i: ...
+   *		 lat: ...
+   *		 lng: ...
+   *		 n: ... (location name)
+   *   }
+   * The objects can contain any additional info needed; they're just ignored.
+   */
+  addMarkers () {
+    var mapBoundary = _map.getBounds();
+    var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
+    _visibleHotspots = [];
+
+    this.props.results.allLocations.forEach(function (locInfo) {
+      var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
+      if (!boundsObj.contains(latlng)) {
+        return;
+      }
+
+      addBirdMarker(locInfo.i, latlng, locInfo);
+
+      //if (searchType === "all") {
+      //  _addBirdMarker(locationID, latlng, currMarkerInfo);
+      //} else if (searchType === "notable") {
+      //  _addNotableMarker(locationID, latlng, currMarkerInfo);
+      //} else if (searchType === "hotspots") {
+      //  _addHotspotMarker(locationID, latlng, currMarkerInfo);
+      //}
+      _visibleHotspots.push(locInfo);
+    });
+
+    // publish the visible hotspots: LocationsPanel needs to know about it
+    this.props.dispatch(actions.updateVisibleLocations(_visibleHotspots));
   }
 
+  clearHotspots () {
+    for (var locationID in _data.all.markers) {
+      _data.all.markers[locationID].setMap(null);
+    }
+    for (var locationID in _data.notable.markers) {
+      _data.notable.markers[locationID].setMap(null);
+    }
+    for (var locationID in _data.hotspots.markers) {
+      _data.hotspots.markers[locationID].setMap(null);
+    }
+  }
 
+  onMapBoundsChange () {
+
+    console.log("changed");
+    //this.clearHotspots();
+    //this.addMarkers();
+  }
 
   addCustomControls () {
     var btn1 = $('<div class="mapBtn">Terrain</div>')[0];
@@ -200,32 +211,12 @@ class Map extends React.Component {
   addEventHandlers () {
     //$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
     //$(document).on("click", ".viewLocationSightingDetails", _onClickViewLocationSightings);
+    // called any time the map has had its bounds changed
+    google.maps.event.addListener(_map, "dragend", this.onMapBoundsChange.bind(this));
+    google.maps.event.addListener(_map, "zoom_changed", this.onMapBoundsChange.bind(this));
   }
 
-  //var _onAutoComplete = function() {
-  //  var currPlace = _autoComplete.getPlace();
-  //
-  //  if (!currPlace.geometry) {
-  //    return;
-  //  }
-  //  _viewportObj = currPlace.geometry.hasOwnProperty("viewport") ? currPlace.geometry.viewport : null;
-  //  _locationObj = currPlace.geometry.location;
-  //
-  //  // keep track of the specificity of the last search. Depending on the search type (all, notable, hotspots)
-  //  // it may not be valid
-  //  _lastSearchNumAddressComponents = null;
-  //  if (_locationField[0].value !== '' && currPlace !== null) {
-  //    _lastSearchNumAddressComponents = currPlace.address_components.length;
-  //  }
-  //};
-
   render () {
-    //// called any time the map has had its bounds changed
-    //google.maps.event.addListener(_map, "dragend", _onMapBoundsChange);
-    //google.maps.event.addListener(_map, "zoom_changed", _onMapBoundsChange);
-    //
-    //mediator.publish(_MODULE_ID, C.EVENT.TRIGGER_WINDOW_RESIZE);
-
     return (
       <div className="flex-body"></div>
     );

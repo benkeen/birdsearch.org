@@ -5,8 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { Loader, ClosePanel } from '../general/general';
 import Map from '../map/map';
 import { VelocityComponent } from 'velocity-react';
-import { C, E, _ } from '../../core/core';
-import * as actions from '../../core/actions';
+import { C, E, _, actions } from '../../core/core';
 
 
 class MainPanel extends React.Component {
@@ -16,6 +15,7 @@ class MainPanel extends React.Component {
     return (
       <section id="mainPanel" className="flex-body">
         <Map
+          dispatch={dispatch}
           zoom={mapSettings.zoom}
           lat={mapSettings.lat}
           lng={mapSettings.lng}
@@ -42,10 +42,10 @@ class MainPanel extends React.Component {
                 dispatch={dispatch}
                 visible={panelVisibility.overview}
                 numLocations={results.allLocations.length} />
-              <LocationPanel
+              <LocationsPanel
                 dispatch={dispatch}
                 visible={panelVisibility.locations}
-                locations={results.allLocations} />
+                locations={results.visibleLocations} />
             </div>
             <SpeciesPanel
               dispatch={dispatch}
@@ -195,7 +195,7 @@ OverviewPanel.PropTypes = {
 };
 
 
-class LocationPanel extends React.Component {
+class LocationsPanel extends React.Component {
   transitionBegin () {
     if (this.props.visible) {
       $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
@@ -235,6 +235,53 @@ class LocationPanel extends React.Component {
     );
   }
 
+  /*
+  var _generateAsyncSidebarTable = function(visibleHotspots) {
+    var templateData = [];
+    for (var i=0; i<_numVisibleLocations; i++) {
+      var row = _visibleLocations[i];
+
+      var currLocationID = _visibleLocations[i].locationID;
+      row.rowClass = "";
+      row.numSpeciesWithinRange = "";
+
+      if (!_birdSearchHotspots[currLocationID].hasOwnProperty("sightings") || !_birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].available) {
+        row.rowClass = "notLoaded";
+      } else {
+        row.numSpeciesWithinRange = _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal;
+      }
+      templateData.push(row);
+    }
+
+    // add the table to the page
+    var tmpl = _.template(sidebarResultsTableTemplate, {
+      L: _L,
+      asyncLoading: true,
+      showSpeciesColumn: true,
+      hotspots: templateData
+    });
+    $("#sidebarResults").html(tmpl).removeClass("hidden").css({height: _getSidebarResultsPanelHeight() }).fadeIn(300);
+
+    // instantiate any spinners for rows that haven't loaded yet
+    var notLoaded = $(".notLoaded .speciesCount");
+    for (var i=0; i<notLoaded.length; i++) {
+      Spinners.create($(notLoaded[i])[0], {
+        radius: 3,
+        height: 4,
+        width: 1.4,
+        dashes: 12,
+        opacity: 1,
+        padding: 0,
+        rotation: 1400,
+        fadeOutSpeed: 0,
+        color: "#222222"
+      }).play();
+    }
+
+    _getBirdHotspotObservations();
+  };
+  */
+
   render () {
     const { dispatch, visible } = this.props;
     return (
@@ -249,7 +296,7 @@ class LocationPanel extends React.Component {
   }
 }
 
-LocationPanel.PropTypes = {
+LocationsPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired,
   locations: React.PropTypes.array.isRequired
 };

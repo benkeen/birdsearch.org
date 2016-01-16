@@ -23,7 +23,7 @@ function searchSettings (state = {
     location: '',
     lat: null,
     lng: null,
-    limitByObservationRecency: false,
+    limitByObservationRecency: true,
     observationRecency: C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS
   }, action) {
 
@@ -109,17 +109,6 @@ function overlayVisibility (state = {
 }
 
 
-/**
- * Reminder: this adds an object property to the redux store with the following shape:
- *
- * userLocation: {
- *    isFetching: ...,
- *    reverseGeocodeSuccess: ...,
- *    lat: ...,
- *    lng: ...',
- *    address: ...
- * }
- */
 function userLocation (state = {
   isFetching: false,
   reverseGeocodeSuccess: false,
@@ -185,6 +174,12 @@ function results (state = {
     case E.SEARCH_LOCATIONS_RETURNED:
       return Object.assign({}, state, {
         allLocations: action.locations
+      });
+    break;
+
+    case E.VISIBLE_LOCATIONS_UPDATED:
+      return Object.assign({}, state, {
+        visibleLocations: action.locations
       });
     break;
 

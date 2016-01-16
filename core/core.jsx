@@ -1,6 +1,7 @@
+import _ from 'underscore';
 import { C } from './constants';
 import { E } from './events';
 import * as helpers from './helpers';
-import _ from 'underscore';
+import * as actions from './actions';
 
-export { C, E, helpers, _ };
+export { C, E, helpers, _, actions };
