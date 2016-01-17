@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { C, E, helpers, _ } from './core';
-//import fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch';
 
 
 function setLocale (locale) {
@@ -18,7 +18,7 @@ function setSearchLocation (location) {
   };
 }
 
-function startSearchRequest (searchSettings, locationInfo) {
+function startSearchRequest (locationInfo) {
   return {
     type: E.SEARCH_REQUEST_STARTED,
     lat: locationInfo.lat,
@@ -32,9 +32,10 @@ function searchRequestComplete () {
   return { type: E.SEARCH_REQUEST_ENDED };
 }
 
+
 function search (searchSettings, locationInfo) {
   return function (dispatch) {
-    dispatch(startSearchRequest(searchSettings, locationInfo));
+    dispatch(startSearchRequest(locationInfo));
 
     var searchParams = {
       lat: locationInfo.lat,
@@ -78,7 +79,6 @@ function fetchBirdSightings (searchParams) {
   _.each(searchParams, function (val, key) {
     formData.append(key, val);
   });
-
   return fetch('/birdsearch.org/ajax/getHotspotLocations.php', {
     method: 'POST',
     body: formData
@@ -96,64 +96,43 @@ function requestingUserLocation () {
   return { type: E.REQUESTING_USER_LOCATION };
 }
 
-function requestGeoLocation (searchInfo) {
+function requestGeoLocation () {
   return function (dispatch) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      convertLatLngToAddress(dispatch, searchInfo, position.coords.latitude, position.coords.longitude);
+      convertLatLngToAddress(dispatch, position.coords.latitude, position.coords.longitude);
     });
   };
 }
 
-function convertLatLngToAddress (dispatch, searchInfo, lat, lng) {
+function convertLatLngToAddress (dispatch, lat, lng) {
   var geocoder = new google.maps.Geocoder();
   geocoder.geocode({ latLng: { lat: lat, lng: lng }}, function (results, status) {
-    var reverseGeocodeSuccess = false;
+    var userLocationFound = false;
     var address = '';
     var bounds = null;
     if (status === google.maps.GeocoderStatus.OK) {
       if (results[1]) {
-        reverseGeocodeSuccess = true;
+        userLocationFound = true;
         address = results[1].formatted_address;
         bounds = helpers.getBestBounds(results[1].geometry.viewport, results[1].geometry.bounds);
       }
     }
-
     dispatch({
       type: E.RECEIVED_USER_LOCATION,
-      reverseGeocodeSuccess: reverseGeocodeSuccess,
+      userLocationFound: userLocationFound,
       lat: lat,
       lng: lng,
       address: address,
       bounds: bounds
     });
-
-    // Urgh! at this point I want to fire off an actual search request. But in order to do that, I need all the search
-    // settings info. So we either:
-    // - pass that info down the chain of method calls to here, or
-    // - somehow listen to the RECEIVED_USER_LOCATION event (in a reducer, I guess), change something in the store which
-    // a component would listen to, then in its componentDidUpdate() method call the search? Jesus. This is awful.
-
-
-//lat: 49.376765299999995
-//lng: -123.37015410000001
-//location: "Bowen Island, BC, Canada"
-//observationRecency: 30
-//searchType: "all"
-
-
   });
 }
 
 
-function getGeoLocation (searchInfo) {
+function getGeoLocation () {
   return function (dispatch) {
     dispatch(requestingUserLocation());
-
-    // TODO if the browser doesn't support geolocation, make a note of it
-    //if (!navigator.geolocation) {
-    //}
-
-    return dispatch(requestGeoLocation(searchInfo));
+    return dispatch(requestGeoLocation());
   }
 }
 
@@ -164,25 +143,40 @@ function togglePanelVisibility (panel) {
   };
 }
 
-function updateVisibleLocations (locations) {
-  return {
-    type: E.VISIBLE_LOCATIONS_UPDATED,
-    locations: locations
-  };
+function updateVisibleLocations (locations, allLocationSightings) {
+  return function (dispatch) {
+    getBirdHotspotObservations (dispatch, locations, allLocationSightings);
+    return {
+      type: E.VISIBLE_LOCATIONS_UPDATED,
+      locations: locations
+    };
+  }
 }
 
-
-/*
-var _getBirdHotspotObservations = function() {
+function getBirdHotspotObservations (dispatch, locations, allLocationSightings) {
   var hasAtLeastOneRequest = false;
+
+  locations.forEach(function (locInfo) {
+    var currLocationId = locInfo.i;
+
+    // if we already have the hotspot data available, just update the sidebar table
+    if (allLocationSightings[currLocationID].sightings.fetched) {
+//      _updateVisibleLocationInfo(currLocationID, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
+    } else {
+      fetchSingleHotspotSightings(currLocationID).then(
+
+      );
+      hasAtLeastOneRequest = true;
+    }
+  });
+
+  /*
   for (var i=0; i<_numVisibleLocations; i++) {
     var currLocationID = _visibleLocations[i].locationID;
 
-    // check allHotspots to see if this data has been loaded yet. If not, prep the object. To reduce
-    // server requests, we intelligently categorize all sightings into an array, where the index-1 === the day.
-    // That way, if the user does a search for 30 days then reduces the recency setting, we don't need any
-    // superfluous requests. If a request for 30 days goes through, ALL properties have their available property
-    // set to true
+    // check allHotspots to see if this data has been loaded yet. If not, prep the object. To minimize server requests,
+    // we categorize all sightings into an array, where the index-1 === the day. That way, when the user changes the
+    // range to show it's easy to extract the appropriate data
     if (!_birdSearchHotspots[currLocationID].hasOwnProperty("sightings")) {
       _birdSearchHotspots[currLocationID].isDisplayed = false;
       _birdSearchHotspots[currLocationID].sightings = {
@@ -211,39 +205,47 @@ var _getBirdHotspotObservations = function() {
       observationRecency: _lastSearchObsRecency
     });
   }
-};
+  */
 
+}
 
-var _getSingleHotspotObservations = function(locationID) {
-  $.ajax({
-    url: "ajax/getHotspotSightings.php",
-    data: {
-      locationID: locationID,
-      recency: _lastSearchObsRecency
-    },
-    type: "POST",
-    dataType: "json",
-    success: function(response) {
-      _onSuccessReturnLocationObservations(locationID, response);
-    },
-    error: function(response) {
-      _onErrorReturnLocationObservations(locationID, response);
-    }
+var fetchSingleHotspotObservations = function (locationID) {
+  var formData = new FormData();
+  formData.append('locationID', locationID);
+  formData.append('recency', 30);
+
+  return fetch('/birdsearch.org/ajax/getHotspotSightings.php', {
+    method: 'POST',
+    body: formData
   });
+
+
+  //$.ajax({
+  //  url: "ajax/getHotspotSightings.php",
+  //  data: {
+  //    locationID: locationID,
+  //    recency: _lastSearchObsRecency
+  //  },
+  //  type: "POST",
+  //  dataType: "json",
+  //  success: function(response) {
+  //    _onSuccessReturnLocationObservations(locationID, response);
+  //  },
+  //  error: function(response) {
+  //    _onErrorReturnLocationObservations(locationID, response);
+  //  }
+  //});
 };
 
 
- * Returns the observations reports for a single location at a given interval (last 2 days, last 30 days
- * etc). This can be called multiple times for a single location if the user keeps increasing the recency
- * range upwards.
- * @param locationID
- * @param response
- * @private
+var _onSuccessReturnLocationObservations = function (locationID, response) {
 
-var _onSuccessReturnLocationObservations = function(locationID, response) {
+  // this can be replaced by some reducer code...
   _birdSearchHotspots[locationID].isDisplayed = true;
   _birdSearchHotspots[locationID].sightings.success = true;
 
+
+  
   // by reference, of course
   var sightingsData = _birdSearchHotspots[locationID].sightings.data;
 
@@ -306,7 +308,7 @@ var _onSuccessReturnLocationObservations = function(locationID, response) {
     });
   }
 };
-*/
+
 
 export {
   setLocale,

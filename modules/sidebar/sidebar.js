@@ -85,18 +85,6 @@ define([
 
 			// add all relevant event handlers for the sidebar content
 			_addEventHandlers();
-
-			// initialize the main spinner
-			helper.initSpinner();
-
-			// focus on the location field on page load. Seems like this should be part of the moduleHelper... maybe that
-			// should fire a "complete" even to which this module listens?
-			_locationField.focus();
-
-			// initialize the sightings array
-			for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
-				_sightingsArray.push({ available: false, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
-			}
 		});
 	};
 

@@ -2,8 +2,7 @@
 These just don't seem to belong to the individual components, so I'm going to stick them here and see how things roll.
 */
 
-import { C } from './constants';
-import { E } from './events';
+import { C, E, _, actions } from './core';
 import * as storage from './storage';
 
 
@@ -29,6 +28,11 @@ function searchSettings (state = {
 
   switch (action.type) {
     case E.SET_SEARCH_LOCATION:
+      return Object.assign({}, state, {
+        location: action.location
+      });
+
+    case E.SEARCH_REQUEST_STARTED:
       return Object.assign({}, state, {
         location: action.location
       });
@@ -109,9 +113,9 @@ function overlayVisibility (state = {
 }
 
 
-function userLocation (state = {
+function user (state = {
   isFetching: false,
-  reverseGeocodeSuccess: false,
+  userLocationFound: false,
   lat: null,
   lng: null,
   address: ''
@@ -124,13 +128,13 @@ function userLocation (state = {
     case E.RECEIVED_USER_LOCATION:
       return Object.assign({}, state, {
         isFetching: false,
-        reverseGeocodeSuccess: action.reverseGeocodeSuccess,
+        userLocationFound: action.userLocationFound,
         lat: action.lat,
         lng: action.lng,
         address: action.address
       });
     default:
-      return state
+      return state;
   }
 }
 
@@ -154,7 +158,7 @@ function panelVisibility (state = {
     break;
 
     default:
-      return state
+      return state;
   }
 }
 
@@ -162,8 +166,9 @@ function panelVisibility (state = {
 function results (state = {
   isFetching: false,
   numLocations: 0,
-  allLocations: [], // stores every
-  visibleLocations: []
+  allLocations: [], // stores everything from the last search
+  visibleLocations: [], // stores all locations currently visible on the user's map
+  locationSightings: {} // an object of [location ID] => sighting info. Populated as need be, based on what's visible
 }, action) {
   switch (action.type) {
     case E.SEARCH_REQUEST_ENDED:
@@ -172,8 +177,20 @@ function results (state = {
       });
 
     case E.SEARCH_LOCATIONS_RETURNED:
+      var sightings = _(30).times(function () {
+        return { available: false, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
+      });
+
+      var locationSightings = Object.assign({}, state.locationSightings);
+      action.locations.forEach(function (locInfo) {
+        locationSightings[locInfo.i] = {
+          fetched: false,
+          data: _.map(sightings, _.clone)
+        }
+      });
       return Object.assign({}, state, {
-        allLocations: action.locations
+        allLocations: action.locations,
+        locationSightings: locationSightings
       });
     break;
 
@@ -192,7 +209,7 @@ export {
   locale,
   searchSettings,
   mapSettings,
-  userLocation,
+  user,
   overlayVisibility,
   panelVisibility,
   results

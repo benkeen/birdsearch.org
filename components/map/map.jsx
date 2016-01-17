@@ -3,7 +3,12 @@ import ReactDOM from 'react-dom';
 import { _, actions } from '../../core/core';
 
 
-var _icon = "images/marker.png";
+var _icons = {
+  white: {
+    url: 'images/markers/white.png',
+    scaledSize: new google.maps.Size(21, 26)
+  }
+};
 
 // stores all map-related data, grouped by search type
 var _map;
@@ -33,8 +38,6 @@ var _data = {
     markers: {}
   }
 };
-var _visibleHotspots = [];
-
 
 
 var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
@@ -48,7 +51,7 @@ var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
       position: latlng,
       map: _map,
       title: currMarkerInfo.n,
-      icon: _icon,
+      icon: _icons.white,
       locationID: locationID
     });
     _data.all.infoWindows[locationID] = new google.maps.InfoWindow();
@@ -130,7 +133,7 @@ class Map extends React.Component {
   addMarkers () {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-    _visibleHotspots = [];
+    var visibleHotspots = [];
 
     this.props.results.allLocations.forEach(function (locInfo) {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
@@ -147,11 +150,12 @@ class Map extends React.Component {
       //} else if (searchType === "hotspots") {
       //  _addHotspotMarker(locationID, latlng, currMarkerInfo);
       //}
-      _visibleHotspots.push(locInfo);
+
+      visibleHotspots.push(locInfo);
     });
 
     // publish the visible hotspots: LocationsPanel needs to know about it
-    this.props.dispatch(actions.updateVisibleLocations(_visibleHotspots));
+    this.props.dispatch(actions.updateVisibleLocations(visibleHotspots, this.props.results.locationSightings));
   }
 
   clearHotspots () {
@@ -167,8 +171,6 @@ class Map extends React.Component {
   }
 
   onMapBoundsChange () {
-
-    console.log("changed");
     //this.clearHotspots();
     //this.addMarkers();
   }

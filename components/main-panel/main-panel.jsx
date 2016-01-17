@@ -10,7 +10,7 @@ import { C, E, _, actions } from '../../core/core';
 
 class MainPanel extends React.Component {
   render () {
-    const { dispatch, isRequestingUserLocation, overlayVisibility, mapSettings, searchSettings, panelVisibility, results } = this.props;
+    const { dispatch, user, overlayVisibility, mapSettings, searchSettings, panelVisibility, results } = this.props;
 
     return (
       <section id="mainPanel" className="flex-body">
@@ -25,12 +25,11 @@ class MainPanel extends React.Component {
 
         <IntroOverlay
           visible={overlayVisibility.intro}
-          loading={isRequestingUserLocation}
+          loading={user.isFetching}
+          userLocationFound={user.userLocationFound}
           onClose={() => dispatch(actions.setIntroOverlayVisibility(false))}
-          searchNearby={() => dispatch(actions.getGeoLocation({
-            searchType: searchSettings.searchType,
-            observationRecency: searchSettings.observationRecency
-          }))}
+          searchNearby={() => dispatch(actions.getGeoLocation())}
+          onUserLocationFound={() => dispatch(actions.search(searchSettings, mapSettings))}
           searchAnywhere={() => dispatch(actions.setIntroOverlayVisibility(false))} />
 
         <AdvancedSearchOverlay />
@@ -66,7 +65,7 @@ export default connect(state => ({
   searchSettings: state.searchSettings,
   overlayVisibility: state.overlayVisibility,
   panelVisibility: state.panelVisibility,
-  isRequestingUserLocation: state.userLocation.isFetching,
+  user: state.user,
   results: state.results
 }))(MainPanel);
 
@@ -82,6 +81,22 @@ class IntroOverlay extends React.Component {
     if (!this.props.visible) {
       this.setState({ visible: false });
     }
+  }
+
+  // Urgh! at this point I want to fire off an actual search request. But in order to do that, I need all the search
+  // settings info. So we either:
+  // - somehow listen to the RECEIVED_USER_LOCATION event (in a reducer, I guess), change something in the store which
+  // a component would listen to, then in its componentDidUpdate() method call the search? Jesus. This is awful.
+  componentDidUpdate (prevProps) {
+    if (prevProps.userLocationFound !== this.props.userLocationFound && this.props.userLocationFound === true) {
+      this.props.onUserLocationFound();
+    }
+  }
+
+  componentDidMount () {
+    // if the browser doesn't support geolocation, disable the option (but don't hide it: rub it in that they're using
+    // an old crap browser)
+    //navigator.geolocation) { }
   }
 
   getLoader () {

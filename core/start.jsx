@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import thunk from 'redux-thunk';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { Router, Route } from 'react-router';
 import { Provider, connect } from 'react-redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+
 import * as components from '../components/index';
-import initStore from './utils';
 import * as i18n from './i18n/index';
 import * as storage from './storage';
+import * as reducers from './reducers';
 import { C } from './core';
 
 // locale information for react-intl
@@ -59,6 +62,12 @@ const App = React.createClass({
     )
   }
 });
+
+function initStore (initialState) {
+  const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+  return createStoreWithMiddleware(combineReducers(reducers), initialState);
+}
+
 
 var ConnectedI18nWrapper = connect(state => ({ locale: state.locale }))(I18NWrapper);
 
