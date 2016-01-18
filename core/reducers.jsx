@@ -2,8 +2,26 @@
 These just don't seem to belong to the individual components, so I'm going to stick them here and see how things roll.
 */
 
-import { C, E, _, actions } from './core';
+import { C, E, _, helpers, actions } from './core';
 import * as storage from './storage';
+
+
+
+function env (state = {
+  windowWidth: null,
+  windowHeight: null
+}, action) {
+  switch (action.type) {
+    case E.WINDOW_RESIZED:
+      return Object.assign({}, state, {
+        windowWidth: action.width,
+        windowHeight: action.height
+      });
+
+    default:
+      return state;
+  }
+}
 
 
 function locale (state = C.DEFAULT_LOCALE, action) {
@@ -138,6 +156,7 @@ function user (state = {
   }
 }
 
+
 function panelVisibility (state = {
   overview: false,
   locations: false,
@@ -175,30 +194,41 @@ function results (state = {
       return Object.assign({}, state, {
         isFetching: false
       });
+      break;
 
     case E.SEARCH_LOCATIONS_RETURNED:
-      var sightings = _(30).times(function () {
-        return { available: false, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
-      });
-
       var locationSightings = Object.assign({}, state.locationSightings);
       action.locations.forEach(function (locInfo) {
         locationSightings[locInfo.i] = {
           fetched: false,
-          data: _.map(sightings, _.clone)
+          data: []
         }
       });
       return Object.assign({}, state, {
         allLocations: action.locations,
         locationSightings: locationSightings
       });
-    break;
+      break;
+
+    case E.HOTSPOT_SIGHTINGS_RETURNED:
+      var locationSightings = Object.assign({}, state.locationSightings);
+      var parsedData = helpers.parseHotspotSightings(action.sightings);
+      locationSightings[action.locationID] = {
+        fetched: true,
+        data: parsedData
+      };
+      console.log(action.locationID, parsedData);
+      return Object.assign({}, state, {
+        locationSightings: locationSightings
+      });
+      break;
 
     case E.VISIBLE_LOCATIONS_UPDATED:
+      console.log("visible locations updated: ", action.locations.length);
       return Object.assign({}, state, {
         visibleLocations: action.locations
       });
-    break;
+      break;
 
     default:
       return state;
@@ -206,6 +236,7 @@ function results (state = {
 }
 
 export {
+  env,
   locale,
   searchSettings,
   mapSettings,

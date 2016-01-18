@@ -46,7 +46,7 @@ function search (searchSettings, locationInfo) {
 
     // holy good lord. This monstrosity makes a request for the hotspots, converts the results to JSON (which is async
     // for some reason...?) then publishes the appropriate action
-    return fetchBirdSightings(searchParams)
+    return fetchLocations(searchParams)
       .then(res => res.json())
       .then(
         json  => dispatch(searchLocationsFound(dispatch, json),
@@ -74,7 +74,7 @@ function searchLocationRequestError (dispatch, error) {
   };
 }
 
-function fetchBirdSightings (searchParams) {
+function fetchLocations (searchParams) {
   var formData = new FormData();
   _.each(searchParams, function (val, key) {
     formData.append(key, val);
@@ -143,31 +143,38 @@ function togglePanelVisibility (panel) {
   };
 }
 
-function updateVisibleLocations (locations, allLocationSightings) {
+// once the visible locations are identified, it automatically requests all observations for them
+function visibleLocationsFound (visibleLocations, allLocationSightings) {
   return function (dispatch) {
-    getBirdHotspotObservations (dispatch, locations, allLocationSightings);
-    return {
-      type: E.VISIBLE_LOCATIONS_UPDATED,
-      locations: locations
-    };
+    getBirdHotspotObservations (dispatch, visibleLocations, allLocationSightings);
+    return dispatch(updateVisibleLocations(visibleLocations));
   }
 }
 
+function updateVisibleLocations (visibleLocations) {
+  return {
+    type: E.VISIBLE_LOCATIONS_UPDATED,
+    locations: visibleLocations
+  };
+}
+
 function getBirdHotspotObservations (dispatch, locations, allLocationSightings) {
-  var hasAtLeastOneRequest = false;
+ // var hasAtLeastOneRequest = false;
 
   locations.forEach(function (locInfo) {
-    var currLocationId = locInfo.i;
+    var currLocationID = locInfo.i;
 
-    // if we already have the hotspot data available, just update the sidebar table
-    if (allLocationSightings[currLocationID].sightings.fetched) {
+    // if we already have the hotspot data available, probably don't need to do anything... React should be good at this bit.
+    if (allLocationSightings[currLocationID].fetched) {
 //      _updateVisibleLocationInfo(currLocationID, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
-    } else {
-      fetchSingleHotspotSightings(currLocationID).then(
-
-      );
-      hasAtLeastOneRequest = true;
     }
+
+    fetchSingleHotspotSightings(currLocationID)
+      .then(res => res.json())
+      .then(
+        json  => dispatch(locationSightingsFound(dispatch, currLocationID, json))
+        //error => dispatch(searchLocationRequestError(dispatch, error))
+      );
   });
 
   /*
@@ -209,7 +216,7 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
 
 }
 
-var fetchSingleHotspotObservations = function (locationID) {
+var fetchSingleHotspotSightings = function (locationID) {
   var formData = new FormData();
   formData.append('locationID', locationID);
   formData.append('recency', 30);
@@ -238,14 +245,29 @@ var fetchSingleHotspotObservations = function (locationID) {
 };
 
 
-var _onSuccessReturnLocationObservations = function (locationID, response) {
+var locationSightingsFound = function (dispatch, locationID, resp) {
+  return {
+    type: E.HOTSPOT_SIGHTINGS_RETURNED,
+    locationID: locationID,
+    sightings: resp
+  }
+};
 
-  // this can be replaced by some reducer code...
+
+var onWindowResize = function (width, height) {
+  return {
+    type: E.WINDOW_RESIZED,
+    width: width,
+    height: height
+  }
+};
+
+/*var _onSuccessReturnLocationObservations = function (locationID, response) {
+
   _birdSearchHotspots[locationID].isDisplayed = true;
   _birdSearchHotspots[locationID].sightings.success = true;
 
 
-  
   // by reference, of course
   var sightingsData = _birdSearchHotspots[locationID].sightings.data;
 
@@ -308,6 +330,7 @@ var _onSuccessReturnLocationObservations = function (locationID, response) {
     });
   }
 };
+*/
 
 
 export {
@@ -317,5 +340,6 @@ export {
   setIntroOverlayVisibility,
   getGeoLocation,
   togglePanelVisibility,
-  updateVisibleLocations
+  visibleLocationsFound,
+  onWindowResize
 };

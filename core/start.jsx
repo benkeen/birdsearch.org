@@ -24,6 +24,7 @@ addLocaleData(de);
 
 const {
   Header,
+  DOMHelper,
   MainPanel
 } = components;
 

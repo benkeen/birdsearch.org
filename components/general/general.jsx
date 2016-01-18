@@ -1,4 +1,7 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import * as core from './../../core/core';
 
 
 class Loader extends React.Component {

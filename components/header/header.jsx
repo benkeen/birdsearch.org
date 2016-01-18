@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router';
-import * as core from './../../core/core';
-import * as actions from './../../core/actions';
+import { actions, helpers } from '../../core/core';
 
 
 class Header extends React.Component {
@@ -67,7 +66,7 @@ class HeaderSearch extends React.Component {
         lat: currPlace.geometry.location.lat(),
         lng: currPlace.geometry.location.lng(),
         location: currPlace.formatted_address,
-        bounds: core.helpers.getBestBounds(currPlace.geometry.viewport, currPlace.geometry.bounds)
+        bounds: helpers.getBestBounds(currPlace.geometry.viewport, currPlace.geometry.bounds)
       });
     });
   }

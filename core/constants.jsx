@@ -2,6 +2,7 @@ const C = {
 	DEBUG: false,
 	DEFAULT_LOCALE: 'en',
 	TRANSITION_SPEED: 300,
+	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 
 	PANELS: {
 		OVERVIEW: 'overview',
@@ -14,7 +15,7 @@ const C = {
 		GITHUB_URL: "https://github.com/benkeen/birdsearch.org"
 	},
 	SEARCH_SETTINGS: {
-		DEFAULT_SEARCH_DAYS: 30,
+		DEFAULT_SEARCH_DAYS: 5,
 		NUM_SEARCH_DAYS: 30
 	}
 

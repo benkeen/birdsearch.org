@@ -9,7 +9,7 @@ if (!isset($_POST["lat"]) || empty($_POST["lat"]) ||
 
 $lat = $_POST["lat"];
 $lng = $_POST["lng"];
-$limitByObservationRecency = "false"; // $_POST["limitByObservationRecency"];
+$limitByObservationRecency = $_POST["limitByObservationRecency"];
 $observationRecency = $_POST["observationRecency"];
 
 echo getHotspotLocations($lat, $lng, $limitByObservationRecency, $observationRecency);
@@ -21,7 +21,6 @@ function getHotspotLocations($lat, $lng, $limitByObservationRecency, $observatio
 	if ($limitByObservationRecency == "true") {
 		$url .= "&back=$observationRecency";
 	}
-
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

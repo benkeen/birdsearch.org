@@ -9,18 +9,38 @@ import { C, E, _, actions } from '../../core/core';
 
 
 class MainPanel extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
+  componentDidMount () {
+    $(window).resize(this.onResize.bind(this));
+  }
+
+  onResize () {
+    var windowHeight = $(window).height();
+    var windowWidth  = $(window).width();
+    //var viewportMode = 'desktop';
+    //if (windowWidth < _VIEWPORT_WIDTH_BREAKPOINT) {
+    //  viewportMode = 'mobile';
+    //}
+    this.props.dispatch(actions.onWindowResize(windowWidth, windowHeight));
+  }
+
   render () {
-    const { dispatch, user, overlayVisibility, mapSettings, searchSettings, panelVisibility, results } = this.props;
+    const { dispatch, env, user, overlayVisibility, mapSettings, searchSettings, panelVisibility, results } = this.props;
 
     return (
       <section id="mainPanel" className="flex-body">
         <Map
           dispatch={dispatch}
+          env={env}
           zoom={mapSettings.zoom}
           lat={mapSettings.lat}
           lng={mapSettings.lng}
           mapTypeId={mapSettings.mapTypeId}
           bounds={mapSettings.bounds}
+          searchSettings={searchSettings}
           results={results} />
 
         <IntroOverlay
@@ -61,6 +81,7 @@ class MainPanel extends React.Component {
 }
 
 export default connect(state => ({
+  env: state.env,
   mapSettings: state.mapSettings,
   searchSettings: state.searchSettings,
   overlayVisibility: state.overlayVisibility,
