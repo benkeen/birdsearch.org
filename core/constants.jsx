@@ -11,11 +11,11 @@ const C = {
 	},
 	CORE: {
 		APP_VERSION: "2.0.0 - BETA",
-		RELEASE_DATE: "Dec 27, 2015",
+		RELEASE_DATE: "Jan 17, 2015",
 		GITHUB_URL: "https://github.com/benkeen/birdsearch.org"
 	},
 	SEARCH_SETTINGS: {
-		DEFAULT_SEARCH_DAYS: 5,
+		DEFAULT_SEARCH_DAYS: 30,
 		NUM_SEARCH_DAYS: 30
 	}
 

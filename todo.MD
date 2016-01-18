@@ -5,7 +5,6 @@
 
 # Short-term
 - show nice looking loading spinner over main page whenever the map is loading or 
-- colour code the markers. Find new ones.
 - marker dialogs
 - table sort for locations
 - add “filter” field to filter location list 
@@ -15,6 +14,7 @@
 - Advanced Search
 - Login
 - About overlay
+- map legend & sort out marker colours
 
 # Misc 
 - escape should close overlays 
@@ -34,4 +34,5 @@ ____________________________________________
 - new markers found + added (default only)
 - add isomorphic-fetch
 - search nearby now triggers a search
-
+- colour code the markers. Find new ones.
+- locations now show sightings count

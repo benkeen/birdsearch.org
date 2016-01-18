@@ -217,14 +217,12 @@ function results (state = {
         fetched: true,
         data: parsedData
       };
-      console.log(action.locationID, parsedData);
       return Object.assign({}, state, {
         locationSightings: locationSightings
       });
       break;
 
     case E.VISIBLE_LOCATIONS_UPDATED:
-      console.log("visible locations updated: ", action.locations.length);
       return Object.assign({}, state, {
         visibleLocations: action.locations
       });

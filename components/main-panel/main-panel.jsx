@@ -64,7 +64,9 @@ class MainPanel extends React.Component {
               <LocationsPanel
                 dispatch={dispatch}
                 visible={panelVisibility.locations}
-                locations={results.visibleLocations} />
+                locations={results.visibleLocations}
+                locationSightings={results.locationSightings}
+                searchSettings={searchSettings} />
             </div>
             <SpeciesPanel
               dispatch={dispatch}
@@ -246,8 +248,14 @@ class LocationsPanel extends React.Component {
 
   getLocationRows () {
     return _.map(this.props.locations, function (location) {
-      return (<LocationRow location={location} key={location.i} />);
-    });
+      return (
+        <LocationRow
+          key={location.i}
+          location={location}
+          sightings={this.props.locationSightings[location.i]}
+          observationRecency={this.props.searchSettings.observationRecency} />
+      );
+    }, this);
   }
 
   getLocationList () {
@@ -340,14 +348,20 @@ LocationsPanel.PropTypes = {
 
 class LocationRow extends React.Component {
   render () {
+    var counter = (this.props.sightings.fetched) ? this.props.sightings.data[this.props.observationRecency - 1].numSpeciesRunningTotal : ' - ';
     return (
       <tr>
         <td>{this.props.location.n}</td>
-        <td>?</td>
+        <td>{counter}</td>
       </tr>
     );
   }
 }
+LocationRow.PropTypes = {
+  location: React.PropTypes.object.isRequired,
+  sightings: React.PropTypes.object.isRequired,
+  observationRecency: React.PropTypes.number.isRequired
+};
 
 
 class SpeciesPanel extends React.Component {

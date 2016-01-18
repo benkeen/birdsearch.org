@@ -9,23 +9,31 @@ var _icons = {
     scaledSize: new google.maps.Size(21, 26)
   },
   range1: {
-    url: 'images/markers/pale-green.png',
+    url: 'images/markers/grey.png',
     scaledSize: new google.maps.Size(21, 26)
   },
   range2: {
-    url: 'images/markers/green.png',
+    url: 'images/markers/sea-blue.png',
     scaledSize: new google.maps.Size(21, 26)
   },
   range3: {
-    url: 'images/markers/red.png',
+    url: 'images/markers/turquoise.png',
     scaledSize: new google.maps.Size(21, 26)
   },
   range4: {
-    url: 'images/markers/white.png',
+    url: 'images/markers/green.png',
     scaledSize: new google.maps.Size(21, 26)
   },
   range5: {
-    url: 'images/markers/white.png',
+    url: 'images/markers/yellow.png',
+    scaledSize: new google.maps.Size(21, 26)
+  },
+  range6: {
+    url: 'images/markers/orange.png',
+    scaledSize: new google.maps.Size(21, 26)
+  },
+  range7: {
+    url: 'images/markers/red.png',
     scaledSize: new google.maps.Size(21, 26)
   }
 };
@@ -70,8 +78,6 @@ var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
     return;
   }
 
-
-
   _data.all.markers[locationID] = new google.maps.Marker({
     position: latlng,
     map: _map,
@@ -115,58 +121,70 @@ class Map extends React.Component {
     _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
     this.addCustomControls();
     this.addEventHandlers();
+
+    // precache all markers
+    _.each(_icons, function (key) {
+      var img = new Image();
+      img.src = key.url;
+    });
   }
 
-  componentDidUpdate (prevProps) {
-    if (prevProps.zoom !== this.props.zoom) {
+  shouldComponentUpdate (nextProps, nextState) {
+    if (nextProps.zoom !== this.props.zoom) {
       _map.setZoom(this.props.zoom);
     }
 
-    if (this.props.lat !== prevProps.lat || this.props.lng !== prevProps.lng) {
+    if (this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) {
       _map.setCenter({
-        lat: this.props.lat,
-        lng: this.props.lng
+        lat: nextProps.lat,
+        lng: nextProps.lng
       });
     }
 
-    if (this.props.bounds !== null) {
+    if (nextProps.bounds !== null) {
       _map.fitBounds({
-        north: this.props.bounds.north,
-        south: this.props.bounds.south,
-        east: this.props.bounds.east,
-        west: this.props.bounds.west
+        north: nextProps.bounds.north,
+        south: nextProps.bounds.south,
+        east: nextProps.bounds.east,
+        west: nextProps.bounds.west
       });
     }
 
-    // TODO../ ideas: results.mapRedrawCounter: 1; increments by reducer code after all keys events:
+    // TODO... ideas: results.mapRedrawCounter: 1; increments by reducer code after all keys events:
         // - window resize
         // - new search
         // - map zoom / drag
-    var numLocationsChanged = this.props.results.allLocations.length !== prevProps.results.allLocations.length;
-    var windowResized = this.props.env.width !== prevProps.env.width || this.props.env.height !== prevProps.env.height;
+    var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
+    var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
 
     if (numLocationsChanged || windowResized) {
       this.clearHotspots();
-      this.addMarkers();
+      this.addMarkers(nextProps.results.allLocations, nextProps.results.locationSightings);
     }
 
     // this sucks. I'd like to be able to target a particular node to update it. Not have to parse through the entire
     // changed content on every redraw...
-    _.each(this.props.results.visibleLocations, function (locInfo) {
+    _.each(nextProps.results.visibleLocations, function (locInfo) {
       var locId = locInfo.i;
 
-      if (this.props.results.locationSightings[locId].fetched !== prevProps.results.locationSightings[locId].fetched) {
-        var locationSightings = this.props.results.locationSightings[locId].data;
-        var numSpecies = locationSightings[this.props.searchSettings.observationRecency - 1].numSpeciesRunningTotal;
+      if (this.props.results.locationSightings[locId].fetched !== nextProps.results.locationSightings[locId].fetched) {
+        var locationSightings = nextProps.results.locationSightings[locId].data;
+        var numSpecies = locationSightings[nextProps.searchSettings.observationRecency - 1].numSpeciesRunningTotal;
 
-        console.log(locId, " just fetched: ", numSpecies);
-
-        if (numSpecies < 5) {
+        if (numSpecies < 10) {
           _data.all.markers[locId].setIcon(_icons.range1);
-        } else if (numSpecies < 15) {
+        } else if (numSpecies < 20) {
           _data.all.markers[locId].setIcon(_icons.range2);
-        } else {
+        } else if (numSpecies < 30) {
           _data.all.markers[locId].setIcon(_icons.range3);
+        } else if (numSpecies < 40) {
+          _data.all.markers[locId].setIcon(_icons.range4);
+        } else if (numSpecies < 50) {
+          _data.all.markers[locId].setIcon(_icons.range5);
+        } else if (numSpecies < 60) {
+          _data.all.markers[locId].setIcon(_icons.range6);
+        } else {
+          _data.all.markers[locId].setIcon(_icons.range7);
         }
       }
 
@@ -174,6 +192,10 @@ class Map extends React.Component {
       //
       //}
     }, this);
+
+
+    // never update the map with React. We do it all internally. It's way too slow otherwise
+    return false;
   }
 
   /**
@@ -187,12 +209,12 @@ class Map extends React.Component {
    *   }
    * The objects can contain any additional info needed; they're just ignored.
    */
-  addMarkers () {
+  addMarkers (locations, locationSightings) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
     var visibleHotspots = [];
 
-    this.props.results.allLocations.forEach(function (locInfo) {
+    locations.forEach(function (locInfo) {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
       if (!boundsObj.contains(latlng)) {
         return;
@@ -216,7 +238,7 @@ class Map extends React.Component {
     });
 
     // publish the visible hotspots: LocationsPanel needs to know about it
-    this.props.dispatch(actions.visibleLocationsFound(visibleHotspots, this.props.results.locationSightings));
+    this.props.dispatch(actions.visibleLocationsFound(visibleHotspots, locationSightings));
   }
 
   clearHotspots () {
