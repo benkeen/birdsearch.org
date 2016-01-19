@@ -1,12 +1,14 @@
 @import "variables";
 
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700");
 body .navbar .brand {
 	padding: 0 0 0 40px;
 	width: 170px;
 	background: transparent url(../../images/icon.png) left center no-repeat;
 	margin-left: 15px;
 	color: #e9f7ff;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
+
 	font-size: 24px;
 	span {
 		color: #33b5e5;
@@ -17,7 +19,6 @@ body .navbar .brand {
 }
 
 header {
-	border-bottom: 2px solid #0094c8;
 	.nav {
 		margin-bottom: 0;
 	}
