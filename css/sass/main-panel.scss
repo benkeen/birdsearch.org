@@ -145,34 +145,10 @@
 	opacity: 0.3;
 }
 
-#map-panels {
-	z-index: 1;
-	position: absolute;
-	top: 72px;
-	bottom: 10px;
-	left: 10px;
-	right: 10px;
-	.panel {
-		background: rgba(255, 255, 245, 0.8);
-		border-radius: 5px;
-		padding: 12px;
-		.close-panel {
-			float: right;
-			&:hover {
-				color: #333333;
-			}
-		}
-	}
-}
-
-#panels {
-	display: flex;
-	flex-direction: row;
-	height: 100%;
-	width: 100%;
-
+.panel {
 	h1 {
 		color: black;
+		font-family: $webfont;
 		span.num-locations {
 			color: #0099cc;
 		}
@@ -180,15 +156,19 @@
 			color: #009900;
 		}
 	}
+	background: rgba(255, 255, 245, 0.8);
+	border-radius: 5px;
+	padding: 12px;
+
+	.close-panel {
+		float: right;
+		&:hover {
+			color: #333333;
+		}
+	}
 }
-#left-panel {
-	display: flex;
-	flex-direction: column;
-	margin-right: 10px;
-	width: 300px;
-}
+
 #overview-panel {
-	flex: 0 0 auto;
 	.panel {
 		margin-bottom: 10px;
 	}
@@ -198,7 +178,6 @@
 	}
 }
 #locations-panel {
-	flex: 1;
 	margin-bottom: 30px;
 	overflow-x: auto;
 
@@ -207,9 +186,6 @@
 		font-size: 9pt;
 		text-align: left;
 	}
-}
-#species-panel {
-	flex: 1;
 }
 
 #panel-toggle-buttons {

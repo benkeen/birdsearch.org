@@ -54,25 +54,21 @@ class MainPanel extends React.Component {
 
         <AdvancedSearchOverlay />
 
-        <div id="map-panels">
-          <div id="panels">
-            <div id="left-panel">
-              <OverviewPanel
-                dispatch={dispatch}
-                visible={panelVisibility.overview}
-                numLocations={results.allLocations.length} />
-              <LocationsPanel
-                dispatch={dispatch}
-                visible={panelVisibility.locations}
-                locations={results.visibleLocations}
-                locationSightings={results.locationSightings}
-                searchSettings={searchSettings} />
-            </div>
-            <SpeciesPanel
-              dispatch={dispatch}
-              visible={panelVisibility.species} />
-          </div>
+        <div id="left-panel">
+          <OverviewPanel
+            dispatch={dispatch}
+            visible={panelVisibility.overview}
+            numLocations={results.allLocations.length} />
+          <LocationsPanel
+            dispatch={dispatch}
+            visible={panelVisibility.locations}
+            locations={results.visibleLocations}
+            locationSightings={results.locationSightings}
+            searchSettings={searchSettings} />
         </div>
+        <SpeciesPanel
+          dispatch={dispatch}
+          visible={panelVisibility.species} />
 
         <PanelToggleButtons
           dispatch={dispatch}
