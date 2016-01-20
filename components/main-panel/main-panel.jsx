@@ -54,21 +54,19 @@ class MainPanel extends React.Component {
 
         <AdvancedSearchOverlay />
 
-        <div id="left-panel">
-          <OverviewPanel
-            dispatch={dispatch}
-            visible={panelVisibility.overview}
-            numLocations={results.allLocations.length} />
-          <LocationsPanel
-            dispatch={dispatch}
-            visible={panelVisibility.locations}
-            locations={results.visibleLocations}
-            locationSightings={results.locationSightings}
-            searchSettings={searchSettings} />
-        </div>
+        <OverviewPanel
+          dispatch={dispatch}
+          panelVisibility={panelVisibility}
+          numLocations={results.allLocations.length} />
+        <LocationsPanel
+          dispatch={dispatch}
+          panelVisibility={panelVisibility}
+          locations={results.visibleLocations}
+          locationSightings={results.locationSightings}
+          searchSettings={searchSettings} />
         <SpeciesPanel
           dispatch={dispatch}
-          visible={panelVisibility.species} />
+          panelVisibility={panelVisibility} />
 
         <PanelToggleButtons
           dispatch={dispatch}
@@ -190,26 +188,61 @@ class OverviewPanel extends React.Component {
     super(props);
   }
 
+  componentDidMount () {
+    $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
+  }
+
   transitionBegin () {
-    if (this.props.visible) {
+    if (this.props.panelVisibility.overview) {
       $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
     }
   }
 
   transitionComplete () {
-    if (!this.props.visible) {
+    if (!this.props.panelVisibility.overview) {
       $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (this.props.panelVisibility.overview !== nextProps.overview) {
+
+      //var animation = { opacity: panelVisibility.overview ? 1 : 0 };
+      //
+      //if (panelVisibility.species) {
+      //  if (panelVisibility.locations) {
+      //    animation.height = panelVisibility.visible ? C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + 'px' : 0;
+      //  } else {
+      //    animation.height = panelVisibility.visible ? C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + 'px' : 0;
+      //    animation.width = panelVisibility.visible ? C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + 'px' : 0;
+      //  }
+      //}
+      //
+      //this.setState({
+      //  nextAnimation:
+      //});
+    }
+  }
+
   render () {
-    const { dispatch, visible, numLocations } = this.props;
+    const { dispatch, panelVisibility, numLocations } = this.props;
+
+    var position = {
+      left: C.PANEL_DIMENSIONS.PADDING + 'px',
+      top: C.PANEL_DIMENSIONS.TOP,
+      height: C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + 'px',
+      width: C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + 'px'
+    };
+
+    // the animation effect depends on what's open
+
+    // this will always work
 
     return (
-      <VelocityComponent animation={{ opacity: visible ? 1 : 0, height: visible ? 115 : 0 }} duration={C.TRANSITION_SPEED}
+      <VelocityComponent animation={animation} duration={C.TRANSITION_SPEED}
          complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
-        <div id="overview-panel" ref="panel">
-          <div className="panel">
+        <div id="overview-panel" className="panel" ref="panel" style={position}>
+          <div>
             <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.OVERVIEW))} />
             <h1>
               Locations: <span className="num-locations">{numLocations}</span>
@@ -230,14 +263,18 @@ OverviewPanel.PropTypes = {
 
 
 class LocationsPanel extends React.Component {
+  componentDidMount () {
+    $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
+  }
+
   transitionBegin () {
-    if (this.props.visible) {
+    if (this.props.panelVisibility.locations) {
       $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
     }
   }
 
   transitionComplete () {
-    if (!this.props.visible) {
+    if (!this.props.panelVisibility.locations) {
       $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
     }
   }
@@ -261,11 +298,15 @@ class LocationsPanel extends React.Component {
       );
     }
     return (
-      <table>
+      <table className="table table-striped">
         <thead>
           <tr>
             <th>Location</th>
             <th>Count</th>
+          </tr>
+          <tr>
+            <td>All locations</td>
+            <td></td>
           </tr>
         </thead>
         <tbody>
@@ -323,11 +364,19 @@ class LocationsPanel extends React.Component {
   */
 
   render () {
-    const { dispatch, visible } = this.props;
+    const { dispatch, panelVisibility } = this.props;
+
+    var position = {
+      left: C.PANEL_DIMENSIONS.PADDING + 'px',
+      top: C.PANEL_DIMENSIONS.TOP + C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + C.PANEL_DIMENSIONS.PADDING + 'px',
+      bottom: C.PANEL_DIMENSIONS.PADDING + 'px',
+      width: C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + 'px'
+    };
+
     return (
-      <VelocityComponent animation={{ opacity: visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}
+      <VelocityComponent animation={{ opacity: panelVisibility.locations ? 1 : 0 }} duration={C.TRANSITION_SPEED}
           complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
-        <div id="locations-panel" className="panel" ref="panel">
+        <div id="locations-panel" className="panel" ref="panel" style={position}>
           <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))} />
           {this.getLocationList()}
         </div>
@@ -361,11 +410,35 @@ LocationRow.PropTypes = {
 
 
 class SpeciesPanel extends React.Component {
+  componentDidMount () {
+    $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
+  }
+
+  transitionBegin () {
+    if (this.props.panelVisibility.species) {
+      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
+    }
+  }
+
+  transitionComplete () {
+    if (!this.props.panelVisibility.species) {
+      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
+    }
+  }
+
   render () {
-    const { dispatch, visible } = this.props;
+    const { dispatch, panelVisibility } = this.props;
+
+    var position = {
+      left: C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + (2 * C.PANEL_DIMENSIONS.PADDING) + 'px',
+      top: C.PANEL_DIMENSIONS.TOP + 'px',
+      bottom: C.PANEL_DIMENSIONS.PADDING + 'px',
+      right: C.PANEL_DIMENSIONS.PADDING + 'px',
+    };
+
     return (
-      <VelocityComponent animation={{ opacity: visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
-        <div id="species-panel" className="panel">
+      <VelocityComponent animation={{ opacity: panelVisibility.species ? 1 : 0 }} duration={C.TRANSITION_SPEED}>
+        <div id="species-panel" className="panel" ref="panel" style={position}>
           <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))} />
         </div>
       </VelocityComponent>
