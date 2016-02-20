@@ -186,6 +186,9 @@ class AdvancedSearchOverlay extends React.Component {
 class OverviewPanel extends React.Component {
   constructor (props) {
     super(props);
+    this.state = {
+      nextAnimation: { opacity: this.props.panelVisibility.overview ? 1 : 0 }
+    };
   }
 
   componentDidMount () {
@@ -205,27 +208,30 @@ class OverviewPanel extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.panelVisibility.overview !== nextProps.overview) {
 
-      //var animation = { opacity: panelVisibility.overview ? 1 : 0 };
-      //
-      //if (panelVisibility.species) {
-      //  if (panelVisibility.locations) {
-      //    animation.height = panelVisibility.visible ? C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + 'px' : 0;
-      //  } else {
-      //    animation.height = panelVisibility.visible ? C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + 'px' : 0;
-      //    animation.width = panelVisibility.visible ? C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + 'px' : 0;
-      //  }
-      //}
-      //
-      //this.setState({
-      //  nextAnimation:
-      //});
+    // if the visibility just changed for this component, figure out what the next animation is going to be. This is a bit
+    // complex because we need to slide in from the top of left, depending on what's already open
+    if (this.props.panelVisibility.overview !== nextProps.panelVisibility.overview) {
+
+      // opacity always changes
+      var animation = { opacity: nextProps.panelVisibility.overview ? 1 : 0 };
+
+      // if the locations panel was already open (but NOT just in the process of being opened), we also slide the overview
+      // panel in from the top
+      if (nextProps.panelVisibility.locations && this.props.panelVisibility.locations) {
+        animation.height = (nextProps.panelVisibility.overview) ? C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + 'px' : 0;
+      }
+
+      // if the locations panel was closed, but the species panel was already open, slide in from the left
+
+      this.setState({
+        nextAnimation: animation
+      });
     }
   }
 
   render () {
-    const { dispatch, panelVisibility, numLocations } = this.props;
+    const { dispatch, numLocations } = this.props;
 
     var position = {
       left: C.PANEL_DIMENSIONS.PADDING + 'px',
@@ -234,12 +240,8 @@ class OverviewPanel extends React.Component {
       width: C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + 'px'
     };
 
-    // the animation effect depends on what's open
-
-    // this will always work
-
     return (
-      <VelocityComponent animation={animation} duration={C.TRANSITION_SPEED}
+      <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
          complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
         <div id="overview-panel" className="panel" ref="panel" style={position}>
           <div>
@@ -258,13 +260,50 @@ class OverviewPanel extends React.Component {
 }
 OverviewPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired,
-  numLocations: React.PropTypes.number.isRequired
+  numLocations: React.PropTypes.number.isRequired,
+  panelVisibility: React.PropTypes.object.isRequired
 };
 
 
 class LocationsPanel extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      nextAnimation: { opacity: this.props.panelVisibility.locations ? 1 : 0 }
+    };
+  }
+
   componentDidMount () {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
+  }
+
+  componentWillReceiveProps (nextProps) {
+    var animation = {};
+    var hasAnimation = false;
+    if (this.props.panelVisibility.locations !== nextProps.panelVisibility.locations) {
+      hasAnimation = true;
+      animation = { opacity: nextProps.panelVisibility.locations ? 1 : 0 };
+    }
+
+    // if the overview panel visibility changed and this was already open
+    if (this.props.panelVisibility.locations && nextProps.panelVisibility.locations) {
+      if (nextProps.panelVisibility.overview !== this.props.panelVisibility.overview) {
+        hasAnimation = true;
+        if (nextProps.panelVisibility.overview) {
+          animation.top = C.PANEL_DIMENSIONS.TOP + C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + C.PANEL_DIMENSIONS.PADDING + 'px';
+        } else {
+          animation.top = C.PANEL_DIMENSIONS.TOP + 'px';
+        }
+      }
+    }
+
+    if (hasAnimation) {
+      console.log(animation);
+      this.setState({
+        nextAnimation: animation
+      });
+      this.forceUpdate(); // rethink
+    }
   }
 
   transitionBegin () {
@@ -316,55 +355,8 @@ class LocationsPanel extends React.Component {
     );
   }
 
-  /*
-  var _generateAsyncSidebarTable = function(visibleHotspots) {
-    var templateData = [];
-    for (var i=0; i<_numVisibleLocations; i++) {
-      var row = _visibleLocations[i];
-
-      var currLocationID = _visibleLocations[i].locationID;
-      row.rowClass = "";
-      row.numSpeciesWithinRange = "";
-
-      if (!_birdSearchHotspots[currLocationID].hasOwnProperty("sightings") || !_birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].available) {
-        row.rowClass = "notLoaded";
-      } else {
-        row.numSpeciesWithinRange = _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal;
-      }
-      templateData.push(row);
-    }
-
-    // add the table to the page
-    var tmpl = _.template(sidebarResultsTableTemplate, {
-      L: _L,
-      asyncLoading: true,
-      showSpeciesColumn: true,
-      hotspots: templateData
-    });
-    $("#sidebarResults").html(tmpl).removeClass("hidden").css({height: _getSidebarResultsPanelHeight() }).fadeIn(300);
-
-    // instantiate any spinners for rows that haven't loaded yet
-    var notLoaded = $(".notLoaded .speciesCount");
-    for (var i=0; i<notLoaded.length; i++) {
-      Spinners.create($(notLoaded[i])[0], {
-        radius: 3,
-        height: 4,
-        width: 1.4,
-        dashes: 12,
-        opacity: 1,
-        padding: 0,
-        rotation: 1400,
-        fadeOutSpeed: 0,
-        color: "#222222"
-      }).play();
-    }
-
-    _getBirdHotspotObservations();
-  };
-  */
-
   render () {
-    const { dispatch, panelVisibility } = this.props;
+    const { dispatch } = this.props;
 
     var position = {
       left: C.PANEL_DIMENSIONS.PADDING + 'px',
@@ -374,7 +366,7 @@ class LocationsPanel extends React.Component {
     };
 
     return (
-      <VelocityComponent animation={{ opacity: panelVisibility.locations ? 1 : 0 }} duration={C.TRANSITION_SPEED}
+      <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
           complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
         <div id="locations-panel" className="panel" ref="panel" style={position}>
           <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))} />
