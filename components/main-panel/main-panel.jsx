@@ -54,21 +54,14 @@ class MainPanel extends React.Component {
 
         <AdvancedSearchOverlay />
 
-        <OverviewPanel
-          dispatch={dispatch}
-          panelVisibility={panelVisibility}
-          numLocations={results.allLocations.length} />
         <LocationsPanel
           dispatch={dispatch}
           panelVisibility={panelVisibility}
           locations={results.visibleLocations}
           locationSightings={results.locationSightings}
-          searchSettings={searchSettings} />
+          searchSettings={searchSettings}
+          env={env} />
         <SpeciesPanel
-          dispatch={dispatch}
-          panelVisibility={panelVisibility} />
-
-        <PanelToggleButtons
           dispatch={dispatch}
           panelVisibility={panelVisibility} />
       </section>
@@ -183,81 +176,6 @@ class AdvancedSearchOverlay extends React.Component {
   }
 }
 
-class OverviewPanel extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      nextAnimation: { opacity: this.props.panelVisibility.overview ? 1 : 0 }
-    };
-  }
-
-  componentDidMount () {
-    $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
-  }
-
-  transitionBegin () {
-    if (this.props.panelVisibility.overview) {
-      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
-    }
-  }
-
-  transitionComplete () {
-    if (!this.props.panelVisibility.overview) {
-      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
-    }
-  }
-
-  componentWillReceiveProps (nextProps) {
-
-    // if the visibility just changed for this component, figure out what the next animation is going to be. This is a bit
-    // complex because we need to slide in from the top of left, depending on what's already open
-    if (this.props.panelVisibility.overview !== nextProps.panelVisibility.overview) {
-      var animation = {
-        opacity: nextProps.panelVisibility.overview ? 1 : 0,
-        height: (nextProps.panelVisibility.overview) ? C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + 'px' : 0
-      };
-
-      // if the locations panel was closed, but the species panel was already open, slide in from the left
-
-      this.setState({
-        nextAnimation: animation
-      });
-    }
-  }
-
-  render () {
-    const { dispatch, numLocations } = this.props;
-
-    var position = {
-      left: C.PANEL_DIMENSIONS.PADDING + 'px',
-      top: C.PANEL_DIMENSIONS.TOP,
-      height: C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + 'px',
-      width: C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + 'px'
-    };
-
-    return (
-      <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
-         complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
-        <div id="overview-panel" className="panel" ref="panel" style={position}>
-          <div>
-            <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.OVERVIEW))} />
-
-            <div className="summary">
-              <h2>Locations <span className="num-locations">{numLocations}</span></h2>
-              <h2>Species <span className="num-species">0</span></h2>
-            </div>
-        </div>
-        </div>
-      </VelocityComponent>
-    );
-  }
-}
-OverviewPanel.PropTypes = {
-  visible: React.PropTypes.bool.isRequired,
-  numLocations: React.PropTypes.number.isRequired,
-  panelVisibility: React.PropTypes.object.isRequired
-};
-
 
 class LocationsPanel extends React.Component {
   constructor (props) {
@@ -272,20 +190,17 @@ class LocationsPanel extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    const { panelVisibility, env } = this.props;
     var animation = {};
     var hasAnimation = false;
-    if (this.props.panelVisibility.locations !== nextProps.panelVisibility.locations) {
+    if (panelVisibility.locations !== nextProps.panelVisibility.locations) {
       hasAnimation = true;
       animation = { opacity: nextProps.panelVisibility.locations ? 1 : 0 };
-    }
 
-    // if the overview panel visibility changed
-    if (nextProps.panelVisibility.overview !== this.props.panelVisibility.overview) {
-      hasAnimation = true;
-      if (nextProps.panelVisibility.overview) {
-        animation.top = C.PANEL_DIMENSIONS.TOP + C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + C.PANEL_DIMENSIONS.PADDING + 'px';
+      if (nextProps.panelVisibility.locations) {
+        animation = { opacity: 1, bottom: 0 };
       } else {
-        animation.top = C.PANEL_DIMENSIONS.TOP + 'px';
+        animation = { opacity: 1, bottom: env.windowHeight - 85 };
       }
     }
 
@@ -344,30 +259,40 @@ class LocationsPanel extends React.Component {
   }
 
   render () {
-    const { dispatch } = this.props;
+    const { dispatch, locations } = this.props;
+
+    if (!locations.length) {
+      return null;
+    }
 
     var position = {
       left: C.PANEL_DIMENSIONS.PADDING + 'px',
-      top: C.PANEL_DIMENSIONS.TOP + C.PANEL_DIMENSIONS.OVERVIEW_PANEL_HEIGHT + C.PANEL_DIMENSIONS.PADDING + 'px',
-      bottom: C.PANEL_DIMENSIONS.PADDING + 'px',
+      top: '85px',
+      bottom: 0,
       width: C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + 'px'
     };
 
     return (
-      <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
-          complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
-        <div id="locations-panel" className="panel" ref="panel" style={position}>
-          <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))} />
-          {this.getLocationList()}
+      <div>
+        <div className="sidebar-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
+          <h2>Locations <span className="num-locations">{locations.length}</span></h2>
+          <span className="toggle-section glyphicon glyphicon-chevron-down" />
         </div>
-      </VelocityComponent>
+
+        <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
+            complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
+          <div id="locations-panel" className="panel" ref="panel" style={position}>
+            {this.getLocationList()}
+          </div>
+        </VelocityComponent>
+      </div>
     );
   }
 }
-
 LocationsPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired,
-  locations: React.PropTypes.array.isRequired
+  locations: React.PropTypes.array.isRequired,
+  env: React.PropTypes.object.isRequired
 };
 
 
@@ -429,25 +354,3 @@ class SpeciesPanel extends React.Component {
 SpeciesPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired
 };
-
-
-class PanelToggleButtons extends React.Component {
-  render () {
-    const { dispatch, panelVisibility } = this.props;
-
-    var overviewClasses = 'overview-btn' + ((panelVisibility.overview) ? '' : ' disabled');
-    var locationClasses = 'location-btn' + ((panelVisibility.locations) ? '' : ' disabled');
-    var birdClasses = 'species-btn' + ((panelVisibility.species) ? '' : ' disabled');
-
-    return (
-      <div id="panel-toggle-buttons">
-        <span>Panels</span>
-        <nav>
-          <a className={overviewClasses} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.OVERVIEW))}>O</a>
-          <a className={locationClasses} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>L</a>
-          <a className={birdClasses} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>S</a>
-        </nav>
-      </div>
-    )
-  }
-}

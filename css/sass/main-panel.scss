@@ -12,29 +12,8 @@
 
 .panel {
 	position: absolute;
-	.summary {
-		h2 {
-			display: inline-block;
-			color: black;
-			font-family: $webFont;
-			font-size: 16px;
-			span {
-				color: white;
-				padding: 0 4px;
-				border-radius: 3px;
-			}
-			span.num-locations {
-				background-color: #0099cc;
-			}
-			span.num-species {
-				background-color: #009900;
-			}
-		}
-	}
-
 	background: rgba(0, 0, 0, 0.8);
 	color: #dddddd;
-	padding: 12px;
 
 	.close-panel {
 		float: right;
@@ -43,6 +22,56 @@
 		}
 	}
 }
+
+.sidebar-header {
+	position: absolute;
+	top: 60px;
+	left: 0;
+	height: 25px;
+	width: 300px;
+	background-color: rgba(0, 0, 0, 0.7);
+	cursor: pointer;
+
+	h2 {
+		display: inline-block;
+		color: white;
+		font-family: $webFont;
+		font-size: 16px;
+		margin: 0 0 0 10px;
+		line-height: 25px;
+	}
+	span.num-locations {
+		background-color: #0099cc;
+		padding: 0 4px;
+		border-radius: 4px;
+		margin-left: 4px;
+	}
+	.toggle-section {
+		float: right;
+		margin: 3px 4px;
+	}
+}
+
+
+/*
+.summary-section {
+	h2 {
+		display: inline-block;
+		color: black;
+		font-family: $webFont;
+		font-size: 16px;
+		margin: 0;
+		span {
+			color: white;
+			padding: 0 4px;
+			border-radius: 3px;
+		}
+		span.num-species {
+			background-color: #009900;
+		}
+	}
+}
+*/
 
 #overview-panel {
 	.panel {
@@ -59,46 +88,5 @@
 		padding: 0;
 		font-size: 9pt;
 		text-align: left;
-	}
-}
-
-#panel-toggle-buttons {
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-	z-index: 1;
-	font-size: 14px;
-	line-height: 40px;
-	&>span {
-		margin-right: 10px;
-	}
-	nav {
-		display: inline-block;
-		&>a {
-			border-radius: 50%;
-			width: 40px;
-			height: 40px;
-			display: inline-block;
-			margin-right: 6px;
-			cursor: pointer;
-			text-align: center;
-			font-weight: normal;
-			color: white;
-			&:last-child {
-				margin-right: 0;
-			}
-			&.disabled {
-				background-color: #919191;
-			}
-		}
-	}
-	.overview-btn {
-		background-color: green;
-	}
-	.locations-btn {
-		background-color: #0099cc;
-	}
-	.species-btn {
-		background-color: red;
 	}
 }
