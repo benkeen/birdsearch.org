@@ -1,142 +1,5 @@
 @import "variables";
 
-//#mapTabContent, #birdSpeciesTabContent {
-//	width: 100%;
-//	height: 100%;
-//}
-//#panelContent {
-//	height:100%;
-//	width: 100%;
-//	clear: both;
-//}
-//#panelTabs {
-//	list-style-type: none;
-//	margin: 0px;
-//	padding: 0px;
-//
-//	li {
-//		float: left;
-//		margin: 1px 4px 0px 0px;
-//		text-align: center;
-//		border-top-left-radius: 4px;
-//		border-top-right-radius: 4px;
-//		border-bottom-left-radius: 0px;
-//		border-bottom-right-radius: 0px;
-//		box-shadow: none;
-//		font-size: 9pt;
-//		padding: 3px 22px 3px;
-//		cursor: pointer;
-//
-//		&.disabledTab {
-//			padding-top: 4px;
-//			background: rgba(0, 0, 0, 0.3);
-//			cursor: default;
-//		}
-//		a {
-//			padding: 10px 15px;
-//			color: #555555;
-//			&:hover {
-//				color: #cccccc;
-//				text-decoration: none;
-//			}
-//		}
-//	}
-//}
-
-//#birdSpeciesTabContent {
-//	box-sizing: border-box;
-//	overflow-y: scroll;
-//	font-size: 13px;
-//	color: #cccccc;
-//	background: rgba(255, 255, 255, 0.1);
-//
-//	h1 {
-//		font-size: 18pt;
-//		color: #ffffff;
-//		margin: 0px 0px 10px 0px;
-//		line-height: 26px;
-//		float: left;
-//	}
-//	h2 {
-//		font-size: 10pt;
-//		color: #666666;
-//		margin: 2px 0px 0px 20px;
-//		float: left;
-//		padding: 3px 10px;
-//		border-radius: 7px;
-//		color: black;
-//		background-color: #efefef;
-//		line-height: 17px;
-//	}
-//
-//	table {
-//		td, th {
-//			padding: 6px;
-//		}
-//		th {
-//			color: #cccccc;
-//			font-size: 14px;
-//			text-shadow: 1px 2px 2px #222222;
-//		}
-//	}
-//	.species {
-//		color: #ffffff;
-//	}
-//}
-//
-//.fixedHeader {
-//	width: 100%;
-//	position: fixed;
-//	background-image: url(../../images/debut_dark.png);
-//	background-repeat: repeat;
-//
-//	&>div {
-//		padding: 20px 20px 0px;
-//		background: rgba(255, 255, 255, 0.1);
-//	}
-//}
-//.fixedContent {
-//	padding: 0px 15px;
-//	margin-top: 60px;
-//
-//	a {
-//		display: block;
-//	}
-//}
-//
-//.sp {
-//	width: 30px;
-//}
-//.notLoaded label {
-//	color: #555555;
-//}
-//
-//.joiner {
-//	color: #999999;
-//}
-//
-//.confirmed {
-//	color: green;
-//}
-//.reviewed {
-//	color: #9f3fcf;
-//}
-//.not_reviewed {
-//	color: #995200;
-//}
-//
-//.birdSightingsTable a {
-//	display: inline;
-//}
-//.birdLocations {
-//	font-size: 8pt;
-//	color: #888888;
-//}
-//.lastSeenDetails, .howManyDetails {
-//	font-size: 8pt;
-//}
-//
-
 #map-overlay {
 	position: absolute;
 	top: 0;
@@ -149,18 +12,28 @@
 
 .panel {
 	position: absolute;
-	h1 {
-		color: black;
-		font-family: $webFont;
-		span.num-locations {
-			color: #0099cc;
-		}
-		span.num-species {
-			color: #009900;
+	.summary {
+		h2 {
+			display: inline-block;
+			color: black;
+			font-family: $webFont;
+			font-size: 16px;
+			span {
+				color: white;
+				padding: 0 4px;
+				border-radius: 3px;
+			}
+			span.num-locations {
+				background-color: #0099cc;
+			}
+			span.num-species {
+				background-color: #009900;
+			}
 		}
 	}
-	background: rgba(255, 255, 245, 0.8);
-	border-radius: 5px;
+
+	background: rgba(0, 0, 0, 0.8);
+	color: #dddddd;
 	padding: 12px;
 
 	.close-panel {
@@ -181,9 +54,7 @@
 	}
 }
 #locations-panel {
-	margin-bottom: 30px;
 	overflow-x: auto;
-
 	table, td, th {
 		padding: 0;
 		font-size: 9pt;
@@ -194,20 +65,25 @@
 #panel-toggle-buttons {
 	position: absolute;
 	bottom: 10px;
-	left: 10px;
-	padding: 0;
-	width: 300px;
+	right: 10px;
 	z-index: 1;
-
+	font-size: 14px;
+	line-height: 40px;
+	&>span {
+		margin-right: 10px;
+	}
 	nav {
-		display: flex;
-		flex-direction: row;
+		display: inline-block;
 		&>a {
-			flex: 1 1 33%;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			display: inline-block;
+			margin-right: 6px;
 			cursor: pointer;
 			text-align: center;
 			font-weight: normal;
-			margin-right: 6px;
+			color: white;
 			&:last-child {
 				margin-right: 0;
 			}
@@ -215,6 +91,14 @@
 				background-color: #919191;
 			}
 		}
-
+	}
+	.overview-btn {
+		background-color: green;
+	}
+	.locations-btn {
+		background-color: #0099cc;
+	}
+	.species-btn {
+		background-color: red;
 	}
 }
