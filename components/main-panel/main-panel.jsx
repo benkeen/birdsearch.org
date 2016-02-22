@@ -6,6 +6,8 @@ import { Loader, ClosePanel } from '../general/general';
 import Map from '../map/map';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, _, actions } from '../../core/core';
+import { LocationsPanel } from './locations-panel';
+import { SpeciesPanel } from './species-panel';
 
 
 class MainPanel extends React.Component {
@@ -31,7 +33,7 @@ class MainPanel extends React.Component {
     const { dispatch, env, user, overlayVisibility, mapSettings, searchSettings, panelVisibility, results } = this.props;
 
     return (
-      <section id="mainPanel" className="flex-body">
+      <section id="main-panel" className="flex-body">
         <Map
           dispatch={dispatch}
           env={env}
@@ -63,7 +65,8 @@ class MainPanel extends React.Component {
           env={env} />
         <SpeciesPanel
           dispatch={dispatch}
-          panelVisibility={panelVisibility} />
+          panelVisibility={panelVisibility}
+          env={env} />
       </section>
     );
   }
@@ -175,182 +178,3 @@ class AdvancedSearchOverlay extends React.Component {
     );
   }
 }
-
-
-class LocationsPanel extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      nextAnimation: { opacity: this.props.panelVisibility.locations ? 1 : 0 }
-    };
-  }
-
-  componentDidMount () {
-    $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
-  }
-
-  componentWillReceiveProps (nextProps) {
-    const { panelVisibility, env } = this.props;
-    var animation = {};
-    var hasAnimation = false;
-    if (panelVisibility.locations !== nextProps.panelVisibility.locations) {
-      hasAnimation = true;
-      animation = { opacity: nextProps.panelVisibility.locations ? 1 : 0 };
-
-      if (nextProps.panelVisibility.locations) {
-        animation = { opacity: 1, bottom: 0 };
-      } else {
-        animation = { opacity: 1, bottom: env.windowHeight - 85 };
-      }
-    }
-
-    if (hasAnimation) {
-      this.setState({ nextAnimation: animation });
-    }
-  }
-
-  transitionBegin () {
-    if (this.props.panelVisibility.locations) {
-      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
-    }
-  }
-
-  transitionComplete () {
-    if (!this.props.panelVisibility.locations) {
-      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
-    }
-  }
-
-  getLocationRows () {
-    return _.map(this.props.locations, function (location) {
-      return (
-        <LocationRow
-          key={location.i}
-          location={location}
-          sightings={this.props.locationSightings[location.i]}
-          observationRecency={this.props.searchSettings.observationRecency} />
-      );
-    }, this);
-  }
-
-  getLocationList () {
-    if (!this.props.locations.length) {
-      return (
-        <p>No locations.</p>
-      );
-    }
-    return (
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>Location</th>
-            <th>Count</th>
-          </tr>
-          <tr>
-            <td>All locations</td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
-          {this.getLocationRows()}
-        </tbody>
-      </table>
-    );
-  }
-
-  render () {
-    const { dispatch, locations } = this.props;
-
-    if (!locations.length) {
-      return null;
-    }
-
-    var position = {
-      left: C.PANEL_DIMENSIONS.PADDING + 'px',
-      top: '85px',
-      bottom: 0,
-      width: C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + 'px'
-    };
-
-    return (
-      <div>
-        <div className="sidebar-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
-          <h2>Locations <span className="num-locations">{locations.length}</span></h2>
-          <span className="toggle-section glyphicon glyphicon-chevron-down" />
-        </div>
-
-        <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
-            complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
-          <div id="locations-panel" className="panel" ref="panel" style={position}>
-            {this.getLocationList()}
-          </div>
-        </VelocityComponent>
-      </div>
-    );
-  }
-}
-LocationsPanel.PropTypes = {
-  visible: React.PropTypes.bool.isRequired,
-  locations: React.PropTypes.array.isRequired,
-  env: React.PropTypes.object.isRequired
-};
-
-
-class LocationRow extends React.Component {
-  render () {
-    var counter = (this.props.sightings.fetched) ? this.props.sightings.data[this.props.observationRecency - 1].numSpeciesRunningTotal : ' - ';
-    return (
-      <tr>
-        <td>{this.props.location.n}</td>
-        <td>{counter}</td>
-      </tr>
-    );
-  }
-}
-LocationRow.PropTypes = {
-  location: React.PropTypes.object.isRequired,
-  sightings: React.PropTypes.object.isRequired,
-  observationRecency: React.PropTypes.number.isRequired
-};
-
-
-class SpeciesPanel extends React.Component {
-  componentDidMount () {
-    $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
-  }
-
-  transitionBegin () {
-    if (this.props.panelVisibility.species) {
-      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
-    }
-  }
-
-  transitionComplete () {
-    if (!this.props.panelVisibility.species) {
-      $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
-    }
-  }
-
-  render () {
-    const { dispatch, panelVisibility } = this.props;
-
-    var position = {
-      left: C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH + (2 * C.PANEL_DIMENSIONS.PADDING) + 'px',
-      top: C.PANEL_DIMENSIONS.TOP + 'px',
-      bottom: C.PANEL_DIMENSIONS.PADDING + 'px',
-      right: C.PANEL_DIMENSIONS.PADDING + 'px'
-    };
-
-    return (
-      <VelocityComponent animation={{ opacity: panelVisibility.species ? 1 : 0 }} duration={C.TRANSITION_SPEED}
-        complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
-        <div id="species-panel" className="panel" ref="panel" style={position}>
-          <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))} />
-        </div>
-      </VelocityComponent>
-    );
-  }
-}
-SpeciesPanel.PropTypes = {
-  visible: React.PropTypes.bool.isRequired
-};

@@ -10,28 +10,21 @@
 	opacity: 0.3;
 }
 
+/*
 .panel {
-	position: absolute;
 	background: rgba(0, 0, 0, 0.8);
 	color: #dddddd;
-
-	.close-panel {
-		float: right;
-		&:hover {
-			color: #333333;
-		}
-	}
 }
+*/
 
-.sidebar-header {
-	position: absolute;
-	top: 60px;
-	left: 0;
+.section-header {
 	height: 25px;
-	width: 300px;
-	background-color: rgba(0, 0, 0, 0.7);
 	cursor: pointer;
-
+	flex: 0 1 auto;
+	&>div {
+		position: relative;
+		width: 100%;
+	}
 	h2 {
 		display: inline-block;
 		color: white;
@@ -40,53 +33,62 @@
 		margin: 0 0 0 10px;
 		line-height: 25px;
 	}
-	span.num-locations {
-		background-color: #0099cc;
+	.toggle-section {
+		float: right;
+		margin: 3px 4px;
+		color: #dddddd;
+	}
+	.total-count {
 		padding: 0 4px;
 		border-radius: 4px;
 		margin-left: 4px;
 	}
-	.toggle-section {
-		float: right;
-		margin: 3px 4px;
-	}
 }
 
-
-/*
-.summary-section {
-	h2 {
-		display: inline-block;
-		color: black;
-		font-family: $webFont;
-		font-size: 16px;
-		margin: 0;
-		span {
-			color: white;
-			padding: 0 4px;
-			border-radius: 3px;
-		}
-		span.num-species {
-			background-color: #009900;
-		}
-	}
-}
-*/
-
-#overview-panel {
-	.panel {
-		margin-bottom: 10px;
-	}
-	h1 {
-		font-size: 20px;
-		margin: 0;
-	}
-}
 #locations-panel {
-	overflow-x: auto;
+	position: absolute;
+	overflow: hidden;
+	top: 60px;
+	left: 0;
+	width: 300px;
+	display: flex;
+	flex-direction: column;
+	background-color: rgba(0, 0, 0, 0.7);
+
+	.section-header {
+		left: 0;
+	}
+	.panel {
+		flex: 1;
+	}
+	span.num-locations {
+		background-color: #0099cc;
+	}
 	table, td, th {
 		padding: 0;
 		font-size: 9pt;
 		text-align: left;
+	}
+	.location {
+		padding-left: 10px;
+		width: 260px;
+	}
+	tbody {
+		overflow-x: auto;
+	}
+}
+
+
+#species-panel {
+	position: absolute;
+	overflow: hidden;
+	top: 60px;
+	left: 300px;
+	display: flex;
+	flex-direction: column;
+	background-color: rgba(0, 0, 0, 0.7);
+
+	span.num-species {
+		background-color: #0099cc;
 	}
 }

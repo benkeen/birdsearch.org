@@ -21,7 +21,7 @@ header {
   display: flex;
   flex-direction: row;
   .navbar {
-    flex: 0 0 315px;
+    flex: 0 0 300px;
     margin: 0;
   }
   .header-search {
@@ -29,7 +29,7 @@ header {
   }
 }
 
-#mainPanel {
+#main-panel {
   flex: 1;
   display: flex;
   flex-direction: row;
