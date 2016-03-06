@@ -67,10 +67,39 @@ function parseHotspotSightings (sightings) {
 	return data;
 }
 
+// helper method to find out the total number of unique species sighted in a group of locations for a particular
+// observation recency (e.g. the last 7 days)
+function getUniqueSpeciesInLocationList (locations, sightings, obsRecency) {
+	var uniqueSpeciesInAllLocations = {};
+	var numUniqueSpeciesInAllLocations = 0;
+
+	var locationIDs = getLocationIDs(locations);
+
+	_.each(locationIDs, function (locationID) {
+		var sightingsData = sightings[locationID].data;
+		_.times(obsRecency, function (index) {
+			var currDaySightings = sightingsData[index].obs;
+			_.each(currDaySightings, function (sighting) {
+				if (!_.has(uniqueSpeciesInAllLocations, sighting.sciName)) {
+					uniqueSpeciesInAllLocations[sighting.sciName] = null;
+					numUniqueSpeciesInAllLocations++;
+				}
+			});
+		});
+	});
+
+	return numUniqueSpeciesInAllLocations;
+}
+
+function getLocationIDs (locations) {
+	return _.pluck(locations, 'i');
+}
 
 export {
 		getBestBounds,
-		parseHotspotSightings
+		parseHotspotSightings,
+		getLocationIDs,
+		getUniqueSpeciesInLocationList
 };
 
 

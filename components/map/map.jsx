@@ -4,35 +4,35 @@ import { _, actions } from '../../core/core';
 
 
 var _icons = {
-  init: {
+  range1: {
     url: 'images/markers/white.png',
     scaledSize: new google.maps.Size(21, 26)
   },
-  range1: {
+  range2: {
     url: 'images/markers/grey.png',
     scaledSize: new google.maps.Size(21, 26)
   },
-  range2: {
+  range3: {
     url: 'images/markers/sea-blue.png',
     scaledSize: new google.maps.Size(21, 26)
   },
-  range3: {
+  range4: {
     url: 'images/markers/turquoise.png',
     scaledSize: new google.maps.Size(21, 26)
   },
-  range4: {
+  range5: {
     url: 'images/markers/green.png',
     scaledSize: new google.maps.Size(21, 26)
   },
-  range5: {
+  range6: {
     url: 'images/markers/yellow.png',
     scaledSize: new google.maps.Size(21, 26)
   },
-  range6: {
+  range7: {
     url: 'images/markers/orange.png',
     scaledSize: new google.maps.Size(21, 26)
   },
-  range7: {
+  range8: {
     url: 'images/markers/red.png',
     scaledSize: new google.maps.Size(21, 26)
   }
@@ -82,7 +82,7 @@ var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
     position: latlng,
     map: _map,
     title: currMarkerInfo.n,
-    icon: _icons.init,
+    icon: _icons.range1,
     locationID: locationID
   });
   _data.all.infoWindows[locationID] = new google.maps.InfoWindow();

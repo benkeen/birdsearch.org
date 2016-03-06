@@ -262,8 +262,16 @@ var onWindowResize = function (width, height) {
   }
 };
 
-/*var _onSuccessReturnLocationObservations = function (locationID, response) {
+var sortLocations = function (sort) {
+  return {
+    type: E.LOCATIONS_SORTED,
+    sort: sort
+  }
+};
 
+
+/*
+var _onSuccessReturnLocationObservations = function (locationID, response) {
   _birdSearchHotspots[locationID].isDisplayed = true;
   _birdSearchHotspots[locationID].sightings.success = true;
 
@@ -341,5 +349,6 @@ export {
   getGeoLocation,
   togglePanelVisibility,
   visibleLocationsFound,
-  onWindowResize
+  onWindowResize,
+  sortLocations
 };

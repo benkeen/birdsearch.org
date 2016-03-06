@@ -30,7 +30,7 @@ class MainPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, env, user, overlayVisibility, mapSettings, searchSettings, panelVisibility, results } = this.props;
+    const { dispatch, env, user, overlayVisibility, mapSettings, searchSettings, locationsPanel, speciesPanel, results } = this.props;
 
     return (
       <section id="main-panel" className="flex-body">
@@ -58,14 +58,17 @@ class MainPanel extends React.Component {
 
         <LocationsPanel
           dispatch={dispatch}
-          panelVisibility={panelVisibility}
+          visible={locationsPanel.visible}
+          sort={locationsPanel.sort}
+          sortDir={locationsPanel.sortDir}
           locations={results.visibleLocations}
           locationSightings={results.locationSightings}
           searchSettings={searchSettings}
           env={env} />
+
         <SpeciesPanel
           dispatch={dispatch}
-          panelVisibility={panelVisibility}
+          visible={speciesPanel.visible}
           env={env} />
       </section>
     );
@@ -77,7 +80,8 @@ export default connect(state => ({
   mapSettings: state.mapSettings,
   searchSettings: state.searchSettings,
   overlayVisibility: state.overlayVisibility,
-  panelVisibility: state.panelVisibility,
+  locationsPanel: state.locationsPanel,
+  speciesPanel: state.speciesPanel,
   user: state.user,
   results: state.results
 }))(MainPanel);

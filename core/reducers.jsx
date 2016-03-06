@@ -157,31 +157,6 @@ function user (state = {
 }
 
 
-function panelVisibility (state = {
-  overview: false,
-  locations: false,
-  species: false
-}, action) {
-  switch (action.type) {
-    case E.TOGGLE_PANEL_VISIBILITY:
-      var panel = action.panel;
-      var settings = {};
-      settings[panel] = !state[panel];
-      return Object.assign({}, state, settings);
-
-    case E.SEARCH_LOCATIONS_RETURNED:
-      return Object.assign({}, state, {
-        overview: true,
-        locations: true
-      });
-    break;
-
-    default:
-      return state;
-  }
-}
-
-
 function results (state = {
   isFetching: false,
   numLocations: 0,
@@ -233,6 +208,66 @@ function results (state = {
   }
 }
 
+
+function locationsPanel (state = {
+  visible: false,
+  sort: C.LOCATION_SORT.FIELDS.LOCATION,
+  sortDir: C.LOCATION_SORT.DIR.DEFAULT
+}, action) {
+
+  switch (action.type) {
+    case E.SEARCH_REQUEST_ENDED:
+      var newSort = C.LOCATION_SORT.DIR.DEFAULT;
+      if (state.sort === action.sort) {
+        newSort = C.LOCATION_SORT.DIR.REVERSE;
+      }
+      return Object.assign({}, state, {
+        sort: action.sort,
+        sortDir: newSort
+      });
+      break;
+
+    case E.TOGGLE_PANEL_VISIBILITY:
+      var newVisibility = state.visible;
+      if (action.panel === C.PANELS.LOCATIONS) {
+        newVisibility = !newVisibility;
+      }
+      return Object.assign({}, state, {
+        visible: newVisibility
+      });
+
+    case E.SEARCH_LOCATIONS_RETURNED:
+      return Object.assign({}, state, {
+        visible: true
+      });
+      break;
+
+    default:
+      return state;
+  }
+}
+
+
+function speciesPanel (state = {
+  visible: false
+}, action) {
+
+  switch (action.type) {
+    case E.TOGGLE_PANEL_VISIBILITY:
+      var newVisibility = state.visible;
+      if (action.panel === C.PANELS.SPECIES) {
+        newVisibility = !newVisibility;
+      }
+      return Object.assign({}, state, {
+        visible: newVisibility
+      });
+
+    default:
+      return state;
+  }
+}
+
+
 export {
   env,
   locale,
@@ -240,7 +275,8 @@ export {
   mapSettings,
   user,
   overlayVisibility,
-  panelVisibility,
-  results
+  results,
+  locationsPanel,
+  speciesPanel
 };
 

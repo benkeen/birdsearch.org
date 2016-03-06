@@ -12,19 +12,19 @@ export class SpeciesPanel extends React.Component {
   }
 
   transitionBegin () {
-    if (this.props.panelVisibility.species) {
+    if (this.props.visible) {
       $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
     }
   }
 
   transitionComplete () {
-    if (!this.props.panelVisibility.species) {
+    if (!this.props.visible) {
       $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
     }
   }
 
   render () {
-    const { dispatch, panelVisibility, env } = this.props;
+    const { dispatch, visible, env } = this.props;
 
     var panelPosition = {
       width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH
@@ -35,10 +35,10 @@ export class SpeciesPanel extends React.Component {
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
           <div>
             <h2>Bird species <span className="total-count num-locations">0</span></h2>
-            <span className="toggle-section glyphicon glyphicon-chevron-down" />
+            <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
           </div>
         </header>
-        <VelocityComponent animation={{ opacity: panelVisibility.species ? 1 : 0 }} duration={C.TRANSITION_SPEED}
+        <VelocityComponent animation={{ opacity: visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}
           complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
           <div className="panel" ref="panel">
             <ClosePanel onClose={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))} />
