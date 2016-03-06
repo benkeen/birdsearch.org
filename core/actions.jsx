@@ -269,7 +269,6 @@ var sortLocations = function (sort) {
   }
 };
 
-
 /*
 var _onSuccessReturnLocationObservations = function (locationID, response) {
   _birdSearchHotspots[locationID].isDisplayed = true;
@@ -341,6 +340,14 @@ var _onSuccessReturnLocationObservations = function (locationID, response) {
 */
 
 
+var setLocationFilter = function (filter) {
+  return {
+    type: E.SET_LOCATION_FILTER,
+    filter: filter
+  }
+};
+
+
 export {
   setLocale,
   setSearchLocation,
@@ -350,5 +357,6 @@ export {
   togglePanelVisibility,
   visibleLocationsFound,
   onWindowResize,
-  sortLocations
+  sortLocations,
+  setLocationFilter
 };

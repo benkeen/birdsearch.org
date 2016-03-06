@@ -62,6 +62,7 @@ class MainPanel extends React.Component {
           visible={locationsPanel.visible}
           sort={locationsPanel.sort}
           sortDir={locationsPanel.sortDir}
+          filter={locationsPanel.filter}
           locations={results.visibleLocations}
           locationSightings={results.locationSightings}
           searchSettings={searchSettings}
@@ -130,7 +131,8 @@ class IntroOverlay extends React.Component {
     var overlayClass = (this.props.loading) ? 'loading' : '';
 
     return (
-      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED} complete={this.transitionComplete.bind(this)}>
+      <VelocityComponent animation={{ opacity: this.props.visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}
+        complete={this.transitionComplete.bind(this)}>
         <div>
           {this.getOverlay()}
           <div id="intro-overlay" className={overlayClass}>
@@ -142,7 +144,7 @@ class IntroOverlay extends React.Component {
 
                 <div>
                   <button className="btn btn-success" id="searchNearby" onClick={this.props.searchNearby} disabled={this.props.loading}>
-                    <i className="glyphicon glyphicon-home"></i>
+                    <i className="glyphicon glyphicon-home" />
                     <FormattedMessage id="searchNearby" />
                   </button>
                   <FormattedMessage id="findInArea" />
@@ -152,7 +154,7 @@ class IntroOverlay extends React.Component {
 
                 <div>
                   <button className="btn btn-info" id="searchAnywhere" onClick={this.props.searchAnywhere} disabled={this.props.loading}>
-                    <i className="glyphicon glyphicon-globe"></i>
+                    <i className="glyphicon glyphicon-globe" />
                     <FormattedMessage id="searchAnywhere" />
                   </button>
                   <FormattedMessage id="findAnywhere" />

@@ -133,7 +133,6 @@
 		flex-direction: column;
 		flex: 1;
 		overflow-x: hidden;
-
 		table {
 			flex: 1;
 		}
@@ -145,18 +144,33 @@
 
 .filter-locations-row {
 	flex: 0 0 auto;
-	padding: 5px 10px 0;
+	padding: 8px 10px 0;
+	position: relative;
 	input {
 		width: 100%;
 		padding: 13px 6px;
 		background-color: white;
 	}
+	.clear-location-filter {
+		position: absolute;
+		top: 15px;
+		right: 16px;
+		font-size: 15px;
+	}
 }
 
 #locations-table-wrapper {
 	flex: 1;
-	overflow: scroll;
+	overflow: auto;
 	overflow-x: hidden;
+
+	thead {
+		cursor: pointer;
+	}
+	.col-sort {
+		font-size: 10px;
+		color: #0099cc;
+	}
 }
 
 #species-panel {

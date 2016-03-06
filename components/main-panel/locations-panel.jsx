@@ -10,7 +10,7 @@ export class LocationsPanel extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      nextAnimation: { opacity: this.props.visibility ? 1 : 0}
+      nextAnimation: { opacity: this.props.visibility ? 1 : 0 }
     };
   }
 
@@ -59,7 +59,7 @@ export class LocationsPanel extends React.Component {
   }
 
   getLocationRows () {
-    const { locations, locationSightings, sort, sortDir, searchSettings } = this.props;
+    const { locations, locationSightings, sort, sortDir, filter, searchSettings } = this.props;
 
     var sortedLocations = locations;
 
@@ -67,6 +67,8 @@ export class LocationsPanel extends React.Component {
     if (sort === C.LOCATION_SORT.FIELDS.LOCATION) {
       sortedLocations = _.sortBy(locations, function (locInfo) { return locInfo.n; });
     } else {
+      // the 10000 thing is a bit weird, but basically we just need to sort the species count from largest to smalles
+      // when the user first clicks the column. That does it.
       sortedLocations = _.sortBy(locations, function (locInfo) {
         var sightings = locationSightings[locInfo.i];
         if (sightings.fetched) {
@@ -80,7 +82,16 @@ export class LocationsPanel extends React.Component {
       sortedLocations.reverse();
     }
 
-    return _.map(sortedLocations, function (location) {
+    // apply the filter, if it's been set
+    var sortedFilteredLocations = sortedLocations;
+    if (filter) {
+      var regexp = new RegExp(filter, 'i');
+      sortedFilteredLocations = _.filter(sortedLocations, function (location) {
+        return regexp.test(location.n);
+      });
+    }
+
+    return _.map(sortedFilteredLocations, function (location) {
       return (
         <LocationRow
           key={location.i}
@@ -105,6 +116,21 @@ export class LocationsPanel extends React.Component {
     return helpers.getUniqueSpeciesInLocationList(this.props.locations, this.props.locationSightings, this.props.searchSettings.observationRecency);
   }
 
+  getLocationColSort () {
+    const { sort, sortDir } = this.props;
+
+    if (sort !== C.LOCATION_SORT.FIELDS.LOCATION) {
+      return null;
+    }
+
+    var className = 'col-sort glyphicon ';
+    className += (sortDir === C.LOCATION_SORT.DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
+
+    return (
+      <span className={className} />
+    );
+  }
+
   getLocationList () {
     if (!this.props.locations.length) {
       return (
@@ -119,8 +145,12 @@ export class LocationsPanel extends React.Component {
         <table className="table table-striped">
           <thead>
           <tr>
-            <th className="location" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.LOCATION))}>Location</th>
-            <th onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>Birds</th>
+            <th className="location" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.LOCATION))}>
+              Location {this.getLocationColSort()}
+            </th>
+            <th onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>
+              Birds
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -137,20 +167,27 @@ export class LocationsPanel extends React.Component {
     );
   }
 
+  getClearLocationFilterIcon () {
+    const { dispatch, filter } = this.props;
+    if (!filter) {
+      return;
+    }
+    return (
+      <span className="clear-location-filter glyphicon glyphicon-remove" onClick={() => dispatch(actions.setLocationFilter(''))} />
+    );
+  }
+
   render () {
-    const { dispatch, locations, env } = this.props;
+    const { dispatch, locations, filter } = this.props;
 
     if (!locations.length) {
       return null;
     }
 
+    // height stored in constants so we can compute the various heights dynamically for velocity
     var footerStyle = {
       height: C.PANEL_DIMENSIONS.LEFT_PANEL_FOOTER_HEIGHT + 'px'
     };
-
-    // this is used in the event of the user resizing their browser. Since velocity sets a manual height CSS rule
-    // on the element, we need to explicitly override it here
-
 
     return (
       <section id="locations-panel">
@@ -167,12 +204,14 @@ export class LocationsPanel extends React.Component {
             <div>
               <div className="panel">
                 <div className="filter-locations-row">
-                  <input type="text" placeholder="Filter Locations" />
+                  <input type="text" placeholder="Filter Locations" value={filter}
+                    onChange={(e) => dispatch(actions.setLocationFilter(e.target.value))} />
+                  {this.getClearLocationFilterIcon()}
                 </div>
                 {this.getLocationList()}
               </div>
               <footer style={footerStyle} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
-                <span className="glyphicon glyphicon-triangle-top"></span>
+                <span className="glyphicon glyphicon-triangle-top" />
               </footer>
             </div>
           </div>
@@ -185,6 +224,7 @@ LocationsPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired,
   sort: React.PropTypes.string.isRequired,
   sortDir: React.PropTypes.string.isRequired,
+  filter: React.PropTypes.string.isRequired,
   locations: React.PropTypes.array.isRequired,
   observationRecency: React.PropTypes.number.isRequired,
   env: React.PropTypes.object.isRequired
