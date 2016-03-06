@@ -8,8 +8,8 @@ import * as storage from './storage';
 
 
 function env (state = {
-  windowWidth: null,
-  windowHeight: null
+  windowWidth: $(window).width(),
+  windowHeight: $(window).height()
 }, action) {
   switch (action.type) {
     case E.WINDOW_RESIZED:
@@ -216,10 +216,12 @@ function locationsPanel (state = {
 }, action) {
 
   switch (action.type) {
-    case E.SEARCH_REQUEST_ENDED:
+    case E.LOCATIONS_SORTED:
       var newSort = C.LOCATION_SORT.DIR.DEFAULT;
       if (state.sort === action.sort) {
-        newSort = C.LOCATION_SORT.DIR.REVERSE;
+        if (state.sortDir === C.LOCATION_SORT.DIR.DEFAULT) {
+          newSort = C.LOCATION_SORT.DIR.REVERSE;
+        }
       }
       return Object.assign({}, state, {
         sort: action.sort,

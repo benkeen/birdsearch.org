@@ -20,17 +20,25 @@ export class LocationsPanel extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     const { visible, env } = this.props;
+
     var animation = {};
     var hasAnimation = false;
+
     if (visible !== nextProps.visible) {
       hasAnimation = true;
-      animation = { opacity: nextProps.visible ? 1 : 0};
+      animation = { opacity: nextProps.visible ? 1 : 0 };
 
       if (nextProps.visible) {
-        animation = { opacity: 1, bottom: 0 };
+        animation = { opacity: 1, height: (env.windowHeight - 85) + 'px' }; // TODO
       } else {
-        animation = { opacity: 1, bottom: env.windowHeight - 85 };
+        animation = { opacity: 0, height: 0 };
       }
+    }
+
+    // this resizes the visible location panel whenever the browser height changes
+    if (nextProps.env.windowHeight !== env.windowHeight && visible) {
+      hasAnimation = true;
+      animation = { height: (nextProps.env.windowHeight - 85) + 'px' };
     }
 
     if (hasAnimation) {
@@ -51,13 +59,34 @@ export class LocationsPanel extends React.Component {
   }
 
   getLocationRows () {
-    return _.map(this.props.locations, function (location) {
+    const { locations, locationSightings, sort, sortDir, searchSettings } = this.props;
+
+    var sortedLocations = locations;
+
+    // apply the appropriate sort
+    if (sort === C.LOCATION_SORT.FIELDS.LOCATION) {
+      sortedLocations = _.sortBy(locations, function (locInfo) { return locInfo.n; });
+    } else {
+      sortedLocations = _.sortBy(locations, function (locInfo) {
+        var sightings = locationSightings[locInfo.i];
+        if (sightings.fetched) {
+          return 10000 - sightings.data[searchSettings.observationRecency - 1].numSpeciesRunningTotal;
+        }
+        return 10000;
+      });
+    }
+
+    if (sortDir === C.LOCATION_SORT.DIR.REVERSE) {
+      sortedLocations.reverse();
+    }
+
+    return _.map(sortedLocations, function (location) {
       return (
         <LocationRow
           key={location.i}
           location={location}
-          sightings={this.props.locationSightings[location.i]}
-          observationRecency={this.props.searchSettings.observationRecency}/>
+          sightings={locationSightings[location.i]}
+          observationRecency={searchSettings.observationRecency}/>
       );
     }, this);
   }
@@ -83,33 +112,45 @@ export class LocationsPanel extends React.Component {
       );
     }
 
+    var { dispatch } = this.props;
+
     return (
-      <table className="table table-striped">
-        <thead>
-        <tr>
-          <th className="location" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.LOCATION))}>Location</th>
-          <th onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>Birds</th>
-        </tr>
-        </thead>
-        <tbody>
-          <tr className="all-locations-row">
-            <td className="location">All locations</td>
-            <td className="num-species">
-              <LocationSpeciesCount count={this.getTotalLocations()} />
-            </td>
+      <div id="locations-table-wrapper">
+        <table className="table table-striped">
+          <thead>
+          <tr>
+            <th className="location" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.LOCATION))}>Location</th>
+            <th onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>Birds</th>
           </tr>
-          {this.getLocationRows()}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <tr className="all-locations-row">
+              <td className="location">All locations</td>
+              <td className="num-species">
+                <LocationSpeciesCount count={this.getTotalLocations()} />
+              </td>
+            </tr>
+            {this.getLocationRows()}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
   render () {
-    const { dispatch, locations } = this.props;
+    const { dispatch, locations, env } = this.props;
 
     if (!locations.length) {
       return null;
     }
+
+    var footerStyle = {
+      height: C.PANEL_DIMENSIONS.LEFT_PANEL_FOOTER_HEIGHT + 'px'
+    };
+
+    // this is used in the event of the user resizing their browser. Since velocity sets a manual height CSS rule
+    // on the element, we need to explicitly override it here
+
 
     return (
       <section id="locations-panel">
@@ -121,17 +162,19 @@ export class LocationsPanel extends React.Component {
         </header>
 
         <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
-           complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
-          <div ref="panel">
-            <div className="panel">
-              <div className="filter-locations-row">
-                <input type="text" placeholder="Filter Locations" />
+          complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
+          <div id="locations-panel-content" ref="panel">
+            <div>
+              <div className="panel">
+                <div className="filter-locations-row">
+                  <input type="text" placeholder="Filter Locations" />
+                </div>
+                {this.getLocationList()}
               </div>
-              {this.getLocationList()}
+              <footer style={footerStyle} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
+                <span className="glyphicon glyphicon-triangle-top"></span>
+              </footer>
             </div>
-            <footer onClick={() =>  dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
-              <span className="glyphicon glyphicon-triangle-top"></span>
-            </footer>
           </div>
         </VelocityComponent>
       </section>
@@ -159,7 +202,9 @@ class LocationRow extends React.Component {
 
     return (
       <tr className={rowClass}>
-        <td className="location">{this.props.location.n}</td>
+        <td className="location">
+          <div title={this.props.location.n}>{this.props.location.n}</div>
+        </td>
         <td className="num-species">
           <LocationSpeciesCount count={count} />
         </td>

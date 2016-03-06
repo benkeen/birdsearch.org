@@ -183,8 +183,10 @@ class Map extends React.Component {
           _data.all.markers[locId].setIcon(_icons.range5);
         } else if (numSpecies < 60) {
           _data.all.markers[locId].setIcon(_icons.range6);
-        } else {
+        } else if (numSpecies < 70) {
           _data.all.markers[locId].setIcon(_icons.range7);
+        } else {
+          _data.all.markers[locId].setIcon(_icons.range8);
         }
       }
 

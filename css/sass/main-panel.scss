@@ -42,7 +42,6 @@
 #locations-panel {
 	color: #cccccc;
 	position: absolute;
-	overflow: hidden;
 	top: 60px;
 	left: 0;
 	width: 300px;
@@ -53,15 +52,20 @@
 		background-color: rgba(0, 0, 0, 0.78);
 	}
 	footer {
-		height: 23px;
 		text-align: center;
 		cursor: pointer;
 		span {
 			font-size: 15px;
 		}
+		&:hover {
+			span {
+				color: #0099cc;
+			}
+		}
 	}
 	.panel {
 		background-color: rgba(0, 0, 0, 0.7);
+		flex: 1;
 	}
 
 	table {
@@ -75,9 +79,6 @@
 				color: #0099cc;
 			}
 		}
-	}
-	.panel {
-		flex: 1;
 	}
 	span.num-locations {
 		background-color: #0099cc;
@@ -96,6 +97,12 @@
 	.location {
 		padding-left: 10px;
 		width: 260px;
+		div {
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: 240px;
+		}
 	}
 	.num-species {
 		text-align: center;
@@ -117,13 +124,39 @@
 	}
 }
 
+#locations-panel-content > div {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	.panel {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		overflow-x: hidden;
+
+		table {
+			flex: 1;
+		}
+	}
+	footer {
+		flex: 0 0 auto;
+	}
+}
+
 .filter-locations-row {
+	flex: 0 0 auto;
 	padding: 5px 10px 0;
 	input {
 		width: 100%;
 		padding: 13px 6px;
 		background-color: white;
 	}
+}
+
+#locations-table-wrapper {
+	flex: 1;
+	overflow: scroll;
+	overflow-x: hidden;
 }
 
 #species-panel {

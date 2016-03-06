@@ -22,6 +22,7 @@ class MainPanel extends React.Component {
   onResize () {
     var windowHeight = $(window).height();
     var windowWidth  = $(window).width();
+
     //var viewportMode = 'desktop';
     //if (windowWidth < _VIEWPORT_WIDTH_BREAKPOINT) {
     //  viewportMode = 'mobile';
@@ -69,6 +70,7 @@ class MainPanel extends React.Component {
         <SpeciesPanel
           dispatch={dispatch}
           visible={speciesPanel.visible}
+          locations={results.visibleLocations}
           env={env} />
       </section>
     );

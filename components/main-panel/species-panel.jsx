@@ -24,7 +24,11 @@ export class SpeciesPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, visible, env } = this.props;
+    const { dispatch, locations, visible, env } = this.props;
+
+    if (!locations.length) {
+      return null;
+    }
 
     var panelPosition = {
       width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH
@@ -50,5 +54,6 @@ export class SpeciesPanel extends React.Component {
 }
 SpeciesPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired,
+  locations: React.PropTypes.array.isRequired,
   env: React.PropTypes.object.isRequired
 };
