@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { _, actions } from '../../core/core';
+import { _, actions, helpers } from '../../core/core';
 
 
 var _icons = {
@@ -130,6 +130,14 @@ class Map extends React.Component {
   }
 
   shouldComponentUpdate (nextProps, nextState) {
+
+    if (this.props.locationFilter !== nextProps.locationFilter) {
+      //_data.all.markers[locationID]
+      //.setVisible(false);
+      //console.log("locations: ", helpers.filterLocations(nextProps.locations, nextProps.filter));
+    }
+
+
     if (nextProps.zoom !== this.props.zoom) {
       _map.setZoom(this.props.zoom);
     }
@@ -194,6 +202,7 @@ class Map extends React.Component {
       //
       //}
     }, this);
+
 
 
     // never update the map with React. We do it all internally. It's way too slow otherwise
@@ -310,7 +319,8 @@ class Map extends React.Component {
   }
 }
 Map.PropTypes = {
-  results: React.PropTypes.array.isRequired
+  results: React.PropTypes.array.isRequired,
+  locationFilter: React.PropTypes.string.isRequired
 };
 
 export default Map;

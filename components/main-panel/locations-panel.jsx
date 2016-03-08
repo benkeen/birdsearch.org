@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, helpers, _, actions } from '../../core/core';
-import { Loader, ClosePanel } from '../general/general';
+import { Loader, ClosePanel, LineLoader } from '../general/general';
 
 
 
@@ -81,15 +81,7 @@ export class LocationsPanel extends React.Component {
     if (sortDir === C.LOCATION_SORT.DIR.REVERSE) {
       sortedLocations.reverse();
     }
-
-    // apply the filter, if it's been set
-    var sortedFilteredLocations = sortedLocations;
-    if (filter) {
-      var regexp = new RegExp(filter, 'i');
-      sortedFilteredLocations = _.filter(sortedLocations, function (location) {
-        return regexp.test(location.n);
-      });
-    }
+    var sortedFilteredLocations = helpers.filterLocations(sortedLocations, filter);
 
     return _.map(sortedFilteredLocations, function (location) {
       return (
@@ -103,17 +95,8 @@ export class LocationsPanel extends React.Component {
   }
 
   getTotalLocations () {
-    var loaded = _.every(this.props.locations, function (location) {
-      return this.props.locationSightings[location.i].fetched;
-    }, this);
-
-    if (!loaded) {
-      return (
-        <span>-</span>
-      );
-    }
-
-    return helpers.getUniqueSpeciesInLocationList(this.props.locations, this.props.locationSightings, this.props.searchSettings.observationRecency);
+    const { locations, locationSightings, searchSettings } = this.props;
+    return helpers.getUniqueSpeciesInLocationList(locations, locationSightings, searchSettings.observationRecency);
   }
 
   getLocationColSort () {
@@ -142,7 +125,7 @@ export class LocationsPanel extends React.Component {
 
     return (
       <div id="locations-table-wrapper">
-        <table className="table table-striped">
+        <table className="table table-striped" >
           <thead>
           <tr>
             <th className="location" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.LOCATION))}>
@@ -153,8 +136,8 @@ export class LocationsPanel extends React.Component {
             </th>
           </tr>
           </thead>
-          <tbody>
-            <tr className="all-locations-row">
+          <tbody onClick={(e) => dispatch(actions.selectLocation($(e.target).closest('tr').data('locationId')))}>
+            <tr className="all-locations-row" data-location-id="">
               <td className="location">All locations</td>
               <td className="num-species">
                 <LocationSpeciesCount count={this.getTotalLocations()} />
@@ -186,7 +169,7 @@ export class LocationsPanel extends React.Component {
 
     // height stored in constants so we can compute the various heights dynamically for velocity
     var footerStyle = {
-      height: C.PANEL_DIMENSIONS.LEFT_PANEL_FOOTER_HEIGHT + 'px'
+      height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
 
     return (
@@ -226,6 +209,7 @@ LocationsPanel.PropTypes = {
   sortDir: React.PropTypes.string.isRequired,
   filter: React.PropTypes.string.isRequired,
   locations: React.PropTypes.array.isRequired,
+  locationSightings: React.PropTypes.object.isRequired,
   observationRecency: React.PropTypes.number.isRequired,
   env: React.PropTypes.object.isRequired
 };
@@ -233,17 +217,19 @@ LocationsPanel.PropTypes = {
 
 class LocationRow extends React.Component {
   render () {
+    const { sightings, observationRecency, location } = this.props;
+
     var count = null;
     var rowClass = 'loading';
-    if (this.props.sightings.fetched) {
-      count = this.props.sightings.data[this.props.observationRecency - 1].numSpeciesRunningTotal
+    if (sightings.fetched) {
+      count = sightings.data[observationRecency - 1].numSpeciesRunningTotal;
       rowClass = '';
     }
 
     return (
-      <tr className={rowClass}>
+      <tr className={rowClass} data-location-id={location.i}>
         <td className="location">
-          <div title={this.props.location.n}>{this.props.location.n}</div>
+          <div title={location.n}>{location.n}</div>
         </td>
         <td className="num-species">
           <LocationSpeciesCount count={count} />
@@ -263,7 +249,7 @@ LocationRow.PropTypes = {
 class LocationSpeciesCount extends React.Component {
   render () {
     if (this.props.count === null) {
-      return <span> - </span>;
+      return (<LineLoader />);
     }
 
     var className = 'range ';

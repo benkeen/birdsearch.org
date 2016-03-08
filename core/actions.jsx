@@ -269,6 +269,13 @@ var sortLocations = function (sort) {
   }
 };
 
+var selectLocation = function (location) {
+  return {
+    type: E.LOCATION_SELECTED,
+    location: location
+  }
+};
+
 /*
 var _onSuccessReturnLocationObservations = function (locationID, response) {
   _birdSearchHotspots[locationID].isDisplayed = true;
@@ -358,5 +365,6 @@ export {
   visibleLocationsFound,
   onWindowResize,
   sortLocations,
-  setLocationFilter
+  setLocationFilter,
+  selectLocation
 };

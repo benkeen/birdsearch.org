@@ -213,7 +213,8 @@ function locationsPanel (state = {
   visible: false,
   sort: C.LOCATION_SORT.FIELDS.LOCATION,
   sortDir: C.LOCATION_SORT.DIR.DEFAULT,
-  filter: ''
+  filter: '',
+  selectedLocation: ''
 }, action) {
 
   switch (action.type) {
@@ -248,6 +249,12 @@ function locationsPanel (state = {
     case E.SET_LOCATION_FILTER:
       return Object.assign({}, state, {
         filter: action.filter
+      });
+      break;
+
+    case E.LOCATION_SELECTED:
+      return Object.assign({}, state, {
+        selectedLocation: action.location
       });
       break;
 

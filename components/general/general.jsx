@@ -52,7 +52,24 @@ ClosePanel.PropTypes = {
 };
 
 
+class LineLoader extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
+  render () {
+    return (
+      <div className="line-loader">
+        <div className="bounce1"></div>
+        <div className="bounce2"></div>
+        <div className="bounce3"></div>
+      </div>
+    );
+  }
+}
+
 export {
   Loader,
-  ClosePanel
+  ClosePanel,
+  LineLoader
 };

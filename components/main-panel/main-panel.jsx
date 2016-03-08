@@ -44,7 +44,8 @@ class MainPanel extends React.Component {
           mapTypeId={mapSettings.mapTypeId}
           bounds={mapSettings.bounds}
           searchSettings={searchSettings}
-          results={results} />
+          results={results}
+          locationFilter={locationsPanel.filter} />
 
         <IntroOverlay
           visible={overlayVisibility.intro}
@@ -72,6 +73,8 @@ class MainPanel extends React.Component {
           dispatch={dispatch}
           visible={speciesPanel.visible}
           locations={results.visibleLocations}
+          locationSightings={results.locationSightings}
+          searchSettings={searchSettings}
           env={env} />
       </section>
     );

@@ -68,11 +68,17 @@ function parseHotspotSightings (sightings) {
 }
 
 // helper method to find out the total number of unique species sighted in a group of locations for a particular
-// observation recency (e.g. the last 7 days)
+// observation recency (e.g. the last 7 days). Returns null if any of the rows haven't been loaded yet
 function getUniqueSpeciesInLocationList (locations, sightings, obsRecency) {
+	var loaded = _.every(locations, function (location) {
+		return sightings[location.i].fetched;
+	}, this);
+	if (!loaded) {
+		return null;
+	}
+
 	var uniqueSpeciesInAllLocations = {};
 	var numUniqueSpeciesInAllLocations = 0;
-
 	var locationIDs = getLocationIDs(locations);
 
 	_.each(locationIDs, function (locationID) {
@@ -95,11 +101,23 @@ function getLocationIDs (locations) {
 	return _.pluck(locations, 'i');
 }
 
+function filterLocations (locations, filter) {
+	if (!filter) {
+		return locations;
+	}
+	var regexp = new RegExp(filter, 'i');
+	return _.filter(locations, function (locInfo) {
+		return regexp.test(locInfo.n);
+	});
+}
+
+
 export {
 		getBestBounds,
 		parseHotspotSightings,
 		getLocationIDs,
-		getUniqueSpeciesInLocationList
+		getUniqueSpeciesInLocationList,
+		filterLocations
 };
 
 
