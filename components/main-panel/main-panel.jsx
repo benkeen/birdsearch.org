@@ -66,6 +66,7 @@ class MainPanel extends React.Component {
           filter={locationsPanel.filter}
           locations={results.visibleLocations}
           locationSightings={results.locationSightings}
+          selectedLocation={locationsPanel.selectedLocation}
           searchSettings={searchSettings}
           env={env} />
 
@@ -74,6 +75,7 @@ class MainPanel extends React.Component {
           visible={speciesPanel.visible}
           locations={results.visibleLocations}
           locationSightings={results.locationSightings}
+          selectedLocation={locationsPanel.selectedLocation}
           searchSettings={searchSettings}
           env={env} />
       </section>

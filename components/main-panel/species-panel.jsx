@@ -23,6 +23,20 @@ export class SpeciesPanel extends React.Component {
     }
   }
 
+  getTitle () {
+    const { selectedLocation, locations } = this.props;
+    if (selectedLocation === '') {
+      return (
+        <h1>All locations</h1>
+      );
+    }
+    var locationInfo = helpers.getLocationById(locations, selectedLocation);
+    return (
+      <h2>
+        <a href="">All locations</a> &raquo; {locationInfo.n}
+      </h2>
+    );
+  }
 
   render () {
     const { dispatch, locations, locationSightings, visible, searchSettings, env } = this.props;
@@ -40,6 +54,9 @@ export class SpeciesPanel extends React.Component {
     var footerStyle = {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
+
+    console.log("selected Location: ", this.props.selectedLocation);
+
     return (
       <section id="species-panel" style={panelPosition}>
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
@@ -54,6 +71,7 @@ export class SpeciesPanel extends React.Component {
           <div id="species-panel-content" ref="panel">
             <div>
               <div className="panel">
+                {this.getTitle()}
                 <SpeciesTable
                   locations={locations}
                   sightings={locationSightings} />

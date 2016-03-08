@@ -97,6 +97,30 @@ function getUniqueSpeciesInLocationList (locations, sightings, obsRecency) {
 	return numUniqueSpeciesInAllLocations;
 }
 
+// return the species seen for a particular location and observation recency
+function getLocationSpeciesList (locationID, sightings, obsRecency) {
+	//if (!_birdData.hasOwnProperty(locationID)) {
+	//	return false;
+	//}
+  //
+	//var species = {};
+	//var numSpecies = 0;
+	//for (var i=0; i<obsRecency; i++) {
+	//	var observations = _birdData[locationID].sightings.data[i].obs;
+	//	for (var j=0; j<observations.length; j++) {
+	//		if (!species.hasOwnProperty(observations[j].sciName)) {
+	//			species[observations[j].sciName] = observations[j];
+	//			numSpecies++;
+	//		}
+	//	}
+	//}
+  //
+	//return {
+	//	numSpecies: numSpecies,
+	//	species: species
+	//};
+}
+
 function getLocationIDs (locations) {
 	return _.pluck(locations, 'i');
 }
@@ -111,56 +135,102 @@ function filterLocations (locations, filter) {
 	});
 }
 
+function getLocationById (locations, locationId) {
+	return _.findWhere(locations, { i: locationId });
+}
+
+
+/*
+function getSightings (locations, sightings) {
+
+	var dataBySpecies = {};
+	var numSpecies = 0;
+	for (var locationID in _birdData) {
+
+		// if this location's observations failed to load (for whatever reason), just ignore the row
+		if (!_birdData[locationID].sightings.success) {
+			continue;
+		}
+
+		var currLocationSpeciesInfo = _getLocationSpeciesList(locationID, _birdSearchObsRecency);
+		for (var speciesSciName in currLocationSpeciesInfo.species) {
+			var currData = currLocationSpeciesInfo.species[speciesSciName];
+
+			if (!dataBySpecies.hasOwnProperty(speciesSciName)) {
+				dataBySpecies[speciesSciName] = {
+					comName: currData.comName,
+					sciName: speciesSciName,
+					obs: [],
+					locations: [],
+					mostRecentObservationTime: null,
+					howManyCount: 0
+				};
+				numSpecies++;
+			}
+			dataBySpecies[speciesSciName].obs.push({
+				howMany: currData.howMany,
+				lat: currData.lat,
+				lng: currData.lng,
+				locID: currData.locID,
+				locName: currData.locName,
+				obsDt: currData.obsDt,
+				obsReviewed: currData.obsReviewed,
+				obsValid: currData.obsValid
+			});
+
+			dataBySpecies[speciesSciName].locations.push(currData.locName);
+		}
+	}
+
+	// now convert the sightings into an array
+	var sightings = [];
+	for (var sciName in dataBySpecies) {
+		sightings.push(dataBySpecies[sciName]);
+	}
+	sightings.sort(function(a, b) { return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1; });
+
+	var updatedSightings = [];
+	for (var i=0; i<sightings.length; i++) {
+		var lastObservation = 0;
+		var howManyArray = [];
+		var lastSeenArray = [];
+		for (var j=0; j<sightings[i].obs.length; j++) {
+			var observationTimeUnix = parseInt(moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format("X"), 10);
+			if (observationTimeUnix > lastObservation) {
+				lastObservation = observationTimeUnix;
+				sightings[i].mostRecentObservationTime = moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
+			}
+			lastSeenArray.push(moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a'));
+
+			howMany = sightings[i].obs[j].howMany || "-";
+			if (howMany.toString().match(/\D/g)) {
+				howManyCount = "-";
+				howManyArray.push("-");
+			} else {
+				howManyArray.push(sightings[i].obs[j].howMany);
+				sightings[i].howManyCount += parseInt(sightings[i].obs[j].howMany, 10);
+			}
+		}
+
+		sightings[i].howManyArray = howManyArray;
+		sightings[i].lastSeenArray = lastSeenArray;
+		updatedSightings.push(sightings[i]);
+	}
+}
+*/
 
 export {
 		getBestBounds,
 		parseHotspotSightings,
 		getLocationIDs,
 		getUniqueSpeciesInLocationList,
-		filterLocations
+		filterLocations,
+		getLocationSpeciesList,
+		getLocationById
 };
-
 
 
 /*
-var _spinner = null;
-
-var _init = function () { };
-var _initSpinner = function() {
-	if (_spinner !== null) {
-		return;
-	}
-	_spinner = Spinners.create($("#loadingSpinner")[0], {
-		radius: 5,
-		height: 7,
-		width: 1.5,
-		dashes: 14,
-		opacity: 1,
-		padding: 0,
-		rotation: 1400,
-		fadeOutSpeed: 0,
-		color: '#efefef',
-		pauseColor: '#444444',
-		pauseOpacity: 1
-	}).pause();
-};
-
-var _showMessage = function(message, messageType) {
-	var $messageBar = $("#messageBar");
-	if ($messageBar.hasClass('visible')) {
-		$messageBar.removeClass().addClass(messageType + ' visible').html(message);
-	} else {
-		$messageBar.css("display", "none").removeClass().addClass(messageType + " visible").html(message).fadeIn(300);
-	}
-};
-
-var _startLoading = function() {
-	_spinner.play();
-};
-
-var _stopLoading = function() {
-	_spinner.pause();
-};
 
 function getQueryStringParams() {
 	var qs = (function(a) {
@@ -179,21 +249,10 @@ function getQueryStringParams() {
 	return qs;
 }
 
-
 // exposed
 
 export function getCurrentLangFile () {
 	var params = getQueryStringParams();
 	return (params.hasOwnProperty("lang")) ? "lang_" + params["lang"] : "lang_en";
 }
-
-
-//return {
-//	getCurrentLangFile: _getCurrentLangFile,
-//	getQueryStringParams: _getQueryStringParams,
-//	initSpinner: _initSpinner,
-//	showMessage: _showMessage,
-//	startLoading: _startLoading,
-//	stopLoading: _stopLoading
-//};
 */

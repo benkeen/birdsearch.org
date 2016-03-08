@@ -365,29 +365,6 @@ define([
 	};
 
 
-	var _getLocationSpeciesList = function(locationID, obsRecency) {
-		if (!_birdData.hasOwnProperty(locationID)) {
-			return false;
-		}
-
-		var species = {};
-		var numSpecies = 0;
-		for (var i=0; i<obsRecency; i++) {
-			var observations = _birdData[locationID].sightings.data[i].obs;
-			for (var j=0; j<observations.length; j++) {
-				if (!species.hasOwnProperty(observations[j].sciName)) {
-					species[observations[j].sciName] = observations[j];
-					numSpecies++;
-				}
-			}
-		}
-
-		return {
-			numSpecies: numSpecies,
-			species: species
-		};
-	};
-
 	var _onBirdSightingsLoaded = function(msg) {
 		_birdData = $.extend(true, {}, msg.data.birdData);
 		_birdSearchObsRecency = msg.data.observationRecency;
@@ -397,30 +374,6 @@ define([
 			$("#birdSpeciesTab").html(_L.bird_species + " (" + numSpecies + ")").removeClass("hidden disabledTab").addClass("btn");
 			_addBirdSightingsTable();
 		}
-	};
-
-
-	/**
-	 * @param observationRecency
-	 * @private
-	 */
-	var _getUniqueSpeciesCount = function() {
-		var uniqueSpeciesInAllLocations = {};
-		var numUniqueSpeciesInAllLocations = 0;
-
-		for (var locationID in _birdData) {
-			var sightingsData = _birdData[locationID].sightings.data;
-			for (var j=0; j<=_birdSearchObsRecency-1; j++) {
-				var currDaySightings = sightingsData[j].obs;
-				for (var k=0; k<currDaySightings.length; k++) {
-					if (!uniqueSpeciesInAllLocations.hasOwnProperty(currDaySightings[k].sciName)) {
-						uniqueSpeciesInAllLocations[currDaySightings[k].sciName] = null;
-						numUniqueSpeciesInAllLocations++;
-					}
-				}
-			}
-		}
-		return numUniqueSpeciesInAllLocations;
 	};
 
 
