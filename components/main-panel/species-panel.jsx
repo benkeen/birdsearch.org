@@ -39,7 +39,7 @@ export class SpeciesPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, locations, locationSightings, visible, searchSettings, env } = this.props;
+    const { dispatch, locations, locationSightings, visible, searchSettings, selectedLocation, env } = this.props;
 
     if (!locations.length) {
       return null;
@@ -54,8 +54,6 @@ export class SpeciesPanel extends React.Component {
     var footerStyle = {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
-
-    console.log("selected Location: ", this.props.selectedLocation);
 
     return (
       <section id="species-panel" style={panelPosition}>
@@ -74,7 +72,8 @@ export class SpeciesPanel extends React.Component {
                 {this.getTitle()}
                 <SpeciesTable
                   locations={locations}
-                  sightings={locationSightings} />
+                  sightings={locationSightings}
+                  selectedLocation={selectedLocation} />
               </div>
               <footer style={footerStyle} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
                 <span className="glyphicon glyphicon-triangle-top" />

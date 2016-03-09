@@ -99,26 +99,26 @@ function getUniqueSpeciesInLocationList (locations, sightings, obsRecency) {
 
 // return the species seen for a particular location and observation recency
 function getLocationSpeciesList (locationID, sightings, obsRecency) {
-	//if (!_birdData.hasOwnProperty(locationID)) {
-	//	return false;
-	//}
-  //
-	//var species = {};
-	//var numSpecies = 0;
-	//for (var i=0; i<obsRecency; i++) {
-	//	var observations = _birdData[locationID].sightings.data[i].obs;
-	//	for (var j=0; j<observations.length; j++) {
-	//		if (!species.hasOwnProperty(observations[j].sciName)) {
-	//			species[observations[j].sciName] = observations[j];
-	//			numSpecies++;
-	//		}
-	//	}
-	//}
-  //
-	//return {
-	//	numSpecies: numSpecies,
-	//	species: species
-	//};
+	if (!_.has(sightings, locationID)) {
+		return false;
+	}
+
+	var species = {};
+	var numSpecies = 0;
+	_.times(obsRecency, function (index) {
+		var observations = sightings[locationID].sightings.data[index].obs;
+		_.each(observations, function (obsInfo) {
+			if (!species.hasOwnProperty(obsInfo.sciName)) {
+				species[obsInfo.sciName] = obsInfo;
+				numSpecies++;
+			}
+		});
+	});
+
+	return {
+		numSpecies: numSpecies,
+		species: species
+	};
 }
 
 function getLocationIDs (locations) {
@@ -140,23 +140,24 @@ function getLocationById (locations, locationId) {
 }
 
 
-/*
-function getSightings (locations, sightings) {
+function getSightings (locations, sightings, obsRecency) {
+	var locationIDs = getLocationIDs(locations);
 
 	var dataBySpecies = {};
 	var numSpecies = 0;
-	for (var locationID in _birdData) {
+	_.each(locationIDs, function (locationID) {
+		var currLocationSpeciesInfo = getLocationSpeciesList(locationID, obsRecency);
 
-		// if this location's observations failed to load (for whatever reason), just ignore the row
-		if (!_birdData[locationID].sightings.success) {
-			continue;
-		}
+		_.each(currLocationSpeciesInfo, function (key, value) {
 
-		var currLocationSpeciesInfo = _getLocationSpeciesList(locationID, _birdSearchObsRecency);
-		for (var speciesSciName in currLocationSpeciesInfo.species) {
+			//// if this location's observations failed to load (for whatever reason), just ignore the row
+			//if (!_birdData[locationID].sightings.success) {
+			//	continue;
+			//}
+
 			var currData = currLocationSpeciesInfo.species[speciesSciName];
 
-			if (!dataBySpecies.hasOwnProperty(speciesSciName)) {
+			if (!_.has(dataBySpecies, speciesSciName)) {
 				dataBySpecies[speciesSciName] = {
 					comName: currData.comName,
 					sciName: speciesSciName,
@@ -179,8 +180,8 @@ function getSightings (locations, sightings) {
 			});
 
 			dataBySpecies[speciesSciName].locations.push(currData.locName);
-		}
-	}
+		});
+	});
 
 	// now convert the sightings into an array
 	var sightings = [];
@@ -216,43 +217,18 @@ function getSightings (locations, sightings) {
 		sightings[i].lastSeenArray = lastSeenArray;
 		updatedSightings.push(sightings[i]);
 	}
+
+	return updatedSightings;
 }
-*/
+
 
 export {
-		getBestBounds,
-		parseHotspotSightings,
-		getLocationIDs,
-		getUniqueSpeciesInLocationList,
-		filterLocations,
-		getLocationSpeciesList,
-		getLocationById
+	getBestBounds,
+	parseHotspotSightings,
+	getLocationIDs,
+	getUniqueSpeciesInLocationList,
+	filterLocations,
+	getLocationSpeciesList,
+	getLocationById,
+	getSightings
 };
-
-
-/*
-
-function getQueryStringParams() {
-	var qs = (function(a) {
-		if (a == "") return {};
-		var b = {};
-		for (var i = 0; i < a.length; ++i) {
-			var p = a[i].split('=');
-			if (p.length != 2) {
-				continue;
-			}
-			b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
-		}
-		return b;
-	})(window.location.search.substr(1).split("&"));
-
-	return qs;
-}
-
-// exposed
-
-export function getCurrentLangFile () {
-	var params = getQueryStringParams();
-	return (params.hasOwnProperty("lang")) ? "lang_" + params["lang"] : "lang_en";
-}
-*/
