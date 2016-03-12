@@ -7,8 +7,43 @@ import { Loader, ClosePanel } from '../general/general';
 
 
 export class SpeciesPanel extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      nextAnimation: { opacity: this.props.visibility ? 1 : 0 }
+    };
+  }
+
   componentDidMount () {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
+  }
+
+  componentWillReceiveProps (nextProps) {
+    const { visible, env } = this.props;
+
+    var animation = {};
+    var hasAnimation = false;
+
+    if (visible !== nextProps.visible) {
+      hasAnimation = true;
+      animation = { opacity: nextProps.visible ? 1 : 0 };
+
+      if (nextProps.visible) {
+        animation = { opacity: 1, height: (env.windowHeight - 85) + 'px' };
+      } else {
+        animation = { opacity: 0, height: 0 };
+      }
+    }
+
+    // this resizes the visible location panel whenever the browser height changes
+    if (nextProps.env.windowHeight !== env.windowHeight && visible) {
+      hasAnimation = true;
+      animation = { height: (nextProps.env.windowHeight - 85) + 'px' };
+    }
+
+    if (hasAnimation) {
+      this.setState({ nextAnimation: animation });
+    }
   }
 
   transitionBegin () {
@@ -64,7 +99,7 @@ export class SpeciesPanel extends React.Component {
           </div>
         </header>
 
-        <VelocityComponent animation={{ opacity: visible ? 1 : 0 }} duration={C.TRANSITION_SPEED}
+        <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
           complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
           <div id="species-panel-content" ref="panel">
             <div>
