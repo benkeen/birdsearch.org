@@ -37,3 +37,15 @@ button.btn {
 .close-panel {
 	cursor: pointer;
 }
+
+
+::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0.1);
+}
+::-webkit-scrollbar-thumb {
+	background: rgba(215, 215, 215, 1);
+}

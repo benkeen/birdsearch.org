@@ -1,0 +1,4 @@
+@mixin transition-all ($speed) {
+  -webkit-transition: color .2s;
+  transition: color $speed;
+}

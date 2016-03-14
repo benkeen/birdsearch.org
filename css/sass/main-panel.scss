@@ -1,4 +1,6 @@
 @import "variables";
+@import "mixins";
+
 
 #map-overlay {
 	position: absolute;
@@ -31,10 +33,11 @@
 		margin: 6px 9px;
 		color: #999999;
 		font-size: 13px;
-		&:hover {
-			.toggle-section {
-				color: #0099cc;
-			}
+		@include transition-all($transition-speed);
+	}
+	&:hover {
+		.toggle-section {
+			color: #0099cc;
 		}
 	}
 	.total-count {
@@ -56,23 +59,10 @@
 	header, footer {
 		background-color: rgba(0, 0, 0, 0.78);
 	}
-	footer {
-		text-align: center;
-		cursor: pointer;
-		span {
-			font-size: 15px;
-		}
-		&:hover {
-			span {
-				color: #0099cc;
-			}
-		}
-	}
 	.panel {
-		background-color: rgba(0, 0, 0, 0.7);
+		background-color: rgba(0, 0, 15, 0.7);
 		flex: 1;
 	}
-
 	table {
 		width: inherit;
 		margin-bottom: 0;
@@ -124,7 +114,7 @@
 	}
 }
 
-#locations-panel-content > div {
+#locations-panel-content > div, #species-panel-content > div {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
@@ -139,6 +129,17 @@
 	}
 	footer {
 		flex: 0 0 auto;
+		text-align: center;
+		cursor: pointer;
+		span {
+			font-size: 15px;
+			@include transition-all($transition-speed);
+		}
+		&:hover {
+			span {
+				color: #0099cc;
+			}
+		}
 	}
 }
 
@@ -156,6 +157,10 @@
 		top: 15px;
 		right: 16px;
 		font-size: 15px;
+		cursor: pointer;
+		&:hover {
+			color: #555555;
+		}
 	}
 }
 
@@ -180,10 +185,27 @@
 	left: 300px;
 	display: flex;
 	flex-direction: column;
-	background-color: rgba(0, 0, 0, 0.7);
 
+	h1 {
+		font-size: 24px;
+		margin-left: 10px;
+	}
 	span.num-species {
 		background-color: #0099cc;
+	}
+	.panel {
+		background-color: rgba(0, 0, 15, 0.7);
+		border-left: 1px solid #666666;
+		flex: 1;
+		padding: 0 10px;
+	}
+	header, footer {
+		background-color: rgba(0, 0, 0, 0.78);
+		border-left: 1px solid #222222;
+	}
+	table {
+		color: #cccccc;
+		font-size: 14px;
 	}
 }
 

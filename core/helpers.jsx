@@ -27,7 +27,7 @@ function getBestBounds (viewport, bounds) {
 function parseHotspotSightings (sightings) {
 
 	// lay down the defaults
-	var data = _(30).times(function () {
+	var data = _.times(30, function () {
 		return { obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
 	});
 
@@ -106,7 +106,10 @@ function getLocationSpeciesList (locationID, sightings, obsRecency) {
 	var species = {};
 	var numSpecies = 0;
 	_.times(obsRecency, function (index) {
-		var observations = sightings[locationID].sightings.data[index].obs;
+		if (!sightings[locationID].fetched) {
+			return;
+		}
+		var observations = sightings[locationID].data[index].obs;
 		_.each(observations, function (obsInfo) {
 			if (!species.hasOwnProperty(obsInfo.sciName)) {
 				species[obsInfo.sciName] = obsInfo;
@@ -146,21 +149,18 @@ function getSightings (locations, sightings, obsRecency) {
 	var dataBySpecies = {};
 	var numSpecies = 0;
 	_.each(locationIDs, function (locationID) {
-		var currLocationSpeciesInfo = getLocationSpeciesList(locationID, obsRecency);
-
-		_.each(currLocationSpeciesInfo, function (key, value) {
+		var currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
+		_.each(currLocationSpeciesInfo.species, function (info, sciName) {
 
 			//// if this location's observations failed to load (for whatever reason), just ignore the row
 			//if (!_birdData[locationID].sightings.success) {
 			//	continue;
 			//}
 
-			var currData = currLocationSpeciesInfo.species[speciesSciName];
-
-			if (!_.has(dataBySpecies, speciesSciName)) {
-				dataBySpecies[speciesSciName] = {
-					comName: currData.comName,
-					sciName: speciesSciName,
+			if (!_.has(dataBySpecies, sciName)) {
+				dataBySpecies[sciName] = {
+					comName: info.comName,
+					sciName: sciName,
 					obs: [],
 					locations: [],
 					mostRecentObservationTime: null,
@@ -168,57 +168,52 @@ function getSightings (locations, sightings, obsRecency) {
 				};
 				numSpecies++;
 			}
-			dataBySpecies[speciesSciName].obs.push({
-				howMany: currData.howMany,
-				lat: currData.lat,
-				lng: currData.lng,
-				locID: currData.locID,
-				locName: currData.locName,
-				obsDt: currData.obsDt,
-				obsReviewed: currData.obsReviewed,
-				obsValid: currData.obsValid
+			dataBySpecies[sciName].obs.push({
+				howMany: info.howMany,
+				lat: info.lat,
+				lng: info.lng,
+				locID: info.locID,
+				locName: info.locName,
+				obsDt: info.obsDt,
+				obsReviewed: info.obsReviewed,
+				obsValid: info.obsValid
 			});
 
-			dataBySpecies[speciesSciName].locations.push(currData.locName);
+			dataBySpecies[sciName].locations.push(info.locName);
 		});
 	});
 
 	// now convert the sightings into an array
-	var sightings = [];
-	for (var sciName in dataBySpecies) {
-		sightings.push(dataBySpecies[sciName]);
-	}
-	sightings.sort(function(a, b) { return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1; });
+	var sightingsData = _.values(dataBySpecies);
+	sightingsData.sort(function(a, b) { return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1; });
 
-	var updatedSightings = [];
-	for (var i=0; i<sightings.length; i++) {
+	return _.map(sightingsData, function (sighting) {
 		var lastObservation = 0;
 		var howManyArray = [];
 		var lastSeenArray = [];
-		for (var j=0; j<sightings[i].obs.length; j++) {
-			var observationTimeUnix = parseInt(moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format("X"), 10);
+
+		_.each(sighting.obs, function (observation) {
+			var observationTimeUnix = parseInt(moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format("X"), 10);
 			if (observationTimeUnix > lastObservation) {
 				lastObservation = observationTimeUnix;
-				sightings[i].mostRecentObservationTime = moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
+				sighting.mostRecentObservationTime = moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 			}
-			lastSeenArray.push(moment(sightings[i].obs[j].obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a'));
+			lastSeenArray.push(moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a'));
 
-			howMany = sightings[i].obs[j].howMany || "-";
+			var howMany = observation.howMany || "-";
 			if (howMany.toString().match(/\D/g)) {
-				howManyCount = "-";
 				howManyArray.push("-");
 			} else {
-				howManyArray.push(sightings[i].obs[j].howMany);
-				sightings[i].howManyCount += parseInt(sightings[i].obs[j].howMany, 10);
+				howManyArray.push(observation.howMany);
+				sighting.howManyCount += parseInt(observation.howMany, 10);
 			}
-		}
+		});
 
-		sightings[i].howManyArray = howManyArray;
-		sightings[i].lastSeenArray = lastSeenArray;
-		updatedSightings.push(sightings[i]);
-	}
+		sighting.howManyArray = howManyArray;
+		sighting.lastSeenArray = lastSeenArray;
 
-	return updatedSightings;
+		return sighting;
+	});
 }
 
 

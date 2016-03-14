@@ -74,7 +74,7 @@ class MainPanel extends React.Component {
           dispatch={dispatch}
           visible={speciesPanel.visible}
           locations={results.visibleLocations}
-          locationSightings={results.locationSightings}
+          sightings={results.locationSightings}
           selectedLocation={locationsPanel.selectedLocation}
           searchSettings={searchSettings}
           env={env} />

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, helpers, _, actions } from '../../core/core';
-import { Loader, ClosePanel } from '../general/general';
+import { Loader, ClosePanel, LineLoader } from '../general/general';
 
 
 
@@ -74,7 +74,7 @@ export class SpeciesPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, locations, locationSightings, visible, searchSettings, selectedLocation, env } = this.props;
+    const { dispatch, locations, sightings, searchSettings, selectedLocation, env } = this.props;
 
     if (!locations.length) {
       return null;
@@ -84,11 +84,17 @@ export class SpeciesPanel extends React.Component {
       width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH
     };
 
-    var numBirdSpecies = helpers.getUniqueSpeciesInLocationList(locations, locationSightings, searchSettings.observationRecency);
+    var numBirdSpecies = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
+    //console.log(numBirdSpecies);
+    //if (!numBirdSpecies) {
+    //  numBirdSpecies = <LineLoader />;
+    //}
 
     var footerStyle = {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
+
+    var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency);
 
     return (
       <section id="species-panel" style={panelPosition}>
@@ -106,9 +112,9 @@ export class SpeciesPanel extends React.Component {
               <div className="panel">
                 {this.getTitle()}
                 <SpeciesTable
-                  locations={locations}
-                  sightings={locationSightings}
-                  selectedLocation={selectedLocation} />
+                  species={sightingsData}
+                  selectedLocation={selectedLocation}
+                  observationRecency={searchSettings.observationRecency} />
               </div>
               <footer style={footerStyle} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
                 <span className="glyphicon glyphicon-triangle-top" />
@@ -123,16 +129,57 @@ export class SpeciesPanel extends React.Component {
 SpeciesPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired,
   locations: React.PropTypes.array.isRequired,
-  env: React.PropTypes.object.isRequired,
-  locationSightings: React.PropTypes.object.isRequired,
-  observationRecency: React.PropTypes.number.isRequired
+  sightings: React.PropTypes.object.isRequired,
+  searchSettings: React.PropTypes.object.isRequired,
+  env: React.PropTypes.object.isRequired
 };
 
 
 class SpeciesTable extends React.Component {
+  getRows () {
+    return _.map(this.props.species, function (speciesInfo) {
+      return (<SpeciesRow species={speciesInfo} />);
+    });
+  }
+
   render () {
     return (
-      <div></div>
+      <div>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Species</th>
+              <th>Scientific Name</th>
+              <th>Locations Seen</th>
+              <th>Last Seen</th>
+              <th>Num Reported</th>
+            </tr>
+          </thead>
+          <tbody>
+          {this.getRows()}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+}
+SpeciesPanel.PropTypes = {
+  species: React.PropTypes.array.isRequired
+};
+
+
+class SpeciesRow extends React.Component {
+  render () {
+    const { species } = this.props;
+
+    return (
+      <tr>
+        <td>{species.comName}</td>
+        <td>{species.sciName}</td>
+        <td>{species.locations.length}</td>
+        <td>{species.mostRecentObservationTime}</td>
+        <td>{species.howManyCount}</td>
+      </tr>
     );
   }
 }
