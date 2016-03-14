@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, helpers, _, actions } from '../../core/core';
-import { Loader, ClosePanel, LineLoader } from '../general/general';
+import { Loader, ClosePanel, LocationsDropdown, LineLoader } from '../general/general';
 
 
 
@@ -60,16 +60,16 @@ export class SpeciesPanel extends React.Component {
 
   getTitle () {
     const { selectedLocation, locations } = this.props;
-    if (selectedLocation === '') {
-      return (
-        <h1>All locations</h1>
-      );
+
+    if (selectedLocation) {
+      var locationInfo = helpers.getLocationById(selectedLocation);
     }
-    var locationInfo = helpers.getLocationById(locations, selectedLocation);
+
     return (
-      <h2>
-        <a href="">All locations</a> &raquo; {locationInfo.n}
-      </h2>
+      <div className="species-heading-row">
+        <h1>All Locations</h1>
+        <input type="text" placeholder="Filter Species" className="filter-field" />
+      </div>
     );
   }
 
@@ -149,7 +149,6 @@ class SpeciesTable extends React.Component {
           <thead>
             <tr>
               <th>Species</th>
-              <th>Scientific Name</th>
               <th>Locations Seen</th>
               <th>Last Seen</th>
               <th>Num Reported</th>
@@ -174,8 +173,10 @@ class SpeciesRow extends React.Component {
 
     return (
       <tr>
-        <td>{species.comName}</td>
-        <td>{species.sciName}</td>
+        <td>
+          <div className="com-name">{species.comName}</div>
+          <div className="sci-name">{species.sciName}</div>
+        </td>
         <td>{species.locations.length}</td>
         <td>{species.mostRecentObservationTime}</td>
         <td>{species.howManyCount}</td>

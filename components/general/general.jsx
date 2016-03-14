@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import * as core from './../../core/core';
+import { _ } from '../../core/core';
 
 
 class Loader extends React.Component {
@@ -68,8 +68,35 @@ class LineLoader extends React.Component {
   }
 }
 
+
+class LocationsDropdown extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
+  getLocationRows () {
+    return _.map(this.props.locations, function (location) {
+      return (<option value={location.i} key={location.i}>{location.n}</option>);
+    });
+  }
+
+  render () {
+    return (
+      <select value={this.props.selected} >
+        <option value="">All Locations</option>
+        {this.getLocationRows()}
+      </select>
+    );
+  }
+}
+LocationsDropdown.PropTypes = {
+  locations: React.PropTypes.array.isRequired,
+  selected: React.PropTypes.string.isRequired
+};
+
 export {
   Loader,
   ClosePanel,
-  LineLoader
+  LineLoader,
+  LocationsDropdown
 };

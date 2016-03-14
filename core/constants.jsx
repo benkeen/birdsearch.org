@@ -15,7 +15,7 @@ const C = {
 		GITHUB_URL: "https://github.com/benkeen/birdsearch.org"
 	},
 	SEARCH_SETTINGS: {
-		DEFAULT_SEARCH_DAYS: 30,
+		DEFAULT_SEARCH_DAYS: 7,
 		NUM_SEARCH_DAYS: 30
 	},
 

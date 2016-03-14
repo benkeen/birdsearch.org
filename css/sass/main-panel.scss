@@ -57,10 +57,10 @@
 	flex-direction: column;
 
 	header, footer {
-		background-color: rgba(0, 0, 0, 0.78);
+		background-color: rgba(0, 0, 0, 0.82);
 	}
 	.panel {
-		background-color: rgba(0, 0, 15, 0.7);
+		background-color: rgba(0, 0, 5, 0.78);
 		flex: 1;
 	}
 	table {
@@ -149,8 +149,6 @@
 	position: relative;
 	input {
 		width: 100%;
-		padding: 13px 6px;
-		background-color: white;
 	}
 	.clear-location-filter {
 		position: absolute;
@@ -162,6 +160,29 @@
 			color: #555555;
 		}
 	}
+}
+
+.species-heading-row {
+	position: relative;
+	padding: 8px 0;
+	flex: 1;
+	margin: 0 4px;
+
+	h1 {
+		font-size: 24px;
+		margin-bottom: 18px;
+		border-bottom: 1px solid #666666;
+	}
+	.filter-field {
+		position: absolute;
+		top: 8px;
+		right: 0;
+	}
+}
+
+body .filter-field {
+	padding: 13px 6px;
+	background-color: white;
 }
 
 #locations-table-wrapper {
@@ -186,26 +207,27 @@
 	display: flex;
 	flex-direction: column;
 
-	h1 {
-		font-size: 24px;
-		margin-left: 10px;
-	}
 	span.num-species {
 		background-color: #0099cc;
 	}
 	.panel {
-		background-color: rgba(0, 0, 15, 0.7);
+		background-color: rgba(0, 0, 5, 0.78);
 		border-left: 1px solid #666666;
 		flex: 1;
 		padding: 0 10px;
 	}
 	header, footer {
-		background-color: rgba(0, 0, 0, 0.78);
+		background-color: rgba(0, 0, 0, 0.82);
 		border-left: 1px solid #222222;
 	}
 	table {
 		color: #cccccc;
 		font-size: 14px;
+		margin-bottom: 0;
+		td {
+			line-height: 15px;
+			vertical-align: middle;
+		}
 	}
 }
 
@@ -248,4 +270,15 @@
 .range8 {
 	background-color: $range8;
 	color: white;
+}
+
+
+.com-name {
+	color: #ffffff;
+	text-shadow: 1px 2px 2px #222222;
+}
+
+.sci-name {
+	font-size: 10px;
+	color: #999999;
 }
