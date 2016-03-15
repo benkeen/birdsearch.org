@@ -153,15 +153,16 @@
 	input {
 		width: 100%;
 	}
-	.clear-location-filter {
-		position: absolute;
-		top: 15px;
-		right: 16px;
-		font-size: 15px;
-		cursor: pointer;
-		&:hover {
-			color: #555555;
-		}
+}
+
+.clear-filter-icon {
+	position: absolute;
+	top: 15px;
+	right: 16px;
+	font-size: 15px;
+	cursor: pointer;
+	&:hover {
+		color: #555555;
 	}
 }
 
@@ -195,6 +196,12 @@
 		input {
 			float: right;
 		}
+	}
+	.last-seen {
+		width: 160px;
+	}
+	.locations-seen {
+		width: 160px;
 	}
 }
 

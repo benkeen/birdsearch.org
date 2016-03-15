@@ -41,6 +41,7 @@ class MainPanel extends React.Component {
           zoom={mapSettings.zoom}
           lat={mapSettings.lat}
           lng={mapSettings.lng}
+          searchCounter={mapSettings.searchCounter}
           mapTypeId={mapSettings.mapTypeId}
           bounds={mapSettings.bounds}
           searchSettings={searchSettings}

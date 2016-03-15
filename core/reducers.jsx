@@ -77,7 +77,8 @@ function mapSettings (state = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     lat: 30,
     lng: 0,
-    bounds: null
+    bounds: null,
+    searchCounter: 0
   }, action) {
 
   switch (action.type) {
@@ -93,7 +94,16 @@ function mapSettings (state = {
       return Object.assign({}, state, {
         lat: action.lat,
         lng: action.lng,
-        bounds: action.bounds
+        bounds: action.bounds,
+        searchCounter: state.searchCounter + 1
+      });
+      break;
+
+    case E.WINDOW_RESIZED:
+    case E.HOTSPOT_SIGHTINGS_RETURNED:
+    case E.SEARCH_LOCATIONS_RETURNED:
+      return Object.assign({}, state, {
+        searchCounter: state.searchCounter + 1
       });
       break;
 
@@ -162,7 +172,8 @@ function results (state = {
   numLocations: 0,
   allLocations: [], // stores everything from the last search
   visibleLocations: [], // stores all locations currently visible on the user's map
-  locationSightings: {} // an object of [location ID] => sighting info. Populated as need be, based on what's visible
+  locationSightings: {}, // an object of [location ID] => sighting info. Populated as need be, based on what's visible
+  searchCount: 0
 }, action) {
   switch (action.type) {
     case E.SEARCH_REQUEST_ENDED:

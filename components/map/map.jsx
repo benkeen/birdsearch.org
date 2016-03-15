@@ -96,7 +96,6 @@ var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
 };
 
 
-
 class Map extends React.Component {
 
   componentDidMount () {
@@ -131,6 +130,13 @@ class Map extends React.Component {
 
   shouldComponentUpdate (nextProps, nextState) {
 
+    console.log(nextProps, this.props);
+
+    // map updates are explicitly throttled by incrementing mapSettings.searchCounter
+    if (this.props.searchCounter === nextProps.searchCounter) {
+      return false;
+    }
+
     if (this.props.locationFilter !== nextProps.locationFilter) {
       //_data.all.markers[locationID]
       //.setVisible(false);
@@ -148,7 +154,8 @@ class Map extends React.Component {
       });
     }
 
-    if (nextProps.bounds !== null) {
+    // Q: when
+    if (this.props.bounds === null && nextProps.bounds !== null) {
       _map.fitBounds({
         north: nextProps.bounds.north,
         south: nextProps.bounds.south,
@@ -156,8 +163,6 @@ class Map extends React.Component {
         west: nextProps.bounds.west
       });
     }
-
-    // TODO... ideas: results.mapRedrawCounter: 1; increments by reducer code after all keys events:
 
     // - window resize
     // - new search
@@ -170,11 +175,23 @@ class Map extends React.Component {
       this.addMarkers(nextProps.results.allLocations, nextProps.results.locationSightings);
     }
 
-    // this sucks. I'd like to be able to target a particular node to update it. Not have to parse through the entire
-    // changed content on every redraw...
+    // when do we want to clear the hotspots?
+    //  - after a new search (different location)
+    //  - after the map boundary changes
+    //  - ...
+
+
+    this.showLocations(nextProps);
+
+    // never update the map with React. We do it all internally. It's way too slow otherwise
+    return false;
+  }
+
+  showLocations (nextProps) {
     _.each(nextProps.results.visibleLocations, function (locInfo) {
       var locId = locInfo.i;
 
+      // so right now this only renders the marker if the fetched state changed
       if (this.props.results.locationSightings[locId].fetched !== nextProps.results.locationSightings[locId].fetched) {
         var locationSightings = nextProps.results.locationSightings[locId].data;
         var numSpecies = locationSightings[nextProps.searchSettings.observationRecency - 1].numSpeciesRunningTotal;
@@ -197,16 +214,10 @@ class Map extends React.Component {
           _data.all.markers[locId].setIcon(_icons.range8);
         }
       }
-
-      //if (this.props.locationSightings[locId].data[30 - 1].numSpeciesRunningTotal !== prevProps.locationSightings[30 - 1].observationRecency) {
-      //}
     }, this);
 
 
-    // never update the map with React. We do it all internally. It's way too slow otherwise
-    return false;
   }
-
   /**
    * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
    * param specifies the search type; the second is a standardized array of hotspot data. Format:
@@ -231,8 +242,6 @@ class Map extends React.Component {
 
       // find out how many species are in this
       var locID = locInfo.i;
-      //console.log(locationSightings[locID].fetched);
-
       addBirdMarker(locID, latlng, locInfo);
 
       //if (searchType === "all") {
@@ -264,7 +273,8 @@ class Map extends React.Component {
 
   onMapBoundsChange () {
     //this.clearHotspots();
-    //this.addMarkers();
+    this.addMarkers(this.props.results.allLocations, this.props.results.locationSightings);
+    //this.props.dispatch(actions.visibleLocationsFound(visibleHotspots, locationSightings));
   }
 
   addCustomControls () {
@@ -306,7 +316,7 @@ class Map extends React.Component {
     //$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
     //$(document).on("click", ".viewLocationSightingDetails", _onClickViewLocationSightings);
     // called any time the map has had its bounds changed
-    google.maps.event.addListener(_map, "dragend", this.onMapBoundsChange.bind(this));
+    //google.maps.event.addListener(_map, "dragend", this.onMapBoundsChange.bind(this));
     google.maps.event.addListener(_map, "zoom_changed", this.onMapBoundsChange.bind(this));
   }
 

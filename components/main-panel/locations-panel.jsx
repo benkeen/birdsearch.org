@@ -158,11 +158,12 @@ export class LocationsPanel extends React.Component {
 
   getClearLocationFilterIcon () {
     const { dispatch, filter } = this.props;
+
     if (!filter) {
       return;
     }
     return (
-      <span className="clear-location-filter glyphicon glyphicon-remove" onClick={() => dispatch(actions.setLocationFilter(''))} />
+      <span className="clear-filter-icon glyphicon glyphicon-remove" onClick={() => dispatch(actions.setLocationFilter(''))} />
     );
   }
 

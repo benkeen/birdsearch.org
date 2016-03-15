@@ -160,6 +160,16 @@ class SpeciesTable extends React.Component {
     });
   }
 
+  getClearSpeciesFilterIcon () {
+    const { dispatch, filter } = this.props;
+    if (!filter) {
+      return;
+    }
+    return (
+      <span className="clear-filter-icon glyphicon glyphicon-remove" onClick={() => dispatch(actions.setSpeciesFilter(''))} />
+    );
+  }
+
   render () {
     const { filter, dispatch } = this.props;
 
@@ -173,9 +183,10 @@ class SpeciesTable extends React.Component {
                 <span>Species</span>
                 <input type="text" placeholder="Filter Species" className="filter-field" value={filter}
                    onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
+                {this.getClearSpeciesFilterIcon()}
               </th>
-              <th>Locations Seen</th>
-              <th>Last Seen</th>
+              <th className="locations-seen">Locations Seen</th>
+              <th className="last-seen">Last Seen</th>
               <th>Num Reported</th>
             </tr>
           </thead>

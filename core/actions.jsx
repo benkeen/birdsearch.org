@@ -32,7 +32,6 @@ function searchRequestComplete () {
   return { type: E.SEARCH_REQUEST_ENDED };
 }
 
-
 function search (searchSettings, locationInfo) {
   return function (dispatch) {
     dispatch(startSearchRequest(locationInfo));
