@@ -37,7 +37,8 @@ var _icons = {
     scaledSize: new google.maps.Size(21, 26)
   }
 };
-
+var _circleOverlays = {};
+var _circleOverlayIndex = 0;
 
 
 // stores all map-related data, grouped by search type
@@ -130,8 +131,6 @@ class Map extends React.Component {
 
   shouldComponentUpdate (nextProps, nextState) {
 
-    console.log(nextProps, this.props);
-
     // map updates are explicitly throttled by incrementing mapSettings.searchCounter
     if (this.props.searchCounter === nextProps.searchCounter) {
       return false;
@@ -152,9 +151,9 @@ class Map extends React.Component {
         lat: nextProps.lat,
         lng: nextProps.lng
       });
+      _addSearchRangeIndicator();
     }
 
-    // Q: when
     if (this.props.bounds === null && nextProps.bounds !== null) {
       _map.fitBounds({
         north: nextProps.bounds.north,
@@ -330,5 +329,25 @@ Map.PropTypes = {
   results: React.PropTypes.array.isRequired,
   locationFilter: React.PropTypes.string.isRequired
 };
+
+
+var _addSearchRangeIndicator = function () {
+
+  // lame, but setting the map to null doesn't work, so keep adding more & hiding the previous
+  if (_circleOverlayIndex > 0) {
+    _circleOverlays[_circleOverlayIndex-1].set("visible", false);
+  }
+
+  _circleOverlays[_circleOverlayIndex] = new InvertedCircle({
+    center: _map.getCenter(),
+    map: _map,
+    radius: _data['all'].circleRadius,
+    editable: false,
+    stroke_weight: 0,
+    always_fit_to_map: false
+  });
+  _circleOverlayIndex++;
+};
+
 
 export default Map;

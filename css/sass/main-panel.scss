@@ -155,7 +155,7 @@
 	}
 }
 
-.clear-filter-icon {
+body .clear-filter-icon {
 	position: absolute;
 	top: 15px;
 	right: 16px;
@@ -192,6 +192,7 @@
 		}
 	}
 	.species-col {
+		position: relative;
 		span { display: inline-block; }
 		input {
 			float: right;
