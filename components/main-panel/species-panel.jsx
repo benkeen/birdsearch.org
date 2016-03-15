@@ -59,15 +59,17 @@ export class SpeciesPanel extends React.Component {
   }
 
   getTitle () {
-    const { selectedLocation, locations } = this.props;
+    const { locations, selectedLocation } = this.props;
 
+    var title = 'All Locations';
     if (selectedLocation) {
-      var locationInfo = helpers.getLocationById(selectedLocation);
+      var locationInfo = helpers.getLocationById(locations, selectedLocation);
+      title = locationInfo.n;
     }
 
     return (
       <div className="species-heading-row">
-        <h1>All Locations</h1>
+        <h1>{title}</h1>
         <input type="text" placeholder="Filter Species" className="filter-field" />
       </div>
     );
@@ -94,7 +96,12 @@ export class SpeciesPanel extends React.Component {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
 
-    var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency);
+    var sightingsData = [];
+    if (selectedLocation) {
+      sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selectedLocation);
+    } else {
+      sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency);
+    }
 
     return (
       <section id="species-panel" style={panelPosition}>
@@ -137,8 +144,13 @@ SpeciesPanel.PropTypes = {
 
 class SpeciesTable extends React.Component {
   getRows () {
+    var showLocationsCol = (this.props.selectedLocation === '') ? true : false;
     return _.map(this.props.species, function (speciesInfo) {
-      return (<SpeciesRow species={speciesInfo} />);
+      return (
+        <SpeciesRow
+          species={speciesInfo}
+          showLocationsCol={showLocationsCol} />
+      );
     });
   }
 
@@ -149,7 +161,7 @@ class SpeciesTable extends React.Component {
           <thead>
             <tr>
               <th>Species</th>
-              <th>Locations Seen</th>
+              {this.props.selectedLocation ? null : <th>Locations Seen</th>}
               <th>Last Seen</th>
               <th>Num Reported</th>
             </tr>
@@ -169,7 +181,7 @@ SpeciesPanel.PropTypes = {
 
 class SpeciesRow extends React.Component {
   render () {
-    const { species } = this.props;
+    const { species, showLocationsCol } = this.props;
 
     return (
       <tr>
@@ -177,7 +189,7 @@ class SpeciesRow extends React.Component {
           <div className="com-name">{species.comName}</div>
           <div className="sci-name">{species.sciName}</div>
         </td>
-        <td>{species.locations.length}</td>
+        {showLocationsCol ? <td>{species.locations.length}</td> : null}
         <td>{species.mostRecentObservationTime}</td>
         <td>{species.howManyCount}</td>
       </tr>

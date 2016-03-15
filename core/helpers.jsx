@@ -139,16 +139,22 @@ function filterLocations (locations, filter) {
 }
 
 function getLocationById (locations, locationId) {
+	console.log(locations);
 	return _.findWhere(locations, { i: locationId });
 }
 
 
-function getSightings (locations, sightings, obsRecency) {
+function getSightings (locations, sightings, obsRecency, targetLocationID = null) {
 	var locationIDs = getLocationIDs(locations);
 
 	var dataBySpecies = {};
 	var numSpecies = 0;
+
 	_.each(locationIDs, function (locationID) {
+		if (targetLocationID !== null && locationID !== targetLocationID) {
+			return;
+		}
+
 		var currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
 		_.each(currLocationSpeciesInfo.species, function (info, sciName) {
 

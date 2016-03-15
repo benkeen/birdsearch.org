@@ -253,6 +253,7 @@ function locationsPanel (state = {
       break;
 
     case E.LOCATION_SELECTED:
+      console.log("location: ", action.location);
       return Object.assign({}, state, {
         selectedLocation: action.location
       });
