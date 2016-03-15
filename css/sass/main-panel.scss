@@ -57,7 +57,10 @@
 	flex-direction: column;
 
 	header, footer {
-		background-color: rgba(0, 0, 0, 0.82);
+		background-color: rgba(26, 29, 34, 0.71);
+		&:hover {
+			background-color: rgba(26, 29, 34, 0.75);
+		}
 	}
 	.panel {
 		background-color: rgba(0, 0, 5, 0.78);
@@ -165,7 +168,7 @@
 .species-heading-row {
 	position: relative;
 	padding: 8px 0;
-	flex: 1;
+	flex: 0 0 auto;
 	margin: 0 4px;
 
 	h1 {
@@ -173,11 +176,30 @@
 		margin-bottom: 18px;
 		border-bottom: 1px solid #666666;
 	}
+}
+
+.species-table {
+	flex: 1;
+	overflow-x: scroll;
 	.filter-field {
-		position: absolute;
-		top: 8px;
-		right: 0;
+		margin: 0;
+		&::-webkit-input-placeholder,
+		&::-moz-placeholder,
+		&:-ms-input-placeholder,
+		&:-moz-placeholder {
+			color: #333333;
+		}
 	}
+	.species-col {
+		span { display: inline-block; }
+		input {
+			float: right;
+		}
+	}
+}
+
+.highlight {
+	color: $text-highlight-color;
 }
 
 body .filter-field {
@@ -201,7 +223,6 @@ body .filter-field {
 
 #species-panel {
 	position: absolute;
-	overflow: hidden;
 	top: 60px;
 	left: 300px;
 	display: flex;
@@ -215,10 +236,14 @@ body .filter-field {
 		border-left: 1px solid #666666;
 		flex: 1;
 		padding: 0 10px;
+		overflow: hidden;
 	}
 	header, footer {
-		background-color: rgba(0, 0, 0, 0.82);
+		background-color: rgba(26, 29, 34, 0.71);
 		border-left: 1px solid #222222;
+		&:hover {
+			background-color: rgba(26, 29, 34, 0.75);
+		}
 	}
 	table {
 		color: #cccccc;
@@ -273,12 +298,17 @@ body .filter-field {
 }
 
 
+.row-num {
+	font-size: 9px;
+	color: #efefef;
+	width: 20px;
+}
 .com-name {
 	color: #ffffff;
 	text-shadow: 1px 2px 2px #222222;
 }
-
 .sci-name {
 	font-size: 10px;
 	color: #999999;
 }
+

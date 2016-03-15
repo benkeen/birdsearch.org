@@ -253,7 +253,6 @@ var locationSightingsFound = function (dispatch, locationID, resp) {
   }
 };
 
-
 var onWindowResize = function (width, height) {
   return {
     type: E.WINDOW_RESIZED,
@@ -275,6 +274,11 @@ var selectLocation = function (location) {
     location: location
   }
 };
+
+var showSpeciesPanel = function () {
+  return { type: E.SHOW_SPECIES_PANEL }
+};
+
 
 /*
 var _onSuccessReturnLocationObservations = function (locationID, response) {
@@ -354,6 +358,13 @@ var setLocationFilter = function (filter) {
   }
 };
 
+var setSpeciesFilter = function (filter) {
+  return {
+    type: E.SET_SPECIES_FILTER,
+    filter: filter
+  }
+};
+
 
 export {
   setLocale,
@@ -366,5 +377,7 @@ export {
   onWindowResize,
   sortLocations,
   setLocationFilter,
-  selectLocation
+  selectLocation,
+  showSpeciesPanel,
+  setSpeciesFilter,
 };

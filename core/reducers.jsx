@@ -253,7 +253,6 @@ function locationsPanel (state = {
       break;
 
     case E.LOCATION_SELECTED:
-      console.log("location: ", action.location);
       return Object.assign({}, state, {
         selectedLocation: action.location
       });
@@ -266,7 +265,8 @@ function locationsPanel (state = {
 
 
 function speciesPanel (state = {
-  visible: false
+  visible: false,
+  filter: ''
 }, action) {
 
   switch (action.type) {
@@ -278,6 +278,18 @@ function speciesPanel (state = {
       return Object.assign({}, state, {
         visible: newVisibility
       });
+
+    case E.SHOW_SPECIES_PANEL:
+      return Object.assign({}, state, {
+        visible: true
+      });
+      break;
+
+    case E.SET_SPECIES_FILTER:
+      return Object.assign({}, state, {
+        filter: action.filter
+      });
+      break;
 
     default:
       return state;

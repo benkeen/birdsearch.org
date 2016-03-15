@@ -137,7 +137,6 @@ class Map extends React.Component {
       //console.log("locations: ", helpers.filterLocations(nextProps.locations, nextProps.filter));
     }
 
-
     if (nextProps.zoom !== this.props.zoom) {
       _map.setZoom(this.props.zoom);
     }
@@ -159,9 +158,10 @@ class Map extends React.Component {
     }
 
     // TODO... ideas: results.mapRedrawCounter: 1; increments by reducer code after all keys events:
-        // - window resize
-        // - new search
-        // - map zoom / drag
+
+    // - window resize
+    // - new search
+    // - map zoom / drag
     var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
     var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
 
@@ -199,10 +199,8 @@ class Map extends React.Component {
       }
 
       //if (this.props.locationSightings[locId].data[30 - 1].numSpeciesRunningTotal !== prevProps.locationSightings[30 - 1].observationRecency) {
-      //
       //}
     }, this);
-
 
 
     // never update the map with React. We do it all internally. It's way too slow otherwise

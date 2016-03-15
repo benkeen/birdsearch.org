@@ -70,13 +70,12 @@ export class SpeciesPanel extends React.Component {
     return (
       <div className="species-heading-row">
         <h1>{title}</h1>
-        <input type="text" placeholder="Filter Species" className="filter-field" />
       </div>
     );
   }
 
   render () {
-    const { dispatch, locations, sightings, searchSettings, selectedLocation, env } = this.props;
+    const { dispatch, locations, sightings, searchSettings, selectedLocation, speciesFilter, env } = this.props;
 
     if (!locations.length) {
       return null;
@@ -105,6 +104,7 @@ export class SpeciesPanel extends React.Component {
 
     return (
       <section id="species-panel" style={panelPosition}>
+
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
           <div>
             <h2>Bird species <span className="total-count num-species">{numBirdSpecies}</span></h2>
@@ -119,9 +119,11 @@ export class SpeciesPanel extends React.Component {
               <div className="panel">
                 {this.getTitle()}
                 <SpeciesTable
+                  dispatch={dispatch}
                   species={sightingsData}
                   selectedLocation={selectedLocation}
-                  observationRecency={searchSettings.observationRecency} />
+                  observationRecency={searchSettings.observationRecency}
+                  filter={speciesFilter} />
               </div>
               <footer style={footerStyle} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
                 <span className="glyphicon glyphicon-triangle-top" />
@@ -138,30 +140,41 @@ SpeciesPanel.PropTypes = {
   locations: React.PropTypes.array.isRequired,
   sightings: React.PropTypes.object.isRequired,
   searchSettings: React.PropTypes.object.isRequired,
+  speciesFilter: React.PropTypes.string.isRequired,
   env: React.PropTypes.object.isRequired
 };
 
 
 class SpeciesTable extends React.Component {
   getRows () {
-    var showLocationsCol = (this.props.selectedLocation === '') ? true : false;
-    return _.map(this.props.species, function (speciesInfo) {
+    const { species, filter } = this.props;
+
+    return _.map(species, function (speciesInfo, index) {
       return (
         <SpeciesRow
+          filter={filter}
           species={speciesInfo}
-          showLocationsCol={showLocationsCol} />
+          rowNum={index+1}
+          key={index} />
       );
     });
   }
 
   render () {
+    const { filter, dispatch } = this.props;
+
     return (
-      <div>
+      <div className="species-table">
         <table className="table table-striped">
           <thead>
             <tr>
-              <th>Species</th>
-              {this.props.selectedLocation ? null : <th>Locations Seen</th>}
+              <th className="row-num"></th>
+              <th className="species-col">
+                <span>Species</span>
+                <input type="text" placeholder="Filter Species" className="filter-field" value={filter}
+                   onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
+              </th>
+              <th>Locations Seen</th>
               <th>Last Seen</th>
               <th>Num Reported</th>
             </tr>
@@ -174,22 +187,31 @@ class SpeciesTable extends React.Component {
     );
   }
 }
-SpeciesPanel.PropTypes = {
-  species: React.PropTypes.array.isRequired
+SpeciesTable.PropTypes = {
+  species: React.PropTypes.array.isRequired,
+  filter: React.PropTypes.string.isRequired
 };
 
 
 class SpeciesRow extends React.Component {
   render () {
-    const { species, showLocationsCol } = this.props;
+    const { species, filter, rowNum } = this.props;
+
+    var comNameData = helpers.highlightString(species.comName, filter);
+    var sciNameData = helpers.highlightString(species.sciName, filter);
+
+    if (!comNameData.match && !sciNameData.match) {
+      return null;
+    }
 
     return (
       <tr>
+        <td className="row-num">{rowNum}</td>
         <td>
-          <div className="com-name">{species.comName}</div>
-          <div className="sci-name">{species.sciName}</div>
+          <div className="com-name" dangerouslySetInnerHTML={{ __html: comNameData.string }}></div>
+          <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameData.string }}></div>
         </td>
-        {showLocationsCol ? <td>{species.locations.length}</td> : null}
+        <td>{species.locations.length}</td>
         <td>{species.mostRecentObservationTime}</td>
         <td>{species.howManyCount}</td>
       </tr>

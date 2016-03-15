@@ -139,7 +139,6 @@ function filterLocations (locations, filter) {
 }
 
 function getLocationById (locations, locationId) {
-	console.log(locations);
 	return _.findWhere(locations, { i: locationId });
 }
 
@@ -223,6 +222,27 @@ function getSightings (locations, sightings, obsRecency, targetLocationID = null
 }
 
 
+function highlightString (string, filter) {
+	if (filter === '') {
+		return {
+			match: true,
+			string: string
+		};
+	}
+	var regexp = new RegExp('(' + filter + ')', 'gi');
+
+	var data = {
+		match: regexp.test(string),
+		string: string
+	};
+	if (data.match) {
+		data.string = string.replace(regexp, '<span class="highlight">$1</span>');
+		console.log(data.sttring);
+	}
+	return data;
+}
+
+
 export {
 	getBestBounds,
 	parseHotspotSightings,
@@ -231,5 +251,6 @@ export {
 	filterLocations,
 	getLocationSpeciesList,
 	getLocationById,
-	getSightings
+	getSightings,
+	highlightString
 };

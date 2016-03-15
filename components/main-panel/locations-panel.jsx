@@ -87,6 +87,7 @@ export class LocationsPanel extends React.Component {
       return (
         <LocationRow
           key={location.i}
+          filter={filter}
           location={location}
           sightings={locationSightings[location.i]}
           observationRecency={searchSettings.observationRecency}/>
@@ -114,6 +115,11 @@ export class LocationsPanel extends React.Component {
     );
   }
 
+  selectLocation (e) {
+    this.props.dispatch(actions.selectLocation($(e.target).closest('tr').data('locationId')));
+    this.props.dispatch(actions.showSpeciesPanel());
+  }
+
   getLocationList () {
     if (!this.props.locations.length) {
       return (
@@ -136,7 +142,7 @@ export class LocationsPanel extends React.Component {
             </th>
           </tr>
           </thead>
-          <tbody onClick={(e) => dispatch(actions.selectLocation($(e.target).closest('tr').data('locationId')))}>
+          <tbody onClick={(e) => this.selectLocation(e)}>
             <tr className="all-locations-row" data-location-id="">
               <td className="location">All locations</td>
               <td className="num-species">
@@ -217,7 +223,7 @@ LocationsPanel.PropTypes = {
 
 class LocationRow extends React.Component {
   render () {
-    const { sightings, observationRecency, location } = this.props;
+    const { sightings, observationRecency, filter, location } = this.props;
 
     var count = null;
     var rowClass = 'loading';
@@ -226,10 +232,11 @@ class LocationRow extends React.Component {
       rowClass = '';
     }
 
+    var locationNameData = helpers.highlightString(location.n, filter);
     return (
       <tr className={rowClass} data-location-id={location.i}>
         <td className="location">
-          <div title={location.n}>{location.n}</div>
+          <div title={location.n} dangerouslySetInnerHTML={{ __html: locationNameData.string }}></div>
         </td>
         <td className="num-species">
           <LocationSpeciesCount count={count} />
@@ -241,7 +248,8 @@ class LocationRow extends React.Component {
 LocationRow.PropTypes = {
   location: React.PropTypes.object.isRequired,
   sightings: React.PropTypes.object.isRequired,
-  observationRecency: React.PropTypes.number.isRequired
+  observationRecency: React.PropTypes.number.isRequired,
+  filter: React.PropTypes.string.isRequired
 };
 
 
