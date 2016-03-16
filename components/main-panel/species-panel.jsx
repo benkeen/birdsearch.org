@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, helpers, _, actions } from '../../core/core';
 import { Loader, ClosePanel, LocationsDropdown, LineLoader } from '../general/general';
-
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 
 export class SpeciesPanel extends React.Component {
@@ -215,6 +215,8 @@ class SpeciesRow extends React.Component {
       return null;
     }
 
+    var popover = <LocationsPopover locations={species.locations} />
+
     return (
       <tr>
         <td className="row-num">{rowNum}</td>
@@ -222,10 +224,40 @@ class SpeciesRow extends React.Component {
           <div className="com-name" dangerouslySetInnerHTML={{ __html: comNameData.string }}></div>
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameData.string }}></div>
         </td>
-        <td>{species.locations.length}</td>
+        <td>
+          <span >
+          <OverlayTrigger trigger="click" placement="bottom" overlay={popover} container={''}>
+            <span className="num-locations">{species.locations.length}</span>
+          </OverlayTrigger>
+          </span>
+        </td>
         <td>{species.mostRecentObservationTime}</td>
         <td>{species.howManyCount}</td>
       </tr>
     );
   }
 }
+
+
+class LocationsPopover extends React.Component {
+  getLocations () {
+    return _.map(this.props.locations, function (location) {
+      console.log(location);
+
+      return (<li>{location.n}</li>);
+    });
+  }
+  render () {
+    return (
+      <Popover title="Locations" id="popover">
+        <ul>
+          {this.getLocations()}
+        </ul>
+      </Popover>
+    );
+  }
+}
+SpeciesTable.PropTypes = {
+  locations: React.PropTypes.array.isRequired
+};
+
