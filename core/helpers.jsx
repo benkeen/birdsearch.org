@@ -237,9 +237,34 @@ function highlightString (string, filter) {
 	};
 	if (data.match) {
 		data.string = string.replace(regexp, '<span class="highlight">$1</span>');
-		console.log(data.sttring);
 	}
 	return data;
+}
+
+
+function sortLocations (locations, locationSightings, observationRecency, sort, sortDir, filter) {
+	var sortedLocations = locations;
+
+	// apply the appropriate sort
+	if (sort === C.LOCATION_SORT.FIELDS.LOCATION) {
+		sortedLocations = _.sortBy(locations, function (locInfo) { return locInfo.n; });
+	} else {
+		// the 10000 thing is a bit weird, but basically we just need to sort the species count from largest to smallest
+		// when the user first clicks the column. That does it.
+		sortedLocations = _.sortBy(locations, function (locInfo) {
+			var sightings = locationSightings[locInfo.i];
+			if (sightings.fetched) {
+				return 10000 - sightings.data[observationRecency - 1].numSpeciesRunningTotal;
+			}
+			return 10000;
+		});
+	}
+
+	if (sortDir === C.LOCATION_SORT.DIR.REVERSE) {
+		sortedLocations.reverse();
+	}
+
+	return filterLocations(sortedLocations, filter);
 }
 
 
@@ -252,5 +277,6 @@ export {
 	getLocationSpeciesList,
 	getLocationById,
 	getSightings,
-	highlightString
+	highlightString,
+	sortLocations
 };

@@ -67,6 +67,8 @@ class MainPanel extends React.Component {
           filter={locationsPanel.filter}
           locations={results.visibleLocations}
           locationSightings={results.locationSightings}
+          locationDataRefreshCounter={results.locationDataRefreshCounter}
+          visibleLocationsReturnedCounter={results.visibleLocationsReturnedCounter}
           selectedLocation={locationsPanel.selectedLocation}
           searchSettings={searchSettings}
           env={env} />

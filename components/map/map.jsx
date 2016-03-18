@@ -214,9 +214,8 @@ class Map extends React.Component {
         }
       }
     }, this);
-
-
   }
+
   /**
    * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
    * param specifies the search type; the second is a standardized array of hotspot data. Format:
@@ -235,13 +234,18 @@ class Map extends React.Component {
 
     locations.forEach(function (locInfo) {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
+      var locID = locInfo.i;
       if (!boundsObj.contains(latlng)) {
+        if (_.has(_data.all.markers, locID)) {
+          _data.all.markers[locID].setMap(null);
+        }
         return;
       }
 
-      // find out how many species are in this
-      var locID = locInfo.i;
-      addBirdMarker(locID, latlng, locInfo);
+      if (!_.has(_data.all.markers, locID)) {
+        addBirdMarker(locID, latlng, locInfo);
+      }
+      visibleHotspots.push(locInfo);
 
       //if (searchType === "all") {
       //  _addBirdMarker(locationID, latlng, currMarkerInfo);
@@ -250,8 +254,6 @@ class Map extends React.Component {
       //} else if (searchType === "hotspots") {
       //  _addHotspotMarker(locationID, latlng, currMarkerInfo);
       //}
-
-      visibleHotspots.push(locInfo);
     });
 
     // publish the visible hotspots: LocationsPanel needs to know about it
@@ -262,12 +264,12 @@ class Map extends React.Component {
     for (var locationID in _data.all.markers) {
       _data.all.markers[locationID].setMap(null);
     }
-    for (var locationID in _data.notable.markers) {
-      _data.notable.markers[locationID].setMap(null);
-    }
-    for (var locationID in _data.hotspots.markers) {
-      _data.hotspots.markers[locationID].setMap(null);
-    }
+    //for (var locationID in _data.notable.markers) {
+    //  _data.notable.markers[locationID].setMap(null);
+    //}
+    //for (var locationID in _data.hotspots.markers) {
+    //  _data.hotspots.markers[locationID].setMap(null);
+    //}
   }
 
   onMapBoundsChange () {

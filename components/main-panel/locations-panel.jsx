@@ -10,7 +10,8 @@ export class LocationsPanel extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      nextAnimation: { opacity: this.props.visibility ? 1 : 0 }
+      nextAnimation: { opacity: this.props.visibility ? 1 : 0 },
+      sortedFilteredLocations: []
     };
   }
 
@@ -19,7 +20,7 @@ export class LocationsPanel extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { visible, env } = this.props;
+    const { visible, env, locations, locationSightings, sort, sortDir, filter, searchSettings } = this.props;
 
     var animation = {};
     var hasAnimation = false;
@@ -44,6 +45,28 @@ export class LocationsPanel extends React.Component {
     if (hasAnimation) {
       this.setState({ nextAnimation: animation });
     }
+
+    // to cut down on unnecessary processing, we only re-sort the locations when necessary
+    var resortLocations = false;
+    if (nextProps.sort !== sort || nextProps.sortDir !== sortDir) {
+      resortLocations = true;
+    }
+
+    if (nextProps.visibleLocationsReturnedCounter !== this.props.visibleLocationsReturnedCounter) {
+      resortLocations = true;
+    }
+
+    // if the user is sorting by species and a new location's sightings was returned, we'll need to sort then as well
+    if (nextProps.sort === C.LOCATION_SORT.FIELDS.SPECIES && nextProps.locationDataRefreshCounter !== this.props.locationDataRefreshCounter) {
+      resortLocations = true;
+    }
+
+    if (resortLocations) {
+      var sortedFilteredLocations = helpers.sortLocations(nextProps.locations, nextProps.locationSightings,
+        nextProps.searchSettings.observationRecency, nextProps.sort, nextProps.sortDir, nextProps.filter);
+
+      this.sortedFilteredLocations = sortedFilteredLocations;
+    }
   }
 
   transitionBegin () {
@@ -59,31 +82,9 @@ export class LocationsPanel extends React.Component {
   }
 
   getLocationRows () {
-    const { locations, locationSightings, sort, sortDir, filter, searchSettings } = this.props;
+    const { locationSightings, filter, searchSettings } = this.props;
 
-    var sortedLocations = locations;
-
-    // apply the appropriate sort
-    if (sort === C.LOCATION_SORT.FIELDS.LOCATION) {
-      sortedLocations = _.sortBy(locations, function (locInfo) { return locInfo.n; });
-    } else {
-      // the 10000 thing is a bit weird, but basically we just need to sort the species count from largest to smalles
-      // when the user first clicks the column. That does it.
-      sortedLocations = _.sortBy(locations, function (locInfo) {
-        var sightings = locationSightings[locInfo.i];
-        if (sightings.fetched) {
-          return 10000 - sightings.data[searchSettings.observationRecency - 1].numSpeciesRunningTotal;
-        }
-        return 10000;
-      });
-    }
-
-    if (sortDir === C.LOCATION_SORT.DIR.REVERSE) {
-      sortedLocations.reverse();
-    }
-    var sortedFilteredLocations = helpers.filterLocations(sortedLocations, filter);
-
-    return _.map(sortedFilteredLocations, function (location) {
+    return _.map(this.sortedFilteredLocations, function (location) {
       return (
         <LocationRow
           key={location.i}
@@ -102,7 +103,6 @@ export class LocationsPanel extends React.Component {
 
   getLocationColSort () {
     const { sort, sortDir } = this.props;
-
     if (sort !== C.LOCATION_SORT.FIELDS.LOCATION) {
       return null;
     }
@@ -210,16 +210,16 @@ export class LocationsPanel extends React.Component {
     );
   }
 }
-LocationsPanel.PropTypes = {
-  visible: React.PropTypes.bool.isRequired,
-  sort: React.PropTypes.string.isRequired,
-  sortDir: React.PropTypes.string.isRequired,
-  filter: React.PropTypes.string.isRequired,
-  locations: React.PropTypes.array.isRequired,
-  locationSightings: React.PropTypes.object.isRequired,
-  observationRecency: React.PropTypes.number.isRequired,
-  env: React.PropTypes.object.isRequired
-};
+//LocationsPanel.PropTypes = {
+//  visible: React.PropTypes.bool.isRequired,
+//  sort: React.PropTypes.string.isRequired,
+//  sortDir: React.PropTypes.string.isRequired,
+//  filter: React.PropTypes.string.isRequired,
+//  locations: React.PropTypes.array.isRequired,
+//  locationSightings: React.PropTypes.object.isRequired,
+//  observationRecency: React.PropTypes.number.isRequired,
+//  env: React.PropTypes.object.isRequired
+//};
 
 
 class LocationRow extends React.Component {
@@ -246,19 +246,19 @@ class LocationRow extends React.Component {
     );
   }
 }
-LocationRow.PropTypes = {
-  location: React.PropTypes.object.isRequired,
-  sightings: React.PropTypes.object.isRequired,
-  observationRecency: React.PropTypes.number.isRequired,
-  filter: React.PropTypes.string.isRequired
-};
+//LocationRow.PropTypes = {
+//  location: React.PropTypes.object.isRequired,
+//  sightings: React.PropTypes.object.isRequired,
+//  observationRecency: React.PropTypes.number.isRequired,
+//  filter: React.PropTypes.string.isRequired
+//};
 
 
 // draws a pretty count element with the appropriate colour for the # of species
 class LocationSpeciesCount extends React.Component {
   render () {
     if (this.props.count === null) {
-      return (<LineLoader />);
+      return (<span>...</span>);
     }
 
     var className = 'range ';

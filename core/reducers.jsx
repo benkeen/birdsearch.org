@@ -173,7 +173,12 @@ function results (state = {
   allLocations: [], // stores everything from the last search
   visibleLocations: [], // stores all locations currently visible on the user's map
   locationSightings: {}, // an object of [location ID] => sighting info. Populated as need be, based on what's visible
-  searchCount: 0
+
+  // a simple way to announce that the location data has changed. This allows components to have a simple integer to compare
+  // against to know when it should update
+  visibleLocationsReturnedCounter: 0,
+  locationDataRefreshCounter: 0
+
 }, action) {
   switch (action.type) {
     case E.SEARCH_REQUEST_ENDED:
@@ -204,13 +209,15 @@ function results (state = {
         data: parsedData
       };
       return Object.assign({}, state, {
-        locationSightings: locationSightings
+        locationSightings: locationSightings,
+        locationDataRefreshCounter: state.locationDataRefreshCounter + 1
       });
       break;
 
     case E.VISIBLE_LOCATIONS_UPDATED:
       return Object.assign({}, state, {
-        visibleLocations: action.locations
+        visibleLocations: action.locations,
+        visibleLocationsReturnedCounter: state.visibleLocationsReturnedCounter + 1
       });
       break;
 

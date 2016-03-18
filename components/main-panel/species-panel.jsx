@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, helpers, _, actions } from '../../core/core';
 import { Loader, ClosePanel, LocationsDropdown, LineLoader } from '../general/general';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
+import { Overlay, Popover } from 'react-bootstrap';
 
 
 export class SpeciesPanel extends React.Component {
@@ -135,14 +135,14 @@ export class SpeciesPanel extends React.Component {
     );
   }
 }
-SpeciesPanel.PropTypes = {
-  visible: React.PropTypes.bool.isRequired,
-  locations: React.PropTypes.array.isRequired,
-  sightings: React.PropTypes.object.isRequired,
-  searchSettings: React.PropTypes.object.isRequired,
-  speciesFilter: React.PropTypes.string.isRequired,
-  env: React.PropTypes.object.isRequired
-};
+//SpeciesPanel.PropTypes = {
+//  visible: React.PropTypes.bool.isRequired,
+//  locations: React.PropTypes.array.isRequired,
+//  sightings: React.PropTypes.object.isRequired,
+//  searchSettings: React.PropTypes.object.isRequired,
+//  speciesFilter: React.PropTypes.string.isRequired,
+//  env: React.PropTypes.object.isRequired
+//};
 
 
 class SpeciesTable extends React.Component {
@@ -198,13 +198,27 @@ class SpeciesTable extends React.Component {
     );
   }
 }
-SpeciesTable.PropTypes = {
-  species: React.PropTypes.array.isRequired,
-  filter: React.PropTypes.string.isRequired
-};
+//SpeciesTable.PropTypes = {
+//  species: React.PropTypes.array.isRequired,
+//  filter: React.PropTypes.string.isRequired
+//};
 
 
 class SpeciesRow extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      show: false
+    };
+  }
+
+  getLocations () {
+    console.log(this.props.locations);
+    return _.map(this.props.locations, function (location) {
+      return (<li>{location}</li>);
+    });
+  }
+
   render () {
     const { species, filter, rowNum } = this.props;
 
@@ -215,7 +229,7 @@ class SpeciesRow extends React.Component {
       return null;
     }
 
-    var popover = <LocationsPopover locations={species.locations} />
+    var locations = this.getLocations();
 
     return (
       <tr>
@@ -225,11 +239,15 @@ class SpeciesRow extends React.Component {
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameData.string }}></div>
         </td>
         <td>
-          <span >
-          <OverlayTrigger trigger="click" placement="bottom" overlay={popover} container={''}>
-            <span className="num-locations">{species.locations.length}</span>
-          </OverlayTrigger>
+          <span className="num-locations" ref="locationList" onClick={() => { this.setState({ show: !this.state.show }); }}>
+            {species.locations.length}
           </span>
+
+          <Overlay placement="bottom" show={this.state.show} container={this.refs.locationList}>
+            <Popover title="Locations" id="popover">
+              <ul>{locations}</ul>
+            </Popover>
+          </Overlay>
         </td>
         <td>{species.mostRecentObservationTime}</td>
         <td>{species.howManyCount}</td>
@@ -237,27 +255,4 @@ class SpeciesRow extends React.Component {
     );
   }
 }
-
-
-class LocationsPopover extends React.Component {
-  getLocations () {
-    return _.map(this.props.locations, function (location) {
-      console.log(location);
-
-      return (<li>{location.n}</li>);
-    });
-  }
-  render () {
-    return (
-      <Popover title="Locations" id="popover">
-        <ul>
-          {this.getLocations()}
-        </ul>
-      </Popover>
-    );
-  }
-}
-SpeciesTable.PropTypes = {
-  locations: React.PropTypes.array.isRequired
-};
 
