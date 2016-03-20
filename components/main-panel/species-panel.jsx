@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, helpers, _, actions } from '../../core/core';
 import { Loader, ClosePanel, LocationsDropdown, LineLoader } from '../general/general';
-import { Overlay, Popover } from 'react-bootstrap';
+import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 
 
 export class SpeciesPanel extends React.Component {
@@ -135,23 +135,24 @@ export class SpeciesPanel extends React.Component {
     );
   }
 }
-//SpeciesPanel.PropTypes = {
-//  visible: React.PropTypes.bool.isRequired,
-//  locations: React.PropTypes.array.isRequired,
-//  sightings: React.PropTypes.object.isRequired,
-//  searchSettings: React.PropTypes.object.isRequired,
-//  speciesFilter: React.PropTypes.string.isRequired,
-//  env: React.PropTypes.object.isRequired
-//};
+SpeciesPanel.PropTypes = {
+  visible: React.PropTypes.bool.isRequired,
+  locations: React.PropTypes.array.isRequired,
+  sightings: React.PropTypes.object.isRequired,
+  searchSettings: React.PropTypes.object.isRequired,
+  speciesFilter: React.PropTypes.string.isRequired,
+  env: React.PropTypes.object.isRequired
+};
 
 
 class SpeciesTable extends React.Component {
   getRows () {
-    const { species, filter } = this.props;
+    const { dispatch, species, filter } = this.props;
 
     return _.map(species, function (speciesInfo, index) {
       return (
         <SpeciesRow
+          dispatch={dispatch}
           filter={filter}
           species={speciesInfo}
           rowNum={index+1}
@@ -198,10 +199,10 @@ class SpeciesTable extends React.Component {
     );
   }
 }
-//SpeciesTable.PropTypes = {
-//  species: React.PropTypes.array.isRequired,
-//  filter: React.PropTypes.string.isRequired
-//};
+SpeciesTable.PropTypes = {
+  species: React.PropTypes.array.isRequired,
+  filter: React.PropTypes.string.isRequired
+};
 
 
 class SpeciesRow extends React.Component {
@@ -212,15 +213,20 @@ class SpeciesRow extends React.Component {
     };
   }
 
+  selectLocation (dispatch, el) {
+    $('body').trigger('click');
+    var locationID = $(el).data('id');
+    dispatch(actions.selectLocation(locationID));
+  }
+
   getLocations () {
-    console.log(this.props.locations);
-    return _.map(this.props.locations, function (location) {
-      return (<li>{location}</li>);
+    return _.map(this.props.species.locations, function (locInfo) {
+      return (<li key={locInfo.locID} data-id={locInfo.locID}>{locInfo.locName}</li>);
     });
   }
 
   render () {
-    const { species, filter, rowNum } = this.props;
+    const { dispatch, species, filter, rowNum } = this.props;
 
     var comNameData = helpers.highlightString(species.comName, filter);
     var sciNameData = helpers.highlightString(species.sciName, filter);
@@ -238,16 +244,17 @@ class SpeciesRow extends React.Component {
           <div className="com-name" dangerouslySetInnerHTML={{ __html: comNameData.string }}></div>
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameData.string }}></div>
         </td>
-        <td>
-          <span className="num-locations" ref="locationList" onClick={() => { this.setState({ show: !this.state.show }); }}>
-            {species.locations.length}
-          </span>
-
-          <Overlay placement="bottom" show={this.state.show} container={this.refs.locationList}>
-            <Popover title="Locations" id="popover">
-              <ul>{locations}</ul>
-            </Popover>
-          </Overlay>
+        <td ref="cell" className="species-num-locations-cell">
+          <OverlayTrigger trigger="click" placement="bottom" rootClose={true} show={this.state.show} container={this.refs.cell}
+            overlay={
+              <Popover title="Locations" id="locations-popover">
+                <ul onClick={(e) => this.selectLocation(dispatch, e.target)}>{locations}</ul>
+              </Popover>
+            }>
+            <span className="species-num-locations">
+              {species.locations.length}
+            </span>
+          </OverlayTrigger>
         </td>
         <td>{species.mostRecentObservationTime}</td>
         <td>{species.howManyCount}</td>

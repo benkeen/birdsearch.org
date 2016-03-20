@@ -288,3 +288,4 @@ class LocationSpeciesCount extends React.Component {
 LocationRow.PropTypes = {
   //count: React.PropTypes.number.isRequired // or null
 };
+

@@ -305,7 +305,6 @@ body .filter-field {
 	color: white;
 }
 
-
 .row-num {
 	font-size: 9px;
 	color: #efefef;
@@ -320,7 +319,7 @@ body .filter-field {
 	color: #999999;
 }
 
-.num-locations {
+.species-num-locations {
 	position: relative;
 	width: 40px;
 	background-color: rgba(26, 29, 34, 0.91);
@@ -329,4 +328,36 @@ body .filter-field {
 	border-radius: 3px;
 	text-align: center;
 	display: inline-block;
+	cursor: pointer;
+	padding: 2px;
+	font-size: 12px;
+}
+.species-num-locations-cell {
+	position: relative;
+	#locations-popover {
+		width: 300px;
+		margin-left: 30px;
+		li {
+			cursor: pointer;
+			&:hover {
+				color: $blue;
+			}
+		}
+	}
+	.popover-content {
+		font-size: 12px;
+		max-height: 200px;
+		overflow: auto;
+		li {
+			padding: 3px 0;
+			border-bottom: 1px solid #222222;
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+	}
+	ul {
+		list-style-type: none;
+		margin: 0;
+	}
 }

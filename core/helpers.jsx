@@ -184,7 +184,7 @@ function getSightings (locations, sightings, obsRecency, targetLocationID = null
 				obsValid: info.obsValid
 			});
 
-			dataBySpecies[sciName].locations.push(info.locName);
+			dataBySpecies[sciName].locations.push({ locName: info.locName, locID: info.locID });
 		});
 	});
 
