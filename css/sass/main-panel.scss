@@ -48,7 +48,6 @@
 }
 
 #locations-panel {
-	color: #cccccc;
 	position: absolute;
 	top: 60px;
 	left: 0;
@@ -126,9 +125,6 @@
 		flex-direction: column;
 		flex: 1;
 		overflow-x: hidden;
-		table {
-			flex: 1;
-		}
 	}
 	footer {
 		flex: 0 0 auto;
@@ -144,6 +140,9 @@
 			}
 		}
 	}
+}
+#species-panel-content > div .panel table {
+	flex: 1;
 }
 
 .filter-locations-row {
@@ -174,14 +173,23 @@ body .clear-filter-icon {
 
 	h1 {
 		font-size: 24px;
-		margin-bottom: 18px;
+		margin-bottom: 0;
 		border-bottom: 1px solid #666666;
+		a {
+			color: #cccccc;
+		}
+	}
+	.delimiter {
+		font-size: 8pt;
+		color: #666666;
+		margin: 6px;
 	}
 }
 
 .species-table {
 	flex: 1;
-	overflow-x: scroll;
+	overflow: hidden;
+
 	.filter-field {
 		margin: 0;
 		&::-webkit-input-placeholder,
@@ -191,18 +199,27 @@ body .clear-filter-icon {
 			color: #333333;
 		}
 	}
+	.row-num {
+		width: 4%;
+	}
 	.species-col {
+		width: 45%;
 		position: relative;
-		span { display: inline-block; }
+		span {
+			display: inline-block;
+		}
 		input {
 			float: right;
 		}
 	}
 	.last-seen {
-		width: 160px;
+		width: 17%;
 	}
 	.locations-seen {
-		width: 160px;
+		width: 17%;
+	}
+	.num-reported {
+		width: 17%;
 	}
 }
 
@@ -332,6 +349,7 @@ body .filter-field {
 	padding: 2px;
 	font-size: 12px;
 }
+
 .species-num-locations-cell {
 	position: relative;
 	#locations-popover {
@@ -361,3 +379,20 @@ body .filter-field {
 		margin: 0;
 	}
 }
+.species-table {
+	display: flex;
+	flex-direction: column;
+}
+.species-table-header {
+	flex: 0;
+	border-bottom: 2px solid black;
+}
+.species-header {
+	margin-top: 8px;
+}
+.species-table-content-wrapper {
+	flex: 1;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+

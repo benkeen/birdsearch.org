@@ -108,7 +108,7 @@ export class LocationsPanel extends React.Component {
     }
 
     var className = 'col-sort glyphicon ';
-    className += (sortDir === C.LOCATION_SORT.DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
+    className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
 
     return (
       <span className={className} />
@@ -210,16 +210,16 @@ export class LocationsPanel extends React.Component {
     );
   }
 }
-//LocationsPanel.PropTypes = {
-//  visible: React.PropTypes.bool.isRequired,
-//  sort: React.PropTypes.string.isRequired,
-//  sortDir: React.PropTypes.string.isRequired,
-//  filter: React.PropTypes.string.isRequired,
-//  locations: React.PropTypes.array.isRequired,
-//  locationSightings: React.PropTypes.object.isRequired,
-//  observationRecency: React.PropTypes.number.isRequired,
-//  env: React.PropTypes.object.isRequired
-//};
+LocationsPanel.PropTypes = {
+  visible: React.PropTypes.bool.isRequired,
+  sort: React.PropTypes.string.isRequired,
+  sortDir: React.PropTypes.string.isRequired,
+  filter: React.PropTypes.string.isRequired,
+  locations: React.PropTypes.array.isRequired,
+  locationSightings: React.PropTypes.object.isRequired,
+  observationRecency: React.PropTypes.number.isRequired,
+  env: React.PropTypes.object.isRequired
+};
 
 
 class LocationRow extends React.Component {
@@ -246,12 +246,12 @@ class LocationRow extends React.Component {
     );
   }
 }
-//LocationRow.PropTypes = {
-//  location: React.PropTypes.object.isRequired,
-//  sightings: React.PropTypes.object.isRequired,
-//  observationRecency: React.PropTypes.number.isRequired,
-//  filter: React.PropTypes.string.isRequired
-//};
+LocationRow.PropTypes = {
+  location: React.PropTypes.object.isRequired,
+  sightings: React.PropTypes.object.isRequired,
+  observationRecency: React.PropTypes.number.isRequired,
+  filter: React.PropTypes.string.isRequired
+};
 
 
 // draws a pretty count element with the appropriate colour for the # of species

@@ -59,12 +59,18 @@ export class SpeciesPanel extends React.Component {
   }
 
   getTitle () {
-    const { locations, selectedLocation } = this.props;
+    const { dispatch, locations, selectedLocation } = this.props;
 
     var title = 'All Locations';
     if (selectedLocation) {
       var locationInfo = helpers.getLocationById(locations, selectedLocation);
-      title = locationInfo.n;
+      title = (
+        <span>
+          <a href="#" onClick={(e) => { e.preventDefault(); dispatch(actions.selectLocation('')); }}>All Locations</a>
+          <span className="delimiter glyphicon glyphicon-triangle-right"></span>
+          <span>{locationInfo.n}</span>
+        </span>
+      );
     }
 
     return (
@@ -86,11 +92,6 @@ export class SpeciesPanel extends React.Component {
     };
 
     var numBirdSpecies = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
-    //console.log(numBirdSpecies);
-    //if (!numBirdSpecies) {
-    //  numBirdSpecies = <LineLoader />;
-    //}
-
     var footerStyle = {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
@@ -146,16 +147,38 @@ SpeciesPanel.PropTypes = {
 
 
 class SpeciesTable extends React.Component {
+  getContent () {
+    const { species } = this.props;
+
+    if (!species.length) {
+      return null;
+    }
+
+    return (
+      <tbody>
+        {this.getRows()}
+      </tbody>
+    )
+  }
+
   getRows () {
     const { dispatch, species, filter } = this.props;
 
     return _.map(species, function (speciesInfo, index) {
+      var comNameData = helpers.highlightString(speciesInfo.comName, filter);
+      var sciNameData = helpers.highlightString(speciesInfo.sciName, filter);
+      if (!comNameData.match && !sciNameData.match) {
+        return null;
+      }
+
       return (
         <SpeciesRow
           dispatch={dispatch}
           filter={filter}
           species={speciesInfo}
           rowNum={index+1}
+          comName={comNameData.string}
+          sciName={sciNameData.string}
           key={index} />
       );
     });
@@ -176,25 +199,27 @@ class SpeciesTable extends React.Component {
 
     return (
       <div className="species-table">
-        <table className="table table-striped">
+        <table className="species-table-header table table-striped">
           <thead>
             <tr>
               <th className="row-num"></th>
               <th className="species-col">
-                <span>Species</span>
+                <span className="species-header">Species</span>
                 <input type="text" placeholder="Filter Species" className="filter-field" value={filter}
                    onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
                 {this.getClearSpeciesFilterIcon()}
               </th>
               <th className="locations-seen">Locations Seen</th>
               <th className="last-seen">Last Seen</th>
-              <th>Num Reported</th>
+              <th className="num-reported">Num Reported</th>
             </tr>
           </thead>
-          <tbody>
-          {this.getRows()}
-          </tbody>
         </table>
+        <div className="species-table-content-wrapper">
+          <table className="species-table-content table table-striped">
+            {this.getContent()}
+          </table>
+        </div>
       </div>
     );
   }
@@ -226,25 +251,17 @@ class SpeciesRow extends React.Component {
   }
 
   render () {
-    const { dispatch, species, filter, rowNum } = this.props;
-
-    var comNameData = helpers.highlightString(species.comName, filter);
-    var sciNameData = helpers.highlightString(species.sciName, filter);
-
-    if (!comNameData.match && !sciNameData.match) {
-      return null;
-    }
-
+    const { dispatch, species, comName, sciName, rowNum } = this.props;
     var locations = this.getLocations();
 
     return (
       <tr>
         <td className="row-num">{rowNum}</td>
-        <td>
-          <div className="com-name" dangerouslySetInnerHTML={{ __html: comNameData.string }}></div>
-          <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameData.string }}></div>
+        <td className="species-col">
+          <div className="com-name" dangerouslySetInnerHTML={{ __html: comName }}></div>
+          <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciName }}></div>
         </td>
-        <td ref="cell" className="species-num-locations-cell">
+        <td ref="cell" className="locations-seen species-num-locations-cell">
           <OverlayTrigger trigger="click" placement="bottom" rootClose={true} show={this.state.show} container={this.refs.cell}
             overlay={
               <Popover title="Locations" id="locations-popover">
@@ -256,8 +273,8 @@ class SpeciesRow extends React.Component {
             </span>
           </OverlayTrigger>
         </td>
-        <td>{species.mostRecentObservationTime}</td>
-        <td>{species.howManyCount}</td>
+        <td className="last-seen">{species.mostRecentObservationTime}</td>
+        <td className="num-reported">{species.howManyCount}</td>
       </tr>
     );
   }

@@ -1,3 +1,5 @@
+@import "variables";
+
 * {
 	box-sizing: border-box;
 }
@@ -7,7 +9,7 @@ body {
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	line-height: 20px;
 	font-size: 14pt;
-	color: #555555;
+	color: #cccccc;
 	overflow: hidden;
 	background-color: #222222;
 	background-image: none;
@@ -25,7 +27,7 @@ section {
 	clear: both;
 }
 a:hover {
-	color: #990000;
+	color: $blue;
 	text-decoration: none;
 }
 .tablesorter thead th {

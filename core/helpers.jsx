@@ -260,7 +260,7 @@ function sortLocations (locations, locationSightings, observationRecency, sort, 
 		});
 	}
 
-	if (sortDir === C.LOCATION_SORT.DIR.REVERSE) {
+	if (sortDir === C.SORT_DIR.REVERSE) {
 		sortedLocations.reverse();
 	}
 

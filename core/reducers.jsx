@@ -230,17 +230,17 @@ function results (state = {
 function locationsPanel (state = {
   visible: false,
   sort: C.LOCATION_SORT.FIELDS.LOCATION,
-  sortDir: C.LOCATION_SORT.DIR.DEFAULT,
+  sortDir: C.SORT_DIR.DEFAULT,
   filter: '',
   selectedLocation: ''
 }, action) {
 
   switch (action.type) {
     case E.LOCATIONS_SORTED:
-      var newSort = C.LOCATION_SORT.DIR.DEFAULT;
+      var newSort = C.SORT_DIR.DEFAULT;
       if (state.sort === action.sort) {
-        if (state.sortDir === C.LOCATION_SORT.DIR.DEFAULT) {
-          newSort = C.LOCATION_SORT.DIR.REVERSE;
+        if (state.sortDir === C.SORT_DIR.DEFAULT) {
+          newSort = C.SORT_DIR.REVERSE;
         }
       }
       return Object.assign({}, state, {
@@ -284,7 +284,9 @@ function locationsPanel (state = {
 
 function speciesPanel (state = {
   visible: false,
-  filter: ''
+  filter: '',
+  sort: C.SPECIES_SORT.FIELDS.SPECIES,
+  sortDir: C.SORT_DIR.DEFAULT
 }, action) {
 
   switch (action.type) {
