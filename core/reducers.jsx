@@ -221,6 +221,13 @@ function results (state = {
       });
       break;
 
+    case E.SET_LOCATION_FILTER:
+      console.log("updating...");
+      return Object.assign({}, state, {
+        locationDataRefreshCounter: state.locationDataRefreshCounter + 1
+      });
+      break;
+
     default:
       return state;
   }

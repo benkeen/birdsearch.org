@@ -352,21 +352,20 @@ body .filter-field {
 
 .species-num-locations-cell {
 	position: relative;
-	#locations-popover {
-		width: 300px;
-		margin-left: 30px;
-		li {
-			cursor: pointer;
-			&:hover {
-				color: $blue;
-			}
-		}
-	}
+}
+
+#locations-popover {
+	width: 300px;
+	margin-left: 30px;
 	.popover-content {
 		font-size: 12px;
 		max-height: 200px;
 		overflow: auto;
 		li {
+			cursor: pointer;
+			&:hover {
+				color: $blue;
+			}
 			padding: 3px 0;
 			border-bottom: 1px solid #222222;
 			&:last-child {
@@ -379,6 +378,8 @@ body .filter-field {
 		margin: 0;
 	}
 }
+
+
 .species-table {
 	display: flex;
 	flex-direction: column;

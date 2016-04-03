@@ -19,8 +19,51 @@ export class LocationsPanel extends React.Component {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
   }
 
+  // fine-tunes exactly what data changing should cause this component to update. Does double work of sorting/filtering
+  // the locations as the data changes
+  shouldComponentUpdate (nextProps) {
+    const { visible, sort, sortDir, filter, env } = this.props;
+
+    var shouldUpdate = false;
+
+    // only sort the locations when needed
+    var resortLocations = false;
+    if (nextProps.sort !== sort || nextProps.sortDir !== sortDir) {
+      resortLocations = true;
+    }
+    if (nextProps.visibleLocationsReturnedCounter !== this.props.visibleLocationsReturnedCounter) {
+      resortLocations = true;
+    }
+    // currently sorting by species and a new location's sightings was returned
+    if (nextProps.locationDataRefreshCounter !== this.props.locationDataRefreshCounter) {
+      shouldUpdate = true;
+      if (nextProps.sort === C.LOCATION_SORT.FIELDS.SPECIES) {
+        resortLocations = true;
+      }
+    }
+    if (nextProps.filter !== filter) {
+      resortLocations = true;
+    }
+
+    if (resortLocations) {
+      shouldUpdate = true;
+      var sortedFilteredLocations = helpers.sortLocations(nextProps.locations, nextProps.locationSightings,
+        nextProps.searchSettings.observationRecency, nextProps.sort, nextProps.sortDir, nextProps.filter);
+      this.sortedFilteredLocations = sortedFilteredLocations;
+    }
+
+    if (nextProps.visible !== visible) {
+      shouldUpdate = true;
+    }
+    if (nextProps.env.windowHeight !== env.windowHeight && visible) {
+      shouldUpdate = true;
+    }
+
+    return shouldUpdate;
+  }
+
   componentWillReceiveProps (nextProps) {
-    const { visible, env, locations, locationSightings, sort, sortDir, filter, searchSettings } = this.props;
+    const { visible, env } = this.props;
 
     var animation = {};
     var hasAnimation = false;
@@ -44,28 +87,6 @@ export class LocationsPanel extends React.Component {
 
     if (hasAnimation) {
       this.setState({ nextAnimation: animation });
-    }
-
-    // to cut down on unnecessary processing, we only re-sort the locations when necessary
-    var resortLocations = false;
-    if (nextProps.sort !== sort || nextProps.sortDir !== sortDir) {
-      resortLocations = true;
-    }
-
-    if (nextProps.visibleLocationsReturnedCounter !== this.props.visibleLocationsReturnedCounter) {
-      resortLocations = true;
-    }
-
-    // if the user is sorting by species and a new location's sightings was returned, we'll need to sort then as well
-    if (nextProps.sort === C.LOCATION_SORT.FIELDS.SPECIES && nextProps.locationDataRefreshCounter !== this.props.locationDataRefreshCounter) {
-      resortLocations = true;
-    }
-
-    if (resortLocations) {
-      var sortedFilteredLocations = helpers.sortLocations(nextProps.locations, nextProps.locationSightings,
-        nextProps.searchSettings.observationRecency, nextProps.sort, nextProps.sortDir, nextProps.filter);
-
-      this.sortedFilteredLocations = sortedFilteredLocations;
     }
   }
 
