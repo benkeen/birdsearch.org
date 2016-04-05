@@ -100,7 +100,7 @@ function mapSettings (state = {
       break;
 
     case E.WINDOW_RESIZED:
-    case E.HOTSPOT_SIGHTINGS_RETURNED:
+    case E.HOTSPOT_SIGHTINGS_UPDATE:
     case E.SEARCH_LOCATIONS_RETURNED:
       return Object.assign({}, state, {
         searchCounter: state.searchCounter + 1
@@ -209,7 +209,13 @@ function results (state = {
         data: parsedData
       };
       return Object.assign({}, state, {
-        locationSightings: locationSightings,
+        locationSightings: locationSightings
+        //locationDataRefreshCounter: state.locationDataRefreshCounter + 1
+      });
+      break;
+
+    case E.HOTSPOT_SIGHTINGS_UPDATE:
+      return Object.assign({}, state, {
         locationDataRefreshCounter: state.locationDataRefreshCounter + 1
       });
       break;
@@ -222,7 +228,6 @@ function results (state = {
       break;
 
     case E.SET_LOCATION_FILTER:
-      console.log("updating...");
       return Object.assign({}, state, {
         locationDataRefreshCounter: state.locationDataRefreshCounter + 1
       });
