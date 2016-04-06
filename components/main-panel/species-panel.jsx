@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, helpers, _, actions } from '../../core/core';
-import { Loader, ClosePanel, LocationsDropdown, LineLoader } from '../general/general';
+import { Loader, ClosePanel, LocationsDropdown, LineLoader, LocationSpeciesCount } from '../general/general';
 import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 
 
@@ -59,11 +59,18 @@ export class SpeciesPanel extends React.Component {
   }
 
   getTitle () {
-    const { dispatch, locations, selectedLocation } = this.props;
+    const { dispatch, locations, selectedLocation, searchSettings, sightings } = this.props;
 
     var title = 'All Locations';
+    var counter = null;
     if (selectedLocation) {
       var locationInfo = helpers.getLocationById(locations, selectedLocation);
+
+      if (sightings[selectedLocation].fetched) {
+        var numSpecies = sightings[selectedLocation].data[searchSettings.observationRecency-1].numSpeciesRunningTotal;
+        counter = <LocationSpeciesCount count={numSpecies} />;
+      }
+
       title = (
         <span>
           <a href="#" onClick={(e) => { e.preventDefault(); dispatch(actions.selectLocation('')); }}>All Locations</a>
@@ -76,6 +83,7 @@ export class SpeciesPanel extends React.Component {
     return (
       <div className="species-heading-row">
         <h1>{title}</h1>
+        {counter}
       </div>
     );
   }
@@ -91,7 +99,14 @@ export class SpeciesPanel extends React.Component {
       width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH
     };
 
-    var numBirdSpecies = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
+    var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
+    var numBirdSpecies = results.count;
+
+    var loader = null;
+    if (!results.allFetched) {
+      loader = <LineLoader className="species-loading" />;
+    }
+
     var footerStyle = {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
@@ -108,7 +123,11 @@ export class SpeciesPanel extends React.Component {
 
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
           <div>
-            <h2>Bird species <span className="total-count num-species">{numBirdSpecies}</span></h2>
+            <h2>
+              Bird species
+              <span className="total-count num-species">{numBirdSpecies}</span>
+              {loader}
+            </h2>
             <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
           </div>
         </header>

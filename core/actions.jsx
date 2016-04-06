@@ -160,15 +160,24 @@ function updateVisibleLocations (visibleLocations) {
 function getBirdHotspotObservations (dispatch, locations, allLocationSightings) {
  // var hasAtLeastOneRequest = false;
 
-  var timeout;
-  var debounce = function (json, currLocationID) {
+  //var timeout;
+  //var debounce = function (json, currLocationID) {
+  //  dispatch(locationSightingsFound(dispatch, currLocationID, json));
+  //  if (timeout) {
+  //    clearTimeout(timeout);
+  //  }
+  //  timeout = setTimeout(function () {
+  //    dispatch(updateLocationSightings())
+  //  }, 300);
+  //};
+
+  var throttleUpdate = _.throttle(function () {
+    dispatch(updateLocationSightings())
+  }, 300);
+
+  var processHotspotSightings = function (json, currLocationID) {
     dispatch(locationSightingsFound(dispatch, currLocationID, json));
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(function () {
-      dispatch(updateLocationSightings())
-    }, 300);
+    throttleUpdate();
   };
 
   locations.forEach(function (locInfo) {
@@ -181,7 +190,7 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
 
     fetchSingleHotspotSightings(currLocationID)
       .then(res => res.json())
-      .then(json => debounce(json, currLocationID)
+      .then(json => processHotspotSightings(json, currLocationID)
         //error => dispatch(searchLocationRequestError(dispatch, error))
       );
   });

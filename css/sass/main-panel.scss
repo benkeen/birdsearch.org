@@ -184,6 +184,11 @@ body .clear-filter-icon {
 		color: #666666;
 		margin: 6px;
 	}
+	.range {
+		float: right;
+		text-align: center;
+		margin-top: -32px;
+	}
 }
 
 .species-table {
@@ -397,3 +402,10 @@ body .filter-field {
 	overflow-y: auto;
 }
 
+.species-loading {
+	display: inline-block;
+	margin-left: 4px;
+	> div {
+		background-color: white;
+	}
+}

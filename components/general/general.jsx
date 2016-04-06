@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { _ } from '../../core/core';
 
 
+// TODO rename
 class Loader extends React.Component {
   constructor (props) {
     super(props);
@@ -58,8 +59,13 @@ class LineLoader extends React.Component {
   }
 
   render () {
+    var classes = 'line-loader';
+    if (this.props.className) {
+      classes += ' ' + this.props.className;
+    }
+
     return (
-      <div className="line-loader">
+      <div className={classes}>
         <div className="bounce1"></div>
         <div className="bounce2"></div>
         <div className="bounce3"></div>
@@ -67,6 +73,9 @@ class LineLoader extends React.Component {
     );
   }
 }
+LineLoader.PropTypes = {
+  className: React.PropTypes.string
+};
 
 
 class LocationsDropdown extends React.Component {
@@ -94,9 +103,47 @@ LocationsDropdown.PropTypes = {
   selected: React.PropTypes.string.isRequired
 };
 
+// draws a pretty count element with the appropriate colour for the # of species
+class LocationSpeciesCount extends React.Component {
+  render () {
+    if (this.props.count === null) {
+      return (<span>...</span>);
+    }
+
+    var className = 'range ';
+    if (this.props.count < 10) {
+      className += 'range1';
+    } else if (this.props.count < 20) {
+      className += 'range2';
+    } else if (this.props.count < 30) {
+      className += 'range3';
+    } else if (this.props.count < 40) {
+      className += 'range4';
+    } else if (this.props.count < 50) {
+      className += 'range5';
+    } else if (this.props.count < 60) {
+      className += 'range6';
+    } else if (this.props.count < 70) {
+      className += 'range7';
+    } else {
+      className += 'range8';
+    }
+
+    return (
+      <span className={className}>{this.props.count}</span>
+    );
+  }
+}
+LocationSpeciesCount.PropTypes = {
+  //count: React.PropTypes.number.isRequired // or null
+};
+
+
+
 export {
   Loader,
   ClosePanel,
   LineLoader,
-  LocationsDropdown
+  LocationsDropdown,
+  LocationSpeciesCount
 };
