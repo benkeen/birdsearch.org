@@ -190,16 +190,18 @@ export class LocationsPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, locations, filter } = this.props;
+    const { dispatch, locations, locationSightings, filter } = this.props;
 
     if (!locations.length) {
       return null;
     }
 
+    var numLoadedLocations = helpers.getNumLoadedLocations(locations, locationSightings);
+
     var loader = null;
-    //if (!results.allFetched) {
-    //  loader = <LineLoader className="species-loading" />;
-    //}
+    if (numLoadedLocations !== locations.length) {
+      loader = <LineLoader className="species-loading" />;
+    }
 
     // height stored in constants so we can compute the various heights dynamically for velocity
     var footerStyle = {
@@ -212,7 +214,7 @@ export class LocationsPanel extends React.Component {
           <div>
             <h2>
               Locations
-              <span className="total-count num-locations">{locations.length}</span>
+              <span className="total-count num-locations">{numLoadedLocations}</span>
               {loader}
             </h2>
 

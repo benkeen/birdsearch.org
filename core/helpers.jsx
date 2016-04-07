@@ -271,6 +271,20 @@ function sortLocations (locations, locationSightings, observationRecency, sort, 
 }
 
 
+function getNumLoadedLocations (locations, sightings) {
+	var count = 0;
+
+	_.each(locations, function (location) {
+		if (sightings[location.i].fetched) {
+			count++;
+			//return 10000 - sightings.data[observationRecency - 1].numSpeciesRunningTotal;
+		}
+	});
+
+	return count;
+}
+
+
 export {
 	getBestBounds,
 	parseHotspotSightings,
@@ -281,5 +295,6 @@ export {
 	getLocationById,
 	getSightings,
 	highlightString,
-	sortLocations
+	sortLocations,
+	getNumLoadedLocations
 };
