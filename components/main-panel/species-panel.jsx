@@ -89,7 +89,8 @@ export class SpeciesPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, locations, sightings, searchSettings, selectedLocation, speciesFilter, env } = this.props;
+    const { dispatch, locations, sightings, searchSettings, selectedLocation, speciesFilter, env,
+      sort, sortDir } = this.props;
 
     if (!locations.length) {
       return null;
@@ -143,7 +144,9 @@ export class SpeciesPanel extends React.Component {
                   species={sightingsData}
                   selectedLocation={selectedLocation}
                   observationRecency={searchSettings.observationRecency}
-                  filter={speciesFilter} />
+                  filter={speciesFilter}
+                  sort={sort}
+                  sortDir={sortDir} />
               </div>
               <footer style={footerStyle} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
                 <span className="glyphicon glyphicon-triangle-top" />
@@ -213,6 +216,20 @@ class SpeciesTable extends React.Component {
     );
   }
 
+  getSpeciesColSort (field) {
+    const { sort, sortDir } = this.props;
+    if (sort !== field) {
+      return null;
+    }
+
+    var className = 'col-sort glyphicon ';
+    className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
+
+    return (
+      <span className={className} />
+    );
+  }
+
   render () {
     const { filter, dispatch } = this.props;
 
@@ -223,14 +240,26 @@ class SpeciesTable extends React.Component {
             <tr>
               <th className="row-num"></th>
               <th className="species-col">
-                <span className="species-header">Species</span>
+                <span onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.SPECIES))}>
+                  <span className="species-header">Species</span>
+                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.SPECIES)}
+                </span>
                 <input type="text" placeholder="Filter Species" className="filter-field" value={filter}
-                   onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
+                  onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
                 {this.getClearSpeciesFilterIcon()}
               </th>
-              <th className="locations-seen">Locations Seen</th>
-              <th className="last-seen">Last Seen</th>
-              <th className="num-reported">Num Reported</th>
+              <th className="locations-seen" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS))}>
+                Locations Seen
+                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS)}
+              </th>
+              <th className="last-seen" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.LAST_SEEN))}>
+                Last Seen
+                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.LAST_SEEN)}
+              </th>
+              <th className="num-reported" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_REPORTED))}>
+                Num Reported
+                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_REPORTED)}
+              </th>
             </tr>
           </thead>
         </table>
@@ -245,7 +274,11 @@ class SpeciesTable extends React.Component {
 }
 SpeciesTable.PropTypes = {
   species: React.PropTypes.array.isRequired,
-  filter: React.PropTypes.string.isRequired
+  filter: React.PropTypes.string.isRequired,
+//  selectedLocation: React.propTypes.string.isRequired,
+//  observationRecency: React.propTypes.number.isRequired,
+  sort: React.PropTypes.string.isRequired,
+  sortDir: React.PropTypes.string.isRequired
 };
 
 

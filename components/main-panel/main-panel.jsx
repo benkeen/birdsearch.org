@@ -81,7 +81,9 @@ class MainPanel extends React.Component {
           selectedLocation={locationsPanel.selectedLocation}
           searchSettings={searchSettings}
           speciesFilter={speciesPanel.filter}
-          env={env} />
+          env={env}
+          sort={speciesPanel.sort}
+          sortDir={speciesPanel.sortDir} />
       </section>
     );
   }

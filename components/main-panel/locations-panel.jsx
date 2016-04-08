@@ -157,7 +157,7 @@ export class LocationsPanel extends React.Component {
           <thead>
           <tr>
             <th className="location" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.LOCATION))}>
-              Location {this.getLocationColSort()}
+              Location{this.getLocationColSort()}
             </th>
             <th onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>
               Birds

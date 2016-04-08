@@ -245,10 +245,12 @@ body .filter-field {
 	thead {
 		cursor: pointer;
 	}
-	.col-sort {
-		font-size: 10px;
-		color: #0099cc;
-	}
+}
+
+.col-sort {
+	font-size: 10px;
+	color: #0099cc;
+	margin-left: 3px;
 }
 
 #species-panel {

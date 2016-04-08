@@ -311,6 +311,19 @@ function speciesPanel (state = {
         visible: newVisibility
       });
 
+    case E.SPECIES_SORTED:
+      var newSort = C.SORT_DIR.DEFAULT;
+      if (state.sort === action.sort) {
+        if (state.sortDir === C.SORT_DIR.DEFAULT) {
+          newSort = C.SORT_DIR.REVERSE;
+        }
+      }
+      return Object.assign({}, state, {
+        sort: action.sort,
+        sortDir: newSort
+      });
+      break;
+
     case E.SHOW_SPECIES_PANEL:
       return Object.assign({}, state, {
         visible: true

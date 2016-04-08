@@ -290,6 +290,13 @@ var sortLocations = function (sort) {
   }
 };
 
+var sortSpecies = function (sort) {
+  return {
+    type: E.SPECIES_SORTED,
+    sort: sort
+  }
+};
+
 var selectLocation = function (location) {
   return {
     type: E.LOCATION_SELECTED,
@@ -402,4 +409,5 @@ export {
   selectLocation,
   showSpeciesPanel,
   setSpeciesFilter,
+  sortSpecies
 };
