@@ -210,7 +210,6 @@ function results (state = {
       };
       return Object.assign({}, state, {
         locationSightings: locationSightings
-        //locationDataRefreshCounter: state.locationDataRefreshCounter + 1
       });
       break;
 

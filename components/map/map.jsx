@@ -180,7 +180,6 @@ class Map extends React.Component {
     //  - after the map boundary changes
     //  - ...
 
-
     this.showLocations(nextProps);
 
     // never update the map with React. We do it all internally. It's way too slow otherwise
@@ -190,29 +189,29 @@ class Map extends React.Component {
   showLocations (nextProps) {
     _.each(nextProps.results.visibleLocations, function (locInfo) {
       var locId = locInfo.i;
+      var locationSightings = nextProps.results.locationSightings[locId].data;
 
-      // so right now this only renders the marker if the fetched state changed
-      if (this.props.results.locationSightings[locId].fetched !== nextProps.results.locationSightings[locId].fetched) {
-        var locationSightings = nextProps.results.locationSightings[locId].data;
-        var numSpecies = locationSightings[nextProps.searchSettings.observationRecency - 1].numSpeciesRunningTotal;
+      var numSpecies = 0;
+      if (nextProps.results.locationSightings[locId].fetched) {
+        numSpecies = locationSightings[nextProps.searchSettings.observationRecency - 1].numSpeciesRunningTotal;
+      }
 
-        if (numSpecies < 10) {
-          _data.all.markers[locId].setIcon(_icons.range1);
-        } else if (numSpecies < 20) {
-          _data.all.markers[locId].setIcon(_icons.range2);
-        } else if (numSpecies < 30) {
-          _data.all.markers[locId].setIcon(_icons.range3);
-        } else if (numSpecies < 40) {
-          _data.all.markers[locId].setIcon(_icons.range4);
-        } else if (numSpecies < 50) {
-          _data.all.markers[locId].setIcon(_icons.range5);
-        } else if (numSpecies < 60) {
-          _data.all.markers[locId].setIcon(_icons.range6);
-        } else if (numSpecies < 70) {
-          _data.all.markers[locId].setIcon(_icons.range7);
-        } else {
-          _data.all.markers[locId].setIcon(_icons.range8);
-        }
+      if (numSpecies < 10) {
+        _data.all.markers[locId].setIcon(_icons.range1);
+      } else if (numSpecies < 20) {
+        _data.all.markers[locId].setIcon(_icons.range2);
+      } else if (numSpecies < 30) {
+        _data.all.markers[locId].setIcon(_icons.range3);
+      } else if (numSpecies < 40) {
+        _data.all.markers[locId].setIcon(_icons.range4);
+      } else if (numSpecies < 50) {
+        _data.all.markers[locId].setIcon(_icons.range5);
+      } else if (numSpecies < 60) {
+        _data.all.markers[locId].setIcon(_icons.range6);
+      } else if (numSpecies < 70) {
+        _data.all.markers[locId].setIcon(_icons.range7);
+      } else {
+        _data.all.markers[locId].setIcon(_icons.range8);
       }
     }, this);
   }

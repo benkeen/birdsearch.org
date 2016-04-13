@@ -112,6 +112,7 @@ export class SpeciesPanel extends React.Component {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
 
+    //
     var sightingsData = [];
     if (selectedLocation) {
       sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selectedLocation);

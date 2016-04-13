@@ -153,42 +153,41 @@ function getSightings (locations, sightings, obsRecency, targetLocationID = null
 	var numSpecies = 0;
 
 	_.each(locationIDs, function (locationID) {
-		if (targetLocationID !== null && locationID !== targetLocationID) {
-			return;
+		var currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
+
+		if (targetLocationID === null || locationID === targetLocationID) {
+			_.each(currLocationSpeciesInfo.species, function (info, sciName) {
+				if (!_.has(dataBySpecies, sciName)) {
+					dataBySpecies[sciName] = {
+						comName: info.comName,
+						sciName: sciName,
+						obs: [],
+						locations: [],
+						mostRecentObservationTime: null,
+						howManyCount: 0
+					};
+					numSpecies++;
+				}
+				dataBySpecies[sciName].obs.push({
+					howMany: info.howMany,
+					lat: info.lat,
+					lng: info.lng,
+					locID: info.locID,
+					locName: info.locName,
+					obsDt: info.obsDt,
+					obsReviewed: info.obsReviewed,
+					obsValid: info.obsValid
+				});
+			});
 		}
 
-		var currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
+		// now append ALL locations for the found species
 		_.each(currLocationSpeciesInfo.species, function (info, sciName) {
-
-			//// if this location's observations failed to load (for whatever reason), just ignore the row
-			//if (!_birdData[locationID].sightings.success) {
-			//	continue;
-			//}
-
-			if (!_.has(dataBySpecies, sciName)) {
-				dataBySpecies[sciName] = {
-					comName: info.comName,
-					sciName: sciName,
-					obs: [],
-					locations: [],
-					mostRecentObservationTime: null,
-					howManyCount: 0
-				};
-				numSpecies++;
+			if (_.has(dataBySpecies, sciName)) {
+				dataBySpecies[sciName].locations.push({locName: info.locName, locID: info.locID});
 			}
-			dataBySpecies[sciName].obs.push({
-				howMany: info.howMany,
-				lat: info.lat,
-				lng: info.lng,
-				locID: info.locID,
-				locName: info.locName,
-				obsDt: info.obsDt,
-				obsReviewed: info.obsReviewed,
-				obsValid: info.obsValid
-			});
-
-			dataBySpecies[sciName].locations.push({ locName: info.locName, locID: info.locID });
 		});
+
 	});
 
 	// now convert the sightings into an array
