@@ -112,13 +112,8 @@ export class SpeciesPanel extends React.Component {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
 
-    //
-    var sightingsData = [];
-    if (selectedLocation) {
-      sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selectedLocation);
-    } else {
-      sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency);
-    }
+    var selLocation = (selectedLocation) ? selectedLocation : null;
+    var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
 
     return (
       <section id="species-panel" style={panelPosition}>
@@ -184,10 +179,71 @@ class SpeciesTable extends React.Component {
     )
   }
 
-  getRows () {
-    const { dispatch, species, filter } = this.props;
+  componentDidMount () {
+    this.sortedSpecies = this.props.species;
+  }
 
-    return _.map(species, function (speciesInfo, index) {
+  shouldComponentUpdate (nextProps) {
+    const { sort, sortDir } = this.props;
+
+    // TODO also need to do this for "ALL" when new data is still coming in
+
+    var resort = false;
+    if (nextProps.sort !== sort) {
+      resort = true;
+    } else if (nextProps.sortDir !== sortDir) {
+      resort = true;
+    }
+
+    this.sortedSpecies = this.props.species;
+    if (resort) {
+
+      // speed this sucker up
+      switch (sort) {
+        case C.SPECIES_SORT.FIELDS.SPECIES:
+          if (sortDir === C.SORT_DIR.DEFAULT) {
+            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase().charCodeAt() * -1; });
+          } else {
+            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase(); });
+          }
+          break;
+
+        case C.SPECIES_SORT.FIELDS.NUM_LOCATIONS:
+          console.log(this.sortedSpecies);
+
+          if (sortDir === C.SORT_DIR.DEFAULT) {
+            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.locations.length; });
+          } else {
+            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.locations.length; });
+          }
+          break;
+
+        case C.SPECIES_SORT.FIELDS.LAST_SEEN:
+          if (sortDir === C.SORT_DIR.DEFAULT) {
+            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.mostRecentObservation.format('X'); });
+          } else {
+            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.mostRecentObservation.format('X'); });
+          }
+          break;
+
+        case C.SPECIES_SORT.FIELDS.NUM_REPORTED:
+          if (sortDir === C.SORT_DIR.DEFAULT) {
+            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.howManyCount; });
+          } else {
+            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.howManyCount; });
+          }
+          break;
+      }
+
+    }
+
+    return true;
+  }
+
+  getRows () {
+    const { dispatch, filter } = this.props;
+
+    return _.map(this.sortedSpecies, function (speciesInfo, index) {
       var comNameData = helpers.highlightString(speciesInfo.comName, filter);
       var sciNameData = helpers.highlightString(speciesInfo.sciName, filter);
       if (!comNameData.match && !sciNameData.match) {

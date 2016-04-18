@@ -148,7 +148,6 @@ function getLocationById (locations, locationId) {
 
 function getSightings (locations, sightings, obsRecency, targetLocationID = null) {
 	var locationIDs = getLocationIDs(locations);
-
 	var dataBySpecies = {};
 	var numSpecies = 0;
 
@@ -194,7 +193,7 @@ function getSightings (locations, sightings, obsRecency, targetLocationID = null
 	var sightingsData = _.values(dataBySpecies);
 	sightingsData.sort(function(a, b) { return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1; });
 
-	return _.map(sightingsData, function (sighting) {
+	var results = _.map(sightingsData, function (sighting) {
 		var lastObservation = 0;
 		var howManyArray = [];
 		var lastSeenArray = [];
@@ -203,6 +202,9 @@ function getSightings (locations, sightings, obsRecency, targetLocationID = null
 			var observationTimeUnix = parseInt(moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format("X"), 10);
 			if (observationTimeUnix > lastObservation) {
 				lastObservation = observationTimeUnix;
+
+				// TODO drop the second one
+				sighting.mostRecentObservation = moment(observation.obsDt, 'YYYY-MM-DD HH:mm');
 				sighting.mostRecentObservationTime = moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 			}
 			lastSeenArray.push(moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a'));
@@ -221,6 +223,8 @@ function getSightings (locations, sightings, obsRecency, targetLocationID = null
 
 		return sighting;
 	});
+
+	return results;
 }
 
 
