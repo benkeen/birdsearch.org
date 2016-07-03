@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { _, actions, helpers } from '../../core/core';
+import { FormattedMessage } from 'react-intl';
+import { _, actions, helpers } from '../core/core';
 
 
 var _icons = {
@@ -98,6 +99,10 @@ var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
 
 
 class Map extends React.Component {
+  constructor (props) {
+    super(props);
+    this.onMapBoundsChange = this.onMapBoundsChange.bind(this);
+  }
 
   componentDidMount () {
     google.maps.visualRefresh = true;
@@ -109,18 +114,22 @@ class Map extends React.Component {
       center: new google.maps.LatLng(this.props.lat, this.props.lng),
 
       // not customizable
-      mapTypeControlOptions: { mapTypeIds: [] },
+      //mapTypeControlOptions: { mapTypeIds: [] },
       streetViewControl: false,
-      disableDefaultUI: true,
-      panControl: true,
-      zoomControl: true,
-      scaleControl: true,
-      overviewMapControl: true,
-      styles: [{"featureType":"road","elementType":"geometry","stylers":[{"lightness":100},{"visibility":"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}]
+      mapTypeControlOptions: {
+        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: google.maps.ControlPosition.TOP_RIGHT
+      },
+//       disableDefaultUI: true,
+//       panControl: true,
+//       zoomControl: true,
+//       scaleControl: true,
+//       overviewMapControl: true
+//      styles: [{"featureType":"road","elementType":"geometry","stylers":[{"lightness":100},{"visibility":"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}]
     };
 
     _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
-    this.addCustomControls();
+    //this.addCustomControls();
     this.addEventHandlers();
 
     // precache all markers
@@ -273,16 +282,21 @@ class Map extends React.Component {
   }
 
   onMapBoundsChange () {
+    console.log("map bounds changed...");
     //this.clearHotspots();
     this.addMarkers(this.props.results.allLocations, this.props.results.locationSightings);
     //this.props.dispatch(actions.visibleLocationsFound(visibleHotspots, locationSightings));
   }
 
   addCustomControls () {
-    var btn1 = $('<div class="mapBtn">Terrain</div>')[0];
-    var btn2 = $('<div class="mapBtn mapBtnSelected">Road Map</div>')[0];
-    var btn3 = $('<div class="mapBtn">Satellite</div>')[0];
-    var btn4 = $('<div class="mapBtn">Hybrid</div>')[0];
+    var btn1 = $('<div class="map-btn">Terrain</div>')[0];
+    var btn2 = $('<div class="map-btn">Road Map</div>')[0];
+    var btn3 = $('<div class="map-btn">Satellite</div>')[0];
+    var btn4 = $('<div class="map-btn">Hybrid</div>')[0];
+
+    //mapBtnSelected
+
+    // TODO this is better. https://developers.google.com/maps/documentation/javascript/examples/control-custom
 
     // add the controls to the map
     _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
@@ -291,34 +305,34 @@ class Map extends React.Component {
     _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
 
     // add the appropriate event handlers
-    google.maps.event.addDomListener(btn1, 'click', function () {
+    google.maps.event.addDomListener(btn1, 'click', () => {
       _map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
-      $(".mapBtn").removeClass('mapBtnSelected');
-      $(btn1).addClass('mapBtnSelected');
+      $(".map-btn").removeClass('map-btn-Selected');
+      $(btn1).addClass('map-btn-Selected');
     });
-    google.maps.event.addDomListener(btn2, 'click', function () {
+    google.maps.event.addDomListener(btn2, 'click', () => {
       _map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-      $(".mapBtn").removeClass('mapBtnSelected');
-      $(btn2).addClass('mapBtnSelected');
+      $(".map-btn").removeClass('map-btn-Selected');
+      $(btn2).addClass('map-btn-Selected');
     });
-    google.maps.event.addDomListener(btn3, 'click', function () {
+    google.maps.event.addDomListener(btn3, 'click', () => {
       _map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
-      $(".mapBtn").removeClass('mapBtnSelected');
-      $(btn3).addClass('mapBtnSelected');
+      $(".map-btn").removeClass('map-btn-Selected');
+      $(btn3).addClass('map-btn-Selected');
     });
-    google.maps.event.addDomListener(btn4, 'click', function () {
+    google.maps.event.addDomListener(btn4, 'click', () => {
       _map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-      $(".mapBtn").removeClass('mapBtnSelected');
-      $(btn4).addClass('mapBtnSelected');
+      $(".map-btn").removeClass('map-btn-Selected');
+      $(btn4).addClass('map-btn-Selected');
     });
-  };
+  }
 
   addEventHandlers () {
     //$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
     //$(document).on("click", ".viewLocationSightingDetails", _onClickViewLocationSightings);
     // called any time the map has had its bounds changed
-    google.maps.event.addListener(_map, "dragend", this.onMapBoundsChange.bind(this));
-    google.maps.event.addListener(_map, "zoom_changed", this.onMapBoundsChange.bind(this));
+    google.maps.event.addListener(_map, "dragend", this.onMapBoundsChange);
+    google.maps.event.addListener(_map, "zoom_changed", this.onMapBoundsChange);
   }
 
   render () {
@@ -329,11 +343,11 @@ class Map extends React.Component {
 }
 Map.PropTypes = {
   results: React.PropTypes.array.isRequired,
-  locationFilter: React.PropTypes.string.isRequired
+  locationFilter: React.PropTypes.string.isRequired,
 };
 
 
-var _addSearchRangeIndicator = function () {
+var _addSearchRangeIndicator = () => {
 
   // lame, but setting the map to null doesn't work, so keep adding more & hiding the previous
   if (_circleOverlayIndex > 0) {

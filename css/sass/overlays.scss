@@ -1,7 +1,7 @@
 @import "variables";
 
 
-#intro-overlay {
+.overlay {
   position: absolute;
   margin: auto;
   z-index: 2;
@@ -9,31 +9,6 @@
   right: 0;
   top: 0;
   bottom: 0;
-  height: 120px;
-  width: 488px;
-
-  .loader {
-    position: absolute;
-    width: 100%;
-    top: 85px;
-  }
-  .loader-label {
-    text-align: center;
-    letter-spacing: 2px;
-    color: #2175B5;
-    margin-top: 40px;
-  }
-
-  .css-loader {
-    position: absolute;
-    top: 92px;
-  }
-
-  &.loading {
-    .close-panel, .tab-content > * {
-      opacity: 0.1;
-    }
-  }
 
   .close-panel {
     position: absolute;
@@ -43,6 +18,35 @@
     font-size: 18px;
     &:hover {
       color: #333333;
+    }
+  }
+}
+
+#intro-overlay {
+  height: 120px;
+  width: 488px;
+
+
+  .loader {
+    position: absolute;
+    width: 100%;
+    top: 85px;
+  }
+  .css-loader {
+    position: absolute;
+    top: 92px;
+  }
+
+  .loader-label {
+    text-align: center;
+    letter-spacing: 2px;
+    color: #2175B5;
+    margin-top: 40px;
+  }
+
+  &.loading {
+    .close-panel, .tab-content > * {
+      opacity: 0.1;
     }
   }
 
@@ -81,4 +85,9 @@
     text-align: center;
     margin: 10px;
   }
+}
+
+.advanced-search-overlay {
+  height: 120px;
+  width: 488px;
 }

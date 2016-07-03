@@ -24,11 +24,24 @@ function env (state = {
 }
 
 
-function locale (state = C.DEFAULT_LOCALE, action) {
+// these are any settings that are stored in local storage for any public user
+function storedSettings (state = {
+  locale: C.DEFAULT_LOCALE,
+  mapType: C.DEFAULT_MAP_TYPE
+}, action) {
   switch (action.type) {
     case E.SET_LOCALE:
       storage.set('locale', action.locale);
-      return action.locale;
+      return Object.assign({}, state, {
+        locale: action.locale
+      });
+
+    case E.SET_MAP_TYPE:
+      storage.set('locale', action.mapType);
+      return Object.assign({}, state, {
+        mapType: action.mapType
+      });
+
     default:
       return state;
   }
@@ -52,7 +65,9 @@ function searchSettings (state = {
 
     case E.SEARCH_REQUEST_STARTED:
       return Object.assign({}, state, {
-        location: action.location
+        location: action.location,
+        lat: action.lat,
+        lng: action.lng
       });
 
     case E.RECEIVED_USER_LOCATION:
@@ -86,7 +101,8 @@ function mapSettings (state = {
       return Object.assign({}, state, {
         lat: action.lat,
         lng: action.lng,
-        bounds: action.bounds
+        bounds: action.bounds,
+        searchCounter: state.searchCounter + 1
       });
       break;
 
@@ -203,10 +219,9 @@ function results (state = {
 
     case E.HOTSPOT_SIGHTINGS_RETURNED:
       var locationSightings = Object.assign({}, state.locationSightings);
-      var parsedData = helpers.parseHotspotSightings(action.sightings);
       locationSightings[action.locationID] = {
         fetched: true,
-        data: parsedData
+        data: action.sightings
       };
       return Object.assign({}, state, {
         locationSightings: locationSightings
@@ -341,15 +356,35 @@ function speciesPanel (state = {
 }
 
 
+// this is a weird one. React really fails to handle scenarios like this well. e.g. close a modal and focus on some
+// arbitrary input field in a different component somewhere. We need a one-off message sent to do a thing. This section
+// handles that.
+function misc (state = {
+  nextAction: ''
+}, action) {
+
+  switch (action.type) {
+    case E.SEARCH_ANYWHERE:
+      return Object.assign({}, state, {
+        nextAction: C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS
+      });
+      break;
+
+    default:
+      return state;
+  }
+}
+
 export {
   env,
-  locale,
+  storedSettings,
   searchSettings,
   mapSettings,
   user,
   overlayVisibility,
   results,
   locationsPanel,
-  speciesPanel
+  speciesPanel,
+  misc
 };
 

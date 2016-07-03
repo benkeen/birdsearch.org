@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { C, E, helpers, _ } from './core';
 import fetch from 'isomorphic-fetch';
 
@@ -43,8 +42,8 @@ function search (searchSettings, locationInfo) {
       observationRecency: searchSettings.observationRecency
     };
 
-    // holy good lord. This monstrosity makes a request for the hotspots, converts the results to JSON (which is async
-    // for some reason...?) then publishes the appropriate action
+    // this makes a request for the hotspots, converts the results to JSON (which is async for some reason...?) then
+    // publishes the appropriate action
     return fetchLocations(searchParams)
       .then(res => res.json())
       .then(
@@ -89,6 +88,10 @@ function setIntroOverlayVisibility (visible) {
     type: E.SET_INTRO_OVERLAY_VISIBILITY,
     visible
   };
+}
+
+function searchAnywhere () {
+  return { type: E.SEARCH_ANYWHERE };
 }
 
 function requestingUserLocation () {
@@ -145,8 +148,9 @@ function togglePanelVisibility (panel) {
 // once the visible locations are identified, it automatically requests all observations for them
 function visibleLocationsFound (visibleLocations, allLocationSightings) {
   return function (dispatch) {
-    getBirdHotspotObservations (dispatch, visibleLocations, allLocationSightings);
-    return dispatch(updateVisibleLocations(visibleLocations));
+    dispatch(updateVisibleLocations(visibleLocations));
+
+    return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);
   }
 }
 
@@ -158,80 +162,60 @@ function updateVisibleLocations (visibleLocations) {
 }
 
 function getBirdHotspotObservations (dispatch, locations, allLocationSightings) {
- // var hasAtLeastOneRequest = false;
+  const numLocations = locations.length;
 
-  //var timeout;
-  //var debounce = function (json, currLocationID) {
-  //  dispatch(locationSightingsFound(dispatch, currLocationID, json));
-  //  if (timeout) {
-  //    clearTimeout(timeout);
-  //  }
-  //  timeout = setTimeout(function () {
-  //    dispatch(updateLocationSightings())
-  //  }, 300);
-  //};
+  var updateBundleCount = 1;
+  if (numLocations > 60) {
+    updateBundleCount = 10;
+  } else if (numLocations > 40) {
+    updateBundleCount = 8;
+  } else if (numLocations > 20) {
+    updateBundleCount = 6;
+  } else if (numLocations > 10) {
+    updateBundleCount = 4;
+  } else if (numLocations > 5) {
+    updateBundleCount = 2;
+  }
+  let counter = 0;
 
-  var throttleUpdate = _.throttle(function () {
-    dispatch(updateLocationSightings())
-  }, 300);
 
   var processHotspotSightings = function (json, currLocationID) {
-    dispatch(locationSightingsFound(dispatch, currLocationID, json));
-    throttleUpdate();
+
+    // TODO shared worker?
+    var worker = new Worker('./processHotspotSightings.js');
+    worker.postMessage({
+      locationID: currLocationID,
+      sightings: json,
+      maxSearchDays: C.MISC.MAX_SEARCH_DAYS
+    });
+    worker.onmessage = function (e) {
+      dispatch(locationSightingsFound(e.data.locationID, e.data.sightings));
+
+      if (counter % updateBundleCount === 0 || counter === numLocations-1) {
+        dispatch(updateLocationSightings());
+      }
+      counter++;
+    };
   };
 
+  const promises = [];
   locations.forEach(function (locInfo) {
     var currLocationID = locInfo.i;
 
     // if we already have the hotspot data available, probably don't need to do anything... React should be good at this bit.
     if (allLocationSightings[currLocationID].fetched) {
+      return;
 //      _updateVisibleLocationInfo(currLocationID, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
     }
 
-    fetchSingleHotspotSightings(currLocationID)
+    promises.push(fetchSingleHotspotSightings(currLocationID)
       .then(res => res.json())
       .then(json => processHotspotSightings(json, currLocationID)
         //error => dispatch(searchLocationRequestError(dispatch, error))
-      );
+      ));
   });
 
-  /*
-  for (var i=0; i<_numVisibleLocations; i++) {
-    var currLocationID = _visibleLocations[i].locationID;
-
-    // check allHotspots to see if this data has been loaded yet. If not, prep the object. To minimize server requests,
-    // we categorize all sightings into an array, where the index-1 === the day. That way, when the user changes the
-    // range to show it's easy to extract the appropriate data
-    if (!_birdSearchHotspots[currLocationID].hasOwnProperty("sightings")) {
-      _birdSearchHotspots[currLocationID].isDisplayed = false;
-      _birdSearchHotspots[currLocationID].sightings = {
-        success: null,
-        data: $.extend(true, [], _sightingsArray)
-      };
-    }
-
-    // if we already have the hotspot data available, just update the sidebar table
-    if (_birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].available) {
-      _updateVisibleLocationInfo(currLocationID, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
-    } else {
-      _getSingleHotspotObservations(currLocationID);
-      hasAtLeastOneRequest = true;
-    }
-  }
-
-  // if we didn't just put through a new request, the user just searched a subset of what's already been loaded
-  if (!hasAtLeastOneRequest) {
-    _sortTable("#sidebarResultsTable");
-    helper.stopLoading();
-
-    var locations = _getVisibleLocationData();
-    mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
-      birdData: locations,
-      observationRecency: _lastSearchObsRecency
-    });
-  }
-  */
-
+  return promises;
 }
 
 var fetchSingleHotspotSightings = function (locationID) {
@@ -243,27 +227,10 @@ var fetchSingleHotspotSightings = function (locationID) {
     method: 'POST',
     body: formData
   });
-
-
-  //$.ajax({
-  //  url: "ajax/getHotspotSightings.php",
-  //  data: {
-  //    locationID: locationID,
-  //    recency: _lastSearchObsRecency
-  //  },
-  //  type: "POST",
-  //  dataType: "json",
-  //  success: function(response) {
-  //    _onSuccessReturnLocationObservations(locationID, response);
-  //  },
-  //  error: function(response) {
-  //    _onErrorReturnLocationObservations(locationID, response);
-  //  }
-  //});
 };
 
 
-var locationSightingsFound = function (dispatch, locationID, resp) {
+var locationSightingsFound = function (locationID, resp) {
   return {
     type: E.HOTSPOT_SIGHTINGS_RETURNED,
     locationID: locationID,
@@ -308,78 +275,6 @@ var showSpeciesPanel = function () {
   return { type: E.SHOW_SPECIES_PANEL }
 };
 
-
-/*
-var _onSuccessReturnLocationObservations = function (locationID, response) {
-  _birdSearchHotspots[locationID].isDisplayed = true;
-  _birdSearchHotspots[locationID].sightings.success = true;
-
-
-  // by reference, of course
-  var sightingsData = _birdSearchHotspots[locationID].sightings.data;
-
-  // mark the information as now available for this observation recency + and anything below,
-  // and reset the observation data (it's about to be updated below)
-  for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
-    if (i <= _lastSearchObsRecency) {
-      sightingsData[i] = { available: true, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
-    } else {
-      sightingsData[i] = { available: false, obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
-    }
-  }
-
-  // now for the exciting part: loop through the observations and put them in the appropriate spot
-  // in the data structure
-  var speciesCount = response.length;
-  for (var i=0; i<speciesCount; i++) {
-    var observationTime = parseInt(moment(response[i].obsDt, "YYYY-MM-DD HH:mm").format("X"), 10);
-    var difference = _CURRENT_SERVER_TIME - observationTime;
-    var daysAgo = Math.ceil(difference / _ONE_DAY_IN_SECONDS); // between 1 and 30
-
-    // sometimes users seem to be able to input future-dated observations (presumably by screwing up AM + PM)
-    // so daysAgo can, actually be zero. This prevents that edge case
-    var daysAgo = (daysAgo < 1) ? 1 : daysAgo;
-    sightingsData[daysAgo-1].obs.push(response[i]);
-  }
-
-  // we've added all the observation data, set the numSpecies counts
-  for (var i=0; i<sightingsData.length; i++) {
-    sightingsData[i].numSpecies = sightingsData[i].obs.length;
-  }
-
-  // now set the numSpeciesRunningTotal property. This is the running total seen in that time
-  // range: e.g. 3 days would include the total species seen on days 1-3, 4 days would have 1-4 etc.
-  var uniqueSpecies = {};
-  var numUniqueSpecies = 0;
-  for (var i=0; i<C.SETTINGS.NUM_SEARCH_DAYS; i++) {
-    var currDaySightings = _birdSearchHotspots[locationID].sightings.data[i];
-    for (var j=0; j<currDaySightings.obs.length; j++) {
-      if (!uniqueSpecies.hasOwnProperty(currDaySightings.obs[j].sciName)) {
-        uniqueSpecies[currDaySightings.obs[j].sciName] = null;
-        numUniqueSpecies++;
-      }
-    }
-    _birdSearchHotspots[locationID].sightings.data[i].numSpeciesRunningTotal = numUniqueSpecies;
-  }
-
-  _updateVisibleLocationInfo(locationID, response.length);
-
-  if (_checkAllObservationsLoaded()) {
-    _sortTable("#sidebarResultsTable");
-    helper.stopLoading();
-
-    // get the subset of locations currently on the map
-    var locations = _getVisibleLocationData();
-
-    mediator.publish(_MODULE_ID, C.EVENT.BIRD_SIGHTINGS_LOADED, {
-      birdData: locations, // _birdSearchHotspots,
-      observationRecency: _lastSearchObsRecency
-    });
-  }
-};
-*/
-
-
 var setLocationFilter = function (filter) {
   return {
     type: E.SET_LOCATION_FILTER,
@@ -409,5 +304,6 @@ export {
   selectLocation,
   showSpeciesPanel,
   setSpeciesFilter,
-  sortSpecies
+  sortSpecies,
+  searchAnywhere
 };

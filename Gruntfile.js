@@ -13,35 +13,10 @@ module.exports = function(grunt) {
   var config = {
 		pkg: grunt.file.readJSON('package.json'),
 
-		/*
-		template: {
-			dev: {
-				options: {
-					data: {
-						ENV: "DEV"
-					}
-				},
-				files: {
-					'index.php': ['grunt_templates/index.template.tpl']
-				}
-			},
-			prod: {
-				options: {
-					data: {
-						ENV: "PROD",
-						APP_START_PATH: ""
-					}
-				},
-				files: {
-					'index.php': ['grunt_templates/index.template.tpl']
-				}
-			}
-		},
-		*/
-
+    // this task just converts ALL javascript/JSX files and stashes an es5-friendly version of them in /dist
 		babel: {
 			options: {
-				plugins: ['transform-react-jsx'],
+        plugins: ['transform-react-jsx'],
 				sourceMap: true,
 				presets: ['es2015', 'react']
 			},
@@ -56,6 +31,7 @@ module.exports = function(grunt) {
 			}
 		},
 
+    // bundles up the whole shebang
     browserify: {
       dist: {
         cwd: './',
@@ -84,73 +60,13 @@ module.exports = function(grunt) {
     },
 
 		copy: {
-			// fonts need to be loaded real-time because they're browser-dependent
-			fonts: {
-				src: './css/fonts/*',
-				dest: 'dist/fonts/',
-				flatten: true,
-				expand: true,
-				filter: 'isFile'
-			}
+      fonts: { src: './css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile' },
+      libs: { src: './libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile' },
+      css: { src: './css/bootstrap.min.css', dest: 'dist/css/', flatten: true, expand: true, filter: 'isFile' },
+      images: { src: './images/**/*', dest: 'dist/images/', flatten: true, expand: true, filter: 'isFile' }
 		}
-
-		/*
-		uglify: {
-			my_target: {
-				files: {
-					'build/core-js.min.js': [
-						'libs/html5shiv.js',
-						'libs/modernizr-2.0.6.min.js',
-						'libs/jquery-ui-1.10.3.custom.min.js',
-						'libs/jquery.tablesorter.min.js',
-						'libs/jquery.tablesorter.widgets.js',
-						'libs/jquery.metadata.js',
-						'libs/spinners.min.js',
-						'libs/gmaps.inverted.circle.js',
-						'libs/bootstrap-modal.js',
-						'libs/bootstrap-transition.js',
-						'libs/require.min.js',
-						'core/requireConfig.js'
-					]
-				}
-			},
-			options: {
-				report: "min",
-					compress: false
-			}
-		},
-
-		md5: {
-			prod: {
-				files: {
-					'build/appStart.min.js': 'build/appStart.min.js'
-				},
-				options: {
-					after: function(fileChanges) {
-						config.template.prod.options.data.APP_START_PATH = fileChanges[0].newPath;
-					}
-				}
-			}
-		},
-
-		requirejs: {
-			compile: {
-				options: {
-					name: "core/appStart",
-					baseUrl: "./",
-					mainConfigFile: "core/requireConfig.js",
-					out: "./build/appStart.min.js"
-				}
-			}
-		}
-	 */
 	};
 
 	grunt.initConfig(config);
-  grunt.registerTask('local', ['babel:jsx', 'browserify', 'sass', 'copy:fonts']);
-
-	//grunt.registerTask('default', ['uglify', 'requirejs', 'template']);
-	//grunt.registerTask('dev', ['uglify', 'requirejs', 'template:dev']);
-	//grunt.registerTask('prod', ['uglify', 'requirejs', 'md5', 'template:prod']);
-
+  grunt.registerTask('local', ['babel:jsx', 'browserify', 'sass', 'copy']);
 };

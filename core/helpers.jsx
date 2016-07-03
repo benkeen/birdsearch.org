@@ -24,48 +24,55 @@ function getBestBounds (viewport, bounds) {
 }
 
 
-function parseHotspotSightings (sightings) {
-
-	// lay down the defaults
-	var data = _.times(30, function () {
-		return { obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 };
-	});
-
-	sightings.forEach(function (sighting) {
-		var observationTime = parseInt(moment(sighting.obsDt, 'YYYY-MM-DD HH:mm').format('X'), 10);
-		var difference = moment().format('X') - observationTime;
-
-		// sometimes users seem to be able to input future-dated observations (presumably by screwing up AM + PM)
-		// so daysAgo can, actually be zero. This prevents that edge case
-		var daysAgo = Math.ceil(difference / C.ONE_DAY_IN_SECONDS); // between 1 and 30
-		daysAgo = (daysAgo < 1) ? 1 : daysAgo;
-		data[daysAgo - 1].obs.push(sighting);
-	});
-
-	// we've added all the observation data, set the numSpecies counts
-	data.forEach(function (day, index) {
-		data[index].numSpecies = data[index].obs.length;
-	});
-
-	// now set the numSpeciesRunningTotal property. This is the running total seen in that time
-	// range: e.g. 3 days would include the total species seen on days 1-3, 4 days would have 1-4 etc.
-	var uniqueSpecies = {};
-	var numUniqueSpecies = 0;
-
-	for (var i = 0; i < 30; i++) {
-		var currDaySightings = data[i];
-		for (var j = 0; j < currDaySightings.obs.length; j++) {
-			if (_.has(uniqueSpecies, currDaySightings.obs[j].sciName)) {
-				continue;
-			}
-			uniqueSpecies[currDaySightings.obs[j].sciName] = null;
-			numUniqueSpecies++;
-		}
-		data[i].numSpeciesRunningTotal = numUniqueSpecies;
-	}
-
-	return data;
-}
+// this is a slow function which bogs down the UI. It's called every time a (single) hotspot sightings are returned,
+// and it's a little CPU intensive
+// function parseHotspotSightings (sightings) {
+// 	const data = _.times(C.MISC.MAX_SEARCH_DAYS, () => { return { obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 }; });
+// 	const now = moment().format('X');
+//
+// 	// as of June 2016, a for-loop is still by far the fastest way to loop
+// 	const numSightings = sightings.length;
+// 	for (let i=0; i<numSightings; i++) {
+//
+// 		// no timezone information is returned in the API for this field. They appear to be all local to the timezone in which
+// 		// they were made. Bah!
+// 		var observationTime = parseInt(moment(sightings[i].obsDt, 'YYYY-MM-DD HH:mm').format('X'), 10);
+// 		var difference = now - observationTime;
+//
+// 		// ensures that all sightings are boxed into one of the last 30 days. For some reasons, some sightings end up
+// 		// with daysAgo = 0 or 31. I think it's due to the timezone info being absent from the above
+// 		var daysAgo = Math.ceil(difference / C.ONE_DAY_IN_SECONDS);
+// 		daysAgo = (daysAgo < 1) ? 1 : daysAgo;
+// 		daysAgo = (daysAgo > 30) ? 30 : daysAgo;
+//
+// 		data[daysAgo - 1].obs.push(sightings[i]);
+// 	}
+//
+// 	// we've added all the observation data, set the numSpecies counts
+// 	const uniqueSpecies = {};
+// 	let numUniqueSpecies = 0;
+// 	for (let i=0; i<C.MISC.MAX_SEARCH_DAYS; i++) {
+// 		let currDaySightings = data[i].obs;
+//
+// 		// the number of species seen on the current day
+// 		data[i].numSpecies = currDaySightings.length;
+//
+// 		for (var j=0; j<currDaySightings.length; j++) {
+// 			if (_.has(uniqueSpecies, currDaySightings[j].sciName)) {
+// 				continue;
+// 			}
+// 			uniqueSpecies[currDaySightings[j].sciName] = null;
+// 			numUniqueSpecies++;
+// 		}
+// 		let currDaySpeciesRunningTotal = numUniqueSpecies;
+//
+// 		// now set the numSpeciesRunningTotal property. This is the running total seen in that time
+// 		// range: e.g. 3 days would include the total species seen on days 1-3, 4 days would have 1-4 etc.
+// 		data[i].numSpeciesRunningTotal = currDaySpeciesRunningTotal;
+// 	}
+//
+// 	return data;
+// }
 
 // helper method to find out the total number of unique species sighted in a group of locations for a particular
 // observation recency (e.g. the last 7 days). Returns null if any of the rows haven't been loaded yet
@@ -290,7 +297,7 @@ function getNumLoadedLocations (locations, sightings) {
 
 export {
 	getBestBounds,
-	parseHotspotSightings,
+//	parseHotspotSightings,
 	getLocationIDs,
 	getUniqueSpeciesInLocationList,
 	filterLocations,

@@ -403,11 +403,19 @@ body .filter-field {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
-
 .species-loading {
 	display: inline-block;
 	margin-left: 4px;
 	> div {
 		background-color: white;
+	}
+}
+.sortable {
+	cursor: pointer;
+	span {
+		@include transition-all($transition-speed);
+		&:hover {
+			color: #d3e4f9;
+		}
 	}
 }

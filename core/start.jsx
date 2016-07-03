@@ -2,37 +2,38 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import thunk from 'redux-thunk';
 import { addLocaleData, IntlProvider } from 'react-intl';
-import { Router, Route } from 'react-router';
+import { Router, Route, IndexRedirect, browserHistory } from 'react-router';
 import { Provider, connect } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-
-import * as components from '../components/index';
 import * as i18n from './i18n/index';
 import * as storage from './storage';
 import * as reducers from './reducers';
 import { C } from './core';
 
 // locale information for react-intl
-import en from 'react-intl/dist/locale-data/en';
-import es from 'react-intl/dist/locale-data/es';
-import fr from 'react-intl/dist/locale-data/fr';
-import de from 'react-intl/dist/locale-data/de';
+import en from 'react-intl/locale-data/en'
+import es from 'react-intl/locale-data/es';
+import fr from 'react-intl/locale-data/fr';
+import de from 'react-intl/locale-data/de';
 addLocaleData(en);
 addLocaleData(es);
 addLocaleData(fr);
 addLocaleData(de);
 
-const {
-  Header,
-  MainPanel
-} = components;
+// application components
+import App from './app';
+import IntroOverlay from '../components/intro-overlay';
+import About from '../components/about';
 
-// initialize the store with the appropriate lang
-const store = initStore({ locale: storage.get('locale') || C.DEFAULT_LOCALE });
+console.log(IntroOverlay, About);
 
-// debugging
-//console.log("initial store state: ", store.getState());
-//store.subscribe(() => console.log("store just changed: ", store.getState()));
+// initialize the section of the store based on local storage values
+const locale = storage.get('locale') || C.DEFAULT_LOCALE;
+const mapType = storage.get('mapType') || C.DEFAULT_MAP_TYPE;
+const store = initStore({ storedSettings: { locale: locale, mapType: mapType }});
+
+// meh. Gotta go somewhere.
+$('body').addClass(locale);
 
 
 class I18NWrapper extends React.Component {
@@ -41,9 +42,12 @@ class I18NWrapper extends React.Component {
 
     return (
       <IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
-        <Router>
-          <Route component={App}>
-            <Route path="/" component={MainPanel} />
+        <Router history={browserHistory}>
+          <Route path="/" component={App}>
+            <IndexRedirect to="intro" />
+            <Route path="/app" component={() => ( <div></div> )} />
+            <Route path="/about" component={About} />
+            <Route path="/intro" component={IntroOverlay} />
           </Route>
         </Router>
       </IntlProvider>
@@ -51,25 +55,11 @@ class I18NWrapper extends React.Component {
   }
 }
 
-// our top level component. This is the wrapper for the whole site
-const App = React.createClass({
-  render () {
-    return (
-      <div id="page-wrapper">
-        <Header />
-        {this.props.children}
-      </div>
-    )
-  }
-});
-
 function initStore (initialState) {
   const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
   return createStoreWithMiddleware(combineReducers(reducers), initialState);
 }
-
-
-var ConnectedI18nWrapper = connect(state => ({ locale: state.locale }))(I18NWrapper);
+const ConnectedI18nWrapper = connect(state => ({ locale: state.storedSettings.locale }))(I18NWrapper);
 
 ReactDOM.render(
   <Provider store={store}>

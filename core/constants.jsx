@@ -1,19 +1,21 @@
 const C = {
 	DEBUG: false,
 	DEFAULT_LOCALE: 'en',
+  DEFAULT_MAP_TYPE: '',
 	TRANSITION_SPEED: 200,
-	ONE_DAY_IN_SECONDS: 24 * 60 * 60,
 
 	PANELS: {
 		OVERVIEW: 'overview',
 		LOCATIONS: 'locations',
 		SPECIES: 'species'
 	},
+
 	CORE: {
 		APP_VERSION: "2.0.0 - BETA",
 		RELEASE_DATE: "Jan 17, 2015",
 		GITHUB_URL: "https://github.com/benkeen/birdsearch.org"
 	},
+
 	SEARCH_SETTINGS: {
 		DEFAULT_SEARCH_DAYS: 7,
 		NUM_SEARCH_DAYS: 30
@@ -57,8 +59,15 @@ const C = {
 	SORT_DIR: {
 		DEFAULT: 'SORT_DIR_DEFAULT',
 		REVERSE: 'SORT_DIR_REVERSE'
-	}
+	},
 
+	MISC: {
+		MAX_SEARCH_DAYS: 30
+	},
+
+  ONE_OFFS: {
+    MAIN_SEARCH_FIELD_FOCUS: 'MAIN_SEARCH_FIELD_FOCUS'
+  }
 
 };
 

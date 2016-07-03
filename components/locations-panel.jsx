@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { FormattedMessage } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
-import { C, E, helpers, _, actions } from '../../core/core';
-import { Loader, ClosePanel, LineLoader, LocationSpeciesCount } from '../general/general';
+import { C, E, helpers, _, actions } from '../core/core';
+import { Loader, ClosePanel, LineLoader, LocationSpeciesCount } from './general';
 
 
 
@@ -157,16 +158,16 @@ export class LocationsPanel extends React.Component {
           <thead>
           <tr>
             <th className="location" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.LOCATION))}>
-              Location{this.getLocationColSort()}
+              <FormattedMessage id="location"/>{this.getLocationColSort()}
             </th>
             <th onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>
-              Birds
+              <FormattedMessage id="birds"/>
             </th>
           </tr>
           </thead>
           <tbody onClick={(e) => this.selectLocation(e)}>
             <tr className="all-locations-row" data-location-id="">
-              <td className="location">All locations</td>
+              <td className="location"><FormattedMessage id="allLocations" /></td>
               <td className="num-species">
                 <LocationSpeciesCount count={this.getTotalSpecies()} />
               </td>
@@ -213,7 +214,7 @@ export class LocationsPanel extends React.Component {
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
           <div>
             <h2>
-              Locations
+              <FormatMessage id="locations" />
               <span className="total-count num-locations">{numLoadedLocations}</span>
               {loader}
             </h2>

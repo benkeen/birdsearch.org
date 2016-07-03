@@ -1,7 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { _ } from '../../core/core';
+import { _ } from '../core/core';
+
+
+class Overlay extends React.Component {
+  render () {
+    return (
+      <div>
+
+      </div>
+    );
+  }
+}
 
 
 // TODO rename
@@ -137,7 +147,6 @@ class LocationSpeciesCount extends React.Component {
 LocationSpeciesCount.PropTypes = {
   //count: React.PropTypes.number.isRequired // or null
 };
-
 
 
 export {

@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { FormattedMessage } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
-import { C, E, helpers, _, actions } from '../../core/core';
-import { Loader, ClosePanel, LocationsDropdown, LineLoader, LocationSpeciesCount } from '../general/general';
+import { C, E, helpers, _, actions } from '../core/core';
+import { Loader, ClosePanel, LocationsDropdown, LineLoader, LocationSpeciesCount } from './general';
 import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 
 
@@ -121,7 +122,7 @@ export class SpeciesPanel extends React.Component {
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
           <div>
             <h2>
-              Bird species
+              <FormattedMessage id="birdSpecies" />
               <span className="total-count num-species">{numBirdSpecies}</span>
               {loader}
             </h2>
@@ -292,34 +293,36 @@ class SpeciesTable extends React.Component {
 
     return (
       <div className="species-table">
-        <table className="species-table-header table table-striped">
-          <thead>
-            <tr>
-              <th className="row-num"></th>
-              <th className="species-col">
-                <span onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.SPECIES))}>
-                  <span className="species-header">Species</span>
-                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.SPECIES)}
-                </span>
-                <input type="text" placeholder="Filter Species" className="filter-field" value={filter}
-                  onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
-                {this.getClearSpeciesFilterIcon()}
-              </th>
-              <th className="locations-seen" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS))}>
-                Locations Seen
-                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS)}
-              </th>
-              <th className="last-seen" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.LAST_SEEN))}>
-                Last Seen
-                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.LAST_SEEN)}
-              </th>
-              <th className="num-reported" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_REPORTED))}>
-                Num Reported
-                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_REPORTED)}
-              </th>
-            </tr>
-          </thead>
-        </table>
+        <div className="species-table-header">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th className="row-num"></th>
+                <th className="species-col sortable">
+                  <span onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.SPECIES))}>
+                    <span className="species-header">Species</span>
+                    {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.SPECIES)}
+                  </span>
+                  <input type="text" placeholder="Filter Species" className="filter-field" value={filter}
+                    onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
+                  {this.getClearSpeciesFilterIcon()}
+                </th>
+                <th className="locations-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS))}>
+                  Locations Seen
+                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS)}
+                </th>
+                <th className="last-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.LAST_SEEN))}>
+                  Last Seen
+                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.LAST_SEEN)}
+                </th>
+                <th className="num-reported sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_REPORTED))}>
+                  Num Reported
+                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_REPORTED)}
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
         <div className="species-table-content-wrapper">
           <table className="species-table-content table table-striped">
             {this.getContent()}

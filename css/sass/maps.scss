@@ -1,4 +1,34 @@
 .gm-style * {
-  width:auto;
-  height:auto;
+  width: auto;
+  height: auto;
+}
+.gm-style-mtc>div:first-child {
+  padding: 4px 10px !important;
+}
+.gm-style .gm-style-mtc label {
+  font-size: 11px;
+  display: inline-block;
+  vertical-align: inherit;
+  margin-bottom: 0;
+}
+.map-btn {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  text-align: center;
+  font-family: "lucida grande", Arial;
+  font-size: 11px;
+  border: 1px solid #717B87;
+  color: #000;
+  margin: 5px;
+  padding: 1px 12px;
+  overflow: hidden;
+  background-color: white;
+}
+.has-results .map-btn {
+  top: 27px !important;
+}
+.map-btn-selected {
+  font-weight: bold;
+  color: #0086cc;
 }
