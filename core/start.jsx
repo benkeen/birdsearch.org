@@ -25,8 +25,6 @@ import App from './app';
 import IntroOverlay from '../components/intro-overlay';
 import About from '../components/about';
 
-console.log(IntroOverlay, About);
-
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
 const mapType = storage.get('mapType') || C.DEFAULT_MAP_TYPE;

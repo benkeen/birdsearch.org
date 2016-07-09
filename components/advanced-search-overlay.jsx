@@ -33,15 +33,15 @@ class AdvancedSearchOverlay extends React.Component {
               <ul id="resultTypeGroup">
                 <li class="selected">
                   <input type="radio" name="resultType" id="rt1" value="all" checked="checked" />
-                  <label for="rt1"><FormatMessage id="birdSightings" /></label>
+                  <label for="rt1"><FormattedMessage id="birdSightings" /></label>
                 </li>
                 <li>
                   <input type="radio" name="resultType" id="rt2" value="notable" />
-                  <label for="rt2"><FormatMessage id="notableSightings" /></label>
+                  <label for="rt2"><FormattedMessage id="notableSightings" /></label>
                 </li>
                 <li>
                   <input type="radio" name="resultType" id="rt3" value="hotspots" />
-                  <label for="rt3"><FormatMessage id="birdingLocations" /></label>
+                  <label for="rt3"><FormattedMessage id="birdingLocations" /></label>
                 </li>
               </ul>
 

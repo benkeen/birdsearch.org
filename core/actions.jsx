@@ -73,14 +73,8 @@ function searchLocationRequestError (dispatch, error) {
 }
 
 function fetchLocations (searchParams) {
-  var formData = new FormData();
-  _.each(searchParams, function (val, key) {
-    formData.append(key, val);
-  });
-  return fetch('/birdsearch.org/ajax/getHotspotLocations.php', {
-    method: 'POST',
-    body: formData
-  });
+  const queryParams = helpers.queryParams(searchParams);
+  return fetch('/api/getHotspotLocations?' + queryParams, { method: 'GET' });
 }
 
 function setIntroOverlayVisibility (visible) {
@@ -223,8 +217,8 @@ var fetchSingleHotspotSightings = function (locationID) {
   formData.append('locationID', locationID);
   formData.append('recency', 30);
 
-  return fetch('/birdsearch.org/ajax/getHotspotSightings.php', {
-    method: 'POST',
+  return fetch('/api/getHotspotSightings', {
+    method: 'GET',
     body: formData
   });
 };

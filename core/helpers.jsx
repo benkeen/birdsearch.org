@@ -24,56 +24,6 @@ function getBestBounds (viewport, bounds) {
 }
 
 
-// this is a slow function which bogs down the UI. It's called every time a (single) hotspot sightings are returned,
-// and it's a little CPU intensive
-// function parseHotspotSightings (sightings) {
-// 	const data = _.times(C.MISC.MAX_SEARCH_DAYS, () => { return { obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 }; });
-// 	const now = moment().format('X');
-//
-// 	// as of June 2016, a for-loop is still by far the fastest way to loop
-// 	const numSightings = sightings.length;
-// 	for (let i=0; i<numSightings; i++) {
-//
-// 		// no timezone information is returned in the API for this field. They appear to be all local to the timezone in which
-// 		// they were made. Bah!
-// 		var observationTime = parseInt(moment(sightings[i].obsDt, 'YYYY-MM-DD HH:mm').format('X'), 10);
-// 		var difference = now - observationTime;
-//
-// 		// ensures that all sightings are boxed into one of the last 30 days. For some reasons, some sightings end up
-// 		// with daysAgo = 0 or 31. I think it's due to the timezone info being absent from the above
-// 		var daysAgo = Math.ceil(difference / C.ONE_DAY_IN_SECONDS);
-// 		daysAgo = (daysAgo < 1) ? 1 : daysAgo;
-// 		daysAgo = (daysAgo > 30) ? 30 : daysAgo;
-//
-// 		data[daysAgo - 1].obs.push(sightings[i]);
-// 	}
-//
-// 	// we've added all the observation data, set the numSpecies counts
-// 	const uniqueSpecies = {};
-// 	let numUniqueSpecies = 0;
-// 	for (let i=0; i<C.MISC.MAX_SEARCH_DAYS; i++) {
-// 		let currDaySightings = data[i].obs;
-//
-// 		// the number of species seen on the current day
-// 		data[i].numSpecies = currDaySightings.length;
-//
-// 		for (var j=0; j<currDaySightings.length; j++) {
-// 			if (_.has(uniqueSpecies, currDaySightings[j].sciName)) {
-// 				continue;
-// 			}
-// 			uniqueSpecies[currDaySightings[j].sciName] = null;
-// 			numUniqueSpecies++;
-// 		}
-// 		let currDaySpeciesRunningTotal = numUniqueSpecies;
-//
-// 		// now set the numSpeciesRunningTotal property. This is the running total seen in that time
-// 		// range: e.g. 3 days would include the total species seen on days 1-3, 4 days would have 1-4 etc.
-// 		data[i].numSpeciesRunningTotal = currDaySpeciesRunningTotal;
-// 	}
-//
-// 	return data;
-// }
-
 // helper method to find out the total number of unique species sighted in a group of locations for a particular
 // observation recency (e.g. the last 7 days). Returns null if any of the rows haven't been loaded yet
 function getUniqueSpeciesInLocationList (locations, sightings, obsRecency) {
@@ -295,9 +245,16 @@ function getNumLoadedLocations (locations, sightings) {
 }
 
 
+function queryParams (source) {
+	const array = [];
+	for (var key in source) {
+		array.push(encodeURIComponent(key) + "=" + encodeURIComponent(source[key]));
+	}
+	return array.join("&");
+}
+
 export {
 	getBestBounds,
-//	parseHotspotSightings,
 	getLocationIDs,
 	getUniqueSpeciesInLocationList,
 	filterLocations,
@@ -306,5 +263,6 @@ export {
 	getSightings,
 	highlightString,
 	sortLocations,
-	getNumLoadedLocations
+	getNumLoadedLocations,
+	queryParams
 };

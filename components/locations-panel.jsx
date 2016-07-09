@@ -214,7 +214,7 @@ export class LocationsPanel extends React.Component {
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
           <div>
             <h2>
-              <FormatMessage id="locations" />
+              <FormattedMessage id="locations" />
               <span className="total-count num-locations">{numLoadedLocations}</span>
               {loader}
             </h2>

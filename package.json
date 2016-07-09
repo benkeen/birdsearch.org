@@ -52,7 +52,9 @@
     "react-dom": "^15.0.0",
     "react-redux": "^4.4.5",
     "redux": "^3.0.4",
+    "request": "^2.73.0",
     "underscore": "^1.8.3",
-    "velocity-react": "^1.1.5"
+    "velocity-react": "^1.1.5",
+    "xml2js": "^0.4.17"
   }
 }
