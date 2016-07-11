@@ -84,7 +84,7 @@ export class SpeciesPanel extends React.Component {
     return (
       <div className="species-heading-row">
         <h1>{title}</h1>
-        {counter}
+        <div className="counter">{counter}</div>
       </div>
     );
   }
@@ -116,6 +116,8 @@ export class SpeciesPanel extends React.Component {
     var selLocation = (selectedLocation) ? selectedLocation : null;
     var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
 
+    // <span className="total-count num-species">{numBirdSpecies}</span>
+
     return (
       <section id="species-panel" style={panelPosition}>
 
@@ -123,7 +125,6 @@ export class SpeciesPanel extends React.Component {
           <div>
             <h2>
               <FormattedMessage id="birdSpecies" />
-              <span className="total-count num-species">{numBirdSpecies}</span>
               {loader}
             </h2>
             <span className="toggle-section glyphicon glyphicon-menu-hamburger" />

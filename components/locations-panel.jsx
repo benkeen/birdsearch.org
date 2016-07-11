@@ -160,7 +160,7 @@ export class LocationsPanel extends React.Component {
             <th className="location" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.LOCATION))}>
               <FormattedMessage id="location"/>{this.getLocationColSort()}
             </th>
-            <th onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>
+            <th className="capitalize" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>
               <FormattedMessage id="birds"/>
             </th>
           </tr>
@@ -209,13 +209,14 @@ export class LocationsPanel extends React.Component {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
 
+    //              <span className="total-count num-locations">{numLoadedLocations}</span>
+
     return (
       <section id="locations-panel">
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
           <div>
             <h2>
               <FormattedMessage id="locations" />
-              <span className="total-count num-locations">{numLoadedLocations}</span>
               {loader}
             </h2>
 

@@ -15,11 +15,13 @@ app.get('/api/getHotspotLocations', (req, res) => {
   ajax.getHotspotLocations(queryParams, res);
 });
 
-app.get('/api/getHotspotSightings', function (request, response) {
-  //ajax.getHotspotLocations(request);
+app.get('/api/getHotspotSightings', function (req, res) {
+  const url_parts = url.parse(req.url, true);
+  const queryParams = url_parts.query;
+  ajax.getHotspotSightings(queryParams, res);
 });
 
-
+// redirect everything else to index.html
 app.get('*', function (request, response) {
   response.sendFile(path.resolve(__dirname, '', 'index.html'));
 });

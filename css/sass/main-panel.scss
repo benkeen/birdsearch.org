@@ -166,12 +166,16 @@ body .clear-filter-icon {
 }
 
 .species-heading-row {
+	display: flex;
+	flex-direction: row;
+
 	position: relative;
 	padding: 8px 0;
 	flex: 0 0 auto;
 	margin: 0 4px;
 
 	h1 {
+		flex: 0 0 auto;
 		font-size: 24px;
 		margin-bottom: 0;
 		border-bottom: 1px solid #666666;
@@ -179,15 +183,17 @@ body .clear-filter-icon {
 			color: #cccccc;
 		}
 	}
+	.counter {
+		flex: 1;
+	}
 	.delimiter {
 		font-size: 8pt;
 		color: #666666;
 		margin: 6px;
 	}
 	.range {
-		float: right;
 		text-align: center;
-		margin-top: -32px;
+		margin-left: 6px;
 	}
 }
 

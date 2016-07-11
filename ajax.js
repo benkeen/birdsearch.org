@@ -4,9 +4,8 @@ const _ = require('underscore');
 
 
 /**
- * Does the work of pinging eBird for the data, converting the result to JSON and sending it back to the client.
+ * This file contains all code for calling eBird for the actual data.
  */
-
 
 
 function getHotspotLocations ({ lat, lng, limitByObservationRecency, observationRecency }, expressRequest) {
@@ -14,10 +13,8 @@ function getHotspotLocations ({ lat, lng, limitByObservationRecency, observation
   if (limitByObservationRecency == 'true') {
     url += `&back=${observationRecency}`;
   }
-
   request.get(url, function (error, response, body) {
     let json = [];
-
     xml2js.parseString(body, (parseErr, data) => {
       if (parseErr) {
         return '';
@@ -36,7 +33,27 @@ function getHotspotLocations ({ lat, lng, limitByObservationRecency, observation
   }).end();
 }
 
+// function getHotspotObservations($locationID, $recency) {
+//   $url = "http://ebird.org/ws1.1/data/obs/loc/recent?r=$locationID&fmt=json&back=$recency";
+//
+//   $ch = curl_init();
+//   curl_setopt($ch, CURLOPT_URL, $url);
+//   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//   $response = curl_exec($ch);
+//   curl_close($ch);
+//
+//   return $response;
+// }
+
+function getHotspotSightings ({ locationID, recency }, res) {
+  const url = `http://ebird.org/ws1.1/data/obs/loc/recent?r=${locationID}&fmt=json&back=${recency}`;
+  request.get(url, function (error, response, body) {
+    res.send(body);
+  });
+}
+
 
 module.exports = {
-  getHotspotLocations: getHotspotLocations
+  getHotspotLocations,
+  getHotspotSightings
 };

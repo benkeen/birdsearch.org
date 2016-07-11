@@ -51,3 +51,7 @@ button.btn {
 ::-webkit-scrollbar-thumb {
 	background: rgba(215, 215, 215, 1);
 }
+
+.capitalize, .capitalize span {
+	text-transform: capitalize;
+}

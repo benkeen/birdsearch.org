@@ -63,7 +63,7 @@ module.exports = function(grunt) {
       fonts: { src: './css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile' },
       libs: { src: './libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile' },
       css: { src: './css/bootstrap.min.css', dest: 'dist/css/', flatten: true, expand: true, filter: 'isFile' },
-      images: { src: './images/**/*', dest: 'dist/images/', flatten: true, expand: true, filter: 'isFile' }
+      images: { src: './images/**/*', dest: 'dist/', flatten: false, expand: true, filter: 'isFile' }
 		}
 	};
 

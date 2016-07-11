@@ -213,14 +213,7 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
 }
 
 var fetchSingleHotspotSightings = function (locationID) {
-  var formData = new FormData();
-  formData.append('locationID', locationID);
-  formData.append('recency', 30);
-
-  return fetch('/api/getHotspotSightings', {
-    method: 'GET',
-    body: formData
-  });
+  return fetch(`/api/getHotspotSightings?locationID=${locationID}&recency=30`, { method: 'GET' });
 };
 
 
