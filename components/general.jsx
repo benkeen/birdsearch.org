@@ -14,7 +14,6 @@ class Overlay extends React.Component {
 }
 
 
-// TODO rename
 class Loader extends React.Component {
   constructor (props) {
     super(props);
