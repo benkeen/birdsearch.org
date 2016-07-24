@@ -119,7 +119,7 @@ class Map extends React.Component {
       mapTypeControlOptions: {
         style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
         position: google.maps.ControlPosition.TOP_RIGHT
-      },
+      }
 //       disableDefaultUI: true,
 //       panControl: true,
 //       zoomControl: true,
@@ -129,6 +129,7 @@ class Map extends React.Component {
     };
 
     _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
+
     //this.addCustomControls();
     this.addEventHandlers();
 
@@ -147,6 +148,7 @@ class Map extends React.Component {
     }
 
     if (this.props.locationFilter !== nextProps.locationFilter) {
+      console.log('setting filter...', nextProps.locationFilter);
       //_data.all.markers[locationID]
       //.setVisible(false);
       //console.log("locations: ", helpers.filterLocations(nextProps.locations, nextProps.filter));
@@ -343,7 +345,7 @@ class Map extends React.Component {
 }
 Map.PropTypes = {
   results: React.PropTypes.array.isRequired,
-  locationFilter: React.PropTypes.string.isRequired,
+  locationFilter: React.PropTypes.string.isRequired
 };
 
 

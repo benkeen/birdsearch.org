@@ -16,6 +16,8 @@ class Header extends React.Component {
   render () {
     const { dispatch, locale, searchSettings, overlayVisibility } = this.props;
 
+    console.log("--", searchSettings.location);
+
     return (
       <header className="flex-fill">
         <div className="navbar">

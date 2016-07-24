@@ -101,11 +101,11 @@ function requestGeoLocation () {
 }
 
 function convertLatLngToAddress (dispatch, lat, lng) {
-  var geocoder = new google.maps.Geocoder();
+  const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ latLng: { lat: lat, lng: lng }}, function (results, status) {
-    var userLocationFound = false;
-    var address = '';
-    var bounds = null;
+    let userLocationFound = false;
+    let address = '';
+    let bounds = null;
     if (status === google.maps.GeocoderStatus.OK) {
       if (results[1]) {
         userLocationFound = true;
@@ -113,6 +113,8 @@ function convertLatLngToAddress (dispatch, lat, lng) {
         bounds = helpers.getBestBounds(results[1].geometry.viewport, results[1].geometry.bounds);
       }
     }
+    console.log("???", address);
+
     dispatch({
       type: E.RECEIVED_USER_LOCATION,
       userLocationFound: userLocationFound,
@@ -143,7 +145,6 @@ function togglePanelVisibility (panel) {
 function visibleLocationsFound (visibleLocations, allLocationSightings) {
   return function (dispatch) {
     dispatch(updateVisibleLocations(visibleLocations));
-
     return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);
   }
 }
@@ -184,7 +185,6 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
     });
     worker.onmessage = function (e) {
       dispatch(locationSightingsFound(e.data.locationID, e.data.sightings));
-
       if (counter % updateBundleCount === 0 || counter === numLocations-1) {
         dispatch(updateLocationSightings());
       }

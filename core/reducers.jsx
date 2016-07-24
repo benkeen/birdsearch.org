@@ -59,11 +59,13 @@ function searchSettings (state = {
 
   switch (action.type) {
     case E.SET_SEARCH_LOCATION:
+      console.log("setting search location: ", action.location);
       return Object.assign({}, state, {
         location: action.location
       });
 
     case E.SEARCH_REQUEST_STARTED:
+      console.log("search request started: ", action.location);
       return Object.assign({}, state, {
         location: action.location,
         lat: action.lat,
@@ -74,6 +76,8 @@ function searchSettings (state = {
       // if an address was included, it means Google was able to reverse geocode the lat/lng into an intelligible
       // address. Favour that over the raw lat/lng, which is kinda klutzy to see in the UI
       var location = (action.address) ? action.address : action.lat + ',' + action.lng;
+
+      console.log("received: ", location);
 
       return Object.assign({}, state, {
         location: location,
@@ -186,8 +190,14 @@ function user (state = {
 function results (state = {
   isFetching: false,
   numLocations: 0,
-  allLocations: [], // stores everything from the last search
-  visibleLocations: [], // stores all locations currently visible on the user's map
+
+  // stores all locations returned from the last search. These may well include locations outside the visible
+  // map boundaries
+  allLocations: [],
+
+  // stores all locations currently visible on the user's map. 
+  visibleLocations: [],
+
   locationSightings: {}, // an object of [location ID] => sighting info. Populated as need be, based on what's visible
 
   // a simple way to announce that the location data has changed. This allows components to have a simple integer to compare
