@@ -18,6 +18,9 @@ body .navbar .brand {
 }
 
 header {
+	a {
+		color: #cccccc;
+	}
 	.nav {
 		margin-bottom: 0;
 	}
@@ -27,9 +30,9 @@ header {
 	}
 	.header-search {
 		display: flex;
-		padding: 13px;
 		height: 34px;
 		input {
+			margin: 13px;
 			padding: 16px 12px;
 			width: 310px;
 			background-color: white;
@@ -47,65 +50,18 @@ header {
 		font-size: 9pt;
 		li {
 			flex: 0 0 auto;
-			padding: 20px 15px;
 			font-size: 11pt;
 			a {
-				color: #cccccc;
+				display: inline-block;
+				padding: 18px 16px 22px;
 			}
 			&.lang-toggle {
 				padding: 15px;
 			}
 		}
 	}
-	.advanced-search-link {
-		color: #cccccc;
-		margin-left: 10px;
-		padding: 6px;
-		font-size: 10pt;
-	}
 }
-
-
-/*
-#mainTabs {
-	margin: 31px 14px 7px 55px;
-
-	li {
-		float: left;
-		margin: 1px 4px 0 0;
-		text-align: center;
-		border-radius: 4px 4px 0 0;
-		box-shadow: none;
-
-		padding: 0;
-		cursor: pointer;
-
-		a {
-			font-size: 14px;
-			padding: 10px 15px 10px;
-
-			border: 1px solid transparent;
-			&:hover {
-				color: #cccccc;
-				text-decoration: none;
-			}
-		}
-		&.active, &:hover {
-			a {
-				color: white;
-				background-color: #3e444c;
-				border: 1px solid #1c1e22;
-				border-radius: 4px 4px 0 0;
-				border-bottom: 0;
-			}
-		}
-	}
+.advanced-search-link {
+	display: inline-block;
+	padding: 21px 11px 39px 5px;
 }
-
-#searchTab a {
-	i {
-		margin-right: 3px;
-	}
-	color: green !important;
-}
-*/

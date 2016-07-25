@@ -211,8 +211,6 @@ class SpeciesTable extends React.Component {
           break;
 
         case C.SPECIES_SORT.FIELDS.NUM_LOCATIONS:
-          console.log(this.sortedSpecies);
-
           if (sortDir === C.SORT_DIR.DEFAULT) {
             this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.locations.length; });
           } else {
@@ -294,7 +292,7 @@ class SpeciesTable extends React.Component {
 
     return (
       <div className="species-table">
-        <div className="species-table-header">
+        <div className="species-table-header" style={{ width: 'calc(100% - 30px)' }}>
           <table className="table table-striped">
             <thead>
               <tr>
@@ -367,6 +365,8 @@ class SpeciesRow extends React.Component {
     const { dispatch, species, comName, sciName, rowNum } = this.props;
     var locations = this.getLocations();
 
+    const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
+
     return (
       <tr>
         <td className="row-num">{rowNum}</td>
@@ -388,6 +388,9 @@ class SpeciesRow extends React.Component {
         </td>
         <td className="last-seen">{species.mostRecentObservationTime}</td>
         <td className="num-reported">{species.howManyCount}</td>
+        <td>
+          <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />
+        </td>
       </tr>
     );
   }

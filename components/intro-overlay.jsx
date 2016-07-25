@@ -13,7 +13,7 @@ class IntroOverlay extends React.Component {
     this.searchAnywhere = this.searchAnywhere.bind(this);
   }
 
-  // TODO URGH. Try again to solve this better.
+  // hmph.
   componentDidUpdate (prevProps) {
     const { dispatch, searchSettings, mapSettings } = this.props;
     if (prevProps.userLocationFound !== this.props.userLocationFound && this.props.userLocationFound === true) {

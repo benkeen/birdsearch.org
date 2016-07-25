@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { C, actions, helpers } from '../core/core';
 
 
@@ -18,6 +19,9 @@ class Header extends React.Component {
 
     console.log("--", searchSettings.location);
 
+    const userTooltip = <Tooltip id="user-tooltip">Log in / Create account</Tooltip>;
+    const infoTooltip = <Tooltip id="info-tooltip">About birdsearch.org</Tooltip>;
+
     return (
       <header className="flex-fill">
         <div className="navbar">
@@ -28,15 +32,19 @@ class Header extends React.Component {
           ref="headerSearch"
           disabled={overlayVisibility.intro || overlayVisibility.advancedSearch}
           location={searchSettings.location}
-          onChange={str => dispatch(actions.setSearchLocation(str))}
-          onSubmit={locationInfo => dispatch(actions.search(searchSettings, locationInfo))} />
+          onChange={(str) => dispatch(actions.setSearchLocation(str))}
+          onSubmit={(mapSettings) => dispatch(actions.search(searchSettings, mapSettings))} />
 
         <ul className="nav-items">
           <li>
-            <Link to="/account"><FormattedMessage id="login" /></Link>
+            <OverlayTrigger placement="bottom" overlay={userTooltip}>
+              <Link to="/account" className="icon icon-user"></Link>
+            </OverlayTrigger>
           </li>
           <li>
-            <Link to="/about"><FormattedMessage id="about" /></Link>
+            <OverlayTrigger placement="bottom" overlay={infoTooltip}>
+              <Link to="/about" className="icon icon-info"></Link>
+            </OverlayTrigger>
           </li>
           <li className="lang-toggle">
             <LanguageToggle
@@ -91,11 +99,15 @@ class HeaderSearch extends React.Component {
   }
 
   render () {
+    const advancedSearchTooltip = <Tooltip id="advanced-search-tooltip">Advanced Search</Tooltip>;
+
     return (
       <div className="header-search">
         <input type="text" placeholder="Enter Location" ref="searchField" value={this.props.location}
           onChange={this.onChangeLocation.bind(this)} />
-        <Link className="advanced-search-link" to="/advanced-search"><FormattedMessage id="advancedSearch" /></Link>
+        <OverlayTrigger placement="bottom" overlay={advancedSearchTooltip}>
+          <Link className="icon icon-search advanced-search-link" to="/advanced-search" />
+        </OverlayTrigger>
       </div>
     );
   }

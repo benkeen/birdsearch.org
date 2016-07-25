@@ -232,6 +232,17 @@ body .clear-filter-icon {
 	.num-reported {
 		width: 17%;
 	}
+
+	.icon {
+		width: 22px;
+		height: 20px;
+		color: #cccccc;
+		display: inline-block;
+		font-size: 14pt;
+		&:hover {
+			color: $blue;
+		}
+	}
 }
 
 .highlight {

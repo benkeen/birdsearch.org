@@ -30,6 +30,9 @@ a:hover {
 	color: $blue;
 	text-decoration: none;
 }
+a:focus {
+	text-decoration: none;
+}
 .tablesorter thead th {
 	cursor: pointer;
 }

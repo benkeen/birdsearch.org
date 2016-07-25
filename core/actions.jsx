@@ -17,13 +17,13 @@ function setSearchLocation (location) {
   };
 }
 
-function startSearchRequest (locationInfo) {
+function startSearchRequest (location, lat, lng, bounds) {
   return {
     type: E.SEARCH_REQUEST_STARTED,
-    lat: locationInfo.lat,
-    lng: locationInfo.lng,
-    location: locationInfo.location,
-    bounds: locationInfo.bounds
+    lat: lat,
+    lng: lng,
+    location: location,
+    bounds: bounds
   };
 }
 
@@ -31,13 +31,18 @@ function searchRequestComplete () {
   return { type: E.SEARCH_REQUEST_ENDED };
 }
 
-function search (searchSettings, locationInfo) {
+
+function search (searchSettings, mapSettings) {
   return function (dispatch) {
-    dispatch(startSearchRequest(locationInfo));
+
+    // "location".
+    // - for header bar searches, it's set in mapSettings [why?]
+    // - for Search Nearby searches, it's in searchSettings.
+    dispatch(startSearchRequest(searchSettings.location, mapSettings.lat, mapSettings.lng, mapSettings.bounds));
 
     var searchParams = {
-      lat: locationInfo.lat,
-      lng: locationInfo.lng,
+      lat: mapSettings.lat,
+      lng: mapSettings.lng,
       limitByObservationRecency: searchSettings.limitByObservationRecency,
       observationRecency: searchSettings.observationRecency
     };
