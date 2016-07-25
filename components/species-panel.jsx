@@ -59,6 +59,20 @@ export class SpeciesPanel extends React.Component {
     }
   }
 
+  getEBirdHotspotLink (selectedLocation) {
+    if (!selectedLocation) {
+      return;
+    }
+    console.log(selectedLocation);
+
+    const link = `http://ebird.org/ebird/hotspot/@{selectedLocation.locationID}`;
+    return (
+      <span className="eBirdLink">
+        <a href={$link} target="_blank"><span>e</span>Bird hotspot</a>
+      </span>
+    );
+  }
+
   getTitle () {
     const { dispatch, locations, selectedLocation, searchSettings, sightings } = this.props;
 
@@ -75,7 +89,7 @@ export class SpeciesPanel extends React.Component {
       title = (
         <span>
           <a href="#" onClick={(e) => { e.preventDefault(); dispatch(actions.selectLocation('')); }}>All Locations</a>
-          <span className="delimiter glyphicon glyphicon-triangle-right"></span>
+          <span className="delimiter glyphicon glyphicon-triangle-right" />
           <span>{locationInfo.n}</span>
         </span>
       );
@@ -85,6 +99,7 @@ export class SpeciesPanel extends React.Component {
       <div className="species-heading-row">
         <h1>{title}</h1>
         <div className="counter">{counter}</div>
+        {this.getEBirdHotspotLink(selectedLocation)}
       </div>
     );
   }

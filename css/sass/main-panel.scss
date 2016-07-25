@@ -166,25 +166,23 @@ body .clear-filter-icon {
 }
 
 .species-heading-row {
-	display: flex;
-	flex-direction: row;
-
 	position: relative;
-	padding: 8px 0;
+	padding: 8px 0 4px;
 	flex: 0 0 auto;
 	margin: 0 4px;
+	border-bottom: 1px solid #666666;
 
 	h1 {
-		flex: 0 0 auto;
+		float: left;
 		font-size: 24px;
 		margin-bottom: 0;
-		border-bottom: 1px solid #666666;
 		a {
 			color: #cccccc;
 		}
 	}
 	.counter {
-		flex: 1;
+		margin: 18px 10px 0;
+		float: left;
 	}
 	.delimiter {
 		font-size: 8pt;
@@ -241,6 +239,18 @@ body .clear-filter-icon {
 		font-size: 14pt;
 		&:hover {
 			color: $blue;
+		}
+	}
+
+	.eBirdLink {
+		float: right;
+		font-size: 9pt;
+		margin: 20px 0 0;
+		a {
+			color: #cccccc;
+			span {
+				color: green;
+			}
 		}
 	}
 }
