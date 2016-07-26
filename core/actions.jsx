@@ -197,6 +197,11 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
     };
   };
 
+  // divvy up the requests for the sightings into packets, the size of which depends on the total number of hotspots
+  // to query
+  let packetSize = 1;
+
+
   const promises = [];
   locations.forEach(function (locInfo) {
     var currLocationID = locInfo.i;
@@ -217,17 +222,22 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
   return promises;
 }
 
-var fetchSingleHotspotSightings = function (locationID) {
+const fetchSingleHotspotSightings = (locationID) => {
   return fetch(`/api/getHotspotSightings?locationID=${locationID}&recency=30`, { method: 'GET' });
 };
 
 
-var locationSightingsFound = function (locationID, resp) {
+const fetchHotspotSightingsPacket = (locationIDs) => {
+  return fetch(`/api/getHotspotSightingsPacke?locationID=${locationIDs.join(',')}&recency=30`, { method: 'GET' });
+};
+
+
+const locationSightingsFound = (locationID, resp) => {
   return {
     type: E.HOTSPOT_SIGHTINGS_RETURNED,
     locationID: locationID,
     sightings: resp
-  }
+  };
 };
 
 var updateLocationSightings = function () {

@@ -63,12 +63,13 @@ export class SpeciesPanel extends React.Component {
     if (!selectedLocation) {
       return;
     }
-    console.log(selectedLocation);
-
-    const link = `http://ebird.org/ebird/hotspot/@{selectedLocation.locationID}`;
+    const link = `http://ebird.org/ebird/hotspot/${selectedLocation}`;
     return (
       <span className="eBirdLink">
-        <a href={$link} target="_blank"><span>e</span>Bird hotspot</a>
+        <a href={link} target="_blank">
+          <span className="eBird">e</span>Bird hotspot
+          <span className="eBirdOffsiteIcon glyphicon glyphicon-new-window" />
+        </a>
       </span>
     );
   }
@@ -117,7 +118,6 @@ export class SpeciesPanel extends React.Component {
     };
 
     var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
-    var numBirdSpecies = results.count;
 
     var loader = null;
     if (!results.allFetched) {
@@ -130,8 +130,6 @@ export class SpeciesPanel extends React.Component {
 
     var selLocation = (selectedLocation) ? selectedLocation : null;
     var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
-
-    // <span className="total-count num-species">{numBirdSpecies}</span>
 
     return (
       <section id="species-panel" style={panelPosition}>
@@ -271,8 +269,9 @@ class SpeciesTable extends React.Component {
           filter={filter}
           species={speciesInfo}
           rowNum={index+1}
-          comName={comNameData.string}
-          sciName={sciNameData.string}
+          comName={speciesInfo.comName}
+          comNameDisplay={comNameData.string}
+          sciNameDisplay={sciNameData.string}
           key={index} />
       );
     });
@@ -372,12 +371,18 @@ class SpeciesRow extends React.Component {
 
   getLocations () {
     return _.map(this.props.species.locations, function (locInfo) {
-      return (<li key={locInfo.locID} data-id={locInfo.locID}>{locInfo.locName}</li>);
+      const checklistLink = `http://ebird.org/ebird/view/checklist/${locInfo.subID}`;
+      return (
+        <tr key={locInfo.locID}>
+          <td data-id={locInfo.locID}>{locInfo.locName}</td>
+          <td><a href={checklistLink} target="_blank" className="glyphicon glyphicon-list"></a></td>
+        </tr>
+      );
     });
   }
 
   render () {
-    const { dispatch, species, comName, sciName, rowNum } = this.props;
+    const { dispatch, species, comName, comNameDisplay, sciNameDisplay, rowNum } = this.props;
     var locations = this.getLocations();
 
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
@@ -386,14 +391,16 @@ class SpeciesRow extends React.Component {
       <tr>
         <td className="row-num">{rowNum}</td>
         <td className="species-col">
-          <div className="com-name" dangerouslySetInnerHTML={{ __html: comName }}></div>
-          <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciName }}></div>
+          <div className="com-name" dangerouslySetInnerHTML={{ __html: comNameDisplay }}></div>
+          <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
         </td>
         <td ref="cell" className="locations-seen species-num-locations-cell">
           <OverlayTrigger trigger="click" placement="bottom" rootClose={true} show={this.state.show} container={this.refs.cell}
             overlay={
               <Popover title="Locations" id="locations-popover">
-                <ul onClick={(e) => this.selectLocation(dispatch, e.target)}>{locations}</ul>
+                <table className="bird-location-sightings" onClick={(e) => this.selectLocation(dispatch, e.target)}>
+                  <tbody>{locations}</tbody>
+                </table>
               </Popover>
             }>
             <span className="species-num-locations">

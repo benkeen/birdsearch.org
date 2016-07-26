@@ -141,8 +141,28 @@
 		}
 	}
 }
-#species-panel-content > div .panel table {
-	flex: 1;
+#species-panel-content {
+	& > div .panel table {
+		flex: 1;
+	}
+	.eBirdLink {
+		float: right;
+		font-size: 9pt;
+		margin: 20px 0 0;
+		a {
+			color: #cccccc;
+			span.eBird {
+				color: green;
+			}
+			&:hover {
+				color: white;
+			}
+            span.eBirdOffsiteIcon {
+              margin-left: 5px;
+              font-size: 10px;
+            }
+		}
+	}
 }
 
 .filter-locations-row {
@@ -239,18 +259,6 @@ body .clear-filter-icon {
 		font-size: 14pt;
 		&:hover {
 			color: $blue;
-		}
-	}
-
-	.eBirdLink {
-		float: right;
-		font-size: 9pt;
-		margin: 20px 0 0;
-		a {
-			color: #cccccc;
-			span {
-				color: green;
-			}
 		}
 	}
 }
@@ -445,4 +453,14 @@ body .filter-field {
 			color: #d3e4f9;
 		}
 	}
+}
+
+.bird-location-sightings {
+  width: 100%;
+  a {
+	color: white;
+	  &:hover {
+		  color: $blue;
+	  }
+  }
 }

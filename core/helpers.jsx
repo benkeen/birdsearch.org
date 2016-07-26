@@ -140,7 +140,7 @@ function getSightings (locations, sightings, obsRecency, targetLocationID = null
 		// now append ALL locations for the found species
 		_.each(currLocationSpeciesInfo.species, function (info, sciName) {
 			if (_.has(dataBySpecies, sciName)) {
-				dataBySpecies[sciName].locations.push({locName: info.locName, locID: info.locID});
+				dataBySpecies[sciName].locations.push({locName: info.locName, locID: info.locID, subID: info.subID });
 			}
 		});
 
