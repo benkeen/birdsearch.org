@@ -10,7 +10,7 @@ import moment from 'moment';
  * @param viewport
  * @param bounds
  */
-function getBestBounds (viewport, bounds) {
+const getBestBounds = (viewport, bounds) => {
 	var locationObj = (viewport) ? viewport : bounds;
 	var topRight = locationObj.getNorthEast();
 	var bottomLeft = locationObj.getSouthWest();
@@ -21,12 +21,12 @@ function getBestBounds (viewport, bounds) {
 		east: topRight.lng(),
 		west: bottomLeft.lng()
 	};
-}
+};
 
 
 // helper method to find out the total number of unique species sighted in a group of locations for a particular
 // observation recency (e.g. the last 7 days). Returns null if any of the rows haven't been loaded yet
-function getUniqueSpeciesInLocationList (locations, sightings, obsRecency) {
+const getUniqueSpeciesInLocationList = (locations, sightings, obsRecency) => {
 	var uniqueSpeciesInAllLocations = {};
 	var numUniqueSpeciesInAllLocations = 0;
 	var locationIDs = getLocationIDs(locations);
@@ -54,11 +54,11 @@ function getUniqueSpeciesInLocationList (locations, sightings, obsRecency) {
 		count: numUniqueSpeciesInAllLocations,
 		allFetched: allFetched
 	};
-}
+};
 
 
 // return the species seen for a particular location and observation recency
-function getLocationSpeciesList (locationID, sightings, obsRecency) {
+const getLocationSpeciesList = (locationID, sightings, obsRecency) => {
 	if (!_.has(sightings, locationID)) {
 		return false;
 	}
@@ -82,13 +82,15 @@ function getLocationSpeciesList (locationID, sightings, obsRecency) {
 		numSpecies: numSpecies,
 		species: species
 	};
-}
+};
 
-function getLocationIDs (locations) {
+
+const getLocationIDs = (locations) => {
 	return _.pluck(locations, 'i');
-}
+};
 
-function filterLocations (locations, filter) {
+
+const filterLocations = (locations, filter) => {
 	if (!filter) {
 		return locations;
 	}
@@ -96,14 +98,15 @@ function filterLocations (locations, filter) {
 	return _.filter(locations, function (locInfo) {
 		return regexp.test(locInfo.n);
 	});
-}
+};
 
-function getLocationById (locations, locationId) {
+
+const getLocationById = (locations, locationId) => {
 	return _.findWhere(locations, { i: locationId });
-}
+};
 
 
-function getSightings (locations, sightings, obsRecency, targetLocationID = null) {
+const getSightings = (locations, sightings, obsRecency, targetLocationID = null) => {
 	var locationIDs = getLocationIDs(locations);
 	var dataBySpecies = {};
 	var numSpecies = 0;
@@ -182,10 +185,10 @@ function getSightings (locations, sightings, obsRecency, targetLocationID = null
 	});
 
 	return results;
-}
+};
 
 
-function highlightString (string, filter) {
+const highlightString = (string, filter) => {
 	if (filter === '') {
 		return {
 			match: true,
@@ -202,10 +205,10 @@ function highlightString (string, filter) {
 		data.string = string.replace(regexp, '<span class="highlight">$1</span>');
 	}
 	return data;
-}
+};
 
 
-function sortLocations (locations, locationSightings, observationRecency, sort, sortDir, filter) {
+const sortLocations = (locations, locationSightings, observationRecency, sort, sortDir, filter) => {
 	var sortedLocations = locations;
 
 	// apply the appropriate sort
@@ -228,10 +231,10 @@ function sortLocations (locations, locationSightings, observationRecency, sort, 
 	}
 
 	return filterLocations(sortedLocations, filter);
-}
+};
 
 
-function getNumLoadedLocations (locations, sightings) {
+const getNumLoadedLocations = (locations, sightings) => {
 	var count = 0;
 
 	_.each(locations, function (location) {
@@ -242,16 +245,39 @@ function getNumLoadedLocations (locations, sightings) {
 	});
 
 	return count;
-}
+};
 
 
-function queryParams (source) {
+const queryParams = (source) => {
 	const array = [];
 	for (var key in source) {
 		array.push(encodeURIComponent(key) + "=" + encodeURIComponent(source[key]));
 	}
 	return array.join("&");
-}
+};
+
+
+const getPacketSize = (numLocations) => {
+	let packetSize = 1;
+	if (numLocations < 10) {
+		packetSize = 2;
+	} else if (numLocations < 20) {
+		packetSize = 3;
+	} else {
+		packetSize = 4;
+	}
+	return packetSize;
+};
+
+
+const chunkArray = (arr, chunkSize) => {
+	const chunkedArray = [];
+	for (let i=0; i<arr.length; i+=chunkSize) {
+		chunkedArray.push(arr.slice(i, i+chunkSize));
+	}
+	return chunkedArray;
+};
+
 
 export {
 	getBestBounds,
@@ -264,5 +290,7 @@ export {
 	highlightString,
 	sortLocations,
 	getNumLoadedLocations,
-	queryParams
+	queryParams,
+	getPacketSize,
+	chunkArray
 };

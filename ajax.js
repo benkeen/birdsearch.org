@@ -42,7 +42,19 @@ function getHotspotSightings ({ locationID, recency }, res) {
 }
 
 
+function getHotspotSightingsPacket ({ locationIDs, recency }, res) {
+  const locationArray = locationIDs.split(',').map((locationID) => { return 'r=' + locationID; });
+  const locations = locationArray.join('&');
+
+  const url = `http://ebird.org/ws1.1/data/obs/loc/recent?${locations}&fmt=json&back=${recency}&detail=full`;
+  request.get(url, function (error, response, body) {
+    res.send(body);
+  });
+}
+
+
 module.exports = {
   getHotspotLocations,
-  getHotspotSightings
+  getHotspotSightings,
+  getHotspotSightingsPacket
 };

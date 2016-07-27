@@ -456,11 +456,14 @@ body .filter-field {
 }
 
 .bird-location-sightings {
-  width: 100%;
+  li {
+    padding-right: 30px;
+  }
   a {
+    float: right;
 	color: white;
-	  &:hover {
-		  color: $blue;
-	  }
+    &:hover {
+        color: $blue;
+    }
   }
 }

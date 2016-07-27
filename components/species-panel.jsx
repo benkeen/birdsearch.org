@@ -210,8 +210,10 @@ class SpeciesTable extends React.Component {
       resort = true;
     }
 
-    this.sortedSpecies = this.props.species;
+    this.sortedSpecies = nextProps.species;
     if (resort) {
+
+      console.log('resort');
 
       // speed this sucker up
       switch (sort) {
@@ -373,10 +375,10 @@ class SpeciesRow extends React.Component {
     return _.map(this.props.species.locations, function (locInfo) {
       const checklistLink = `http://ebird.org/ebird/view/checklist/${locInfo.subID}`;
       return (
-        <tr key={locInfo.locID}>
-          <td data-id={locInfo.locID}>{locInfo.locName}</td>
-          <td><a href={checklistLink} target="_blank" className="glyphicon glyphicon-list"></a></td>
-        </tr>
+        <li key={locInfo.locID}>
+          <span data-id={locInfo.locID}>{locInfo.locName}</span>
+          <a href={checklistLink} target="_blank" className="glyphicon glyphicon-list"></a>
+        </li>
       );
     });
   }
@@ -398,9 +400,9 @@ class SpeciesRow extends React.Component {
           <OverlayTrigger trigger="click" placement="bottom" rootClose={true} show={this.state.show} container={this.refs.cell}
             overlay={
               <Popover title="Locations" id="locations-popover">
-                <table className="bird-location-sightings" onClick={(e) => this.selectLocation(dispatch, e.target)}>
-                  <tbody>{locations}</tbody>
-                </table>
+                <ul className="bird-location-sightings" onClick={(e) => this.selectLocation(dispatch, e.target)}>
+                  {locations}
+                </ul>
               </Popover>
             }>
             <span className="species-num-locations">

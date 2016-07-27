@@ -21,6 +21,12 @@ app.get('/api/getHotspotSightings', function (req, res) {
   ajax.getHotspotSightings(queryParams, res);
 });
 
+app.get('/api/getHotspotSightingsPacket', function (req, res) {
+  const url_parts = url.parse(req.url, true);
+  const queryParams = url_parts.query;
+  ajax.getHotspotSightingsPacket(queryParams, res);
+});
+
 // redirect everything else to index.html
 app.get('*', function (request, response) {
   response.sendFile(path.resolve(__dirname, '', 'index.html'));

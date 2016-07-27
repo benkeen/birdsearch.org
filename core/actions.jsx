@@ -150,6 +150,7 @@ function togglePanelVisibility (panel) {
 function visibleLocationsFound (visibleLocations, allLocationSightings) {
   return function (dispatch) {
     dispatch(updateVisibleLocations(visibleLocations));
+    console.log('!!!');
     return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);
   }
 }
@@ -179,12 +180,26 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
   let counter = 0;
 
 
-  var processHotspotSightings = function (json, currLocationID) {
+//  var processHotspotSightings = function (json, currLocationID) {
+//    var worker = new Worker('./processHotspotSightingsPacket.js'); // TODO shared worker?
+//    worker.postMessage({
+//      locationID: currLocationID,
+//      sightings: json,
+//      maxSearchDays: C.MISC.MAX_SEARCH_DAYS
+//    });
+//    worker.onmessage = function (e) {
+//      dispatch(locationSightingsFound(e.data.locationID, e.data.sightings));
+//      if (counter % updateBundleCount === 0 || counter === numLocations-1) {
+//        dispatch(updateLocationSightings());
+//      }
+//      counter++;
+//    };
+//  };
 
-    // TODO shared worker?
-    var worker = new Worker('./processHotspotSightings.js');
+  var processHotspotSightingsPacket = function (json, locationIDs) {
+    var worker = new Worker('./worker-processHotspotSightings.js'); // TODO shared worker?
     worker.postMessage({
-      locationID: currLocationID,
+      locationIDs: locationIDs,
       sightings: json,
       maxSearchDays: C.MISC.MAX_SEARCH_DAYS
     });
@@ -197,26 +212,25 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
     };
   };
 
+
   // divvy up the requests for the sightings into packets, the size of which depends on the total number of hotspots
   // to query
-  let packetSize = 1;
-
-
   const promises = [];
-  locations.forEach(function (locInfo) {
-    var currLocationID = locInfo.i;
+  const locationIDs = _.filter(locations, (locInfo) => {
+    return !allLocationSightings[locInfo.i].fetched;
+  }).map((locInfo) => {
+    return locInfo.i;
+  });
 
-    // if we already have the hotspot data available, probably don't need to do anything... React should be good at this bit.
-    if (allLocationSightings[currLocationID].fetched) {
-      return;
-//      _updateVisibleLocationInfo(currLocationID, _birdSearchHotspots[currLocationID].sightings.data[_lastSearchObsRecency-1].numSpeciesRunningTotal);
-    }
+  let packetSize = helpers.getPacketSize(locations.length);
+  const chunks = helpers.chunkArray(locationIDs, packetSize);
 
-    promises.push(fetchSingleHotspotSightings(currLocationID)
+  chunks.forEach((locationIDs) => {
+    promises.push(fetchHotspotSightingsPacket(locationIDs)
       .then(res => res.json())
-      .then(json => processHotspotSightings(json, currLocationID)
+      .then(json => processHotspotSightingsPacket(json, locationIDs)
         //error => dispatch(searchLocationRequestError(dispatch, error))
-      ));
+    ));
   });
 
   return promises;
@@ -228,7 +242,7 @@ const fetchSingleHotspotSightings = (locationID) => {
 
 
 const fetchHotspotSightingsPacket = (locationIDs) => {
-  return fetch(`/api/getHotspotSightingsPacke?locationID=${locationIDs.join(',')}&recency=30`, { method: 'GET' });
+  return fetch(`/api/getHotspotSightingsPacket?locationIDs=${locationIDs.join(',')}&recency=30`, { method: 'GET' });
 };
 
 
