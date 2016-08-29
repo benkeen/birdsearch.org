@@ -4,6 +4,7 @@
 
 export default {
 	about: 'About',
+	aboutBirdsearch: 'About birdsearch.org',
 	advancedSearch: 'advanced search',
   allLocations: 'All locations',
   birds: 'birds',
@@ -19,6 +20,7 @@ export default {
   location: 'Location',
   locations: 'Locations',
 	login: 'Login',
+	loginCreateAcccount: 'Log in / Create account',
 	notableSightings: 'Notable sightings',
 	or: 'OR',
 	pleaseEnterLocationSearchDefault: 'Please enter a location',

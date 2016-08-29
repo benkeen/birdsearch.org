@@ -47,6 +47,7 @@ export class LocationsPanel extends React.Component {
     }
 
     if (resortLocations) {
+      console.log(".");
       shouldUpdate = true;
       var sortedFilteredLocations = helpers.sortLocations(nextProps.locations, nextProps.locationSightings,
         nextProps.searchSettings.observationRecency, nextProps.sort, nextProps.sortDir, nextProps.filter);

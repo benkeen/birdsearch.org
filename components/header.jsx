@@ -15,12 +15,10 @@ class Header extends React.Component {
   }
 
   render () {
-    const { dispatch, locale, searchSettings, overlayVisibility } = this.props;
+    const { dispatch, locale, searchSettings, introOverlay, advancedSearchOverlay } = this.props;
 
-    console.log("--", searchSettings.location);
-
-    const userTooltip = <Tooltip id="user-tooltip">Log in / Create account</Tooltip>;
-    const infoTooltip = <Tooltip id="info-tooltip">About birdsearch.org</Tooltip>;
+    const userTooltip = <Tooltip id="user-tooltip"><FormattedMessage id="loginCreateAccount" /></Tooltip>;
+    const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
 
     return (
       <header className="flex-fill">
@@ -30,7 +28,7 @@ class Header extends React.Component {
 
         <HeaderSearch
           ref="headerSearch"
-          disabled={overlayVisibility.intro || overlayVisibility.advancedSearch}
+          disabled={introOverlay.visible || advancedSearchOverlay.visible}
           location={searchSettings.location}
           onChange={(str) => dispatch(actions.setSearchLocation(str))}
           onSubmit={(mapSettings) => dispatch(actions.search(searchSettings, mapSettings))} />
@@ -59,7 +57,8 @@ class Header extends React.Component {
 
 export default connect(state => ({
   locale: state.storedSettings.locale,
-  overlayVisibility: state.overlayVisibility,
+  introOverlay: state.introOverlay,
+  advancedSearchOverlay: state.advancedSearchOverlay,
   searchSettings: state.searchSettings,
   nextAction: state.misc.nextAction
 }))(Header);
@@ -99,7 +98,7 @@ class HeaderSearch extends React.Component {
   }
 
   render () {
-    const advancedSearchTooltip = <Tooltip id="advanced-search-tooltip">Advanced Search</Tooltip>;
+    const advancedSearchTooltip = <Tooltip id="advanced-search-tooltip"><FormattedMessage id="advancedSearch" /></Tooltip>;
 
     return (
       <div className="header-search">

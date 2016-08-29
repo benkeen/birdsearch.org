@@ -42,8 +42,6 @@ class I18NWrapper extends React.Component {
       <IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
         <Router history={browserHistory}>
           <Route path="/" component={App}>
-            <IndexRedirect to="intro" />
-            <Route path="/app" component={() => ( <div></div> )} />
             <Route path="/about" component={About} />
             <Route path="/intro" component={IntroOverlay} />
           </Route>

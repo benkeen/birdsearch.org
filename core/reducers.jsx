@@ -133,23 +133,44 @@ function mapSettings (state = {
 }
 
 
-function overlayVisibility (state = {
-  intro: true,
-  advancedSearch: false
+function introOverlay (state = {
+  visible: true,
+
+  // the intro overlay is special: it has it's own /intro route, but it automatically shows up when the user first
+  // goes to the root. To know when NOT to automatically show it, we track when the overlay is first closed
+  hasBeenClosedAtLeastOnce: false
 }, action) {
 
   switch (action.type) {
     case E.SET_INTRO_OVERLAY_VISIBILITY:
-      return Object.assign({}, state, {
-        intro: action.visible
-      });
+
+      const data = {
+        visible: action.visible
+      };
+
+      if (!action.visible) {
+        console.log('closing!');
+        data.hasBeenClosedAtLeastOnce = true;
+      }
+
+      return Object.assign({}, state, data);
 
     // after a user's location is found, hide the Intro overlay
     case E.RECEIVED_USER_LOCATION:
       return Object.assign({}, state, {
-        intro: false
+        visible: false
       });
 
+    default:
+      return state;
+  }
+}
+
+function advancedSearchOverlay (state = {
+  visible: false
+}, action) {
+
+  switch (action.type) {
     case E.SET_ADVANCED_SEARCH_VISIBILITY:
       return Object.assign({}, state, {
         advancedSearch: action.visible
@@ -159,7 +180,6 @@ function overlayVisibility (state = {
       return state;
   }
 }
-
 
 function user (state = {
   isFetching: false,
@@ -391,10 +411,10 @@ export {
   searchSettings,
   mapSettings,
   user,
-  overlayVisibility,
   results,
   locationsPanel,
   speciesPanel,
-  misc
+  misc,
+  introOverlay,
+  advancedSearchOverlay
 };
-

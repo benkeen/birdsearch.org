@@ -6,6 +6,7 @@ import { C, E, helpers, _, actions } from '../core/core';
 import { Loader, ClosePanel, LocationsDropdown, LineLoader, LocationSpeciesCount } from './general';
 import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 
+var i=0;
 
 export class SpeciesPanel extends React.Component {
   constructor (props) {
@@ -18,6 +19,10 @@ export class SpeciesPanel extends React.Component {
   componentDidMount () {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
   }
+
+//  shouldComponentUpdate () {
+//    return false;
+//  }
 
   componentWillReceiveProps (nextProps) {
     const { visible, env } = this.props;
@@ -212,8 +217,6 @@ class SpeciesTable extends React.Component {
 
     this.sortedSpecies = nextProps.species;
     if (resort) {
-
-      console.log('resort');
 
       // speed this sucker up
       switch (sort) {
