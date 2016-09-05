@@ -6,6 +6,7 @@ import Header from '../components/header';
 import Map from '../components/map';
 import { LocationsPanel } from '../components/locations-panel';
 import { SpeciesPanel } from '../components/species-panel';
+import IntroOverlay from '../components/intro-overlay';
 
 
 // this is our top-level component. It contains the header, map and controls. The router passes in other components as
@@ -15,21 +16,40 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     this.onResize = this.onResize.bind(this);
+    this.getModal = this.getModal.bind(this);
   }
 
   componentDidMount () {
     $(window).resize(this.onResize);
   }
 
+  // our global window resize listener
   onResize () {
     var windowHeight = $(window).height();
     var windowWidth  = $(window).width();
     this.props.dispatch(actions.onWindowResize(windowWidth, windowHeight));
   }
 
+  getModal () {
+    const { children, location, introOverlay } = this.props;
+    let modal = children;
+
+    // if the user is arriving at the site for the first time, show the intro overlay, even though we're at the root (/).
+    // If they want to see it again, they'll be routed to /intro
+    if (!children && introOverlay.visible && !introOverlay.hasBeenClosedAtLeastOnce) {
+      modal = <IntroOverlay />;
+    }
+
+    return (
+      <VelocityTransitionGroup runOnMount={true} enter={{ animation: 'fadeIn' }} leave={{ animation: 'fadeOut' }}
+        duration={C.TRANSITION_SPEED}>
+        {modal ? React.cloneElement(modal, { key: location.pathname }) : undefined}
+      </VelocityTransitionGroup>
+    );
+  }
+
   render () {
-    const { dispatch, env, mapSettings, searchSettings, locationsPanel, speciesPanel, results,
-      children: modal, location: modalLocation } = this.props;
+    const { dispatch, env, mapSettings, searchSettings, locationsPanel, speciesPanel, results } = this.props;
 
     const classes = 'flex-body' + (results.visibleLocations.length > 0 ? ' has-results' : '');
     return (
@@ -50,10 +70,7 @@ class App extends React.Component {
             results={results}
             locationFilter={locationsPanel.filter} />
 
-          <VelocityTransitionGroup runOnMount={true} enter={{ animation: 'fadeIn' }} leave={{ animation: 'fadeOut' }}
-            duration={C.TRANSITION_SPEED}>
-            {React.cloneElement(modal, { key: modalLocation.pathname })}
-          </VelocityTransitionGroup>
+          {this.getModal()}
 
           <LocationsPanel
             dispatch={dispatch}
@@ -90,7 +107,7 @@ export default connect(state => ({
   env: state.env,
   mapSettings: state.mapSettings,
   searchSettings: state.searchSettings,
-  overlayVisibility: state.overlayVisibility,
+  introOverlay: state.introOverlay,
   locationsPanel: state.locationsPanel,
   speciesPanel: state.speciesPanel,
   user: state.user,

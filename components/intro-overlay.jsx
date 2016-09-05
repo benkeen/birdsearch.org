@@ -9,11 +9,11 @@ import { C, _, actions } from '../core/core';
 class IntroOverlay extends React.Component {
   constructor (props) {
     super(props);
+    this.close = this.close.bind(this);
     this.searchNearby = this.searchNearby.bind(this);
     this.searchAnywhere = this.searchAnywhere.bind(this);
   }
 
-  // hmph
   componentDidUpdate (prevProps) {
     const { dispatch, searchSettings, mapSettings } = this.props;
     if (prevProps.userLocationFound !== this.props.userLocationFound && this.props.userLocationFound === true) {
@@ -44,7 +44,9 @@ class IntroOverlay extends React.Component {
   }
 
   close () {
-    browserHistory.push('/');
+    console.log('inside THIS');
+    const { dispatch } = this.props;
+    dispatch(actions.setIntroOverlayVisibility(false));
   }
 
   render () {

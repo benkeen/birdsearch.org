@@ -147,12 +147,9 @@ function introOverlay (state = {
       const data = {
         visible: action.visible
       };
-
       if (!action.visible) {
-        console.log('closing!');
         data.hasBeenClosedAtLeastOnce = true;
       }
-
       return Object.assign({}, state, data);
 
     // after a user's location is found, hide the Intro overlay
