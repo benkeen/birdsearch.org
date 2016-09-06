@@ -30,8 +30,8 @@ class IntroOverlay extends React.Component {
   }
 
   getLoader () {
-    const { formatMessage } = this.props.intl;
-    return (this.props.loading) ? (<Loader label={formatMessage({ id: 'findingYourLocation' }).toUpperCase()} />) : null;
+    const { intl, loading } = this.props;
+    return (loading) ? (<Loader label={intl.formatMessage({ id: 'findingYourLocation' }).toUpperCase()} />) : null;
   }
 
   searchNearby () {

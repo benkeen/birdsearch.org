@@ -20,6 +20,9 @@ class Header extends React.Component {
   }
 
   showIntroOverlay () {
+    const { dispatch } = this.props;
+    dispatch(actions.hideLocationsPanel());
+    dispatch(actions.hideSpeciesPanel());
     browserHistory.push('/intro');
   }
 

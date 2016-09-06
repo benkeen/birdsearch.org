@@ -143,7 +143,6 @@ class Map extends React.Component {
     }
 
     if (this.props.locationFilter !== nextProps.locationFilter) {
-      console.log('setting filter...', nextProps.locationFilter);
       //_data.all.markers[locationID]
       //.setVisible(false);
       //console.log("locations: ", helpers.filterLocations(nextProps.locations, nextProps.filter));
@@ -279,7 +278,6 @@ class Map extends React.Component {
   }
 
   onMapBoundsChange () {
-    console.log("map bounds changed...");
     //this.clearHotspots();
     this.addMarkers(this.props.results.allLocations, this.props.results.locationSightings);
     //this.props.dispatch(actions.visibleLocationsFound(visibleHotspots, locationSightings));

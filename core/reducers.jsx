@@ -59,13 +59,11 @@ function searchSettings (state = {
 
   switch (action.type) {
     case E.SET_SEARCH_LOCATION:
-      console.log("setting search location: ", action.location);
       return Object.assign({}, state, {
         location: action.location
       });
 
     case E.SEARCH_REQUEST_STARTED:
-      console.log("search request started: ", action.location);
       return Object.assign({}, state, {
         location: action.location,
         lat: action.lat,
@@ -76,8 +74,6 @@ function searchSettings (state = {
       // if an address was included, it means Google was able to reverse geocode the lat/lng into an intelligible
       // address. Favour that over the raw lat/lng, which is kinda klutzy to see in the UI
       var location = (action.address) ? action.address : action.lat + ',' + action.lng;
-
-      console.log("received: ", location);
 
       return Object.assign({}, state, {
         location: location,
@@ -311,23 +307,23 @@ function locationsPanel (state = {
         visible: newVisibility
       });
 
+    case E.HIDE_LOCATIONS_PANEL:
+      return Object.assign({}, state, { visible: false });
+
     case E.SEARCH_LOCATIONS_RETURNED:
       return Object.assign({}, state, {
         visible: true
       });
-      break;
 
     case E.SET_LOCATION_FILTER:
       return Object.assign({}, state, {
         filter: action.filter
       });
-      break;
 
     case E.LOCATION_SELECTED:
       return Object.assign({}, state, {
         selectedLocation: action.location
       });
-      break;
 
     default:
       return state;
@@ -366,10 +362,10 @@ function speciesPanel (state = {
       break;
 
     case E.SHOW_SPECIES_PANEL:
-      return Object.assign({}, state, {
-        visible: true
-      });
-      break;
+      return Object.assign({}, state, { visible: true });
+
+    case E.HIDE_SPECIES_PANEL:
+      return Object.assign({}, state, { visible: false });
 
     case E.SET_SPECIES_FILTER:
       return Object.assign({}, state, {

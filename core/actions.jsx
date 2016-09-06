@@ -118,7 +118,6 @@ function convertLatLngToAddress (dispatch, lat, lng) {
         bounds = helpers.getBestBounds(results[1].geometry.viewport, results[1].geometry.bounds);
       }
     }
-    console.log("???", address);
 
     dispatch({
       type: E.RECEIVED_USER_LOCATION,
@@ -150,7 +149,6 @@ function togglePanelVisibility (panel) {
 function visibleLocationsFound (visibleLocations, allLocationSightings) {
   return function (dispatch) {
     dispatch(updateVisibleLocations(visibleLocations));
-    console.log('!!!');
     return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);
   }
 }
@@ -254,11 +252,11 @@ const locationSightingsFound = (locationID, resp) => {
   };
 };
 
-var updateLocationSightings = function () {
+const updateLocationSightings = function () {
   return { type: E.HOTSPOT_SIGHTINGS_UPDATE }
 };
 
-var onWindowResize = function (width, height) {
+const onWindowResize = function (width, height) {
   return {
     type: E.WINDOW_RESIZED,
     width: width,
@@ -266,43 +264,51 @@ var onWindowResize = function (width, height) {
   }
 };
 
-var sortLocations = function (sort) {
+const sortLocations = function (sort) {
   return {
     type: E.LOCATIONS_SORTED,
     sort: sort
   }
 };
 
-var sortSpecies = function (sort) {
+const sortSpecies = function (sort) {
   return {
     type: E.SPECIES_SORTED,
     sort: sort
   }
 };
 
-var selectLocation = function (location) {
+const selectLocation = function (location) {
   return {
     type: E.LOCATION_SELECTED,
     location: location
   }
 };
 
-var showSpeciesPanel = function () {
-  return { type: E.SHOW_SPECIES_PANEL }
+const hideLocationsPanel = function () {
+  return { type: E.HIDE_LOCATIONS_PANEL };
 };
 
-var setLocationFilter = function (filter) {
+const showSpeciesPanel = function () {
+  return { type: E.SHOW_SPECIES_PANEL };
+};
+
+const hideSpeciesPanel = function () {
+  return { type: E.HIDE_SPECIES_PANEL };
+};
+
+const setLocationFilter = function (filter) {
   return {
     type: E.SET_LOCATION_FILTER,
     filter: filter
-  }
+  };
 };
 
-var setSpeciesFilter = function (filter) {
+const setSpeciesFilter = function (filter) {
   return {
     type: E.SET_SPECIES_FILTER,
     filter: filter
-  }
+  };
 };
 
 
@@ -316,9 +322,11 @@ export {
   visibleLocationsFound,
   onWindowResize,
   sortLocations,
+  hideLocationsPanel,
   setLocationFilter,
   selectLocation,
   showSpeciesPanel,
+  hideSpeciesPanel,
   setSpeciesFilter,
   sortSpecies,
   searchAnywhere
