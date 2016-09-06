@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
 import { Loader, ClosePanel } from './general';
 import { C, _, actions } from '../core/core';
@@ -16,6 +16,8 @@ class IntroOverlay extends React.Component {
 
   componentDidUpdate (prevProps) {
     const { dispatch, searchSettings, mapSettings } = this.props;
+
+    // if the user's location was just found,
     if (prevProps.userLocationFound !== this.props.userLocationFound && this.props.userLocationFound === true) {
       dispatch(actions.search(searchSettings, mapSettings));
     }
@@ -28,8 +30,8 @@ class IntroOverlay extends React.Component {
   }
 
   getLoader () {
-    /// hmm https://github.com/yahoo/react-intl/wiki/API#formatmessage
-    return (this.props.loading) ? (<Loader label="FINDING YOUR LOCATION..." />) : null;
+    const { formatMessage } = this.props.intl;
+    return (this.props.loading) ? (<Loader label={formatMessage({ id: 'findingYourLocation' }).toUpperCase()} />) : null;
   }
 
   searchNearby () {
@@ -41,12 +43,13 @@ class IntroOverlay extends React.Component {
     const { dispatch } = this.props;
     dispatch(actions.searchAnywhere());
     dispatch(actions.setIntroOverlayVisibility(false));
+    browserHistory.push('/');
   }
 
   close () {
-    console.log('inside THIS');
     const { dispatch } = this.props;
     dispatch(actions.setIntroOverlayVisibility(false));
+    browserHistory.push('/');
   }
 
   render () {
@@ -89,13 +92,14 @@ class IntroOverlay extends React.Component {
   }
 }
 IntroOverlay.PropTypes = {
-  loading: React.PropTypes.bool.isRequired
+  loading: React.PropTypes.bool.isRequired,
+  intl: intlShape.isRequired
 };
 
-export default connect(state => ({
+export default injectIntl(connect(state => ({
   loading: state.user.isFetching,
   userLocationFound: state.user.userLocationFound,
   searchSettings: state.searchSettings,
   mapSettings: state.mapSettings
-}))(IntroOverlay);
+}))(IntroOverlay));
 

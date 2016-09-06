@@ -3,9 +3,13 @@
 // ------------------------------------------------------------------------------------------------
 
 export default {
+	LANG: 'English',
+  LANG_KEY: 'en', // corresponds to file name
+
+	// strings
 	about: 'About',
 	aboutBirdsearch: 'About birdsearch.org',
-	advancedSearch: 'advanced search',
+	advancedSearch: 'Advanced search',
   allLocations: 'All locations',
   birds: 'birds',
 	birdSightings: 'Bird sightings',

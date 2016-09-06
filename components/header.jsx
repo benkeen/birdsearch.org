@@ -3,26 +3,34 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router';
+import { browserHistory } from 'react-router';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { C, actions, helpers } from '../core/core';
-
+import { C, _, actions, helpers } from '../core/core';
+import { LOCALES } from '../core/i18n/index';
 
 class Header extends React.Component {
+  componentWillMount () {
+    this.showIntroOverlay = this.showIntroOverlay.bind(this);
+  }
+
   componentDidUpdate (prevProps) {
     if (prevProps.nextAction !== this.props.nextAction && this.props.nextAction === C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS) {
       this.refs.headerSearch.focus();
     }
   }
 
+  showIntroOverlay () {
+    browserHistory.push('/intro');
+  }
+
   render () {
     const { dispatch, locale, searchSettings, introOverlay, advancedSearchOverlay } = this.props;
-
     const userTooltip = <Tooltip id="user-tooltip"><FormattedMessage id="loginCreateAccount" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
 
     return (
       <header className="flex-fill">
-        <div className="navbar">
+        <div className="navbar" onClick={this.showIntroOverlay}>
           <h1 className="brand">birdsearch.org</h1>
         </div>
 
@@ -45,7 +53,7 @@ class Header extends React.Component {
             </OverlayTrigger>
           </li>
           <li className="lang-toggle">
-            <LanguageToggle
+            <LocaleToggle
               locale={locale}
               onChange={locale => dispatch(actions.setLocale(locale))} />
           </li>
@@ -119,7 +127,7 @@ HeaderSearch.PropTypes = {
 };
 
 
-class LanguageToggle extends React.Component {
+class LocaleToggle extends React.Component {
   onChange (e) {
     e.preventDefault();
     const newLocale = e.target.value;
@@ -127,19 +135,24 @@ class LanguageToggle extends React.Component {
     this.props.onChange(newLocale);
   }
 
+  getLocales () {
+    return _.map(LOCALES, (locale) => {
+      return (
+        <option value={locale.key} key={locale.key}>{locale.name}</option>
+      );
+    });
+  }
+
   render () {
     return (
       <select id="select-locale" value={this.props.locale} onChange={e => this.onChange(e)}>
-        <option value="en">English</option>
-        <option value="fr">Français</option>
-        <option value="de">Deutsch</option>
-        <option value="es">Español</option>
+        {this.getLocales()}
       </select>
     );
   }
 }
 
-LanguageToggle.propTypes = {
+LocaleToggle.propTypes = {
   locale: React.PropTypes.string.isRequired,
   onChange: React.PropTypes.func.isRequired
 };
