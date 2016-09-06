@@ -3,118 +3,118 @@
 
 
 #map-overlay {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background-color: #000000;
-	opacity: 0.35;
-	z-index: 2;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000;
+  opacity: 0.35;
+  z-index: 2;
 }
 
 .section-header {
-	height: 28px;
-	cursor: pointer;
-	flex: 0 1 auto;
-	&>div {
-		position: relative;
-		width: 100%;
-	}
-	h2 {
-		display: inline-block;
-		color: white;
-		font-family: $webFont;
-		font-size: 16px;
-		margin: 2px 0 0 10px;
-		line-height: 25px;
-	}
-	.toggle-section {
-		float: right;
-		margin: 6px 9px;
-		color: #999999;
-		font-size: 13px;
-		@include transition-all($transition-speed);
-	}
-	&:hover {
-		.toggle-section {
-			color: #0099cc;
-		}
-	}
-	.total-count {
-		padding: 0 4px;
-		border-radius: 4px;
-		margin-left: 4px;
-	}
+  height: 28px;
+  cursor: pointer;
+  flex: 0 1 auto;
+  &>div {
+    position: relative;
+    width: 100%;
+  }
+  h2 {
+    display: inline-block;
+    color: white;
+    font-family: $webFont;
+    font-size: 16px;
+    margin: 2px 0 0 10px;
+    line-height: 25px;
+  }
+  .toggle-section {
+    float: right;
+    margin: 6px 9px;
+    color: #999999;
+    font-size: 13px;
+    @include transition-all($transition-speed);
+  }
+  &:hover {
+    .toggle-section {
+      color: #0099cc;
+    }
+  }
+  .total-count {
+    padding: 0 4px;
+    border-radius: 4px;
+    margin-left: 4px;
+  }
 }
 
 #locations-panel {
-	position: absolute;
-	top: 60px;
-	left: 0;
-	width: 300px;
-	display: flex;
-	flex-direction: column;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
 
-	header, footer {
-		background-color: rgba(26, 29, 34, 0.71);
-		&:hover {
-			background-color: rgba(26, 29, 34, 0.75);
-		}
-	}
-	.panel {
-		background-color: rgba(0, 0, 5, 0.78);
-		flex: 1;
-	}
-	table {
-		width: inherit;
-		margin-bottom: 0;
-	}
-	.section-header {
-		left: 0;
-	}
-	span.num-locations {
-		background-color: #0099cc;
-	}
-	table, td, th {
-		padding: 0;
-		font-size: 9pt;
-		text-align: left;
-	}
-	tr {
-		height: 23px;
-		&.loading {
-			color: #777777;
-		}
-	}
-	.location {
-		padding-left: 10px;
-		width: 260px;
-		div {
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
-			width: 240px;
-		}
-	}
-	.num-species {
-		text-align: center;
-	}
-	.all-locations-row {
-		color: white;
-		font-weight: bold;
-	}
-	tbody {
-		overflow-x: auto;
-		tr {
-			&:not(.loading):hover .location {
-				color: #0099cc;
-			}
-			&:not(.loading):hover {
-				cursor: pointer;
-			}
-		}
-	}
+  header, footer {
+    background-color: rgba(26, 29, 34, 0.71);
+    &:hover {
+      background-color: rgba(26, 29, 34, 0.75);
+    }
+  }
+  .panel {
+    background-color: rgba(0, 0, 5, 0.78);
+    flex: 1;
+  }
+  table {
+    width: inherit;
+    margin-bottom: 0;
+  }
+  .section-header {
+    left: 0;
+  }
+  span.num-locations {
+    background-color: #0099cc;
+  }
+  table, td, th {
+    padding: 0;
+    font-size: 9pt;
+    text-align: left;
+  }
+  tr {
+    height: 23px;
+    &.loading {
+      color: #777777;
+    }
+  }
+  .location {
+    padding-left: 10px;
+    width: 260px;
+    div {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 240px;
+    }
+  }
+  .num-species {
+    text-align: center;
+  }
+  .all-locations-row {
+    color: white;
+    font-weight: bold;
+  }
+  tbody {
+    overflow-x: auto;
+    tr {
+      &:not(.loading):hover .location {
+        color: #0099cc;
+      }
+      &:not(.loading):hover {
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 #locations-panel-content > div, #species-panel-content > div {
@@ -143,27 +143,28 @@
 	}
 }
 #species-panel-content {
-	& > div .panel table {
-		flex: 1;
-	}
-	.eBirdLink {
-		float: right;
-		font-size: 9pt;
-		margin: 20px 0 0;
-		a {
-			color: #cccccc;
-			span.eBird {
-				color: green;
-			}
-			&:hover {
-				color: white;
-			}
-            span.eBirdOffsiteIcon {
-              margin-left: 5px;
-              font-size: 10px;
-            }
-		}
-	}
+  margin-left: -1px;
+  & > div .panel table {
+    flex: 1;
+  }
+  .eBirdLink {
+    float: right;
+    font-size: 9pt;
+    margin: 20px 0 0;
+    a {
+      color: #cccccc;
+      span.eBird {
+        color: green;
+      }
+      &:hover {
+        color: white;
+      }
+      span.eBirdOffsiteIcon {
+        margin-left: 5px;
+        font-size: 10px;
+      }
+    }
+  }
 }
 
 .filter-locations-row {
@@ -290,38 +291,42 @@ body .filter-field {
 }
 
 #species-panel {
-	position: absolute;
-	top: 60px;
-	left: 300px;
-	display: flex;
-	flex-direction: column;
+  position: absolute;
+  top: 60px;
+  left: 300px;
+  display: flex;
+  flex-direction: column;
 
-	span.num-species {
-		background-color: #0099cc;
-	}
-	.panel {
-		background-color: rgba(0, 0, 5, 0.78);
-		border-left: 1px solid #666666;
-		flex: 1;
-		padding: 0 10px;
-		overflow: hidden;
-	}
-	header, footer {
-		background-color: rgba(26, 29, 34, 0.71);
-		border-left: 1px solid #222222;
-		&:hover {
-			background-color: rgba(26, 29, 34, 0.75);
-		}
-	}
-	table {
-		color: #cccccc;
-		font-size: 14px;
-		margin-bottom: 0;
-		td {
-			line-height: 15px;
-			vertical-align: middle;
-		}
-	}
+  .section-header {
+    margin-left: -1px;
+  }
+
+  span.num-species {
+      background-color: #0099cc;
+  }
+  .panel {
+      background-color: rgba(0, 0, 5, 0.78);
+      border-left: 1px solid #666666;
+      flex: 1;
+      padding: 0 10px;
+      overflow: hidden;
+  }
+  header, footer {
+      background-color: rgba(26, 29, 34, 0.71);
+      border-left: 1px solid #222222;
+      &:hover {
+          background-color: rgba(26, 29, 34, 0.75);
+      }
+  }
+  table {
+      color: #cccccc;
+      font-size: 14px;
+      margin-bottom: 0;
+      td {
+          line-height: 15px;
+          vertical-align: middle;
+      }
+  }
 }
 
 .range {
@@ -447,13 +452,13 @@ body .filter-field {
 	}
 }
 .sortable {
-	cursor: pointer;
-	span {
-		@include transition-all($transition-speed);
-		&:hover {
-			color: #d3e4f9;
-		}
-	}
+  cursor: pointer;
+  span {
+    @include transition-all($transition-speed);
+    &:hover {
+      color: #d3e4f9;
+    }
+  }
 }
 
 .bird-location-sightings {

@@ -20,9 +20,9 @@ export class SpeciesPanel extends React.Component {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
   }
 
-//  shouldComponentUpdate () {
-//    return false;
-//  }
+  shouldComponentUpdate () {
+
+  }
 
   componentWillReceiveProps (nextProps) {
     const { visible, env } = this.props;
