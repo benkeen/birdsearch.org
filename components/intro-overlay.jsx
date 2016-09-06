@@ -17,9 +17,10 @@ class IntroOverlay extends React.Component {
   componentDidUpdate (prevProps) {
     const { dispatch, searchSettings, mapSettings } = this.props;
 
-    // if the user's location was just found,
+    // if the user's location was just found automatically search
     if (prevProps.userLocationFound !== this.props.userLocationFound && this.props.userLocationFound === true) {
-      dispatch(actions.search(searchSettings, mapSettings));
+      dispatch(actions.search(searchSettings.location, searchSettings.lat, searchSettings.lng, mapSettings.bounds,
+        searchSettings.limitByObservationRecency, searchSettings.observationRecency));
     }
   }
 

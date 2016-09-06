@@ -32,19 +32,16 @@ function searchRequestComplete () {
 }
 
 
-function search (searchSettings, mapSettings) {
+function search (locationString, lat, lng, mapBounds, limitByObservationRecency, observationRecency) {
   return function (dispatch) {
 
-    // "location".
-    // - for header bar searches, it's set in mapSettings [why?]
-    // - for Search Nearby searches, it's in searchSettings.
-    dispatch(startSearchRequest(searchSettings.location, mapSettings.lat, mapSettings.lng, mapSettings.bounds));
+    dispatch(startSearchRequest(locationString, lat, lng, mapBounds));
 
     var searchParams = {
-      lat: mapSettings.lat,
-      lng: mapSettings.lng,
-      limitByObservationRecency: searchSettings.limitByObservationRecency,
-      observationRecency: searchSettings.observationRecency
+      lat: lat,
+      lng: lng,
+      limitByObservationRecency: limitByObservationRecency,
+      observationRecency: observationRecency
     };
 
     // this makes a request for the hotspots, converts the results to JSON (which is async for some reason...?) then

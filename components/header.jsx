@@ -11,6 +11,7 @@ import { LOCALES } from '../core/i18n/index';
 class Header extends React.Component {
   componentWillMount () {
     this.showIntroOverlay = this.showIntroOverlay.bind(this);
+    this.onSubmitNewSearch = this.onSubmitNewSearch.bind(this);
   }
 
   componentDidUpdate (prevProps) {
@@ -24,6 +25,12 @@ class Header extends React.Component {
     dispatch(actions.hideLocationsPanel());
     dispatch(actions.hideSpeciesPanel());
     browserHistory.push('/intro');
+  }
+
+  onSubmitNewSearch (mapSettings) {
+    const { dispatch, searchSettings } = this.props;
+    dispatch(actions.search(mapSettings.location, mapSettings.lat, mapSettings.lng, mapSettings.bounds,
+      searchSettings.limitByObservationRecency, searchSettings.observationRecency));
   }
 
   render () {
@@ -42,7 +49,7 @@ class Header extends React.Component {
           disabled={introOverlay.visible || advancedSearchOverlay.visible}
           location={searchSettings.location}
           onChange={(str) => dispatch(actions.setSearchLocation(str))}
-          onSubmit={(mapSettings) => dispatch(actions.search(searchSettings, mapSettings))} />
+          onSubmit={this.onSubmitNewSearch} />
 
         <ul className="nav-items">
           <li>
@@ -85,11 +92,12 @@ class HeaderSearch extends React.Component {
     const { onSubmit } = this.props;
 
     var autoComplete = new google.maps.places.Autocomplete(ReactDOM.findDOMNode(this.refs.searchField));
-    google.maps.event.addListener(autoComplete, 'place_changed', () => {
+    google.maps.event.addListener(autoComplete, 'place_changed', (hm) => {
       var currPlace = autoComplete.getPlace();
       if (!currPlace.geometry) {
         return;
       }
+
       onSubmit({
         lat: currPlace.geometry.location.lat(),
         lng: currPlace.geometry.location.lng(),
