@@ -94,10 +94,11 @@ function requestingUserLocation () {
   return { type: E.REQUESTING_USER_LOCATION };
 }
 
-function requestGeoLocation () {
+function requestGeoLocation (callback) {
   return function (dispatch) {
     navigator.geolocation.getCurrentPosition(function (position) {
       convertLatLngToAddress(dispatch, position.coords.latitude, position.coords.longitude);
+      callback();
     });
   };
 }
@@ -128,10 +129,10 @@ function convertLatLngToAddress (dispatch, lat, lng) {
 }
 
 
-function getGeoLocation () {
+function getGeoLocation (callback) {
   return function (dispatch) {
     dispatch(requestingUserLocation());
-    return dispatch(requestGeoLocation());
+    return dispatch(requestGeoLocation(callback));
   }
 }
 

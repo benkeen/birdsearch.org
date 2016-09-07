@@ -37,7 +37,11 @@ class IntroOverlay extends React.Component {
 
   searchNearby () {
     const { dispatch } = this.props;
-    dispatch(actions.getGeoLocation());
+    dispatch(actions.getGeoLocation(this.onUserLocationFound));
+  }
+
+  onUserLocationFound () {
+    browserHistory.push('/');
   }
 
   searchAnywhere () {

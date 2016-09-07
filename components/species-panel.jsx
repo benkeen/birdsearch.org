@@ -21,7 +21,7 @@ export class SpeciesPanel extends React.Component {
   }
 
   shouldComponentUpdate () {
-
+    return true;
   }
 
   componentWillReceiveProps (nextProps) {
