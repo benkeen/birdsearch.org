@@ -49,18 +49,30 @@ Loader.defaultProps = {
 class ClosePanel extends React.Component {
   constructor (props) {
     super(props);
+    this.onClose = this.onClose.bind(this);
+  }
+
+  onClose (e) {
+    const { onClose, disabled } = this.props;
+    if (disabled) {
+      return;
+    }
+    onClose(e);
   }
 
   render () {
     return (
-      <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.props.onClose}></span>
+      <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.onClose}></span>
     );
   }
 }
-ClosePanel.PropTypes = {
-  onClose: React.PropTypes.func.isRequired
+ClosePanel.propTypes = {
+  onClose: React.PropTypes.func.isRequired,
+  disabled: React.PropTypes.bool.isRequired
 };
-
+ClosePanel.defaultTypes = {
+  disabled: false
+};
 
 class LineLoader extends React.Component {
   constructor (props) {

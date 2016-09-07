@@ -65,7 +65,7 @@ class IntroOverlay extends React.Component {
             {this.getLoader()}
 
             <div className="tab-content">
-              <ClosePanel onClose={this.close} />
+              <ClosePanel onClose={this.close} disabled={loading} />
 
               <div>
                 <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby} disabled={loading}>

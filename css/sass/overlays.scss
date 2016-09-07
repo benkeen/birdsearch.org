@@ -20,6 +20,12 @@
       color: #333333;
     }
   }
+  &.loading .close-panel {
+    cursor: default;
+    &:hover {
+      color: #b9b9b9;
+    }
+  }
 }
 
 #intro-overlay {
