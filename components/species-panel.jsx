@@ -21,6 +21,13 @@ export class SpeciesPanel extends React.Component {
   }
 
   shouldComponentUpdate () {
+    const { results } = this.props;
+
+    // just don't update while the data's coming back. It makes it waaaaay faster
+    if (results.isFetching) {
+      return false;
+    }
+
     return true;
   }
 

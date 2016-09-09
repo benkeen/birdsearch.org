@@ -27,6 +27,10 @@ function startSearchRequest (location, lat, lng, bounds) {
   };
 }
 
+function initSearchRequest () {
+  return { type: E.SEARCH_REQUEST_STARTED };
+}
+
 function searchRequestComplete () {
   return { type: E.SEARCH_REQUEST_ENDED };
 }
@@ -57,7 +61,6 @@ function search (locationString, lat, lng, mapBounds, limitByObservationRecency,
 }
 
 function searchLocationsFound (dispatch, locations) {
-  dispatch(searchRequestComplete());
   return {
     type: E.SEARCH_LOCATIONS_RETURNED,
     success: true,
@@ -146,6 +149,7 @@ function togglePanelVisibility (panel) {
 // once the visible locations are identified, it automatically requests all observations for them
 function visibleLocationsFound (visibleLocations, allLocationSightings) {
   return function (dispatch) {
+    dispatch(initSearchRequest());
     dispatch(updateVisibleLocations(visibleLocations));
     return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);
   }
@@ -176,22 +180,6 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
   let counter = 0;
 
 
-//  var processHotspotSightings = function (json, currLocationID) {
-//    var worker = new Worker('./processHotspotSightingsPacket.js'); // TODO shared worker?
-//    worker.postMessage({
-//      locationID: currLocationID,
-//      sightings: json,
-//      maxSearchDays: C.MISC.MAX_SEARCH_DAYS
-//    });
-//    worker.onmessage = function (e) {
-//      dispatch(locationSightingsFound(e.data.locationID, e.data.sightings));
-//      if (counter % updateBundleCount === 0 || counter === numLocations-1) {
-//        dispatch(updateLocationSightings());
-//      }
-//      counter++;
-//    };
-//  };
-
   var processHotspotSightingsPacket = function (json, locationIDs) {
     var worker = new Worker('./worker-processHotspotSightings.js'); // TODO shared worker?
     worker.postMessage({
@@ -201,8 +189,12 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
     });
     worker.onmessage = function (e) {
       dispatch(locationSightingsFound(e.data.locationID, e.data.sightings));
-      if (counter % updateBundleCount === 0 || counter === numLocations-1) {
+      if (counter % updateBundleCount === 0 || counter === numToFetch-1) {
         dispatch(updateLocationSightings());
+      }
+
+      if (counter === numToFetch-1) {
+        dispatch(searchRequestComplete());
       }
       counter++;
     };
@@ -218,6 +210,12 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
     return locInfo.i;
   });
 
+  if (locationIDs.length === 0) {
+    dispatch(searchRequestComplete());
+    return;
+  }
+
+  let numToFetch = locationIDs.length;
   let packetSize = helpers.getPacketSize(locations.length);
   const chunks = helpers.chunkArray(locationIDs, packetSize);
 

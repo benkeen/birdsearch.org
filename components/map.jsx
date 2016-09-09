@@ -152,7 +152,8 @@ class Map extends React.Component {
       _map.setZoom(this.props.zoom);
     }
 
-    if (this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) {
+    if ((this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) &&
+      (_.isNumber(nextProps.lat) && _.isNumber(nextProps.lng))) {
       _map.setCenter({
         lat: nextProps.lat,
         lng: nextProps.lng

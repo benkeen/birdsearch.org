@@ -587,3 +587,12 @@ $line-loader-speed: 0.6;
       transform: scale(1.0);
     }
 }
+
+
+#data-loader {
+  height: 80px;
+  width: 80px;
+  background-color: white;
+  border-radius: 6px;
+  padding-top: 40px;
+}

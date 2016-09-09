@@ -4,6 +4,7 @@ import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
 import { C, _, actions } from '../core/core';
 import Header from '../components/header';
 import Map from '../components/map';
+import { Loader } from '../components/general';
 import { LocationsPanel } from '../components/locations-panel';
 import { SpeciesPanel } from '../components/species-panel';
 import IntroOverlay from '../components/intro-overlay';
@@ -31,18 +32,22 @@ class App extends React.Component {
   }
 
   getModal () {
-    const { children, location, introOverlay } = this.props;
+    const { children, location, introOverlay, results } = this.props;
     let modal = children;
 
     // if the user is arriving at the site for the first time, show the intro overlay, even though we're at the root (/).
     // If they want to see it again, they'll be routed to /intro
-    if (!children && introOverlay.visible && !introOverlay.hasBeenClosedAtLeastOnce) {
-      modal = <IntroOverlay />;
+    if (!children) {
+      if (introOverlay.visible && !introOverlay.hasBeenClosedAtLeastOnce) {
+        modal = <IntroOverlay />;
+      } else if (results.isFetching) {
+        modal = <DataLoader />;
+      }
     }
 
     return (
       <VelocityTransitionGroup runOnMount={true} enter={{ animation: 'fadeIn' }} leave={{ animation: 'fadeOut' }}
-        duration={C.TRANSITION_SPEED}>
+        duration={C.TRANSITION_SPEED} component="div">
         {modal ? React.cloneElement(modal, { key: location.pathname }) : undefined}
       </VelocityTransitionGroup>
     );
@@ -95,6 +100,7 @@ class App extends React.Component {
             searchSettings={searchSettings}
             speciesFilter={speciesPanel.filter}
             env={env}
+            results={results}
             sort={speciesPanel.sort}
             sortDir={speciesPanel.sortDir} />
         </section>
@@ -114,3 +120,13 @@ export default connect(state => ({
   results: state.results
 }))(App);
 
+
+class DataLoader extends React.Component {
+  render () {
+    return (
+      <div id="data-loader" className="overlay">
+        <Loader label="" />
+      </div>
+    );
+  }
+}

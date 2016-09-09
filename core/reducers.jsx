@@ -220,6 +220,12 @@ function results (state = {
 
 }, action) {
   switch (action.type) {
+    case E.SEARCH_REQUEST_STARTED:
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+      break;
+
     case E.SEARCH_REQUEST_ENDED:
       return Object.assign({}, state, {
         isFetching: false
