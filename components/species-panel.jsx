@@ -20,15 +20,14 @@ export class SpeciesPanel extends React.Component {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
   }
 
-  shouldComponentUpdate () {
-    const { results } = this.props;
+  shouldComponentUpdate (nextProps) {
+    console.log(this.props.updateCounter, nextProps.updateCounter);
 
-    // just don't update while the data's coming back. It makes it waaaaay faster
-    if (results.isFetching) {
-      return false;
+    if (this.props.updateCounter < nextProps.updateCounter) {
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   componentWillReceiveProps (nextProps) {
@@ -183,6 +182,7 @@ export class SpeciesPanel extends React.Component {
 }
 SpeciesPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired,
+  updateCounter: React.PropTypes.number.isRequired,
   locations: React.PropTypes.array.isRequired,
   sightings: React.PropTypes.object.isRequired,
   searchSettings: React.PropTypes.object.isRequired,
@@ -360,8 +360,6 @@ class SpeciesTable extends React.Component {
 SpeciesTable.PropTypes = {
   species: React.PropTypes.array.isRequired,
   filter: React.PropTypes.string.isRequired,
-//  selectedLocation: React.propTypes.string.isRequired,
-//  observationRecency: React.propTypes.number.isRequired,
   sort: React.PropTypes.string.isRequired,
   sortDir: React.PropTypes.string.isRequired
 };

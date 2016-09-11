@@ -327,8 +327,8 @@ class Map extends React.Component {
     //$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
     //$(document).on("click", ".viewLocationSightingDetails", _onClickViewLocationSightings);
     // called any time the map has had its bounds changed
-    google.maps.event.addListener(_map, "dragend", this.onMapBoundsChange);
-    google.maps.event.addListener(_map, "zoom_changed", this.onMapBoundsChange);
+    google.maps.event.addListener(_map, 'dragend', this.onMapBoundsChange);
+    google.maps.event.addListener(_map, 'zoom_changed', this.onMapBoundsChange);
   }
 
   render () {

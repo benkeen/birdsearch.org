@@ -94,6 +94,7 @@ class App extends React.Component {
           <SpeciesPanel
             dispatch={dispatch}
             visible={speciesPanel.visible}
+            updateCounter={speciesPanel.updateCounter}
             locations={results.visibleLocations}
             sightings={results.locationSightings}
             selectedLocation={locationsPanel.selectedLocation}

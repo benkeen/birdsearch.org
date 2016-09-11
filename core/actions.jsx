@@ -202,7 +202,7 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
 
 
   // divvy up the requests for the sightings into packets, the size of which depends on the total number of hotspots
-  // to query
+  // to query 
   const promises = [];
   const locationIDs = _.filter(locations, (locInfo) => {
     return !allLocationSightings[locInfo.i].fetched;

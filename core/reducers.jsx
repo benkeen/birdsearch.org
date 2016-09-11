@@ -340,6 +340,7 @@ function locationsPanel (state = {
 function speciesPanel (state = {
   visible: false,
   filter: '',
+  updateCounter: 0,
   sort: C.SPECIES_SORT.FIELDS.SPECIES,
   sortDir: C.SORT_DIR.DEFAULT
 }, action) {
@@ -351,7 +352,8 @@ function speciesPanel (state = {
         newVisibility = !newVisibility;
       }
       return Object.assign({}, state, {
-        visible: newVisibility
+        visible: newVisibility,
+        updateCounter: state.updateCounter+1
       });
 
     case E.SPECIES_SORTED:
@@ -363,21 +365,26 @@ function speciesPanel (state = {
       }
       return Object.assign({}, state, {
         sort: action.sort,
-        sortDir: newSort
+        sortDir: newSort,
+        updateCounter: state.updateCounter+1
       });
       break;
 
     case E.SHOW_SPECIES_PANEL:
-      return Object.assign({}, state, { visible: true });
+      return Object.assign({}, state, { visible: true, updateCounter: state.updateCounter+1 });
 
     case E.HIDE_SPECIES_PANEL:
-      return Object.assign({}, state, { visible: false });
+      return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
 
     case E.SET_SPECIES_FILTER:
       return Object.assign({}, state, {
         filter: action.filter
       });
       break;
+
+    case E.SEARCH_REQUEST_STARTED:
+    case E.SEARCH_REQUEST_ENDED:
+      return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 
     default:
       return state;

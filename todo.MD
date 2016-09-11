@@ -5,14 +5,15 @@ Aug 2016 New goal
 - remove advanced search, login etc. 
 
 
-#### Planned release date: Who the Hell Knows 
+Map-related stuff. 
+- clicking on icons should show modal.
+    - num species seen in the last N days.
+    - last sighting: N 
+- zoom in zoom out. Icons shouldn't disappear. 
+
 
 # Short-term
-- show nice looking loading spinner over main page whenever the map is loading or 
 - marker dialogs
-- table sort for locations
-- add “filter” field to filter location list 
-- fix slide-in
 
 # Bigger stuff
 - Advanced Search
