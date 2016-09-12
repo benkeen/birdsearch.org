@@ -201,7 +201,7 @@ export class LocationsPanel extends React.Component {
               {loader}
             </h2>
 
-            <span className="toggle-section glypicon glyphicon-menu-hamburger" />
+            <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
           </div>
         </header>
 

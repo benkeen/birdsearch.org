@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import { FormattedMessage } from 'react-intl';
 import { _, actions, helpers } from '../core/core';
 
@@ -72,7 +73,7 @@ var _data = {
 };
 
 
-var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
+var createBirdMarker = function (locationID, latlng, currMarkerInfo) {
   if (_.has(_data.all.markers, locationID)) {
     if (_data.all.markers[locationID].map === null) {
       _data.all.markers[locationID].setMap(_map);
@@ -89,12 +90,34 @@ var addBirdMarker = function (locationID, latlng, currMarkerInfo) {
   });
   _data.all.infoWindows[locationID] = new google.maps.InfoWindow();
 
-  //(function(marker, infoWindow, locInfo) {
-  //  google.maps.event.addListener(marker, "click", function() {
-  //    //infoWindow.setContent(_getBirdSightingInfoWindow(locInfo));
-  //    //infoWindow.open(_map, this);
-  //  });
-  //})(_data.all.markers[locationID], _data.all.infoWindows[locationID], currMarkerInfo);
+  (function(marker, infoWindow, locInfo) {
+    google.maps.event.addListener(marker, 'click', function() {
+      infoWindow.setContent(ReactDOMServer.renderToString(getBirdSightingInfoWindow(locInfo)));
+      infoWindow.open(_map, this);
+    });
+  })(_data.all.markers[locationID], _data.all.infoWindows[locationID], currMarkerInfo);
+};
+
+
+var getBirdSightingInfoWindow = function(locInfo) {
+//  var numSightings = locInfo.sightings.data[_lastSearch.observationRecency-1].numSpeciesRunningTotal;
+//  var html = _.template(allSightingsInfoWindowTemplate, {
+//    L: _L,
+//    locationName: locInfo.n,
+//    locationID: locInfo.locationID,
+//    numSpecies: numSightings
+//  });
+  console.log(locInfo);
+
+  return (
+    <div className="marker-popup">
+      <h4>{locInfo.n}</h4>
+      <ul>
+        <li><a href="#">View bird species seen at this location in the last N days ()</a></li>
+        <li><a href="">View eBird hotspot</a></li>
+      </ul>
+    </div>
+  );
 };
 
 
@@ -128,7 +151,7 @@ class Map extends React.Component {
     //this.addCustomControls();
     this.addEventHandlers();
 
-    // precache all markers
+    // precache all marker images
     _.each(_icons, function (key) {
       var img = new Image();
       img.src = key.url;
@@ -176,9 +199,10 @@ class Map extends React.Component {
     var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
     var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
 
+    // TODO
     if (numLocationsChanged || windowResized) {
       this.clearHotspots();
-      this.addMarkers(nextProps.results.allLocations, nextProps.results.locationSightings);
+      this.addMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings);
     }
 
     // when do we want to clear the hotspots?
@@ -222,18 +246,9 @@ class Map extends React.Component {
     }, this);
   }
 
-  /**
-   * Adds hotspots to the map for any of the three search types: all, notable, hotspots. The first
-   * param specifies the search type; the second is a standardized array of hotspot data. Format:
-   *   {
-   *		 i: ...
-   *		 lat: ...
-   *		 lng: ...
-   *		 n: ... (location name)
-   *   }
-   * The objects can contain any additional info needed; they're just ignored.
-   */
-  addMarkers (locations, locationSightings) {
+  // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown
+  // (white if they don't have any
+  addMapMarkers (locations, locationSightings) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
     var visibleHotspots = [];
@@ -241,6 +256,8 @@ class Map extends React.Component {
     locations.forEach(function (locInfo) {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
       var locID = locInfo.i;
+
+      // if a marker has already been added to this
       if (!boundsObj.contains(latlng)) {
         if (_.has(_data.all.markers, locID)) {
           _data.all.markers[locID].setMap(null);
@@ -248,8 +265,11 @@ class Map extends React.Component {
         return;
       }
 
-      if (!_.has(_data.all.markers, locID)) {
-        addBirdMarker(locID, latlng, locInfo);
+      // if the marker isn't already added,
+      if (_.has(_data.all.markers, locID)) {
+        _data.all.markers[locID].setMap(_map);
+      } else {
+        createBirdMarker(locID, latlng, locInfo);
       }
       visibleHotspots.push(locInfo);
 
@@ -279,8 +299,13 @@ class Map extends React.Component {
   }
 
   onMapBoundsChange () {
+    const { results } = this.props;
+
+    // TODO what if it's a completely fresh search? Need to clear it out...
     //this.clearHotspots();
-    this.addMarkers(this.props.results.allLocations, this.props.results.locationSightings);
+
+    this.addMapMarkers(results.allLocations, results.locationSightings);
+
     //this.props.dispatch(actions.visibleLocationsFound(visibleHotspots, locationSightings));
   }
 
