@@ -20,47 +20,15 @@ export class LocationsPanel extends React.Component {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
   }
 
-  // fine-tunes exactly what data changing should cause this component to update. Does double work of sorting/filtering
-  // the locations as the data changes
   shouldComponentUpdate (nextProps) {
-    const { visible, sort, sortDir, filter, env } = this.props;
-
-    var shouldUpdate = false;
-
-    // only sort the locations when needed
-    var resortLocations = false;
-    if (nextProps.sort !== sort || nextProps.sortDir !== sortDir) {
-      resortLocations = true;
-    }
-    if (nextProps.visibleLocationsReturnedCounter !== this.props.visibleLocationsReturnedCounter) {
-      resortLocations = true;
-    }
-    // currently sorting by species and a new location's sightings was returned
-    if (nextProps.locationDataRefreshCounter !== this.props.locationDataRefreshCounter) {
-      shouldUpdate = true;
-      if (nextProps.sort === C.LOCATION_SORT.FIELDS.SPECIES) {
-        resortLocations = true;
-      }
-    }
-    if (nextProps.filter !== filter) {
-      resortLocations = true;
+    if (this.props.updateCounter === nextProps.updateCounter) {
+      return false;
     }
 
-    if (resortLocations) {
-      shouldUpdate = true;
-      var sortedFilteredLocations = helpers.sortLocations(nextProps.locations, nextProps.locationSightings,
-        nextProps.searchSettings.observationRecency, nextProps.sort, nextProps.sortDir, nextProps.filter);
-      this.sortedFilteredLocations = sortedFilteredLocations;
-    }
+    this.sortedFilteredLocations = helpers.sortLocations(nextProps.locations, nextProps.locationSightings,
+      nextProps.searchSettings.observationRecency, nextProps.sort, nextProps.sortDir, nextProps.filter);
 
-    if (nextProps.visible !== visible) {
-      shouldUpdate = true;
-    }
-    if (nextProps.env.windowHeight !== env.windowHeight && visible) {
-      shouldUpdate = true;
-    }
-
-    return shouldUpdate;
+    return true;
   }
 
   componentWillReceiveProps (nextProps) {
@@ -76,7 +44,7 @@ export class LocationsPanel extends React.Component {
       if (nextProps.visible) {
         animation = { opacity: 1, height: (env.windowHeight - 85) + 'px' }; // TODO
       } else {
-        animation = { opacity: 0, height: 0 };
+        animation = { opacity: 0.5, height: 0 };
       }
     }
 
@@ -138,6 +106,20 @@ export class LocationsPanel extends React.Component {
     );
   }
 
+  getNumBirdSpeciesColSort () {
+    const { sort, sortDir } = this.props;
+    if (sort !== C.LOCATION_SORT.FIELDS.SPECIES) {
+      return null;
+    }
+
+    var className = 'col-sort glyphicon ';
+    className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
+
+    return (
+      <span className={className} />
+    );
+  }
+
   selectLocation (e) {
     this.props.dispatch(actions.selectLocation($(e.target).closest('tr').data('locationId')));
     this.props.dispatch(actions.showSpeciesPanel());
@@ -161,7 +143,7 @@ export class LocationsPanel extends React.Component {
               <FormattedMessage id="location"/>{this.getLocationColSort()}
             </th>
             <th className="capitalize" onClick={() => dispatch(actions.sortLocations(C.LOCATION_SORT.FIELDS.SPECIES))}>
-              <FormattedMessage id="birds"/>
+              <FormattedMessage id="birds"/>{this.getNumBirdSpeciesColSort()}
             </th>
           </tr>
           </thead>
@@ -181,7 +163,6 @@ export class LocationsPanel extends React.Component {
 
   getClearLocationFilterIcon () {
     const { dispatch, filter } = this.props;
-
     if (!filter) {
       return;
     }
@@ -220,7 +201,7 @@ export class LocationsPanel extends React.Component {
               {loader}
             </h2>
 
-            <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
+            <span className="toggle-section glypicon glyphicon-menu-hamburger" />
           </div>
         </header>
 

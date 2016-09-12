@@ -210,13 +210,7 @@ function results (state = {
 
   // stores all locations currently visible on the user's map. 
   visibleLocations: [],
-
-  locationSightings: {}, // an object of [location ID] => sighting info. Populated as need be, based on what's visible
-
-  // a simple way to announce that the location data has changed. This allows components to have a simple integer to compare
-  // against to know when it should update
-  visibleLocationsReturnedCounter: 0,
-  locationDataRefreshCounter: 0
+  locationSightings: {} // an object of [location ID] => sighting info. Populated as need be, based on what's visible
 
 }, action) {
   switch (action.type) {
@@ -257,22 +251,9 @@ function results (state = {
       });
       break;
 
-    case E.HOTSPOT_SIGHTINGS_UPDATE:
-      return Object.assign({}, state, {
-        locationDataRefreshCounter: state.locationDataRefreshCounter + 1
-      });
-      break;
-
     case E.VISIBLE_LOCATIONS_UPDATED:
       return Object.assign({}, state, {
-        visibleLocations: action.locations,
-        visibleLocationsReturnedCounter: state.visibleLocationsReturnedCounter + 1
-      });
-      break;
-
-    case E.SET_LOCATION_FILTER:
-      return Object.assign({}, state, {
-        locationDataRefreshCounter: state.locationDataRefreshCounter + 1
+        visibleLocations: action.locations
       });
       break;
 
@@ -284,6 +265,7 @@ function results (state = {
 
 function locationsPanel (state = {
   visible: false,
+  updateCounter: 0,
   sort: C.LOCATION_SORT.FIELDS.LOCATION,
   sortDir: C.SORT_DIR.DEFAULT,
   filter: '',
@@ -300,36 +282,53 @@ function locationsPanel (state = {
       }
       return Object.assign({}, state, {
         sort: action.sort,
-        sortDir: newSort
+        sortDir: newSort,
+        updateCounter: state.updateCounter+1
       });
       break;
 
     case E.TOGGLE_PANEL_VISIBILITY:
       var newVisibility = state.visible;
+      var updateCounter = state.updateCounter;
       if (action.panel === C.PANELS.LOCATIONS) {
         newVisibility = !newVisibility;
+        updateCounter = updateCounter+1;
       }
       return Object.assign({}, state, {
-        visible: newVisibility
+        visible: newVisibility,
+        updateCounter: updateCounter
       });
 
     case E.HIDE_LOCATIONS_PANEL:
-      return Object.assign({}, state, { visible: false });
+      return Object.assign({}, state, {
+        visible: false,
+        updateCounter: state.updateCounter+1
+      });
 
     case E.SEARCH_LOCATIONS_RETURNED:
       return Object.assign({}, state, {
-        visible: true
+        visible: true,
+        updateCounter: state.updateCounter+1
       });
 
     case E.SET_LOCATION_FILTER:
       return Object.assign({}, state, {
-        filter: action.filter
+        filter: action.filter,
+        updateCounter: state.updateCounter+1
       });
 
     case E.LOCATION_SELECTED:
       return Object.assign({}, state, {
-        selectedLocation: action.location
+        selectedLocation: action.location,
+        updateCounter: state.updateCounter+1
       });
+
+    case E.SEARCH_REQUEST_STARTED:
+    case E.SEARCH_REQUEST_ENDED:
+    case E.HOTSPOT_SIGHTINGS_UPDATE:
+    case E.VISIBLE_LOCATIONS_UPDATED:
+    case E.WINDOW_RESIZED:
+      return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 
     default:
       return state;
@@ -348,12 +347,14 @@ function speciesPanel (state = {
   switch (action.type) {
     case E.TOGGLE_PANEL_VISIBILITY:
       var newVisibility = state.visible;
+      var updateCounter = state.updateCounter;
       if (action.panel === C.PANELS.SPECIES) {
         newVisibility = !newVisibility;
+        updateCounter = updateCounter+1;
       }
       return Object.assign({}, state, {
         visible: newVisibility,
-        updateCounter: state.updateCounter+1
+        updateCounter: updateCounter
       });
 
     case E.SPECIES_SORTED:
@@ -378,12 +379,14 @@ function speciesPanel (state = {
 
     case E.SET_SPECIES_FILTER:
       return Object.assign({}, state, {
-        filter: action.filter
+        filter: action.filter,
+        updateCounter: state.updateCounter+1
       });
       break;
 
     case E.SEARCH_REQUEST_STARTED:
     case E.SEARCH_REQUEST_ENDED:
+    case E.WINDOW_RESIZED:
       return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 
     default:
@@ -392,7 +395,7 @@ function speciesPanel (state = {
 }
 
 
-// this is a weird one. React really fails to handle scenarios like this well. e.g. close a modal and focus on some
+// this is a weird one - react really fails to handle scenarios like this well. e.g. close a modal and focus on some
 // arbitrary input field in a different component somewhere. We need a one-off message sent to do a thing. This section
 // handles that.
 function misc (state = {

@@ -21,13 +21,10 @@ export class SpeciesPanel extends React.Component {
   }
 
   shouldComponentUpdate (nextProps) {
-    console.log(this.props.updateCounter, nextProps.updateCounter);
-
-    if (this.props.updateCounter < nextProps.updateCounter) {
-      return true;
+    if (this.props.updateCounter === nextProps.updateCounter) {
+      return false;
     }
-
-    return false;
+    return true;
   }
 
   componentWillReceiveProps (nextProps) {
@@ -43,7 +40,7 @@ export class SpeciesPanel extends React.Component {
       if (nextProps.visible) {
         animation = { opacity: 1, height: (env.windowHeight - 85) + 'px' };
       } else {
-        animation = { opacity: 0, height: 0 };
+        animation = { opacity: 0.5, height: 0 };
       }
     }
 
@@ -117,7 +114,7 @@ export class SpeciesPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, locations, sightings, searchSettings, selectedLocation, speciesFilter, env,
+    const { dispatch, visible, locations, sightings, searchSettings, selectedLocation, speciesFilter, env,
       sort, sortDir } = this.props;
 
     if (!locations.length) {
@@ -163,6 +160,7 @@ export class SpeciesPanel extends React.Component {
                 {this.getTitle()}
                 <SpeciesTable
                   dispatch={dispatch}
+                  tabVisible={visible}
                   species={sightingsData}
                   selectedLocation={selectedLocation}
                   observationRecency={searchSettings.observationRecency}
@@ -191,6 +189,8 @@ SpeciesPanel.PropTypes = {
 };
 
 
+// TODO move all this data manipulation to reducers (sort, etc). Drop this.sortedSpecies.
+
 class SpeciesTable extends React.Component {
   getContent () {
     const { species } = this.props;
@@ -211,58 +211,61 @@ class SpeciesTable extends React.Component {
   }
 
   shouldComponentUpdate (nextProps) {
-    const { sort, sortDir } = this.props;
-
-    // TODO also need to do this for "ALL" when new data is still coming in
-
-    var resort = false;
-    if (nextProps.sort !== sort) {
-      resort = true;
-    } else if (nextProps.sortDir !== sortDir) {
-      resort = true;
+    // don't update anything if the user is closing the tab - it's super slow
+    if (nextProps.tabVisible !== this.props.tabVisible && !nextProps.tabVisible) {
+      return false;
     }
-
-    this.sortedSpecies = nextProps.species;
-    if (resort) {
-
-      // speed this sucker up
-      switch (sort) {
-        case C.SPECIES_SORT.FIELDS.SPECIES:
-          if (sortDir === C.SORT_DIR.DEFAULT) {
-            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase().charCodeAt() * -1; });
-          } else {
-            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase(); });
-          }
-          break;
-
-        case C.SPECIES_SORT.FIELDS.NUM_LOCATIONS:
-          if (sortDir === C.SORT_DIR.DEFAULT) {
-            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.locations.length; });
-          } else {
-            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.locations.length; });
-          }
-          break;
-
-        case C.SPECIES_SORT.FIELDS.LAST_SEEN:
-          if (sortDir === C.SORT_DIR.DEFAULT) {
-            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.mostRecentObservation.format('X'); });
-          } else {
-            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.mostRecentObservation.format('X'); });
-          }
-          break;
-
-        case C.SPECIES_SORT.FIELDS.NUM_REPORTED:
-          if (sortDir === C.SORT_DIR.DEFAULT) {
-            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.howManyCount; });
-          } else {
-            this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.howManyCount; });
-          }
-          break;
-      }
-
-    }
-
     return true;
+  }
+
+  componentWillReceiveProps ({ species, sort, sortDir }) {
+    const numSpeciesChanged = species.length !== this.props.species.length;
+    const sortChanged = sort !== this.props.sort;
+    const sortDirChanged = sortDir !== this.props.sortDir;
+
+    if (!numSpeciesChanged && !sortChanged && !sortDirChanged) {
+      return;
+    }
+
+    this.sortedSpecies = species;
+    this.sortSpecies(sort, sortDir);
+  }
+
+  sortSpecies (sort, sortDir) {
+    switch (sort) {
+      case C.SPECIES_SORT.FIELDS.NUM_LOCATIONS:
+        if (sortDir === C.SORT_DIR.DEFAULT) {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.locations.length; });
+        } else {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.locations.length; });
+        }
+        break;
+
+      case C.SPECIES_SORT.FIELDS.LAST_SEEN:
+        if (sortDir === C.SORT_DIR.DEFAULT) {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.mostRecentObservation.format('X'); });
+        } else {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.mostRecentObservation.format('X'); });
+        }
+        break;
+
+      case C.SPECIES_SORT.FIELDS.NUM_REPORTED:
+        if (sortDir === C.SORT_DIR.DEFAULT) {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.howManyCount; });
+        } else {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.howManyCount; });
+        }
+        break;
+
+      // species name
+      default:
+        if (sortDir === C.SORT_DIR.DEFAULT) {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase(); });
+        } else {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase().charCodeAt() * -1; });
+        }
+        break;
+    }
   }
 
   getRows () {

@@ -80,13 +80,13 @@ class App extends React.Component {
           <LocationsPanel
             dispatch={dispatch}
             visible={locationsPanel.visible}
+            updateCounter={locationsPanel.updateCounter}
             sort={locationsPanel.sort}
             sortDir={locationsPanel.sortDir}
             filter={locationsPanel.filter}
             locations={results.visibleLocations}
             locationSightings={results.locationSightings}
             locationDataRefreshCounter={results.locationDataRefreshCounter}
-            visibleLocationsReturnedCounter={results.visibleLocationsReturnedCounter}
             selectedLocation={locationsPanel.selectedLocation}
             searchSettings={searchSettings}
             env={env} />
