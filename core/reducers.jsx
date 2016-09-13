@@ -117,6 +117,7 @@ function mapSettings (state = {
 
     case E.WINDOW_RESIZED:
     case E.HOTSPOT_SIGHTINGS_UPDATE:
+    case E.SET_LOCATION_FILTER:
     case E.SEARCH_LOCATIONS_RETURNED:
       return Object.assign({}, state, {
         searchCounter: state.searchCounter + 1

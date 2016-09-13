@@ -114,7 +114,7 @@ var getBirdSightingInfoWindow = function(locInfo) {
       <h4>{locInfo.n}</h4>
       <ul>
         <li><a href="#">View bird species seen at this location in the last N days ()</a></li>
-        <li><a href="">View eBird hotspot</a></li>
+        <li><a href="#">View eBird hotspot</a></li>
       </ul>
     </div>
   );
@@ -158,7 +158,7 @@ class Map extends React.Component {
     });
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate (nextProps) {
 
     // map updates are explicitly throttled by incrementing mapSettings.searchCounter
     if (this.props.searchCounter === nextProps.searchCounter) {
@@ -166,9 +166,14 @@ class Map extends React.Component {
     }
 
     if (this.props.locationFilter !== nextProps.locationFilter) {
-      //_data.all.markers[locationID]
-      //.setVisible(false);
-      //console.log("locations: ", helpers.filterLocations(nextProps.locations, nextProps.filter));
+      var regexp = new RegExp(nextProps.locationFilter, 'i');
+      _.each(nextProps.results.visibleLocations, (locInfo) => {
+        if (regexp.test(locInfo.n)) {
+          _data.all.markers[locInfo.i].setMap(_map);
+        } else {
+          _data.all.markers[locInfo.i].setMap(null);
+        }
+      });
     }
 
     if (nextProps.zoom !== this.props.zoom) {
@@ -265,7 +270,6 @@ class Map extends React.Component {
         return;
       }
 
-      // if the marker isn't already added,
       if (_.has(_data.all.markers, locID)) {
         _data.all.markers[locID].setMap(_map);
       } else {
