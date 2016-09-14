@@ -183,14 +183,14 @@ export class LocationsPanel extends React.Component {
     var loader = null;
     if (numLoadedLocations !== locations.length) {
       loader = <LineLoader className="species-loading" />;
+    } else {
+      loader = <span className="total-count num-locations">{numLoadedLocations}</span>;
     }
 
-    // height stored in constants so we can compute the various heights dynamically for velocity
+    // height stored in constants so we can compute the various heights dynamically for Velocity
     var footerStyle = {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
-
-    //              <span className="total-count num-locations">{numLoadedLocations}</span>
 
     return (
       <section id="locations-panel">
@@ -200,7 +200,6 @@ export class LocationsPanel extends React.Component {
               <FormattedMessage id="locations" />
               {loader}
             </h2>
-
             <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
           </div>
         </header>

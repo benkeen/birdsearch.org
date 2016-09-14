@@ -26,8 +26,15 @@
     color: white;
     font-family: $webFont;
     font-size: 16px;
-    margin: 2px 0 0 10px;
+    margin: 0 0 0 10px;
     line-height: 25px;
+    > span, > div {
+      display: inline-block;
+      vertical-align: middle;
+	}
+    .line-loader {
+      margin-top: -4px;
+    }
   }
   .toggle-section {
     float: right;
@@ -45,6 +52,8 @@
     padding: 0 4px;
     border-radius: 4px;
     margin-left: 4px;
+    display: inline;
+    font-size: 10px;
   }
 }
 
