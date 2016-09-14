@@ -75,19 +75,22 @@ var _data = {
 
 var createBirdMarker = function (locationID, latlng, currMarkerInfo) {
   if (_.has(_data.all.markers, locationID)) {
-    if (_data.all.markers[locationID].map === null) {
-      _data.all.markers[locationID].setMap(_map);
+    if (_data.all.markers[locationID].marker.map === null) {
+      _data.all.markers[locationID].marker.setMap(_map);
     }
     return;
   }
 
-  _data.all.markers[locationID] = new google.maps.Marker({
-    position: latlng,
-    map: _map,
-    title: currMarkerInfo.n,
-    icon: _icons.range1,
-    locationID: locationID
-  });
+  _data.all.markers[locationID] = {
+    visible: false,
+    marker: new google.maps.Marker({
+      position: latlng,
+      map: _map,
+      title: currMarkerInfo.n,
+      icon: _icons.range1,
+      locationID: locationID
+    })
+  };
   _data.all.infoWindows[locationID] = new google.maps.InfoWindow();
 
   (function(marker, infoWindow, locInfo) {
@@ -95,7 +98,7 @@ var createBirdMarker = function (locationID, latlng, currMarkerInfo) {
       infoWindow.setContent(ReactDOMServer.renderToString(getBirdSightingInfoWindow(locInfo)));
       infoWindow.open(_map, this);
     });
-  })(_data.all.markers[locationID], _data.all.infoWindows[locationID], currMarkerInfo);
+  })(_data.all.markers[locationID].marker, _data.all.infoWindows[locationID], currMarkerInfo);
 };
 
 
@@ -112,10 +115,7 @@ var getBirdSightingInfoWindow = function(locInfo) {
   return (
     <div className="marker-popup">
       <h4>{locInfo.n}</h4>
-      <ul>
-        <li><a href="#">View bird species seen at this location in the last N days ()</a></li>
-        <li><a href="#">View eBird hotspot</a></li>
-      </ul>
+      <a href="#">N bird species seen in the last N days</a>
     </div>
   );
 };
@@ -169,9 +169,15 @@ class Map extends React.Component {
       var regexp = new RegExp(nextProps.locationFilter, 'i');
       _.each(nextProps.results.visibleLocations, (locInfo) => {
         if (regexp.test(locInfo.n)) {
-          _data.all.markers[locInfo.i].setMap(_map);
+          if (!_data.all.markers[locInfo.i].visible) {
+            _data.all.markers[locInfo.i].visible = true;
+            _data.all.markers[locInfo.i].marker.setMap(_map);
+          }
         } else {
-          _data.all.markers[locInfo.i].setMap(null);
+          if (_data.all.markers[locInfo.i].visible) {
+            _data.all.markers[locInfo.i].visible = false;
+            _data.all.markers[locInfo.i].marker.setMap(null);
+          }
         }
       });
     }
@@ -232,21 +238,21 @@ class Map extends React.Component {
       }
 
       if (numSpecies < 10) {
-        _data.all.markers[locId].setIcon(_icons.range1);
+        _data.all.markers[locId].marker.setIcon(_icons.range1);
       } else if (numSpecies < 20) {
-        _data.all.markers[locId].setIcon(_icons.range2);
+        _data.all.markers[locId].marker.setIcon(_icons.range2);
       } else if (numSpecies < 30) {
-        _data.all.markers[locId].setIcon(_icons.range3);
+        _data.all.markers[locId].marker.setIcon(_icons.range3);
       } else if (numSpecies < 40) {
-        _data.all.markers[locId].setIcon(_icons.range4);
+        _data.all.markers[locId].marker.setIcon(_icons.range4);
       } else if (numSpecies < 50) {
-        _data.all.markers[locId].setIcon(_icons.range5);
+        _data.all.markers[locId].marker.setIcon(_icons.range5);
       } else if (numSpecies < 60) {
-        _data.all.markers[locId].setIcon(_icons.range6);
+        _data.all.markers[locId].marker.setIcon(_icons.range6);
       } else if (numSpecies < 70) {
-        _data.all.markers[locId].setIcon(_icons.range7);
+        _data.all.markers[locId].marker.setIcon(_icons.range7);
       } else {
-        _data.all.markers[locId].setIcon(_icons.range8);
+        _data.all.markers[locId].marker.setIcon(_icons.range8);
       }
     }, this);
   }
@@ -265,13 +271,13 @@ class Map extends React.Component {
       // if a marker has already been added to this
       if (!boundsObj.contains(latlng)) {
         if (_.has(_data.all.markers, locID)) {
-          _data.all.markers[locID].setMap(null);
+          _data.all.markers[locID].marker.setMap(null);
         }
         return;
       }
 
       if (_.has(_data.all.markers, locID)) {
-        _data.all.markers[locID].setMap(_map);
+        _data.all.markers[locID].marker.setMap(_map);
       } else {
         createBirdMarker(locID, latlng, locInfo);
       }
@@ -292,8 +298,9 @@ class Map extends React.Component {
 
   clearHotspots () {
     for (var locationID in _data.all.markers) {
-      _data.all.markers[locationID].setMap(null);
+      _data.all.markers[locationID].marker.setMap(null);
     }
+
     //for (var locationID in _data.notable.markers) {
     //  _data.notable.markers[locationID].setMap(null);
     //}
