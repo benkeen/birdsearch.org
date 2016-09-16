@@ -36,10 +36,14 @@ class Header extends React.Component {
 
   render () {
     const { dispatch, locale, searchSettings, introOverlay, advancedSearchOverlay } = this.props;
-    const userTooltip = <Tooltip id="user-tooltip"><FormattedMessage id="loginCreateAccount" /></Tooltip>;
+//    const userTooltip = <Tooltip id="user-tooltip"><FormattedMessage id="loginCreateAccount" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
 
-    console.log(searchSettings.location);
+//    <li>
+//      <OverlayTrigger placement="bottom" overlay={userTooltip}>
+//        <Link to="/account" className="icon icon-user"></Link>
+//      </OverlayTrigger>
+//    </li>
 
     return (
       <header className="flex-fill">
@@ -55,11 +59,6 @@ class Header extends React.Component {
           onSubmit={this.onSubmitNewSearch} />
 
         <ul className="nav-items">
-          <li>
-            <OverlayTrigger placement="bottom" overlay={userTooltip}>
-              <Link to="/account" className="icon icon-user"></Link>
-            </OverlayTrigger>
-          </li>
           <li>
             <OverlayTrigger placement="bottom" overlay={infoTooltip}>
               <Link to="/about" className="icon icon-info"></Link>

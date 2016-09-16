@@ -82,7 +82,7 @@ class IntroOverlay extends React.Component {
               <p className="or"><FormattedMessage id="or" /></p>
 
               <div>
-                <button className="btn btn-info" id="searchAnywhere" onClick={this.searchAnywhere} disabled={loading}>
+                <button className="btn btn-primary" id="searchAnywhere" onClick={this.searchAnywhere} disabled={loading}>
                   <i className="glyphicon glyphicon-globe" />
                   <FormattedMessage id="searchAnywhere" />
                 </button>
