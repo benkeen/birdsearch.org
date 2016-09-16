@@ -69,4 +69,5 @@ module.exports = function(grunt) {
 
 	grunt.initConfig(config);
   grunt.registerTask('local', ['babel:jsx', 'browserify', 'sass', 'copy']);
+  grunt.registerTask('start', ['local', 'watch']);
 };

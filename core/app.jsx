@@ -46,8 +46,7 @@ class App extends React.Component {
     }
 
     return (
-      <VelocityTransitionGroup runOnMount={true} enter={{ animation: 'fadeIn' }} leave={{ animation: 'fadeOut' }}
-        duration={C.TRANSITION_SPEED} component="div">
+      <VelocityTransitionGroup runOnMount={true} enter={{ animation: 'fadeIn' }} leave={{ animation: 'fadeOut' }} component="div">
         {modal ? React.cloneElement(modal, { key: location.pathname }) : undefined}
       </VelocityTransitionGroup>
     );

@@ -8,6 +8,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { C, _, actions, helpers } from '../core/core';
 import { LOCALES } from '../core/i18n/index';
 
+
 class Header extends React.Component {
   componentWillMount () {
     this.showIntroOverlay = this.showIntroOverlay.bind(this);
@@ -37,6 +38,8 @@ class Header extends React.Component {
     const { dispatch, locale, searchSettings, introOverlay, advancedSearchOverlay } = this.props;
     const userTooltip = <Tooltip id="user-tooltip"><FormattedMessage id="loginCreateAccount" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
+
+    console.log(searchSettings.location);
 
     return (
       <header className="flex-fill">

@@ -28,7 +28,7 @@ function startSearchRequest (location, lat, lng, bounds) {
 }
 
 function initSearchRequest () {
-  return { type: E.SEARCH_REQUEST_STARTED };
+  return { type: E.INIT_SEARCH_REQUEST };
 }
 
 function searchRequestComplete () {
