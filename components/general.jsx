@@ -68,7 +68,7 @@ class ClosePanel extends React.Component {
 }
 ClosePanel.propTypes = {
   onClose: React.PropTypes.func.isRequired,
-  disabled: React.PropTypes.bool.isRequired
+  disabled: React.PropTypes.bool
 };
 ClosePanel.defaultTypes = {
   disabled: false

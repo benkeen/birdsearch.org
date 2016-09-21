@@ -9,6 +9,7 @@
   right: 0;
   top: 0;
   bottom: 0;
+  font-size: 14px;
 
   .close-panel {
     position: absolute;
@@ -25,6 +26,21 @@
     &:hover {
       color: #b9b9b9;
     }
+  }
+
+  .tab-wrapper {
+    position: relative;
+    color: black;
+  }
+  .tab-content {
+    background-color: white;
+    border-radius: 6px;
+    padding: 40px;
+  }
+
+  .nav-pills {
+    margin-top: -20px;
+    margin-left: -20px;
   }
 }
 
@@ -54,16 +70,6 @@
       opacity: 0.1;
     }
   }
-  .tab-wrapper {
-    position: relative;
-    color: black;
-    font-size: 14px;
-  }
-  .tab-content {
-    background-color: white;
-    border-radius: 6px;
-    padding: 40px;
-  }
   input {
     padding: 8px;
     width: 300px;
@@ -89,7 +95,10 @@
   width: 488px;
 }
 
-
+#about-overlay {
+  height: 300px;
+  width: 600px;
+}
 
 #data-loading {
 

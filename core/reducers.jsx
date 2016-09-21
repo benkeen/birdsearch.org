@@ -160,6 +160,22 @@ function introOverlay (state = {
   }
 }
 
+
+function aboutOverlay (state = {
+  selectedTab: C.ABOUT_TABS.ABOUT
+}, action) {
+
+  switch (action.type) {
+    case E.SELECT_ABOUT_TAB:
+      return Object.assign({}, state, {
+        selectedTab: action.tab
+      });
+    default:
+      return state;
+  }
+}
+
+
 function advancedSearchOverlay (state = {
   visible: false
 }, action) {
@@ -426,5 +442,6 @@ export {
   speciesPanel,
   misc,
   introOverlay,
+  aboutOverlay,
   advancedSearchOverlay
 };

@@ -7,7 +7,7 @@ import { C, _, actions } from '../core/core';
 import { Modal, Button } from 'react-bootstrap';
 
 
-class AdvancedSearchOverlay extends React.Component {
+class AboutOverlay extends React.Component {
   constructor (props) {
     super(props);
   }
@@ -16,46 +16,43 @@ class AdvancedSearchOverlay extends React.Component {
     browserHistory.push('/');
   }
 
-  render () {
-    const { loading } = this.props;
-    const overlayClass = 'overlay' + ((loading) ? ' loading' : '');
+  selectTab (e, tab) {
+    e.preventDefault();
+    const { selectedTab, dispatch } = this.props;
+    if (tab === selectedTab) {
+      return;
+    }
+    dispatch(actions.selectAboutTab(tab));
+  }
 
-//          <div className="tab-wrapper">
-//            <ul>
-//              <li></li>
-//            </ul>
-//            <div className="tab-content">
-//
-//            </div>
-//          </div>
+  getTabContent () {
+
+  }
+
+  render () {
+    const { selectedTab } = this.props;
+
+    const aboutClasses = (selectedTab === C.ABOUT_TABS.ABOUT) ? 'active' : '';
+    const thanksClasses = (selectedTab === C.ABOUT_TABS.THANKS) ? 'active' : '';
+    const translateClasses = (selectedTab === C.ABOUT_TABS.TRANSLATE) ? 'active' : '';
+    const contactClasses = (selectedTab === C.ABOUT_TABS.CONTACT) ? 'active' : '';
 
     return (
-      <div>
+      <div className="tab-wrapper">
         <div id="map-overlay"></div>
-        <div id="about-overlay" className={overlayClass}>
+        <div id="about-overlay" className="overlay">
+          <div className="tab-content">
+            <ClosePanel onClose={this.close} />
 
-          <Modal.Dialog>
-            <Modal.Header>
-              <Modal.Title>About</Modal.Title>
-              <ClosePanel onClose={this.close} />
-            </Modal.Header>
+            <ul className="nav nav-pills">
+              <li className={aboutClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.ABOUT)}>About</a></li>
+              <li className={thanksClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.THANKS)}>Thanks</a></li>
+              <li className={translateClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.TRANSLATE)}>Translate</a></li>
+              <li className={contactClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.CONTACT)}>Contact</a></li>
+            </ul>
 
-            <Modal.Body>
-
-              Search Type
-              - bird sightings
-              - notable sightings
-              - locations
-              - Num days to search
-
-            </Modal.Body>
-
-            <Modal.Footer>
-              <Button>Close</Button>
-              <Button bsStyle="primary">Save changes</Button>
-            </Modal.Footer>
-          </Modal.Dialog>
-
+            {this.getTabContent()}
+          </div>
         </div>
       </div>
     );
@@ -63,8 +60,5 @@ class AdvancedSearchOverlay extends React.Component {
 }
 
 export default connect(state => ({
-  userLocationFound: state.user.userLocationFound,
-  searchSettings: state.searchSettings,
-  mapSettings: state.mapSettings
-}))(AdvancedSearchOverlay);
-
+  selectedTab: state.aboutOverlay.selectedTab
+}))(AboutOverlay);

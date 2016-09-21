@@ -3,21 +3,21 @@ import { C, E, helpers, _ } from './core';
 import fetch from 'isomorphic-fetch';
 
 
-function setLocale (locale) {
+const setLocale = (locale) => {
   return {
     type: E.SET_LOCALE,
     locale
   };
-}
+};
 
-function setSearchLocation (location) {
+const setSearchLocation = (location) => {
   return {
     type: E.SET_SEARCH_LOCATION,
     location
   };
-}
+};
 
-function startSearchRequest (location, lat, lng, bounds) {
+const startSearchRequest = (location, lat, lng, bounds) => {
   return {
     type: E.SEARCH_REQUEST_STARTED,
     lat: lat,
@@ -25,18 +25,17 @@ function startSearchRequest (location, lat, lng, bounds) {
     location: location,
     bounds: bounds
   };
-}
+};
 
-function initSearchRequest () {
+const initSearchRequest = () => {
   return { type: E.INIT_SEARCH_REQUEST };
-}
+};
 
-function searchRequestComplete () {
+const searchRequestComplete = () => {
   return { type: E.SEARCH_REQUEST_ENDED };
-}
+};
 
-
-function search (locationString, lat, lng, mapBounds, limitByObservationRecency, observationRecency) {
+const search = (locationString, lat, lng, mapBounds, limitByObservationRecency, observationRecency) => {
   return function (dispatch) {
 
     dispatch(startSearchRequest(locationString, lat, lng, mapBounds));
@@ -58,9 +57,9 @@ function search (locationString, lat, lng, mapBounds, limitByObservationRecency,
       )
     );
   }
-}
+};
 
-function searchLocationsFound (dispatch, locations) {
+const searchLocationsFound = (dispatch, locations) => {
   return {
     type: E.SEARCH_LOCATIONS_RETURNED,
     success: true,
@@ -68,45 +67,45 @@ function searchLocationsFound (dispatch, locations) {
   };
 }
 
-function searchLocationRequestError (dispatch, error) {
+const searchLocationRequestError = (dispatch, error) => {
   dispatch(searchRequestComplete());
   return {
     type: E.SEARCH_LOCATIONS_RETURNED,
     success: false,
     error: error
   };
-}
+};
 
-function fetchLocations (searchParams) {
+const fetchLocations = (searchParams) => {
   const queryParams = helpers.queryParams(searchParams);
   return fetch('/api/getHotspotLocations?' + queryParams, { method: 'GET' });
-}
+};
 
-function setIntroOverlayVisibility (visible) {
+const setIntroOverlayVisibility = (visible) => {
   return {
     type: E.SET_INTRO_OVERLAY_VISIBILITY,
     visible
   };
-}
+};
 
-function searchAnywhere () {
+const searchAnywhere = () => {
   return { type: E.SEARCH_ANYWHERE };
-}
+};
 
-function requestingUserLocation () {
+const requestingUserLocation = () => {
   return { type: E.REQUESTING_USER_LOCATION };
-}
+};
 
-function requestGeoLocation (callback) {
+const requestGeoLocation = (callback) => {
   return function (dispatch) {
     navigator.geolocation.getCurrentPosition(function (position) {
       convertLatLngToAddress(dispatch, position.coords.latitude, position.coords.longitude);
       callback();
     });
   };
-}
+};
 
-function convertLatLngToAddress (dispatch, lat, lng) {
+const convertLatLngToAddress = (dispatch, lat, lng) => {
   const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ latLng: { lat: lat, lng: lng }}, function (results, status) {
     let userLocationFound = false;
@@ -129,40 +128,39 @@ function convertLatLngToAddress (dispatch, lat, lng) {
       bounds: bounds
     });
   });
-}
+};
 
-
-function getGeoLocation (callback) {
+const getGeoLocation = (callback) => {
   return function (dispatch) {
     dispatch(requestingUserLocation());
     return dispatch(requestGeoLocation(callback));
   }
-}
+};
 
-function togglePanelVisibility (panel) {
+const togglePanelVisibility = (panel) => {
   return {
     type: E.TOGGLE_PANEL_VISIBILITY,
     panel: panel
   };
-}
+};
 
 // once the visible locations are identified, it automatically requests all observations for them
-function visibleLocationsFound (visibleLocations, allLocationSightings) {
+const visibleLocationsFound = (visibleLocations, allLocationSightings) => {
   return function (dispatch) {
     dispatch(initSearchRequest());
     dispatch(updateVisibleLocations(visibleLocations));
     return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);
   }
-}
+};
 
-function updateVisibleLocations (visibleLocations) {
+const updateVisibleLocations = (visibleLocations) => {
   return {
     type: E.VISIBLE_LOCATIONS_UPDATED,
     locations: visibleLocations
   };
-}
+};
 
-function getBirdHotspotObservations (dispatch, locations, allLocationSightings) {
+const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) => {
   const numLocations = locations.length;
 
   var updateBundleCount = 1;
@@ -228,17 +226,15 @@ function getBirdHotspotObservations (dispatch, locations, allLocationSightings) 
   });
 
   return promises;
-}
+};
 
 const fetchSingleHotspotSightings = (locationID) => {
   return fetch(`/api/getHotspotSightings?locationID=${locationID}&recency=30`, { method: 'GET' });
 };
 
-
 const fetchHotspotSightingsPacket = (locationIDs) => {
   return fetch(`/api/getHotspotSightingsPacket?locationIDs=${locationIDs.join(',')}&recency=30`, { method: 'GET' });
 };
-
 
 const locationSightingsFound = (locationID, resp) => {
   return {
@@ -248,11 +244,11 @@ const locationSightingsFound = (locationID, resp) => {
   };
 };
 
-const updateLocationSightings = function () {
+const updateLocationSightings = () => {
   return { type: E.HOTSPOT_SIGHTINGS_UPDATE }
 };
 
-const onWindowResize = function (width, height) {
+const onWindowResize = (width, height) => {
   return {
     type: E.WINDOW_RESIZED,
     width: width,
@@ -260,50 +256,57 @@ const onWindowResize = function (width, height) {
   }
 };
 
-const sortLocations = function (sort) {
+const sortLocations = (sort) => {
   return {
     type: E.LOCATIONS_SORTED,
     sort: sort
   }
 };
 
-const sortSpecies = function (sort) {
+const sortSpecies = (sort) => {
   return {
     type: E.SPECIES_SORTED,
     sort: sort
   }
 };
 
-const selectLocation = function (location) {
+const selectLocation = (location) => {
   return {
     type: E.LOCATION_SELECTED,
     location: location
   }
 };
 
-const hideLocationsPanel = function () {
+const hideLocationsPanel = () => {
   return { type: E.HIDE_LOCATIONS_PANEL };
 };
 
-const showSpeciesPanel = function () {
+const showSpeciesPanel = () => {
   return { type: E.SHOW_SPECIES_PANEL };
 };
 
-const hideSpeciesPanel = function () {
+const hideSpeciesPanel = () => {
   return { type: E.HIDE_SPECIES_PANEL };
 };
 
-const setLocationFilter = function (filter) {
+const setLocationFilter = (filter) => {
   return {
     type: E.SET_LOCATION_FILTER,
     filter: filter
   };
 };
 
-const setSpeciesFilter = function (filter) {
+const setSpeciesFilter = (filter) => {
   return {
     type: E.SET_SPECIES_FILTER,
     filter: filter
+  };
+};
+
+const selectAboutTab = (tab) => {
+  return {
+    type: E.SELECT_ABOUT_TAB,
+    tab: tab
   };
 };
 
@@ -325,5 +328,6 @@ export {
   hideSpeciesPanel,
   setSpeciesFilter,
   sortSpecies,
-  searchAnywhere
+  searchAnywhere,
+  selectAboutTab
 };
