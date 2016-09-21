@@ -167,6 +167,7 @@ class Map extends React.Component {
 
     if (this.props.locationFilter !== nextProps.locationFilter) {
       var regexp = new RegExp(nextProps.locationFilter, 'i');
+
       _.each(nextProps.results.visibleLocations, (locInfo) => {
         if (regexp.test(locInfo.n)) {
           if (!_data.all.markers[locInfo.i].visible) {
@@ -174,10 +175,8 @@ class Map extends React.Component {
             _data.all.markers[locInfo.i].marker.setMap(_map);
           }
         } else {
-          if (_data.all.markers[locInfo.i].visible) {
-            _data.all.markers[locInfo.i].visible = false;
-            _data.all.markers[locInfo.i].marker.setMap(null);
-          }
+          _data.all.markers[locInfo.i].visible = false;
+          _data.all.markers[locInfo.i].marker.setMap(null);
         }
       });
     }
