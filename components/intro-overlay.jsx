@@ -60,6 +60,8 @@ class IntroOverlay extends React.Component {
   render () {
     const { loading } = this.props;
     const classes = 'overlay' + ((loading) ? ' loading' : '');
+//    <Overlay id="intro-overlay" className={classes}>
+//    </Overlay>
 
     return (
       <div>
@@ -90,7 +92,6 @@ class IntroOverlay extends React.Component {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     );

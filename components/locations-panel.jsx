@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { FormattedMessage } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
 import { C, E, helpers, _, actions } from '../core/core';
-import { Loader, ClosePanel, LineLoader, LocationSpeciesCount } from './general';
-
+import { Loader, LineLoader, LocationSpeciesCount } from './general';
 
 
 export class LocationsPanel extends React.Component {

@@ -3,15 +3,57 @@ import { connect } from 'react-redux';
 import { _ } from '../core/core';
 
 
+// generic overlay component. Handles the common DOM element
 class Overlay extends React.Component {
-  render () {
-    return (
-      <div>
+  componentDidMount () {
+    const { id, onClose } = this.props;
+    $(document).on('keydown.' + id, (e) => {
+      if (e.keyCode == 27) {
+        onClose();
+      }
+    });
+  }
 
+  componentWillUnmount () {
+    const { id } = this.props;
+    $(document).off('keydown.' + id);
+  }
+
+  getCloseIcon () {
+    const { onClose, showCloseIcon } = this.props;
+    if (!showCloseIcon) {
+      return false;
+    }
+    return (
+      <ClosePanel onClose={onClose} />
+    );
+  }
+
+  render () {
+    const { children, id } = this.props;
+    return (
+      <div className="tab-wrapper">
+        <div id="map-overlay"></div>
+        <div id={id} className="overlay">
+          <div className="tab-content">
+            {this.getCloseIcon()}
+            {children}
+          </div>
+        </div>
       </div>
     );
   }
 }
+Overlay.propTypes = {
+  id: React.PropTypes.string.isRequired,
+  onClose: React.PropTypes.func.isRequired,
+  showCloseIcon: React.PropTypes.bool,
+  closeIconDisabled: React.PropTypes.bool
+};
+Overlay.defaultProps = {
+  showCloseIcon: false,
+  closeIconDisabled: false
+};
 
 
 class Loader extends React.Component {
@@ -162,6 +204,7 @@ LocationSpeciesCount.PropTypes = {
 
 export {
   Loader,
+  Overlay,
   ClosePanel,
   LineLoader,
   LocationsDropdown,

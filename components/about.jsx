@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { browserHistory } from 'react-router';
-import { ClosePanel } from './general';
+import { Overlay } from './general';
 import { C, _, actions } from '../core/core';
 import { Modal, Button } from 'react-bootstrap';
 
@@ -26,13 +26,14 @@ class AboutOverlay extends React.Component {
   }
 
   getTabContent () {
-    if (this.props.selectedTab === C.ABOUT_TABS.HELP) {
+    const { selectedTab } = this.props;
+    if (selectedTab === C.ABOUT_TABS.HELP) {
       return <HelpTab />;
-    } else if (this.props.selectedTab === C.ABOUT_TABS.HELP) {
+    } else if (selectedTab === C.ABOUT_TABS.ABOUT) {
       return <AboutTab />;
-    } else if (this.props.selectedTab === C.ABOUT_TABS.TRANSLATE) {
+    } else if (selectedTab === C.ABOUT_TABS.TRANSLATE) {
       return <TranslateTab />;
-    } else if (this.props.selectedTab === C.ABOUT_TABS.CONTACT) {
+    } else if (selectedTab === C.ABOUT_TABS.CONTACT) {
       return <ContactTab />;
     }
   }
@@ -46,23 +47,17 @@ class AboutOverlay extends React.Component {
     const contactClasses = (selectedTab === C.ABOUT_TABS.CONTACT) ? 'active' : '';
 
     return (
-      <div className="tab-wrapper">
-        <div id="map-overlay"></div>
-        <div id="about-overlay" className="overlay">
-          <div className="tab-content">
-            <ClosePanel onClose={this.close} />
-
-            <ul className="nav nav-pills">
-              <li className={helpClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.HELP)}>Help</a></li>
-              <li className={aboutClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.ABOUT)}>About</a></li>
-              <li className={translateClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.TRANSLATE)}>Translate</a></li>
-              <li className={contactClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.CONTACT)}>Contact</a></li>
-            </ul>
-
-            {this.getTabContent()}
-          </div>
+      <Overlay id="about-overlay" showCloseIcon={true} onClose={this.close}>
+        <div>
+          <ul className="nav nav-pills">
+            <li className={helpClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.HELP)}>Help</a></li>
+            <li className={aboutClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.ABOUT)}>About</a></li>
+            <li className={translateClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.TRANSLATE)}>Translate</a></li>
+            <li className={contactClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.CONTACT)}>Contact</a></li>
+          </ul>
+          {this.getTabContent()}
         </div>
-      </div>
+      </Overlay>
     );
   }
 }
@@ -116,7 +111,6 @@ class TranslateTab extends React.Component {
   render () {
     return (
       <div>
-        <h2>Help Translate</h2>
         <p>
           If you're interested in helping translate this site, I'd love to hear from you. The available
           languages are all generated via Google Translate, so while useful, they're not of the highest quality.
@@ -131,10 +125,9 @@ class ContactTab extends React.Component {
   render () {
     return (
       <div>
-        <h2>Contact</h2>
         <p>
-          Found a bug? Got a feature suggestion? I've love to hear from you. Make a comment on
-          <a href="">this post</a> or email me at <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>.
+          Found a bug? Got a feature suggestion? I've love to hear from you. Make a comment on <a href="">this post</a> or
+          email me at <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>.
         </p>
       </div>
     );
