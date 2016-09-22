@@ -2,18 +2,25 @@
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700");
 
 body .navbar {
-	cursor: pointer;
+	line-height: 56px;
+
 	.brand {
+		cursor: pointer;
 		padding: 0 0 0 40px;
-		width: 170px;
 		background: transparent url(../../images/icon.png) left center no-repeat;
 		margin-left: 15px;
 		color: #ffffff;
 		font-family: $webFont;
 		font-size: 24px;
-		span {
-			color: #33b5e5;
-		}
+	}
+	.beta {
+		background-color: #c02323;
+		color: white;
+		border-radius: 2px;
+		padding: 2px 10px;
+		font-size: 10px;
+		margin: 0 0 0 10px;
+		vertical-align: middle;
 	}
 }
 .tagLine {

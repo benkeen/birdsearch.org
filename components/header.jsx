@@ -49,6 +49,7 @@ class Header extends React.Component {
       <header className="flex-fill">
         <div className="navbar" onClick={this.showIntroOverlay}>
           <h1 className="brand">birdsearch.org</h1>
+          <span className="beta">BETA</span>
         </div>
 
         <HeaderSearch

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
-import { Loader, ClosePanel } from './general';
+import { Loader, Overlay } from './general';
 import { C, _, actions } from '../core/core';
 
 
@@ -59,41 +59,30 @@ class IntroOverlay extends React.Component {
 
   render () {
     const { loading } = this.props;
-    const classes = 'overlay' + ((loading) ? ' loading' : '');
-//    <Overlay id="intro-overlay" className={classes}>
-//    </Overlay>
+    const classes = (loading) ? 'loading' : '';
 
     return (
-      <div>
-        <div id="map-overlay"></div>
-        <div id="intro-overlay" className={classes}>
-          <div className="tab-wrapper">
-            {this.getLoader()}
+      <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close}>
+        {this.getLoader()}
 
-            <div className="tab-content">
-              <ClosePanel onClose={this.close} disabled={loading} />
-
-              <div>
-                <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby} disabled={loading}>
-                  <i className="glyphicon glyphicon-home" />
-                  <FormattedMessage id="searchNearby" />
-                </button>
-                <FormattedMessage id="findInArea" />
-              </div>
-
-              <p className="or"><FormattedMessage id="or" /></p>
-
-              <div>
-                <button className="btn btn-primary" id="searchAnywhere" onClick={this.searchAnywhere} disabled={loading}>
-                  <i className="glyphicon glyphicon-globe" />
-                  <FormattedMessage id="searchAnywhere" />
-                </button>
-                <FormattedMessage id="findAnywhere" />
-              </div>
-            </div>
-          </div>
+        <div>
+          <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby} disabled={loading}>
+            <i className="glyphicon glyphicon-home" />
+            <FormattedMessage id="searchNearby" />
+          </button>
+          <FormattedMessage id="findInArea" />
         </div>
-      </div>
+
+        <p className="or"><FormattedMessage id="or" /></p>
+
+        <div>
+          <button className="btn btn-primary" id="searchAnywhere" onClick={this.searchAnywhere} disabled={loading}>
+            <i className="glyphicon glyphicon-globe" />
+            <FormattedMessage id="searchAnywhere" />
+          </button>
+          <FormattedMessage id="findAnywhere" />
+        </div>
+      </Overlay>
     );
   }
 }

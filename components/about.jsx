@@ -90,9 +90,9 @@ class AboutTab extends React.Component {
     return (
       <div>
         <p>
-          Like many birders I know, discovering eBird was an important moment. It brought birding out of the dark ages
-          of pen-and-pencil logs and into the digital age. Now we could share our knowledge, track observations and open
-          up the information for use by others.
+          Like many birders I know, discovering <a href="http://ebird.org" target="_blank">eBird</a> was an milestone.
+          It brought birding out of the dark ages of pen-and-pencil logs and into the digital age. Now we could
+          share our knowledge, track observations and open up the information for use by others.
         </p>
         <p>
           But as a birder, I wanted a no-fuss high-level overview of a region. I wanted to specify a location and see
