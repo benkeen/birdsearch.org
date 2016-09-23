@@ -110,12 +110,11 @@ var getBirdSightingInfoWindow = function(locInfo) {
 //    locationID: locInfo.locationID,
 //    numSpecies: numSightings
 //  });
-  console.log(locInfo);
 
   return (
     <div className="marker-popup">
       <h4>{locInfo.n}</h4>
-      <a href="#">N bird species seen in the last N days</a>
+      <a href="#" className="marker-link" data-loc-id={locInfo.i}>N bird species seen in the last N days</a>
     </div>
   );
 };
