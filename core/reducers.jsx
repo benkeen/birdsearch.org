@@ -340,6 +340,9 @@ function locationsPanel (state = {
         updateCounter: state.updateCounter+1
       });
 
+    case E.SHOW_MODAL:
+      return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
+
     case E.SEARCH_REQUEST_STARTED:
     case E.SEARCH_REQUEST_ENDED:
     case E.HOTSPOT_SIGHTINGS_UPDATE:
@@ -399,7 +402,9 @@ function speciesPanel (state = {
         filter: action.filter,
         updateCounter: state.updateCounter+1
       });
-      break;
+
+    case E.SHOW_MODAL:
+      return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
 
     case E.SEARCH_REQUEST_STARTED:
     case E.SEARCH_REQUEST_ENDED:

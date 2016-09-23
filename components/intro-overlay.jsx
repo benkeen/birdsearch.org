@@ -62,9 +62,7 @@ class IntroOverlay extends React.Component {
     const classes = (loading) ? 'loading' : '';
 
     return (
-      <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close}>
-        {this.getLoader()}
-
+      <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close} outerHTML={this.getLoader()}>
         <div>
           <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby} disabled={loading}>
             <i className="glyphicon glyphicon-home" />

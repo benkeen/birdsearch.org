@@ -30,13 +30,14 @@ class Overlay extends React.Component {
   }
 
   render () {
-    const { children, id, className } = this.props;
+    const { children, id, className, outerHTML } = this.props;
     const classes = 'overlay' + ((className) ? ' ' + className : '');
 
     return (
       <div className="tab-wrapper">
         <div id="map-overlay"></div>
         <div id={id} className={classes}>
+          {outerHTML}
           <div className="tab-content">
             {this.getCloseIcon()}
             {children}
@@ -56,7 +57,8 @@ Overlay.propTypes = {
 Overlay.defaultProps = {
   showCloseIcon: false,
   closeIconDisabled: false,
-  className: ''
+  className: '',
+  outerHTML: ''
 };
 
 

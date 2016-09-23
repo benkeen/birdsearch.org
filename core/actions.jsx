@@ -311,6 +311,11 @@ const selectAboutTab = (tab) => {
 };
 
 
+const showModal = () => {
+  return { type: E.SHOW_MODAL };
+};
+
+
 export {
   setLocale,
   setSearchLocation,
@@ -329,5 +334,6 @@ export {
   setSpeciesFilter,
   sortSpecies,
   searchAnywhere,
-  selectAboutTab
+  selectAboutTab,
+  showModal
 };

@@ -23,8 +23,7 @@ class Header extends React.Component {
 
   showIntroOverlay () {
     const { dispatch } = this.props;
-    dispatch(actions.hideLocationsPanel());
-    dispatch(actions.hideSpeciesPanel());
+    dispatch(actions.showModal());
     browserHistory.push('/intro');
   }
 
@@ -32,6 +31,13 @@ class Header extends React.Component {
     const { dispatch, searchSettings } = this.props;
     dispatch(actions.search(mapSettings.location, mapSettings.lat, mapSettings.lng, mapSettings.bounds,
       searchSettings.limitByObservationRecency, searchSettings.observationRecency));
+  }
+
+  showAboutOverlay (e) {
+    e.preventDefault();
+    const { dispatch } = this.props;
+    dispatch(actions.showModal());
+    browserHistory.push('/about');
   }
 
   render () {
@@ -62,7 +68,7 @@ class Header extends React.Component {
         <ul className="nav-items">
           <li>
             <OverlayTrigger placement="bottom" overlay={infoTooltip}>
-              <Link to="/about" className="icon icon-info"></Link>
+              <a href="#" onClick={(e) => this.showAboutOverlay(e)} className="icon icon-info"></a>
             </OverlayTrigger>
           </li>
           <li className="lang-toggle">
