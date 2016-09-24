@@ -72,58 +72,16 @@ var _data = {
   }
 };
 
-
-var createBirdMarker = function (locationID, latlng, currMarkerInfo) {
-  if (_.has(_data.all.markers, locationID)) {
-    if (_data.all.markers[locationID].marker.map === null) {
-      _data.all.markers[locationID].marker.setMap(_map);
-    }
-    return;
-  }
-
-  _data.all.markers[locationID] = {
-    visible: false,
-    marker: new google.maps.Marker({
-      position: latlng,
-      map: _map,
-      title: currMarkerInfo.n,
-      icon: _icons.range1,
-      locationID: locationID
-    })
-  };
-  _data.all.infoWindows[locationID] = new google.maps.InfoWindow();
-
-  (function(marker, infoWindow, locInfo) {
-    google.maps.event.addListener(marker, 'click', function() {
-      infoWindow.setContent(ReactDOMServer.renderToString(getBirdSightingInfoWindow(locInfo)));
-      infoWindow.open(_map, this);
-    });
-  })(_data.all.markers[locationID].marker, _data.all.infoWindows[locationID], currMarkerInfo);
-};
-
-
-var getBirdSightingInfoWindow = function(locInfo) {
-//  var numSightings = locInfo.sightings.data[_lastSearch.observationRecency-1].numSpeciesRunningTotal;
-//  var html = _.template(allSightingsInfoWindowTemplate, {
-//    L: _L,
-//    locationName: locInfo.n,
-//    locationID: locInfo.locationID,
-//    numSpecies: numSightings
-//  });
-
-  return (
-    <div className="marker-popup">
-      <h4>{locInfo.n}</h4>
-      <a href="#" className="marker-link" data-loc-id={locInfo.i}>N bird species seen in the last N days</a>
-    </div>
-  );
-};
+// any time the map boundary changes, the list of hotspots may change. This keeps a list of the hotspots within the
+// boundary, ignoring what is visible on the map (i.e. via a location filter)
+var _currentHotspotIDsInMapBoundaries = [];
 
 
 class Map extends React.Component {
   constructor (props) {
     super(props);
     this.onMapBoundsChange = this.onMapBoundsChange.bind(this);
+    this.getBirdSightingsInfoWindow = this.getBirdSightingsInfoWindow.bind(this);
   }
 
   componentDidMount () {
@@ -188,17 +146,13 @@ class Map extends React.Component {
       });
     }
 
-    // - window resize
-    // - new search
-    // - map zoom / drag
     var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
     var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
-
     if (numLocationsChanged || windowResized) {
-      this.clearHotspots();
-      this.addMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings);
+      this.updateMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings);
     }
 
+    // rename!
     this.showLocations(nextProps);
 
     // never update the map with React. We do it all internally. It's way too slow otherwise
@@ -236,10 +190,11 @@ class Map extends React.Component {
   }
 
   // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown.
-  addMapMarkers (locations, locationSightings) {
+  updateMapMarkers (locations, locationSightings) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-    var visibleHotspots = [];
+    var hotspotsInBounds = [];
+    let hotspotIDsInBounds = [];
 
     locations.forEach((locInfo) => {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
@@ -254,11 +209,12 @@ class Map extends React.Component {
       }
 
       if (_.has(_data.all.markers, locID)) {
-        this.showMarker(locInfo);
+        this.showMarkerWithFilter(locInfo);
       } else {
-        createBirdMarker(locID, latlng, locInfo);
+        this.createBirdMarker(locID, latlng, locInfo);
       }
-      visibleHotspots.push(locInfo);
+      hotspotsInBounds.push(locInfo);
+      hotspotIDsInBounds.push(locInfo.i);
 
       //if (searchType === "all") {
       //  _addBirdMarker(locationID, latlng, currMarkerInfo);
@@ -269,10 +225,15 @@ class Map extends React.Component {
       //}
     });
 
-    // publish the visible hotspots: LocationsPanel needs to know about it
-    this.props.dispatch(actions.visibleLocationsFound(visibleHotspots, locationSightings));
+    // if the list of hotspots in the map boundary changed, publish the info
+    if (_.intersection(_currentHotspotIDsInMapBoundaries, hotspotIDsInBounds).length !== hotspotIDsInBounds.length) {
+      this.props.dispatch(actions.visibleLocationsFound(hotspotsInBounds, locationSightings));
+    }
+
+    _currentHotspotIDsInMapBoundaries = hotspotIDsInBounds;
   }
 
+  // only call this after a new search
   clearHotspots () {
     for (var locationID in _data.all.markers) {
       _data.all.markers[locationID].marker.setMap(null);
@@ -287,7 +248,7 @@ class Map extends React.Component {
 
   onMapBoundsChange () {
     const { results } = this.props;
-    this.addMapMarkers(results.allLocations, results.locationSightings);
+    this.updateMapMarkers(results.allLocations, results.locationSightings);
   }
 
   addCustomControls () {
@@ -326,8 +287,11 @@ class Map extends React.Component {
   }
 
   addEventHandlers () {
-    //$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
-    //$(document).on("click", ".viewLocationSightingDetails", _onClickViewLocationSightings);
+    const dispatch = this.props.dispatch;
+    $(document).on('click', '.viewLocationSightingDetails', (e) => {
+      this.props.dispatch(actions.selectLocation($(e.target).data('locationId')));
+      this.props.dispatch(actions.showSpeciesPanel());
+    });
 
     // called any time the map has had its bounds changed
     google.maps.event.addListener(_map, 'dragend', this.onMapBoundsChange);
@@ -355,7 +319,7 @@ class Map extends React.Component {
   }
 
   // adds a marker, taking into account whether a filter is applied
-  showMarker (locInfo) {
+  showMarkerWithFilter (locInfo) {
     const { locationFilter } = this.props;
     let show = true;
     if (locationFilter !== '') {
@@ -366,6 +330,54 @@ class Map extends React.Component {
       _data.all.markers[locInfo.i].marker.setMap(_map);
     }
   }
+
+  createBirdMarker (locationID, latlng, currMarkerInfo) {
+    if (_.has(_data.all.markers, locationID)) {
+      if (_data.all.markers[locationID].marker.map === null) {
+        _data.all.markers[locationID].marker.setMap(_map);
+      }
+      return;
+    }
+
+    _data.all.markers[locationID] = {
+      visible: false,
+      marker: new google.maps.Marker({
+        position: latlng,
+        map: _map,
+        title: currMarkerInfo.n,
+        icon: _icons.range1,
+        locationID: locationID
+      })
+    };
+    _data.all.infoWindows[locationID] = new google.maps.InfoWindow();
+
+    let getBirdSightingsInfoWindow = this.getBirdSightingsInfoWindow;
+    ((marker, infoWindow, locInfo) => {
+      google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.setContent(ReactDOMServer.renderToString(getBirdSightingsInfoWindow(locInfo)));
+        infoWindow.open(_map, this);
+      });
+    })(_data.all.markers[locationID].marker, _data.all.infoWindows[locationID], currMarkerInfo);
+  };
+
+  getBirdSightingsInfoWindow (locInfo) {
+    const { results, searchSettings } = this.props;
+    var locationSightings = results.locationSightings[locInfo.i].data;
+    const obsRecency = searchSettings.observationRecency;
+    var numSpecies = 0;
+    if (results.locationSightings[locInfo.i].fetched) {
+      numSpecies = locationSightings[obsRecency - 1].numSpeciesRunningTotal;
+    }
+
+    return (
+      <div className="marker-popup">
+        <h4>{locInfo.n}</h4>
+        <a href="#" className="viewLocationSightingDetails" data-location-id={locInfo.i}>
+          <b>{numSpecies}</b> bird species seen in the last <b>{obsRecency}</b> days
+        </a>
+      </div>
+    );
+  };
 
   render () {
     return (

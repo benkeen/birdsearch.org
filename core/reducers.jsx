@@ -233,16 +233,12 @@ function results (state = {
   switch (action.type) {
     case E.SEARCH_REQUEST_STARTED:
     case E.INIT_SEARCH_REQUEST:
-      console.log('FETCHING');
-
       return Object.assign({}, state, {
         isFetching: true
       });
       break;
 
     case E.SEARCH_REQUEST_ENDED:
-      console.log('DONE');
-
       return Object.assign({}, state, {
         isFetching: false
       });
