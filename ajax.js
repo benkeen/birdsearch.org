@@ -8,7 +8,7 @@ const _ = require('underscore');
  */
 
 
-function getHotspotLocations ({ lat, lng, limitByObservationRecency, observationRecency }, expressRequest) {
+const getHotspotLocations = function ({ lat, lng, limitByObservationRecency, observationRecency }, expressRequest) {
   let url = `http://ebird.org/ws1.1/ref/hotspot/geo?lat=${lat}&lng=${lng}&dist=50&fmt=xml`;
   if (limitByObservationRecency == 'true') {
     url += `&back=${observationRecency}`;
