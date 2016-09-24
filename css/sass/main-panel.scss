@@ -487,3 +487,11 @@ body .filter-field {
     }
   }
 }
+
+.nav-pills > .active > a {
+	background-color: $blue;
+}
+
+.nav-pills li > a:hover {
+	background-color: $blue;
+}

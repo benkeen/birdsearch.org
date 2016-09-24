@@ -27,10 +27,10 @@ class AboutOverlay extends React.Component {
 
   getTabContent () {
     const { selectedTab } = this.props;
-    if (selectedTab === C.ABOUT_TABS.HELP) {
-      return <HelpTab />;
-    } else if (selectedTab === C.ABOUT_TABS.ABOUT) {
+    if (selectedTab === C.ABOUT_TABS.ABOUT) {
       return <AboutTab />;
+    } else if (selectedTab === C.ABOUT_TABS.HISTORY) {
+      return <HistoryTab />;
     } else if (selectedTab === C.ABOUT_TABS.TRANSLATE) {
       return <TranslateTab />;
     } else if (selectedTab === C.ABOUT_TABS.CONTACT) {
@@ -41,8 +41,8 @@ class AboutOverlay extends React.Component {
   render () {
     const { selectedTab } = this.props;
 
-    const helpClasses = (selectedTab === C.ABOUT_TABS.HELP) ? 'active' : '';
     const aboutClasses = (selectedTab === C.ABOUT_TABS.ABOUT) ? 'active' : '';
+    const historyClasses = (selectedTab === C.ABOUT_TABS.HISTORY) ? 'active' : '';
     const translateClasses = (selectedTab === C.ABOUT_TABS.TRANSLATE) ? 'active' : '';
     const contactClasses = (selectedTab === C.ABOUT_TABS.CONTACT) ? 'active' : '';
 
@@ -50,8 +50,8 @@ class AboutOverlay extends React.Component {
       <Overlay id="about-overlay" showCloseIcon={true} onClose={this.close}>
         <div>
           <ul className="nav nav-pills">
-            <li className={helpClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.HELP)}>Help</a></li>
             <li className={aboutClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.ABOUT)}>About</a></li>
+            <li className={historyClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.HISTORY)}>History</a></li>
             <li className={translateClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.TRANSLATE)}>Translate</a></li>
             <li className={contactClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.CONTACT)}>Contact</a></li>
           </ul>
@@ -68,10 +68,12 @@ export default connect(state => ({
 
 
 
-class HelpTab extends React.Component {
+class AboutTab extends React.Component {
   render () {
     return (
       <div>
+        <img src="/images/sandhill.png" width="200" className="photo" />
+
         <p>
           birdsearch.org lets you browse and search recent worldwide bird sightings. Searching returns observations
           data made in the last <b>week</b>, but the advanced search allows you to search as far back as a <b>month</b>.
@@ -85,7 +87,7 @@ class HelpTab extends React.Component {
   }
 }
 
-class AboutTab extends React.Component {
+class HistoryTab extends React.Component {
   render () {
     return (
       <div>
@@ -114,7 +116,8 @@ class TranslateTab extends React.Component {
         <p>
           If you're interested in helping translate this site, I'd love to hear from you. The available
           languages are all generated via Google Translate, so while useful, they're not of the highest quality.
-          All the source code for this site, including the translations, are found on github.com, here.
+          The source code and translations are found on
+          <a href="https://github.com/benkeen/birdsearch.org/tree/master/core/i18n">github.com here</a>.
         </p>
       </div>
     );

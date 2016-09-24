@@ -40,8 +40,8 @@
   }
 
   .nav-pills {
-    margin-top: -20px;
-    margin-left: -20px;
+    margin-top: -10px;
+    margin-left: 0;
   }
 }
 
@@ -101,6 +101,8 @@
   width: 600px;
 }
 
-#data-loading {
-
+.photo {
+  float: right;
+  margin-left: 15px;
+  border-radius: 3px;
 }

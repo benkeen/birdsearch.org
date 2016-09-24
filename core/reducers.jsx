@@ -162,7 +162,7 @@ function introOverlay (state = {
 
 
 function aboutOverlay (state = {
-  selectedTab: C.ABOUT_TABS.HELP
+  selectedTab: C.ABOUT_TABS.ABOUT
 }, action) {
 
   switch (action.type) {

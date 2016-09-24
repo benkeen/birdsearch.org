@@ -26,9 +26,12 @@ section {
 .clear {
 	clear: both;
 }
-a:hover {
+body a {
 	color: $blue;
-	text-decoration: none;
+	&:hover {
+		color: $blue;
+		text-decoration: none;
+	}
 }
 a:focus {
 	text-decoration: none;
