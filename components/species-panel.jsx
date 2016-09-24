@@ -388,7 +388,7 @@ class SpeciesRow extends React.Component {
       return (
         <li key={locInfo.locID}>
           <span data-id={locInfo.locID}>{locInfo.locName}</span>
-          <a href={checklistLink} target="_blank" className="glyphicon glyphicon-list"></a>
+          <a href={checklistLink} target="_blank" className="glyphicon glyphicon-list" title="View Checklist"></a>
         </li>
       );
     });
@@ -408,7 +408,7 @@ class SpeciesRow extends React.Component {
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
         </td>
         <td ref="cell" className="locations-seen species-num-locations-cell">
-          <OverlayTrigger trigger="click" placement="bottom" rootClose={true} show={this.state.show} container={this.refs.cell}
+          <OverlayTrigger trigger="click" placement="bottom" rootClose={true} container={this.refs.cell}
             overlay={
               <Popover title="Locations" id="locations-popover">
                 <ul className="bird-location-sightings" onClick={(e) => this.selectLocation(dispatch, e.target)}>

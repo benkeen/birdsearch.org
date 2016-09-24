@@ -6,7 +6,12 @@
   padding: 4px 10px !important;
 }
 .has-results .gm-style .gm-style-mtc>div {
-  margin-top: 26px;
+  &:first-child {
+    margin-top: 26px;
+  }
+  &:nth-child(2) {
+    font-size: 8px;
+  }
 }
 .has-results .map-btn {
   top: 27px !important;

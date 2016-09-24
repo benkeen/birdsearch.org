@@ -53,7 +53,7 @@
     border-radius: 4px;
     margin-left: 4px;
     display: inline;
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 
@@ -413,17 +413,26 @@ body .filter-field {
 
 #locations-popover {
 	width: 300px;
-	margin-left: 30px;
 	.popover-content {
 		font-size: 12px;
 		max-height: 200px;
 		overflow: auto;
 		li {
 			cursor: pointer;
-			&:hover {
-				color: $blue;
+			line-height: inherit;
+			display: flex;
+			flex-direction: row;
+			span, a {
+				&:hover {
+					color: $blue;
+				}
 			}
-			padding: 3px 0;
+			span {
+				flex: 1;
+			}
+			a {
+				flex-grow: 0;
+			}
 			border-bottom: 1px solid #222222;
 			&:last-child {
 				border-bottom: none;
@@ -451,7 +460,7 @@ body .filter-field {
 .species-table-content-wrapper {
 	flex: 1;
 	overflow-x: hidden;
-	overflow-y: auto;
+	overflow-y: scroll;
 }
 .species-loading {
 	display: inline-block;
@@ -471,11 +480,7 @@ body .filter-field {
 }
 
 .bird-location-sightings {
-  li {
-    padding-right: 30px;
-  }
   a {
-    float: right;
 	color: white;
     &:hover {
         color: $blue;
