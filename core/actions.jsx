@@ -149,6 +149,7 @@ const visibleLocationsFound = (visibleLocations, allLocationSightings) => {
   return function (dispatch) {
     dispatch(initSearchRequest());
     dispatch(updateVisibleLocations(visibleLocations));
+    console.log('??');
     return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);
   }
 };
@@ -209,6 +210,7 @@ const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) =
   });
 
   if (locationIDs.length === 0) {
+    console.log('none?');
     dispatch(searchRequestComplete());
     return;
   }
@@ -226,10 +228,6 @@ const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) =
   });
 
   return promises;
-};
-
-const fetchSingleHotspotSightings = (locationID) => {
-  return fetch(`/api/getHotspotSightings?locationID=${locationID}&recency=30`, { method: 'GET' });
 };
 
 const fetchHotspotSightingsPacket = (locationIDs) => {

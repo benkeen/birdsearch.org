@@ -41,7 +41,7 @@ class IntroOverlay extends React.Component {
   }
 
   onUserLocationFound () {
-    browserHistory.push('/');``
+    browserHistory.push('/');
   }
 
   searchAnywhere () {

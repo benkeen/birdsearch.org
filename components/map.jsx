@@ -164,20 +164,7 @@ class Map extends React.Component {
       return false;
     }
 
-    if (this.props.locationFilter !== nextProps.locationFilter) {
-      var regexp = new RegExp(nextProps.locationFilter, 'i');
-      _.each(nextProps.results.visibleLocations, (locInfo) => {
-        if (regexp.test(locInfo.n)) {
-          if (!_data.all.markers[locInfo.i].visible) {
-            _data.all.markers[locInfo.i].visible = true;
-            _data.all.markers[locInfo.i].marker.setMap(_map);
-          }
-        } else {
-          _data.all.markers[locInfo.i].visible = false;
-          _data.all.markers[locInfo.i].marker.setMap(null);
-        }
-      });
-    }
+    this.applyLocationFilter(nextProps);
 
     if (nextProps.zoom !== this.props.zoom) {
       _map.setZoom(this.props.zoom);
@@ -207,16 +194,10 @@ class Map extends React.Component {
     var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
     var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
 
-    // TODO
     if (numLocationsChanged || windowResized) {
       this.clearHotspots();
       this.addMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings);
     }
-
-    // when do we want to clear the hotspots?
-    //  - after a new search (different location)
-    //  - after the map boundary changes
-    //  - ...
 
     this.showLocations(nextProps);
 
@@ -254,18 +235,17 @@ class Map extends React.Component {
     }, this);
   }
 
-  // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown
-  // (white if they don't have any
+  // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown.
   addMapMarkers (locations, locationSightings) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
     var visibleHotspots = [];
 
-    locations.forEach(function (locInfo) {
+    locations.forEach((locInfo) => {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
       var locID = locInfo.i;
 
-      // if a marker has already been added to this
+      // filter out-of-bounds markers
       if (!boundsObj.contains(latlng)) {
         if (_.has(_data.all.markers, locID)) {
           _data.all.markers[locID].marker.setMap(null);
@@ -274,7 +254,7 @@ class Map extends React.Component {
       }
 
       if (_.has(_data.all.markers, locID)) {
-        _data.all.markers[locID].marker.setMap(_map);
+        this.showMarker(locInfo);
       } else {
         createBirdMarker(locID, latlng, locInfo);
       }
@@ -297,7 +277,6 @@ class Map extends React.Component {
     for (var locationID in _data.all.markers) {
       _data.all.markers[locationID].marker.setMap(null);
     }
-
     //for (var locationID in _data.notable.markers) {
     //  _data.notable.markers[locationID].setMap(null);
     //}
@@ -308,13 +287,7 @@ class Map extends React.Component {
 
   onMapBoundsChange () {
     const { results } = this.props;
-
-    // TODO what if it's a completely fresh search? Need to clear it out...
-    //this.clearHotspots();
-
     this.addMapMarkers(results.allLocations, results.locationSightings);
-
-    //this.props.dispatch(actions.visibleLocationsFound(visibleHotspots, locationSightings));
   }
 
   addCustomControls () {
@@ -322,10 +295,6 @@ class Map extends React.Component {
     var btn2 = $('<div class="map-btn">Road Map</div>')[0];
     var btn3 = $('<div class="map-btn">Satellite</div>')[0];
     var btn4 = $('<div class="map-btn">Hybrid</div>')[0];
-
-    //mapBtnSelected
-
-    // TODO this is better. https://developers.google.com/maps/documentation/javascript/examples/control-custom
 
     // add the controls to the map
     _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
@@ -359,9 +328,43 @@ class Map extends React.Component {
   addEventHandlers () {
     //$(document).on("click", ".viewNotableSightingDetails", _onClickViewFullNotableDetails);
     //$(document).on("click", ".viewLocationSightingDetails", _onClickViewLocationSightings);
+
     // called any time the map has had its bounds changed
     google.maps.event.addListener(_map, 'dragend', this.onMapBoundsChange);
     google.maps.event.addListener(_map, 'zoom_changed', this.onMapBoundsChange);
+  }
+
+  applyLocationFilter (nextProps) {
+    const { locationFilter } = this.props;
+
+    // if the location filter just changed, update the list of hidden/visible markers
+    if (locationFilter !== nextProps.locationFilter) {
+      var regexp = new RegExp(nextProps.locationFilter, 'i');
+      _.each(nextProps.results.visibleLocations, (locInfo) => {
+        if (regexp.test(locInfo.n)) {
+          if (!_data.all.markers[locInfo.i].visible) {
+            _data.all.markers[locInfo.i].visible = true;
+            _data.all.markers[locInfo.i].marker.setMap(_map);
+          }
+        } else {
+          _data.all.markers[locInfo.i].visible = false;
+          _data.all.markers[locInfo.i].marker.setMap(null);
+        }
+      });
+    }
+  }
+
+  // adds a marker, taking into account whether a filter is applied
+  showMarker (locInfo) {
+    const { locationFilter } = this.props;
+    let show = true;
+    if (locationFilter !== '') {
+      var regexp = new RegExp(locationFilter, 'i'); // hmm... this runs for EVERY marker
+      show = regexp.test(locInfo.n);
+    }
+    if (show) {
+      _data.all.markers[locInfo.i].marker.setMap(_map);
+    }
   }
 
   render () {
