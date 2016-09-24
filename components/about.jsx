@@ -79,7 +79,7 @@ class AboutTab extends React.Component {
         </p>
         <p>
           The data is pulled from <a href="http://ebird.org" target="_blank">eBird.org</a> which provides many other
-          options for viewing historical observation data. Check it out!
+          options for viewing historical observation data. Check it out.
         </p>
       </div>
     );
@@ -102,7 +102,7 @@ class HistoryTab extends React.Component {
         </p>
         <p>
           Back in 2012 I wrote the first version of this site, now reworked and updated in 2016. The new site offers
-          several key new improvements, like wikipedia links for all bird species. Have fun!
+          several key new improvements, like an improved user interface and wikipedia links for all bird species. Have fun!
         </p>
       </div>
     );
@@ -116,8 +116,8 @@ class TranslateTab extends React.Component {
         <img src="/images/photos/magenta-throated-woodstar.png" width="200" className="photo" title="Magenta-throated woodstar, Costa Rica" />
         <p>
           Are you fluent in another language and would be interested in helping translate this site? The available
-          languages are generated via Google Translate, so although they're useful, they're not of the highest quality.
-          The source code and translations are <a href="https://github.com/benkeen/birdsearch.org/tree/master/core/i18n" target="_blank">found here</a>.
+          languages are generated via Google Translate, so they're useful but not the highest quality.
+          The translation files are <a href="https://github.com/benkeen/birdsearch.org/tree/master/core/i18n" target="_blank">found here</a>.
           Send me an email if you have any questions.
         </p>
       </div>
@@ -131,13 +131,13 @@ class ContactTab extends React.Component {
       <div>
         <img src="/images/photos/snowy.png" width="200" className="photo" title="Snowy egret, Mexico" />
         <p>
-          This site is a hobby project. The latest version gave me an excuse to tinker with the latest technologies
-          (Node, React, Redux and other tools of the React ecosystem) and expand on the functionality of the previous
-          version of the site.
+          Found a bug? Got a feature suggestion? Don't like the way something behaves? I've love to hear from you.
+          Make a comment on <a href="" target="_blank">this post</a> or send me an email
+          at <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>.
         </p>
         <p>
-          Found a bug? Got a feature suggestion? I've love to hear from you. Make a comment
-          on <a href="" target="_blank">this post</a> or send me an email at <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>.
+          Please note that this site is a hobby project, <a href="http://github.com/benkeen/birdsearch.org" target="_blank">open source</a>,
+          and generates zero income. So if I'm not responsive, blame my day job. ;-)
         </p>
       </div>
     );
