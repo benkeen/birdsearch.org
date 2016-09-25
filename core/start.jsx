@@ -22,7 +22,7 @@ addLocaleData(de);
 
 // application components
 import App from './app';
-import IntroOverlay from '../components/intro-overlay';
+import Intro from '../components/intro-overlay';
 import About from '../components/about';
 import Settings from '../components/settings';
 
@@ -44,7 +44,7 @@ class I18NWrapper extends React.Component {
         <Router history={browserHistory}>
           <Route path="/" component={App}>
             <Route path="/about" component={About} />
-            <Route path="/intro" component={IntroOverlay} />
+            <Route path="/intro" component={Intro} />
             <Route path="/settings" component={Settings} />
           </Route>
         </Router>

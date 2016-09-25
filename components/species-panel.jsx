@@ -6,7 +6,6 @@ import { C, helpers, _, actions } from '../core/core';
 import { LineLoader, LocationSpeciesCount } from './general';
 import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 
-var i=0;
 
 export class SpeciesPanel extends React.Component {
   constructor (props) {
@@ -21,10 +20,7 @@ export class SpeciesPanel extends React.Component {
   }
 
   shouldComponentUpdate (nextProps) {
-    if (this.props.updateCounter === nextProps.updateCounter) {
-      return false;
-    }
-    return true;
+    return this.props.updateCounter !== nextProps.updateCounter;
   }
 
   componentWillReceiveProps (nextProps) {

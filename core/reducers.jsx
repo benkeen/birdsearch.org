@@ -350,6 +350,7 @@ function locationsPanel (state = {
     case E.SHOW_MODAL:
       return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
 
+    case E.SET_LOCALE:
     case E.SEARCH_REQUEST_STARTED:
     case E.SEARCH_REQUEST_ENDED:
     case E.HOTSPOT_SIGHTINGS_UPDATE:
@@ -413,6 +414,8 @@ function speciesPanel (state = {
     case E.SHOW_MODAL:
       return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
 
+    case E.SET_LOCALE:
+    case E.LOCATION_SELECTED:
     case E.SEARCH_REQUEST_STARTED:
     case E.SEARCH_REQUEST_ENDED:
     case E.WINDOW_RESIZED:
