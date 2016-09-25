@@ -39,12 +39,13 @@ header {
 		width: 90px;
 	}
 	.header-search {
+		position: relative;
 		display: flex;
-		height: 34px;
+		height: 60px;
 		input {
 			margin: 13px;
 			padding: 16px 12px;
-			width: 310px;
+			width: 100%;
 			background-color: white;
 		}
 		button {
@@ -74,4 +75,21 @@ header {
 .advanced-search-link {
 	display: inline-block;
 	padding: 21px 11px 39px 5px;
+}
+
+.location-error {
+	position: absolute;
+	width: 100%;
+	top: 51px;
+	margin-left: 14px;
+	padding-right: 60px;
+	font-size: 12pt;
+	z-index: 1;
+
+	div div {
+		padding: 10px;
+		border-radius: 3px;
+		background-color: #FFBABA;
+		color: #bb0000;
+	}
 }

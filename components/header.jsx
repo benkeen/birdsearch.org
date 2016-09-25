@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { Link } from 'react-router';
 import { browserHistory } from 'react-router';
+import { VelocityTransitionGroup } from 'velocity-react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { C, _, actions, helpers } from '../core/core';
 import { LOCALES } from '../core/i18n/index';
@@ -13,6 +14,7 @@ class Header extends React.Component {
   componentWillMount () {
     this.showIntroOverlay = this.showIntroOverlay.bind(this);
     this.onSubmitNewSearch = this.onSubmitNewSearch.bind(this);
+    this.setLocation = this.setLocation.bind(this);
   }
 
   componentDidUpdate (prevProps) {
@@ -33,6 +35,11 @@ class Header extends React.Component {
       searchSettings.limitByObservationRecency, searchSettings.observationRecency));
   }
 
+  setLocation (location) {
+    const { dispatch } = this.props;
+    dispatch(actions.setSearchLocation(location));
+  }
+
   showAboutOverlay (e) {
     e.preventDefault();
     const { dispatch } = this.props;
@@ -41,15 +48,8 @@ class Header extends React.Component {
   }
 
   render () {
-    const { dispatch, locale, searchSettings, introOverlay, advancedSearchOverlay } = this.props;
-//    const userTooltip = <Tooltip id="user-tooltip"><FormattedMessage id="loginCreateAccount" /></Tooltip>;
+    const { dispatch, locale, searchSettings, introOverlay, advancedSearchOverlay, intl } = this.props;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
-
-//    <li>
-//      <OverlayTrigger placement="bottom" overlay={userTooltip}>
-//        <Link to="/account" className="icon icon-user"></Link>
-//      </OverlayTrigger>
-//    </li>
 
     return (
       <header className="flex-fill">
@@ -63,7 +63,9 @@ class Header extends React.Component {
           disabled={introOverlay.visible || advancedSearchOverlay.visible}
           location={searchSettings.location}
           onChange={(str) => dispatch(actions.setSearchLocation(str))}
-          onSubmit={this.onSubmitNewSearch} />
+          intl={intl}
+          onSubmit={this.onSubmitNewSearch}
+          setLocation={this.setLocation} />
 
         <ul className="nav-items">
           <li>
@@ -82,38 +84,70 @@ class Header extends React.Component {
   }
 }
 
-export default connect(state => ({
+export default injectIntl(connect(state => ({
   locale: state.storedSettings.locale,
   introOverlay: state.introOverlay,
   advancedSearchOverlay: state.advancedSearchOverlay,
   searchSettings: state.searchSettings,
   nextAction: state.misc.nextAction
-}))(Header);
+}))(Header));
 
 
 class HeaderSearch extends React.Component {
   constructor (props) {
     super(props);
-    this.state = { showErrors: false };
+    this.state = { showError: false, error: '' };
   }
 
   componentDidMount () {
-    const { onSubmit } = this.props;
+    const { onSubmit, intl, setLocation } = this.props;
 
-    var autoComplete = new google.maps.places.Autocomplete(ReactDOM.findDOMNode(this.refs.searchField));
-    google.maps.event.addListener(autoComplete, 'place_changed', (hm) => {
+    let autoComplete = new google.maps.places.Autocomplete(ReactDOM.findDOMNode(this.refs.searchField));
+    let selectedLocation;
+    google.maps.event.addListener(autoComplete, 'place_changed', () => {
       var currPlace = autoComplete.getPlace();
       if (!currPlace.geometry) {
+        return;
+      }
+
+      if (!currPlace.geometry.viewport || !currPlace.geometry.location) {
+        console.log('setting location to : ', selectedLocation);
+        setLocation(selectedLocation);
+        this.setState({ showError: true, error: intl.formatMessage({ id: 'locationNotFound' }) });
+        return;
+      }
+
+      if (currPlace.address_components.length < 3) {
+        setLocation(selectedLocation);
+        this.setState({ showError: true, error: intl.formatMessage({ id: 'pleaseEnterSpecificLocation' }) });
         return;
       }
 
       onSubmit({
         lat: currPlace.geometry.location.lat(),
         lng: currPlace.geometry.location.lng(),
-        location: currPlace.formatted_address,
+        location: selectedLocation,
         bounds: helpers.getBestBounds(currPlace.geometry.viewport, currPlace.geometry.bounds)
       });
     });
+
+    // hack workaround to get the exact location string that the user selected so we can pass it to React
+    $(ReactDOM.findDOMNode(this.refs.searchField)).on('keyup', (e) => {
+      if (e.keyCode == 13) {
+        console.log('hmm...', e.target.value);
+        selectedLocation = e.target.value;
+      }
+    });
+  }
+
+  componentWillUpdate (nextProps, nextState) {
+    if (nextState.showError && !this.state.showError) {
+      setTimeout(() => { this.hideError(); }, C.ERROR_VISIBILITY_TIME);
+    }
+  }
+
+  hideError () {
+    this.setState({ showError: false });
   }
 
   focus () {
@@ -135,6 +169,12 @@ class HeaderSearch extends React.Component {
         <OverlayTrigger placement="bottom" overlay={advancedSearchTooltip}>
           <Link className="icon icon-search advanced-search-link" to="/advanced-search" />
         </OverlayTrigger>
+
+        <div className="location-error">
+          <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }} component="div">
+            {this.state.showError ? <div>{this.state.error}</div> : undefined}
+          </VelocityTransitionGroup>
+        </div>
       </div>
     );
   }
@@ -143,7 +183,9 @@ HeaderSearch.PropTypes = {
   disabled: React.PropTypes.bool.isRequired,
   location: React.PropTypes.string.isRequired,
   onChangeLocation: React.PropTypes.func.isRequired,
-  onSubmit: React.PropTypes.func.onSubmit
+  onSubmit: React.PropTypes.func.isRequired,
+  setLocation: React.PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 

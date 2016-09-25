@@ -149,7 +149,6 @@ const visibleLocationsFound = (visibleLocations, allLocationSightings) => {
   return function (dispatch) {
     dispatch(initSearchRequest());
     dispatch(updateVisibleLocations(visibleLocations));
-    console.log('??');
     return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);
   }
 };
