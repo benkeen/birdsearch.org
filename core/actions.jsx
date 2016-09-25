@@ -17,6 +17,20 @@ const setSearchLocation = (location) => {
   };
 };
 
+const setSearchType = (searchType) => {
+  return {
+    type: E.SET_SEARCH_TYPE,
+    searchType
+  };
+};
+
+const setObservationRecency = (recency) => {
+  return {
+    type: E.SET_SEARCH_OBSERVATION_RECENCY,
+    recency
+  };
+}
+
 const startSearchRequest = (location, lat, lng, bounds) => {
   return {
     type: E.SEARCH_REQUEST_STARTED,
@@ -316,6 +330,8 @@ const showModal = () => {
 export {
   setLocale,
   setSearchLocation,
+  setSearchType,
+  setObservationRecency,
   search,
   setIntroOverlayVisibility,
   getGeoLocation,

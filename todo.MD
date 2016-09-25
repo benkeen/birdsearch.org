@@ -8,9 +8,14 @@
 
 ##### Bugs
 - zoom level is incorrect after second search
+- search for Manaus. Why isn't it centered?
+- If no results, need to show a message saying as much.
+- Clicking "All Locations" doesn't work.
 
-#### ADVANCED SEARCH
-- modal
+Locations Seen modal
+    - position gets weird
+    - style gets weird.
+    - clicking link doesn't work
 
 #### At end
 - translations

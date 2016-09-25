@@ -49,7 +49,7 @@ function storedSettings (state = {
 
 
 function searchSettings (state = {
-    searchType: 'all',
+    searchType: C.SEARCH_SETTINGS.SEARCH_TYPES.ALL,
     location: '',
     lat: null,
     lng: null,
@@ -79,6 +79,11 @@ function searchSettings (state = {
         location: location,
         lat: action.lat,
         lng: action.lng
+      });
+
+    case E.SET_SEARCH_TYPE:
+      return Object.assign({}, state, {
+        searchType: action.searchType
       });
 
     default:
@@ -134,7 +139,8 @@ function introOverlay (state = {
   visible: true,
 
   // the intro overlay is special: it has it's own /intro route, but it automatically shows up when the user first
-  // goes to the root. To know when NOT to automatically show it, we track when the overlay is first closed
+  // goes to the root with no route change. To know when NOT to automatically show it, we track when the overlay is
+  // first closed
   hasBeenClosedAtLeastOnce: false
 }, action) {
 
