@@ -48,7 +48,7 @@ class Header extends React.Component {
   }
 
   render () {
-    const { dispatch, locale, searchSettings, introOverlay, advancedSearchOverlay, intl } = this.props;
+    const { dispatch, locale, searchSettings, introOverlay, searchSettingsOverlay, intl } = this.props;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
 
     return (
@@ -60,7 +60,7 @@ class Header extends React.Component {
 
         <HeaderSearch
           ref="headerSearch"
-          disabled={introOverlay.visible || advancedSearchOverlay.visible}
+          disabled={introOverlay.visible || searchSettingsOverlay.visible}
           location={searchSettings.location}
           onChange={(str) => dispatch(actions.setSearchLocation(str))}
           intl={intl}
@@ -87,7 +87,7 @@ class Header extends React.Component {
 export default injectIntl(connect(state => ({
   locale: state.storedSettings.locale,
   introOverlay: state.introOverlay,
-  advancedSearchOverlay: state.advancedSearchOverlay,
+  searchSettingsOverlay: state.searchSettingsOverlay,
   searchSettings: state.searchSettings,
   nextAction: state.misc.nextAction
 }))(Header));
@@ -160,14 +160,14 @@ class HeaderSearch extends React.Component {
   }
 
   render () {
-    const advancedSearchTooltip = <Tooltip id="advanced-search-tooltip"><FormattedMessage id="advancedSearch" /></Tooltip>;
+    const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="searchSettings" /></Tooltip>;
 
     return (
       <div className="header-search">
         <input type="text" placeholder="Enter Location" ref="searchField" value={this.props.location}
           onChange={this.onChangeLocation.bind(this)} />
-        <OverlayTrigger placement="bottom" overlay={advancedSearchTooltip}>
-          <Link className="icon icon-search advanced-search-link" to="/advanced-search" />
+        <OverlayTrigger placement="bottom" overlay={searchSettingsTooltip}>
+          <Link className="icon icon-cog settings-link" to="/settings" />
         </OverlayTrigger>
 
         <div className="location-error">

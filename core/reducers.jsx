@@ -176,14 +176,14 @@ function aboutOverlay (state = {
 }
 
 
-function advancedSearchOverlay (state = {
+function searchSettingsOverlay (state = {
   visible: false
 }, action) {
 
   switch (action.type) {
     case E.SET_ADVANCED_SEARCH_VISIBILITY:
       return Object.assign({}, state, {
-        advancedSearch: action.visible
+        visible: action.visible
       });
 
     default:
@@ -449,5 +449,5 @@ export {
   misc,
   introOverlay,
   aboutOverlay,
-  advancedSearchOverlay
+  searchSettingsOverlay
 };

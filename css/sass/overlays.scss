@@ -91,9 +91,13 @@
   }
 }
 
-.advanced-search-overlay {
+#settings-overlay {
   height: 120px;
   width: 488px;
+
+  select.num-days {
+    width: 60px;
+  }
 }
 
 #about-overlay {

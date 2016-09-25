@@ -9,7 +9,6 @@
 ##### Bugs
 - zoom level is incorrect after second search
 
-
 #### ADVANCED SEARCH
 - modal
 
@@ -21,3 +20,4 @@
 DONE
 - polish About blurb
 - finish marker modal
+- error handling for header search

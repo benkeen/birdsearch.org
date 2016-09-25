@@ -398,7 +398,6 @@ body .filter-field {
 	width: 40px;
 	background-color: rgba(26, 29, 34, 0.91);
 	color: white;
-	margin-left: 30px;
 	border-radius: 3px;
 	text-align: center;
 	display: inline-block;
@@ -423,6 +422,7 @@ body .filter-field {
 			display: flex;
 			flex-direction: row;
 			span, a {
+				padding: 1px 0;
 				&:hover {
 					color: $blue;
 				}
@@ -432,6 +432,9 @@ body .filter-field {
 			}
 			a {
 				flex-grow: 0;
+				&:after {
+					content: ''
+				}
 			}
 			border-bottom: 1px solid #222222;
 			&:last-child {

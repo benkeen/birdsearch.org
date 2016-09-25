@@ -71,8 +71,13 @@ header {
 			}
 		}
 	}
+	.nav-items li a.icon-info {
+		padding-top: 20px;
+		padding-bottom: 20px;
+	}
 }
-.advanced-search-link {
+
+.settings-link {
 	display: inline-block;
 	padding: 21px 11px 39px 5px;
 }

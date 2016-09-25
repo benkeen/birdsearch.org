@@ -5,11 +5,11 @@
 // Generated through: https://icomoon.io/app/
 @font-face {
   font-family: 'icomoon';
-  src:    url('../fonts/icomoon.eot?1l1p1z');
-  src:    url('../fonts/icomoon.eot?1l1p1z#iefix') format('embedded-opentype'),
-  url('../fonts/icomoon.ttf?1l1p1z') format('truetype'),
-  url('../fonts/icomoon.woff?1l1p1z') format('woff'),
-  url('../fonts/icomoon.svg?1l1p1z#icomoon') format('svg');
+  src:  url('../fonts/icomoon.eot?ixgtpz');
+  src:  url('../fonts/icomoon.eot?ixgtpz#iefix') format('embedded-opentype'),
+  url('../fonts/icomoon.ttf?ixgtpz') format('truetype'),
+  url('../fonts/icomoon.woff?ixgtpz') format('woff'),
+  url('../fonts/icomoon.svg?ixgtpz#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -32,23 +32,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-home2:before {
-  content: "\e901";
-}
-.icon-map2:before {
-  content: "\e94c";
-}
 .icon-user:before {
   content: "\e971";
 }
-.icon-search:before {
-  content: "\e986";
+.icon-cog:before {
+  content: "\e994";
 }
 .icon-pie-chart:before {
   content: "\e99a";
-}
-.icon-list2:before {
-  content: "\e9bb";
 }
 .icon-info:before {
   content: "\ea0c";

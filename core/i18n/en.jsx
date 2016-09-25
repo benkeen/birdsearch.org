@@ -9,7 +9,6 @@ export default {
 	// strings
 	about: 'About',
 	aboutBirdsearch: 'About birdsearch.org',
-	advancedSearch: 'Advanced search',
   allLocations: 'All locations',
   birds: 'birds',
 	birdSightings: 'Bird sightings',
@@ -34,8 +33,9 @@ export default {
 	roadMap: 'Road Map',
 	satellite: 'Satellite',
 	search: 'Search',
+  searchAnywhere: 'Search Anywhere',
 	searchNearby: 'Search Nearby',
-	searchAnywhere: 'Search Anywhere',
 	searchRightArrow: 'Search &raquo;',
+  searchSettings: 'Search Settings',
 	terrain: 'Terrain'
 };

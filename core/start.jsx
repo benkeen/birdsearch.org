@@ -24,6 +24,7 @@ addLocaleData(de);
 import App from './app';
 import IntroOverlay from '../components/intro-overlay';
 import About from '../components/about';
+import Settings from '../components/settings';
 
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
@@ -44,6 +45,7 @@ class I18NWrapper extends React.Component {
           <Route path="/" component={App}>
             <Route path="/about" component={About} />
             <Route path="/intro" component={IntroOverlay} />
+            <Route path="/settings" component={Settings} />
           </Route>
         </Router>
       </IntlProvider>
