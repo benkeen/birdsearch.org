@@ -17,19 +17,21 @@ class SettingsOverlay extends React.Component {
 
   render () {
     const { dispatch, searchSettings } = this.props;
+    const allClass = 'result-type' + ((searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? ' selected' : '');
+    const notableClass = 'result-type' + ((searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE) ? ' selected' : '');
 
     return (
       <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
 
-        <div>
-          <span>Result type:</span>
-          <span className="result-type selected">
+        <div className="result-type-row">
+          <span className="result-type-label">Result type:</span>
+          <span className={allClass}>
             <input type="radio" name="resultType" id="rt1"
               checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
               onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }} />
             <label htmlFor="rt1"><FormattedMessage id="birdSightings" /></label>
           </span>
-          <span className="result-type">
+          <span className={notableClass}>
             <input type="radio" name="resultType" id="rt2"
               checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
               onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
@@ -40,7 +42,7 @@ class SettingsOverlay extends React.Component {
         <div>
           Show observations made in the last
           <DaysDropdown value={searchSettings.observationRecency}
-            onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} /> days.
+            onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} />days.
         </div>
       </Overlay>
     );
@@ -57,24 +59,21 @@ export default connect(state => ({
 
 class DaysDropdown extends React.Component {
   getDays () {
-    var options = [];
-    _.times(30, (i) => {
-      let count = i + 1;
-      options.push(<option value={count} key={count}>{count}</option>);
+    const days = [1,2,3,4,5,7,10,14,20,30];
+    return _.map(days, (day) => {
+      return (<option value={day} key={day}>{day}</option>);
     });
-    return options;
   }
 
   render () {
     const { value, onChange } = this.props;
     return (
-      <select className="num-days" value={value} onChange={onChange}>
+      <select className="num-days" value={value} onChange={(e) => { onChange(e.target.value); }}>
         {this.getDays()}
       </select>
     );
   }
 }
 DaysDropdown.propTypes = {
-  onChange: React.PropTypes.func.isRequired,
-  value: React.PropTypes.number.isRequired
+  onChange: React.PropTypes.func.isRequired
 };

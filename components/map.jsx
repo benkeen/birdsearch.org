@@ -105,7 +105,6 @@ class Map extends React.Component {
 
     _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
 
-    //this.addCustomControls();
     this.addEventHandlers();
 
     // precache all marker images
@@ -249,41 +248,6 @@ class Map extends React.Component {
   onMapBoundsChange () {
     const { results } = this.props;
     this.updateMapMarkers(results.allLocations, results.locationSightings);
-  }
-
-  addCustomControls () {
-    var btn1 = $('<div class="map-btn">Terrain</div>')[0];
-    var btn2 = $('<div class="map-btn">Road Map</div>')[0];
-    var btn3 = $('<div class="map-btn">Satellite</div>')[0];
-    var btn4 = $('<div class="map-btn">Hybrid</div>')[0];
-
-    // add the controls to the map
-    _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
-    _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
-    _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
-    _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
-
-    // add the appropriate event handlers
-    google.maps.event.addDomListener(btn1, 'click', () => {
-      _map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
-      $(".map-btn").removeClass('map-btn-Selected');
-      $(btn1).addClass('map-btn-Selected');
-    });
-    google.maps.event.addDomListener(btn2, 'click', () => {
-      _map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-      $(".map-btn").removeClass('map-btn-Selected');
-      $(btn2).addClass('map-btn-Selected');
-    });
-    google.maps.event.addDomListener(btn3, 'click', () => {
-      _map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
-      $(".map-btn").removeClass('map-btn-Selected');
-      $(btn3).addClass('map-btn-Selected');
-    });
-    google.maps.event.addDomListener(btn4, 'click', () => {
-      _map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-      $(".map-btn").removeClass('map-btn-Selected');
-      $(btn4).addClass('map-btn-Selected');
-    });
   }
 
   addEventHandlers () {

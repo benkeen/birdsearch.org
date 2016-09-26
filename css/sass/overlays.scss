@@ -1,4 +1,5 @@
 @import "variables";
+@import "mixins";
 
 
 .overlay {
@@ -109,4 +110,40 @@
   float: right;
   margin-left: 15px;
   border-radius: 3px;
+}
+
+
+.result-type-row {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+
+  .result-type-label {
+    flex: 0 1 auto;
+    padding-left: 0;
+  }
+  &>span {
+    flex: 1;
+    padding: 10px;
+    border-radius: 3px;
+    &.selected {
+      background-color: $blue;
+      @include transition-all($transition-speed);
+      label {
+        color: white;
+      }
+    }
+    input {
+      float: left;
+      margin-right: 10px;
+    }
+  }
+  label {
+    margin-bottom: 0;
+  }
+}
+
+.num-days {
+  margin: 0 5px;
+  vertical-align: middle;
 }

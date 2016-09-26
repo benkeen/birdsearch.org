@@ -81,6 +81,11 @@ function searchSettings (state = {
         lng: action.lng
       });
 
+    case E.SET_SEARCH_OBSERVATION_RECENCY:
+      return Object.assign({}, state, {
+        observationRecency: action.recency
+      });
+
     case E.SET_SEARCH_TYPE:
       return Object.assign({}, state, {
         searchType: action.searchType
