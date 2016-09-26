@@ -6,8 +6,7 @@ bird sightings and distribution.
 ## Versions
 
 ### v2.0.0
-Stilllllll in development, July 2016.
-
+Pretty darn close. Sept, 2016. Should get it out the door next month, honest.
 
 ### v1.1.x
 This is a complete re-write of the script to better organize the code, improve the site design and add a little

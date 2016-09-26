@@ -64,22 +64,13 @@ header {
 			font-size: 11pt;
 			a {
 				display: inline-block;
-				padding: 18px 16px 22px;
+				padding: 20px 16px;
 			}
 			&.lang-toggle {
 				padding: 15px;
 			}
 		}
 	}
-	.nav-items li a.icon-info {
-		padding-top: 20px;
-		padding-bottom: 20px;
-	}
-}
-
-.settings-link {
-	display: inline-block;
-	padding: 21px 11px 39px 5px;
 }
 
 .location-error {

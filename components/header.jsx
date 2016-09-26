@@ -47,8 +47,16 @@ class Header extends React.Component {
     browserHistory.push('/about');
   }
 
+  showSettingsOverlay (e) {
+    e.preventDefault();
+    const { dispatch } = this.props;
+    dispatch(actions.showModal());
+    browserHistory.push('/settings');
+  }
+
   render () {
     const { dispatch, locale, searchSettings, introOverlay, searchSettingsOverlay, intl } = this.props;
+    const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="searchSettings" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
 
     return (
@@ -68,6 +76,11 @@ class Header extends React.Component {
           setLocation={this.setLocation} />
 
         <ul className="nav-items">
+          <li>
+            <OverlayTrigger placement="bottom" overlay={searchSettingsTooltip}>
+              <a href="#" onClick={(e) => this.showSettingsOverlay(e)} className="icon icon-cog"></a>
+            </OverlayTrigger>
+          </li>
           <li>
             <OverlayTrigger placement="bottom" overlay={infoTooltip}>
               <a href="#" onClick={(e) => this.showAboutOverlay(e)} className="icon icon-info"></a>
@@ -93,6 +106,7 @@ export default injectIntl(connect(state => ({
 }))(Header));
 
 
+// TODO settings icon doesn't belong here any more
 class HeaderSearch extends React.Component {
   constructor (props) {
     super(props);
@@ -111,7 +125,6 @@ class HeaderSearch extends React.Component {
       }
 
       if (!currPlace.geometry.viewport || !currPlace.geometry.location) {
-        console.log('setting location to : ', selectedLocation);
         setLocation(selectedLocation);
         this.setState({ showError: true, error: intl.formatMessage({ id: 'locationNotFound' }) });
         return;
@@ -134,7 +147,6 @@ class HeaderSearch extends React.Component {
     // hack workaround to get the exact location string that the user selected so we can pass it to React
     $(ReactDOM.findDOMNode(this.refs.searchField)).on('keyup', (e) => {
       if (e.keyCode == 13) {
-        console.log('hmm...', e.target.value);
         selectedLocation = e.target.value;
       }
     });
@@ -160,16 +172,10 @@ class HeaderSearch extends React.Component {
   }
 
   render () {
-    const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="searchSettings" /></Tooltip>;
-
     return (
       <div className="header-search">
         <input type="text" placeholder="Enter Location" ref="searchField" value={this.props.location}
           onChange={this.onChangeLocation.bind(this)} />
-        <OverlayTrigger placement="bottom" overlay={searchSettingsTooltip}>
-          <Link className="icon icon-cog settings-link" to="/settings" />
-        </OverlayTrigger>
-
         <div className="location-error">
           <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }} component="div">
             {this.state.showError ? <div>{this.state.error}</div> : undefined}

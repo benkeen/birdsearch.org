@@ -12,6 +12,7 @@
 - zoom level is incorrect after second search
 - search for Manaus. Why isn't it centered?
 - If no results, need to show a message saying as much.
+- "51 bird species seen in the last 1 days" -> fix. Translate.
 
 Locations Seen modal
     - position gets weird
