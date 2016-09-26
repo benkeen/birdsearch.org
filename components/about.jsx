@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { browserHistory, Link } from 'react-router';
 import { Overlay } from './general';
 import { C, _, actions } from '../core/core';
@@ -50,10 +50,10 @@ class AboutOverlay extends React.Component {
       <Overlay id="about-overlay" showCloseIcon={true} onClose={this.close}>
         <div>
           <ul className="nav nav-pills">
-            <li className={aboutClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.ABOUT)}>About</a></li>
-            <li className={historyClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.HISTORY)}>History</a></li>
-            <li className={translateClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.TRANSLATE)}>Translate</a></li>
-            <li className={contactClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.CONTACT)}>Contact</a></li>
+            <li className={aboutClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.ABOUT)}><FormattedMessage id="about" /></a></li>
+            <li className={historyClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.HISTORY)}><FormattedMessage id="history" /></a></li>
+            <li className={translateClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.TRANSLATE)}><FormattedMessage id="translate" /></a></li>
+            <li className={contactClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.CONTACT)}><FormattedMessage id="contact" /></a></li>
           </ul>
           {this.getTabContent()}
         </div>
@@ -70,9 +70,19 @@ export default connect(state => ({
 
 class AboutTab extends React.Component {
   render () {
+
+//    <FormattedMessage
+//      id='app.greeting'
+//      description='Greeting to welcome the user to the app'
+//      defaultMessage='Hello, {name}!'
+//      values={{
+//        name: <b>Eric</b>
+//    }}
+//    />
     return (
       <div>
         <img src="/images/photos/sandhill.png" width="200" className="photo" title="Sandhill crane, BC, Canada" />
+        <FormattedHTMLMessage id="aboutPara1" />
         <p>
           <i>birdsearch.org</i> lets you search and browse recent worldwide bird sightings. Searches return observations
           made in the last <b>week</b> but you can search as far back as a <b>month</b> by editing
