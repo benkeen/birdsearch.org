@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory, Link } from 'react-router';
 import { Overlay } from './general';
 import { C, _, actions } from '../core/core';
@@ -26,15 +26,15 @@ class AboutOverlay extends React.Component {
   }
 
   getTabContent () {
-    const { selectedTab } = this.props;
+    const { selectedTab, intl } = this.props;
     if (selectedTab === C.ABOUT_TABS.ABOUT) {
-      return <AboutTab />;
+      return <AboutTab intl={intl} />;
     } else if (selectedTab === C.ABOUT_TABS.HISTORY) {
-      return <HistoryTab />;
+      return <HistoryTab intl={intl} />;
     } else if (selectedTab === C.ABOUT_TABS.TRANSLATE) {
-      return <TranslateTab />;
+      return <TranslateTab intl={intl} />;
     } else if (selectedTab === C.ABOUT_TABS.CONTACT) {
-      return <ContactTab />;
+      return <ContactTab intl={intl} />;
     }
   }
 
@@ -62,35 +62,31 @@ class AboutOverlay extends React.Component {
   }
 }
 
-export default connect(state => ({
-  selectedTab: state.aboutOverlay.selectedTab
-}))(AboutOverlay);
+export default injectIntl(connect(state => ({
+  selectedTab: state.aboutOverlay.selectedTab,
+}))(AboutOverlay));
 
 
 
 class AboutTab extends React.Component {
   render () {
+    const { intl } = this.props;
 
-//    <FormattedMessage
-//      id='app.greeting'
-//      description='Greeting to welcome the user to the app'
-//      defaultMessage='Hello, {name}!'
-//      values={{
-//        name: <b>Eric</b>
-//    }}
-//    />
     return (
       <div>
         <img src="/images/photos/sandhill.png" width="200" className="photo" title="Sandhill crane, BC, Canada" />
-        <FormattedHTMLMessage id="aboutPara1" />
         <p>
-          <i>birdsearch.org</i> lets you search and browse recent worldwide bird sightings. Searches return observations
-          made in the last <b>week</b> but you can search as far back as a <b>month</b> by editing
-          the <Link to="/settings">search settings</Link>.
+          <FormattedMessage id="aboutPara1"
+            values={{
+              birdsearchSite: <i>birdsearch.org</i>,
+              week: <b>{intl.formatMessage({ id: 'week' })}</b>,
+              month: <b>{intl.formatMessage({ id: 'month' })}</b>,
+              settingsLink: <Link to="/settings">{intl.formatMessage({ id: 'searchSettings' }).toLowerCase()}</Link>
+            }} />
         </p>
         <p>
-          The data is pulled from <a href="http://ebird.org" target="_blank">eBird.org</a> which provides many other
-          options for viewing historical observation data. Check it out.
+          <FormattedMessage id="aboutPara2"
+            values={{ eBirdSiteLink: <a href="http://ebird.org" target="_blank">eBird.org</a> }} />
         </p>
       </div>
     );
@@ -99,21 +95,19 @@ class AboutTab extends React.Component {
 
 class HistoryTab extends React.Component {
   render () {
+    const { intl } = this.props;
+
     return (
       <div>
         <p>
-          Like many birders I know, discovering <a href="http://ebird.org" target="_blank">eBird</a> was a cause for
-          celebration. It brought birding out of the dark ages of pen and pencil and into the digital age. Now we
-          have a simple, centralized place to track observations, share knowledge and open up the data for everyone.
+          <FormattedMessage id="historyPara1"
+            values={{ eBirdSiteLink: <a href="http://ebird.org" target="_blank">eBird.org</a> }} />
         </p>
         <p>
-          But as a birder, I wanted a no-fuss high-level overview of a region; I wanted to see all observations being
-          made in an area <i>right now</i>. The search options available on eBird are excellent, but don't quite fit
-          the bill.
+          <FormattedMessage id="historyPara2" values={{ rightNow: <i>{intl.formatMessage({ id: 'rightNow' })}</i> }} />
         </p>
         <p>
-          Back in 2012 I wrote the first version of this site, now reworked and updated in 2016. The new site offers
-          several key new improvements, like an improved user interface and wikipedia links for all bird species. Have fun!
+          <FormattedMessage id="historyPara3" />
         </p>
       </div>
     );
@@ -122,15 +116,16 @@ class HistoryTab extends React.Component {
 
 class TranslateTab extends React.Component {
   render () {
+    const { intl } = this.props;
+
     return (
       <div>
         <img src="/images/photos/magenta-throated-woodstar.png" width="200" className="photo" title="Magenta-throated woodstar, Costa Rica" />
         <p>
-          Are you fluent in another language and would be interested in helping translate this site? The available
-          languages are generated via Google Translate, so they're useful but not the highest quality. So if you're like to
-          improve these, or add a new language to the mix, I'd like to hear from you. The translation files
-          are <a href="https://github.com/benkeen/birdsearch.org/tree/master/core/i18n" target="_blank">found here</a>.
-          Send me an email if you have any questions.
+          <FormattedMessage id="translatePara1" 
+            values={{
+              githubLink: <a href="https://github.com/benkeen/birdsearch.org/tree/master/core/i18n" target="_blank">{intl.formatMessage({ id: 'foundHere' })}</a>
+            }} />
         </p>
       </div>
     );
@@ -139,17 +134,23 @@ class TranslateTab extends React.Component {
 
 class ContactTab extends React.Component {
   render () {
+    const { intl } = this.props;
+
     return (
       <div>
         <img src="/images/photos/snowy.png" width="200" className="photo" title="Snowy egret, Mexico" />
         <p>
-          Found a bug? Have a feature suggestion? Don't like the way something behaves? I've love to hear from you.
-          Make a comment on <a href="" target="_blank">this post</a> or send me an email
-          at <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>.
+          <FormattedMessage id="contactPara1"
+            values={{
+              postLink: <a href="" target="_blank">{intl.formatMessage({ id: 'thisPost' })}</a>,
+              email: <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>
+            }} />
         </p>
         <p>
-          Please note that this site is a hobby project, <a href="http://github.com/benkeen/birdsearch.org" target="_blank">open source</a>,
-          and generates zero income. So if I don't respond right away, I'm probably out birding.
+          <FormattedMessage id="contactPara2"
+            values={{
+              openSourceLink: <a href="http://github.com/benkeen/birdsearch.org" target="_blank">{intl.formatMessage({ id: 'openSource' })}</a>
+            }} />
         </p>
       </div>
     );
