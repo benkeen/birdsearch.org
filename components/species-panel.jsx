@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, intlShape } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../core/core';
 import { LineLoader, LocationSpeciesCount } from './general';
@@ -81,8 +81,9 @@ export class SpeciesPanel extends React.Component {
   getTitle () {
     const { dispatch, locations, selectedLocation, searchSettings, sightings } = this.props;
 
-    var title = 'All Locations';
+    var title = intl.formatMessage({ id: 'allLocations' });
     var counter = null;
+
     if (selectedLocation) {
       var locationInfo = helpers.getLocationById(locations, selectedLocation);
 
@@ -93,7 +94,7 @@ export class SpeciesPanel extends React.Component {
 
       title = (
         <span>
-          <a href="#" onClick={(e) => { e.preventDefault(); dispatch(actions.selectLocation('')); }}>All Locations</a>
+          <a href="#" onClick={(e) => { e.preventDefault(); dispatch(actions.selectLocation('')); }}>{title}</a>
           <span className="delimiter glyphicon glyphicon-triangle-right" />
           <span>{locationInfo.n}</span>
         </span>
@@ -109,40 +110,47 @@ export class SpeciesPanel extends React.Component {
     );
   }
 
+  getTable () {
+    const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, speciesFilter, sort, sortDir } = this.props;
+
+    if (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
+
+      var selLocation = (selectedLocation) ? selectedLocation : null;
+      var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
+
+      return (
+        <SpeciesTable
+          dispatch={dispatch}
+          tabVisible={visible}
+          species={sightingsData}
+          selectedLocation={selectedLocation}
+          observationRecency={searchSettings.observationRecency}
+          filter={speciesFilter}
+          sort={sort}
+          sortDir={sortDir} />
+      );
+    }
+
+    return <NotableSightingsTable />
+  }
+
   render () {
-    const { dispatch, visible, locations, sightings, searchSettings, selectedLocation, speciesFilter, env,
-      sort, sortDir } = this.props;
+    const { dispatch, locations, sightings, searchSettings, env } = this.props;
 
     if (!locations.length) {
       return null;
     }
 
-    var panelPosition = {
-      width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH
-    };
-
     var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
 
-    var loader = null;
-    if (!results.allFetched) {
-      loader = <LineLoader className="species-loading" />;
-    }
-
-    var footerStyle = {
-      height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
-    };
-
-    var selLocation = (selectedLocation) ? selectedLocation : null;
-    var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
-
     return (
-      <section id="species-panel" style={panelPosition}>
+      <section id="species-panel" style={{ width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH }}>
 
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
           <div>
             <h2>
               <FormattedMessage id="birdSpecies" />
-              {loader}
+              {(!results.allFetched) ? <LineLoader className="species-loading" /> : null}
             </h2>
             <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
           </div>
@@ -154,17 +162,10 @@ export class SpeciesPanel extends React.Component {
             <div>
               <div className="panel">
                 {this.getTitle()}
-                <SpeciesTable
-                  dispatch={dispatch}
-                  tabVisible={visible}
-                  species={sightingsData}
-                  selectedLocation={selectedLocation}
-                  observationRecency={searchSettings.observationRecency}
-                  filter={speciesFilter}
-                  sort={sort}
-                  sortDir={sortDir} />
+                {this.getTable()}
               </div>
-              <footer style={footerStyle} onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
+              <footer style={{ height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px' }} 
+                onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
                 <span className="glyphicon glyphicon-triangle-top" />
               </footer>
             </div>
@@ -181,7 +182,8 @@ SpeciesPanel.PropTypes = {
   sightings: React.PropTypes.object.isRequired,
   searchSettings: React.PropTypes.object.isRequired,
   speciesFilter: React.PropTypes.string.isRequired,
-  env: React.PropTypes.object.isRequired
+  env: React.PropTypes.object.isRequired,
+  intl: intlShape.isRequired
 };
 
 
@@ -427,3 +429,64 @@ class SpeciesRow extends React.Component {
   }
 }
 
+
+class NotableSightingsTable extends React.Component {
+  render () {
+    return (
+      <div></div>
+    );
+  }
+}
+
+
+// <div class="fixedHeader">
+// 	<div>
+// 		<h1>
+// 			<% if (isSingleLocation) { %>
+// 			<a href="#" class="showNotableSightingsTable"><%=L.notable_sightings%></a>
+// 				<span class="joiner">&raquo;</span> <%= locationName %>
+// 			<% } else { %>
+// 				<%=L.notable_sightings%>
+// 			<% } %>
+// 		</h1>
+// 		<h2><%=L.last%> <%=searchObservationRecency%> <% if (searchObservationRecency == 1) { %><%=L.day%><% } else {%><%=L.days%><% } %></h2>
+// 		<div class="clear"></div>
+// 	</div>
+// </div>
+
+// <div class="fixedContent">
+// 	<table class="table tablesorter table-striped table-hover" id="notableSightings">
+// 		<thead>
+// 			<tr>
+// 				<% if (!isSingleLocation) { %><th>Location</th><% } %>
+// 				<th><%=L.species%></th>
+// 				<th>#</th>
+// 				<th><%=L.scientific_name%></th>
+// 				<th><%=L.reported_by%></th>
+// 				<th class="{ sorter: 'customdate' }"><%=L.date%></th>
+// 				<th><%=L.status%></th>
+// 			</tr>
+// 		</thead>
+// 		<tbody>
+// 		<% _.each(sightings, function(sighting, index) { %>
+// 		<tr>
+// 			<% if (!isSingleLocation) { %><td><a href="#" class="filterNotableSightingByLocation" data-location-id="<%=sighting.locationID%>"><%=sighting.locationName%></a></td><% } %>
+// 			<td class="species"><%=sighting.comName%></td>
+// 			<td><%=sighting.howMany%></td>
+// 			<td><%=sighting.sciName%></td>
+// 			<td><%=sighting.reporterName%></td>
+// 			<td data-u="<%=sighting.obsDt_unixtime%>" nowrap><%=sighting.obsDt%></td>
+// 			<td>
+// 				<% if (sighting.obsValid) { %>
+// 					<span class="confirmed"><%=L.confirmed%></span>
+// 				<% } else if (sighting.obsReviewed) { %>
+// 					<span class="reviewed"><%=L.reviewed%></span>
+// 				<% } else if (!sighting.obsReviewed) { %>
+// 					<span class="not_reviewed"><%=L.not_reviewed%></span>
+// 				<% } %>
+// 			</td>
+// 		</tr>
+// 		<% }); %>
+// 		</tbody>
+// 	</table>
+// </div>

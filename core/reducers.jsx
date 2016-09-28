@@ -1,5 +1,6 @@
 /*
-These just don't seem to belong to the individual components, so I'm going to stick them here and see how things roll.
+I found that for an app of this size, grouping all reducers into a single location here
+is the clearest way to organize the code.
 */
 
 import { C, E, _, helpers, actions } from './core';
@@ -54,7 +55,8 @@ function searchSettings (state = {
     lat: null,
     lng: null,
     limitByObservationRecency: true,
-    observationRecency: C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS
+    observationRecency: C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS,
+    zoomHandling: C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM
   }, action) {
 
   switch (action.type) {
@@ -87,6 +89,7 @@ function searchSettings (state = {
       });
 
     case E.SET_SEARCH_TYPE:
+      storage.set('searchType', action.searchType);
       return Object.assign({}, state, {
         searchType: action.searchType
       });
@@ -236,7 +239,8 @@ function results (state = {
   // map boundaries
   allLocations: [],
 
-  // stores all locations currently visible on the user's map. 
+  // stores all locations currently visible on the user's map. This may include locations that have been 
+  // hidden by entering a location filter string
   visibleLocations: [],
   locationSightings: {} // an object of [location ID] => sighting info. Populated as need be, based on what's visible
 
@@ -432,7 +436,7 @@ function speciesPanel (state = {
 }
 
 
-// this is a weird one - react really fails to handle scenarios like this well. e.g. close a modal and focus on some
+// this is a weird one - react really fails to handle certain scenarios well. e.g. close a modal and focus on some
 // arbitrary input field in a different component somewhere. We need a one-off message sent to do a thing. This section
 // handles that.
 function misc (state = {

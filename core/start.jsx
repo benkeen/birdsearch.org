@@ -29,6 +29,7 @@ import Settings from '../components/settings';
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
 const mapType = storage.get('mapType') || C.DEFAULT_MAP_TYPE;
+const searchType = storage.get('searchType') || C.DEFAULT_SEARCH_TYPE;
 const store = initStore({ storedSettings: { locale: locale, mapType: mapType }});
 
 // meh. Gotta go somewhere.

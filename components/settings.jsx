@@ -40,14 +40,17 @@ class SettingsOverlay extends React.Component {
         </div>
 
         <div className="result-type-row">
-          <span className="result-type-label">Auto-zoom</span>
+          <span className="result-type-label">Zooming</span>
           <span className={allClass}>
-            Adjust
+            Auto-zoom
           </span>
           <span className={allClass}>
-            Show
+            Show full search range
           </span>
         </div>
+
+This setting controls how the map should behave after a search. <b>Auto-zoom</b> sets the zoom level 
+appropriately, based on your search. <b>Show full search</b> zooms out to show the entire search.
 
         <div>
           Show observations made in the last

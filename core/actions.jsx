@@ -148,7 +148,7 @@ const getGeoLocation = (callback) => {
   return function (dispatch) {
     dispatch(requestingUserLocation());
     return dispatch(requestGeoLocation(callback));
-  }
+  };
 };
 
 const togglePanelVisibility = (panel) => {
@@ -320,7 +320,6 @@ const selectAboutTab = (tab) => {
     tab: tab
   };
 };
-
 
 const showModal = () => {
   return { type: E.SHOW_MODAL };
