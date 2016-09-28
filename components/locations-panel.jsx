@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, intlShape } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../core/core';
 import { LineLoader, LocationSpeciesCount } from './general';
@@ -41,7 +41,7 @@ export class LocationsPanel extends React.Component {
       animation = { opacity: nextProps.visible ? 1 : 0 };
 
       if (nextProps.visible) {
-        animation = { opacity: 1, height: (env.windowHeight - 85) + 'px' }; // TODO
+        animation = { opacity: 1, height: (env.windowHeight - 85) + 'px' };
       } else {
         animation = { opacity: 0.5, height: 0 };
       }
@@ -127,7 +127,7 @@ export class LocationsPanel extends React.Component {
   getLocationList () {
     if (!this.props.locations.length) {
       return (
-        <p>No locations.</p>
+        <p><FormattedMessage id="noLocations" /></p>
       );
     }
 
@@ -233,7 +233,8 @@ LocationsPanel.PropTypes = {
   locations: React.PropTypes.array.isRequired,
   locationSightings: React.PropTypes.object.isRequired,
   observationRecency: React.PropTypes.number.isRequired,
-  env: React.PropTypes.object.isRequired
+  env: React.PropTypes.object.isRequired,
+  intl: intlShape.isRequired
 };
 
 

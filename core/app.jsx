@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
 import { C, _, actions } from '../core/core';
 import Header from '../components/header';
@@ -88,6 +89,7 @@ class App extends React.Component {
             locationDataRefreshCounter={results.locationDataRefreshCounter}
             selectedLocation={locationsPanel.selectedLocation}
             searchSettings={searchSettings}
+            intl={intl}
             env={env} />
 
           <SpeciesPanel
@@ -100,6 +102,7 @@ class App extends React.Component {
             searchSettings={searchSettings}
             speciesFilter={speciesPanel.filter}
             env={env}
+            intl={intl}
             results={results}
             sort={speciesPanel.sort}
             sortDir={speciesPanel.sortDir} />
@@ -109,7 +112,7 @@ class App extends React.Component {
   }
 }
 
-export default connect(state => ({
+export default injectIntl(connect(state => ({
   env: state.env,
   mapSettings: state.mapSettings,
   searchSettings: state.searchSettings,
@@ -117,8 +120,9 @@ export default connect(state => ({
   locationsPanel: state.locationsPanel,
   speciesPanel: state.speciesPanel,
   user: state.user,
-  results: state.results
-}))(App);
+  results: state.results,
+  intl: intlShape.isRequired
+}))(App));
 
 
 class DataLoader extends React.Component {

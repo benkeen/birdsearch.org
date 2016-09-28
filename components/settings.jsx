@@ -24,7 +24,7 @@ class SettingsOverlay extends React.Component {
       <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
 
         <div className="result-type-row">
-          <span className="result-type-label">Result type:</span>
+          <span className="result-type-label">Result type</span>
           <span className={allClass}>
             <input type="radio" name="resultType" id="rt1"
               checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
@@ -36,6 +36,16 @@ class SettingsOverlay extends React.Component {
               checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
               onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
             <label htmlFor="rt2"><FormattedMessage id="notableSightings" /></label>
+          </span>
+        </div>
+
+        <div className="result-type-row">
+          <span className="result-type-label">Auto-zoom</span>
+          <span className={allClass}>
+            Adjust
+          </span>
+          <span className={allClass}>
+            Show
           </span>
         </div>
 

@@ -30,11 +30,13 @@ export default {
   historyPara3: 'Back in 2012 I wrote the first version of this site, now reworked and updated in 2016. The new site offers several key new improvements, like an improved user interface and wikipedia links for all bird species. Have fun!',
 
 //	limitToLocations: "Limit to locations with observations made within last {days, plural\n  =0 (<b>0</b> day)\n  =1 { <b>1</b> day }\n  other { <b>#</b> days }}",
+  loadingEllipsis: 'Loading...',
   location: 'Location',
   locationNotFound: 'Sorry, that location couldn\'t be found, please try again.',
   locations: 'Locations',
 	login: 'Login',
   month: 'month',
+  noLocations: 'No locations.',
 	notableSightings: 'Notable sightings',
   openSource: 'open source',
 	or: 'OR',

@@ -87,10 +87,7 @@ class Loader extends React.Component {
 }
 
 Loader.PropTypes = {
-  label: React.PropTypes.string
-};
-Loader.defaultProps = {
-  label: 'Loading...'
+  label: React.PropTypes.string.isRequired
 };
 
 
@@ -203,9 +200,6 @@ class LocationSpeciesCount extends React.Component {
     );
   }
 }
-LocationSpeciesCount.PropTypes = {
-  //count: React.PropTypes.number.isRequired // or null
-};
 
 
 export {

@@ -63,7 +63,7 @@ class AboutOverlay extends React.Component {
 }
 
 export default injectIntl(connect(state => ({
-  selectedTab: state.aboutOverlay.selectedTab,
+  selectedTab: state.aboutOverlay.selectedTab
 }))(AboutOverlay));
 
 

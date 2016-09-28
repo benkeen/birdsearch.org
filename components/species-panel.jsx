@@ -392,9 +392,9 @@ class SpeciesRow extends React.Component {
 
   render () {
     const { dispatch, species, comName, comNameDisplay, sciNameDisplay, rowNum } = this.props;
-    var locations = this.getLocations();
-
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
+
+    var locations = this.getLocations();
 
     return (
       <tr>

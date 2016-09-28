@@ -6,7 +6,8 @@
 - Improve speed of filter on species panel
 - improve loading speed of species panel
 - E.SET_MAP_TYPE
-
+- browsers that don't support geolocation (or user says nope)
+- Auto zoom field
 
 ##### Bugs
 - zoom level is incorrect after second search
