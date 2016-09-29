@@ -79,7 +79,9 @@ export class SpeciesPanel extends React.Component {
   }
 
   getTitle () {
-    const { dispatch, locations, selectedLocation, searchSettings, sightings } = this.props;
+    const { dispatch, locations, selectedLocation, searchSettings, sightings, intl } = this.props;
+
+    console.log(this.props);
 
     var title = intl.formatMessage({ id: 'allLocations' });
     var counter = null;
@@ -114,7 +116,6 @@ export class SpeciesPanel extends React.Component {
     const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, speciesFilter, sort, sortDir } = this.props;
 
     if (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
-
       var selLocation = (selectedLocation) ? selectedLocation : null;
       var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
 

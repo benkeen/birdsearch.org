@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
 import { C, _, actions } from '../core/core';
-import Header from '../header';
-import Map from '../map';
-import { Loader } from '../general';
-import { LocationsPanel } from '../locations';
-import { SpeciesPanel } from '../species';
-import IntroOverlay from '../intro';
+import Header from './header';
+import Map from './map';
+import { Loader } from './general';
+import { LocationsPanel } from './locations';
+import { SpeciesPanel } from './species';
+import IntroOverlay from './intro';
 
 
 // this is our top-level component. It contains the header, map and controls. The router passes in other components as
@@ -54,7 +54,7 @@ class App extends React.Component {
   }
 
   render () {
-    const { dispatch, env, mapSettings, searchSettings, locationsPanel, speciesPanel, results } = this.props;
+    const { dispatch, env, mapSettings, searchSettings, locationsPanel, speciesPanel, results, intl } = this.props;
 
     const classes = 'flex-body' + (results.visibleLocations.length > 0 ? ' has-results' : '');
     return (

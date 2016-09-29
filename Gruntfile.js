@@ -2,11 +2,11 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   var appFiles = [
-    './src/core/*.js',
-    './src/core/*.jsx',
-		'./src/i18n/*.jsx',
-    './src/components/**/*.js',
-    './src/components/**/*.jsx'
+    './core/*.js',
+    './core/*.jsx',
+		'./i18n/*.jsx',
+    './components/**/*.js',
+    './components/**/*.jsx'
   ];
 
   var config = {
@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 			jsx: {
 				files: [{
 					expand: true,
-					cwd: './',
+					cwd: './src',
 					src: appFiles,
 					dest: 'dist',
 					ext: '.js'
@@ -42,6 +42,7 @@ module.exports = function(grunt) {
 
     watch: {
       scripts: {
+        cwd: './src',
         files: appFiles,
         tasks: ['babel:jsx', 'browserify']
       },
@@ -66,7 +67,7 @@ module.exports = function(grunt) {
       fonts: { src: './src/css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile' },
       libs: { src: './src/libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile' },
       css: { src: './src/css/bootstrap.min.css', dest: 'dist/css/', flatten: true, expand: true, filter: 'isFile' },
-      images: { src: './src/images/**/*', dest: 'dist/', flatten: false, expand: true, filter: 'isFile' }
+      images: { src: '**/*', dest: 'dist/images/', cwd: 'src/images/', flatten: false, expand: true, filter: 'isFile' }
 		}
 	};
 

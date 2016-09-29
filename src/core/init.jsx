@@ -19,8 +19,8 @@ addLocaleData(fr);
 addLocaleData(de);
 
 // application components
-import App from './app';
-import Intro from '../components/intro-overlay';
+import App from '../components/app';
+import Intro from '../components/intro';
 import About from '../components/about';
 import Settings from '../components/settings';
 
@@ -33,7 +33,6 @@ const store = initStore({ storedSettings: { locale: locale, mapType: mapType }})
 
 // meh. Gotta go somewhere.
 $('body').addClass(locale);
-
 
 class I18NWrapper extends React.Component {
   render () {
