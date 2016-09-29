@@ -7,7 +7,7 @@ import { browserHistory } from 'react-router';
 import { VelocityTransitionGroup } from 'velocity-react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { C, _, actions, helpers } from '../core/core';
-import { LOCALES } from '../core/i18n/index';
+import { LOCALES } from '../i18n/index';
 
 
 class Header extends React.Component {

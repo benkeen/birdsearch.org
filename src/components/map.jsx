@@ -61,14 +61,6 @@ var _data = {
     infoWindows: {},
     openInfoWindows: [],
     markers: {}
-  },
-  hotspots: {
-    defaultZoomLevel: 11,
-    circleRadius: 60000,
-    lastSearch: [],
-    infoWindows: {},
-    openInfoWindows: [],
-    markers: {}
   }
 };
 
@@ -343,6 +335,27 @@ class Map extends React.Component {
     );
   };
 
+  getNotableSightingsInfoWindow () {
+
+// <h4><%=locationName%></h4>
+
+// <table class="dialogTable">
+// 	<tbody>
+// 	<% _.each(sightings, function(sighting, index) { %>
+// 	<tr>
+// 		<td style="padding-right:30px"><%=sighting.comName%></td>
+// 		<td><%=sighting.obsDt%></td>
+// 	</tr>
+// 	<% }); %>
+// 	</tbody>
+// </table>
+
+// <div class="dialogBottomLink">
+// 	<a href="#" class="viewNotableSightingDetails" data-location-id="<%=locationID%>"><%=L.view_full_info%> &raquo;</a>
+// </div>
+
+  }
+  
   render () {
     return (
       <div className="flex-body"></div>

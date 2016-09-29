@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { FormattedMessage, intlShape } from 'react-intl';
+import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../core/core';
 import { LineLoader, LocationSpeciesCount } from './general';
-import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 
 
 export class SpeciesPanel extends React.Component {

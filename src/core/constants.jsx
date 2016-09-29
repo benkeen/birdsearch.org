@@ -11,15 +11,10 @@ const C = {
 		SPECIES: 'species'
 	},
 
-	CORE: {
-		APP_VERSION: "2.0.0 - BETA",
-		RELEASE_DATE: "Jan 17, 2015",
-		GITHUB_URL: "https://github.com/benkeen/birdsearch.org"
-	},
-
 	SEARCH_SETTINGS: {
 		DEFAULT_SEARCH_DAYS: 7,
 		DEFAULT_SEARCH_TYPE: 'SEARCH_TYPE_ALL',
+		DEFAULT_ZOOM_HANDLING: 'ZOOM_HANDLING_AUTO_ZOOM',
 		NUM_SEARCH_DAYS: 30,
 		SEARCH_TYPES: {
 			ALL: 'SEARCH_TYPE_ALL',
@@ -72,6 +67,7 @@ const C = {
 	},
 
 	MISC: {
+		SEARCH_DAYS: [],
 		MAX_SEARCH_DAYS: 30
 	},
 

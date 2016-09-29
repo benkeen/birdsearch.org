@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory, Link } from 'react-router';
+import { Modal, Button } from 'react-bootstrap';
 import { Overlay } from './general';
 import { C, _, actions } from '../core/core';
-import { Modal, Button } from 'react-bootstrap';
 
 
 class AboutOverlay extends React.Component {
@@ -124,7 +124,7 @@ class TranslateTab extends React.Component {
         <p>
           <FormattedMessage id="translatePara1" 
             values={{
-              githubLink: <a href="https://github.com/benkeen/birdsearch.org/tree/master/core/i18n" target="_blank">{intl.formatMessage({ id: 'foundHere' })}</a>
+              githubLink: <a href="https://github.com/benkeen/birdsearch.org/tree/master/src/i18n" target="_blank">{intl.formatMessage({ id: 'foundHere' })}</a>
             }} />
         </p>
       </div>

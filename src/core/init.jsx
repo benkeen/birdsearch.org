@@ -5,10 +5,8 @@ import { addLocaleData, IntlProvider } from 'react-intl';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { Provider, connect } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import * as i18n from './i18n/index';
-import * as storage from './storage';
 import * as reducers from './reducers';
-import { C } from './core';
+import { C, storage, i18n } from './core';
 
 // locale information for react-intl
 import en from 'react-intl/locale-data/en'
@@ -29,7 +27,8 @@ import Settings from '../components/settings';
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
 const mapType = storage.get('mapType') || C.DEFAULT_MAP_TYPE;
-const searchType = storage.get('searchType') || C.DEFAULT_SEARCH_TYPE;
+const searchType = storage.get('searchType') || C.SEARCH_SETTINGS.DEFAULT_SEARCH_TYPE;
+const zoomHandling = storage.get('zoomHandling') || C.SEARCH_SETTINGS.DEFAULT_ZOOM_HANDLING;
 const store = initStore({ storedSettings: { locale: locale, mapType: mapType }});
 
 // meh. Gotta go somewhere.

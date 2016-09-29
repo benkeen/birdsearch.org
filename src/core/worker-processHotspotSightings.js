@@ -3,13 +3,6 @@ onmessage = function (e) {
   var sightings  = e.data.sightings;
   var maxSearchDays = e.data.maxSearchDays;
   var ONE_DAY_IN_SECONDS = 24 * 60 * 60;
-
-//
-//  var template = [];
-//  for (var i=0; i<maxSearchDays; i++) {
-//    template.push({ obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
-//  }
-
   var now = Math.floor(Date.now() / 1000);
 
   // stores the processed data for all locations. The location ID is the top level prop
@@ -83,6 +76,4 @@ onmessage = function (e) {
 
     postMessage({ locationID: locationID, sightings: data[locationID] });
   });
-
-
 };

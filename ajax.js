@@ -7,8 +7,7 @@ const _ = require('underscore');
  * This file contains all code for calling eBird for the actual data.
  */
 
-
-const getHotspotLocations = function ({ lat, lng, limitByObservationRecency, observationRecency }, expressRequest) {
+const getHotspotLocations = function ({ lat, lng, limitByObservationRecency, observationRecency }, res) {
   let url = `http://ebird.org/ws1.1/ref/hotspot/geo?lat=${lat}&lng=${lng}&dist=50&fmt=xml`;
   if (limitByObservationRecency == 'true') {
     url += `&back=${observationRecency}`;
@@ -27,18 +26,10 @@ const getHotspotLocations = function ({ lat, lng, limitByObservationRecency, obs
           lg: row.lng[0]
         });
       });
-      expressRequest.send(json);
+      res.send(json);
     });
 
   }).end();
-}
-
-
-function getHotspotSightings ({ locationID, recency }, res) {
-  const url = `http://ebird.org/ws1.1/data/obs/loc/recent?r=${locationID}&fmt=json&back=${recency}&detail=full`;
-  request.get(url, function (error, response, body) {
-    res.send(body);
-  });
 }
 
 
@@ -47,6 +38,14 @@ function getHotspotSightingsPacket ({ locationIDs, recency }, res) {
   const locations = locationArray.join('&');
 
   const url = `http://ebird.org/ws1.1/data/obs/loc/recent?${locations}&fmt=json&back=${recency}&detail=full`;
+  request.get(url, function (error, response, body) {
+    res.send(body);
+  });
+}
+
+
+function getNotableObservations ({ lat, lng, recency }, res) {
+  const url = `http://ebird.org/ws1.1/data/notable/geo/recent?lat=${lat}&lng=${lng}&fmt=json&back=${recency}&dist=250&hotspot=false&detail=full`;
   request.get(url, function (error, response, body) {
     res.send(body);
   });

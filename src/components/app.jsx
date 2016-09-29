@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
 import { C, _, actions } from '../core/core';
-import Header from '../components/header';
-import Map from '../components/map';
-import { Loader } from '../components/general';
-import { LocationsPanel } from '../components/locations-panel';
-import { SpeciesPanel } from '../components/species-panel';
-import IntroOverlay from '../components/intro-overlay';
+import Header from '../header';
+import Map from '../map';
+import { Loader } from '../general';
+import { LocationsPanel } from '../locations';
+import { SpeciesPanel } from '../species';
+import IntroOverlay from '../intro';
 
 
 // this is our top-level component. It contains the header, map and controls. The router passes in other components as

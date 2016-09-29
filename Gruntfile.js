@@ -2,12 +2,11 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   var appFiles = [
-    './lang/*',
-    './core/*.js',
-    './core/*.jsx',
-		'./core/i18n/*.jsx',
-    './components/**/*.js',
-    './components/**/*.jsx'
+    './src/core/*.js',
+    './src/core/*.jsx',
+		'./src/i18n/*.jsx',
+    './src/components/**/*.js',
+    './src/components/**/*.jsx'
   ];
 
   var config = {
@@ -36,7 +35,7 @@ module.exports = function(grunt) {
       dist: {
         cwd: './',
         files: {
-          "dist/bundle.js": "dist/core/start.js"
+          "dist/bundle.js": "dist/core/init.js"
         }
       }
     },
@@ -58,16 +57,16 @@ module.exports = function(grunt) {
           style: 'expanded'
         },
         files: {
-          'dist/css/styles.css': 'css/sass/styles.scss'
+          'dist/css/styles.css': 'src/css/sass/styles.scss'
         }
       }
     },
 
 		copy: {
-      fonts: { src: './css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile' },
-      libs: { src: './libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile' },
-      css: { src: './css/bootstrap.min.css', dest: 'dist/css/', flatten: true, expand: true, filter: 'isFile' },
-      images: { src: './images/**/*', dest: 'dist/', flatten: false, expand: true, filter: 'isFile' }
+      fonts: { src: './src/css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile' },
+      libs: { src: './src/libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile' },
+      css: { src: './src/css/bootstrap.min.css', dest: 'dist/css/', flatten: true, expand: true, filter: 'isFile' },
+      images: { src: './src/images/**/*', dest: 'dist/', flatten: false, expand: true, filter: 'isFile' }
 		}
 	};
 
