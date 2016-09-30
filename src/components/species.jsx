@@ -112,7 +112,8 @@ export class SpeciesPanel extends React.Component {
   }
 
   getTable () {
-    const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, speciesFilter, sort, sortDir } = this.props;
+    const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, speciesFilter, sort, sortDir,
+      intl } = this.props;
 
     if (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
       var selLocation = (selectedLocation) ? selectedLocation : null;
@@ -127,7 +128,8 @@ export class SpeciesPanel extends React.Component {
           observationRecency={searchSettings.observationRecency}
           filter={speciesFilter}
           sort={sort}
-          sortDir={sortDir} />
+          sortDir={sortDir}
+          intl={intl} />
       );
     }
 
@@ -315,7 +317,7 @@ class SpeciesTable extends React.Component {
   }
 
   render () {
-    const { filter, dispatch } = this.props;
+    const { filter, dispatch, intl } = this.props;
 
     return (
       <div className="species-table">
@@ -326,23 +328,23 @@ class SpeciesTable extends React.Component {
                 <th className="row-num"></th>
                 <th className="species-col sortable">
                   <span onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.SPECIES))}>
-                    <span className="species-header">Species</span>
+                    <span className="species-header"><FormattedMessage id="species" /></span>
                     {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.SPECIES)}
                   </span>
-                  <input type="text" placeholder="Filter Species" className="filter-field" value={filter}
+                  <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })} className="filter-field" value={filter}
                     onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
                   {this.getClearSpeciesFilterIcon()}
                 </th>
                 <th className="locations-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS))}>
-                  Locations Seen
+                  <FormattedMessage id="locationsSeen" />
                   {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS)}
                 </th>
                 <th className="last-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.LAST_SEEN))}>
-                  Last Seen
+                  <FormattedMessage id="lastSeen" />
                   {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.LAST_SEEN)}
                 </th>
                 <th className="num-reported sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_REPORTED))}>
-                  Num Reported
+                  <FormattedMessage id="numReported" />
                   {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_REPORTED)}
                 </th>
               </tr>
