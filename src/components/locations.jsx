@@ -233,11 +233,10 @@ LocationsPanel.PropTypes = {
   locations: React.PropTypes.array.isRequired,
   locationSightings: React.PropTypes.object.isRequired,
   observationRecency: React.PropTypes.number.isRequired,
-  env: React.PropTypes.object.isRequired
+  env: React.PropTypes.object.isRequired,
+  intl: intlShape.isRequired
 };
 
-
-caslkdjalsjd
 
 class LocationRow extends React.Component {
   render () {

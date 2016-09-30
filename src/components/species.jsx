@@ -7,7 +7,7 @@ import { C, helpers, _, actions } from '../core/core';
 import { LineLoader, LocationSpeciesCount } from './general';
 
 
-class SpeciesPanel extends React.Component {
+export class SpeciesPanel extends React.Component {
   constructor (props) {
     super(props);
     this.getTitle = this.getTitle.bind(this);
@@ -79,10 +79,8 @@ class SpeciesPanel extends React.Component {
     );
   }
 
-  getTitle (intl) {
-    const { dispatch, locations, selectedLocation, searchSettings, sightings } = this.props;
-
-    console.log('?????', this.props);
+  getTitle () {
+    const { dispatch, locations, selectedLocation, searchSettings, sightings, intl } = this.props;
 
     var title = intl.formatMessage({ id: 'allLocations' });
     var counter = null;
@@ -142,8 +140,6 @@ class SpeciesPanel extends React.Component {
     if (!locations.length) {
       return null;
     }
-
-console.log(this.props.intl.formatMessage);
 
     var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
 
