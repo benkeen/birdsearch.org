@@ -120,8 +120,7 @@ export default injectIntl(connect(state => ({
   locationsPanel: state.locationsPanel,
   speciesPanel: state.speciesPanel,
   user: state.user,
-  results: state.results,
-  intl: intlShape.isRequired
+  results: state.results
 }))(App));
 
 

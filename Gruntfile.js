@@ -12,7 +12,7 @@ module.exports = function(grunt) {
   var config = {
 		pkg: grunt.file.readJSON('package.json'),
 
-    // this task just converts ALL javascript/JSX files and stashes an es5-friendly version of them in /dist
+    // this task converts javascript/JSX files and stashes an es5-friendly version of them in /dist
 		babel: {
 			options: {
         plugins: ['transform-react-jsx'],

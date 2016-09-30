@@ -67,7 +67,6 @@ export default injectIntl(connect(state => ({
 }))(AboutOverlay));
 
 
-
 class AboutTab extends React.Component {
   render () {
     const { intl } = this.props;
