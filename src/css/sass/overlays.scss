@@ -81,6 +81,15 @@
     width: 180px;
     margin-right: 15px;
     padding: 7px 16px;
+
+    &.btn-primary {
+      border-color: #45b6d8;
+      background-image: linear-gradient(#6dc4dd, #53b9d7 60%, #45b6d8);
+      &:hover,&:focus {
+        background-color: #31b0d5;
+      }
+    }
+
     i {
       margin-right: 6px;
     }
