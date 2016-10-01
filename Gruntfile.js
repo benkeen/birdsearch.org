@@ -43,7 +43,7 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         cwd: './src',
-        files: appFiles,
+        files: ['**/*.jsx'],
         tasks: ['babel:jsx', 'browserify']
       },
       sass: {

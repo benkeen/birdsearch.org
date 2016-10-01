@@ -3,14 +3,22 @@ import { connect } from 'react-redux';
 import { _ } from '../core/core';
 
 
-// generic overlay component. Handles the common DOM element
+// generic overlay component. Provides a styled overlay wrapper (white, rounded corners with padding), plus
+// a few handy things like keycode actions - ESC to close, custom keycode actions
 class Overlay extends React.Component {
   componentDidMount () {
-    const { id, onClose } = this.props;
+    const { id, onClose, customKeyActions } = this.props;
     $(document).on('keydown.' + id, (e) => {
       if (e.keyCode == 27) {
         onClose();
+        return;
       }
+      _.each(customKeyActions, ([keyCode, action]) => {
+        if (e.keyCode === parseInt(keyCode, 10)) {
+          e.preventDefault();
+          action();
+        }
+      });
     });
   }
 
@@ -52,13 +60,15 @@ Overlay.propTypes = {
   onClose: React.PropTypes.func.isRequired,
   showCloseIcon: React.PropTypes.bool,
   closeIconDisabled: React.PropTypes.bool,
-  className: React.PropTypes.string
+  className: React.PropTypes.string,
+  customKeyActions: React.PropTypes.array
 };
 Overlay.defaultProps = {
   showCloseIcon: false,
   closeIconDisabled: false,
   className: '',
-  outerHTML: ''
+  outerHTML: '',
+  customKeyActions: []
 };
 
 

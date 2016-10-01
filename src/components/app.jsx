@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
 import { C, _, actions } from '../core/core';
 import Header from './header';
-import Map from './map';
+import { Map } from './map';
 import { Loader } from './general';
 import { LocationsPanel } from './locations';
 import { SpeciesPanel } from './species';
@@ -73,6 +73,7 @@ class App extends React.Component {
             bounds={mapSettings.bounds}
             searchSettings={searchSettings}
             results={results}
+            intl={intl}
             locationFilter={locationsPanel.filter} />
 
           {this.getModal()}

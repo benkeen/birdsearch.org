@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
+import { FormattedMessage, FormattedHTMLMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
 import { Loader, Overlay } from './general';
 import { C, _, actions } from '../core/core';
@@ -58,15 +58,21 @@ class IntroOverlay extends React.Component {
   }
 
   render () {
-    const { loading } = this.props;
+    const { loading, intl } = this.props;
     const classes = (loading) ? 'loading' : '';
 
+    const customKeyActions = [
+      [intl.formatMessage({ id: 'LANG_SEARCH_NEARBY_KEYCODE'}), this.searchNearby],
+      [intl.formatMessage({ id: 'LANG_SEARCH_ANYWHERE_KEYCODE'}), this.searchAnywhere]
+    ];
+
     return (
-      <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close} outerHTML={this.getLoader()}>
+      <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close} outerHTML={this.getLoader()}
+        customKeyActions={customKeyActions}>
         <div>
           <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby} disabled={loading}>
             <i className="glyphicon glyphicon-home" />
-            <FormattedMessage id="searchNearby" />
+            <FormattedHTMLMessage id="searchNearby" />
           </button>
           <FormattedMessage id="findInArea" />
         </div>
@@ -76,7 +82,7 @@ class IntroOverlay extends React.Component {
         <div>
           <button className="btn btn-primary" id="searchAnywhere" onClick={this.searchAnywhere} disabled={loading}>
             <i className="glyphicon glyphicon-globe" />
-            <FormattedMessage id="searchAnywhere" />
+            <FormattedHTMLMessage id="searchAnywhere" />
           </button>
           <FormattedMessage id="findAnywhere" />
         </div>

@@ -3,8 +3,12 @@
 // ------------------------------------------------------------------------------------------------
 
 export default {
+
+  // language-specific stuff
 	LANG: 'English',
   LANG_KEY: 'en', // corresponds to file name
+  LANG_SEARCH_NEARBY_KEYCODE: '78', // "n"
+  LANG_SEARCH_ANYWHERE_KEYCODE: '65', // "a"
 
 	// strings
 	about: 'About',
@@ -40,6 +44,7 @@ export default {
   month: 'month',
   noLocations: 'No locations.',
 	notableSightings: 'Notable sightings',
+  numSightingsAtLocation: '{numSpecies} bird species seen in the last {obsRecency, plural, one {2 hours} other {days}}.',
   numReported: 'Num Reported',
   openSource: 'open source',
 	or: 'OR',
@@ -47,8 +52,8 @@ export default {
 	pleaseEnterSpecificLocation: 'Please enter a more specific location.',
 	popularBirdingLocations: "Popular birding locations",
   rightNow: 'right now',
-  searchAnywhere: 'Search Anywhere',
-	searchNearby: 'Search Nearby',
+  searchAnywhere: 'Search <u>A</u>nywhere',
+	searchNearby: 'Search <u>N</u>earby',
   searchSettings: 'Search settings',
   species: 'Species',
   thisPost: 'this post',

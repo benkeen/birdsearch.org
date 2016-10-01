@@ -69,7 +69,7 @@ var _data = {
 var _currentHotspotIDsInMapBoundaries = [];
 
 
-class Map extends React.Component {
+export class Map extends React.Component {
   constructor (props) {
     super(props);
     this.onMapBoundsChange = this.onMapBoundsChange.bind(this);
@@ -316,6 +316,10 @@ class Map extends React.Component {
     })(_data.all.markers[locationID].marker, _data.all.infoWindows[locationID], currMarkerInfo);
   };
 
+
+  // this DOES have access to the latest props, but NOT FormattedMessage ...????????
+
+
   getBirdSightingsInfoWindow (locInfo) {
     const { results, searchSettings } = this.props;
     var locationSightings = results.locationSightings[locInfo.i].data;
@@ -385,6 +389,3 @@ var _addSearchRangeIndicator = () => {
   });
   _circleOverlayIndex++;
 };
-
-
-export default Map;
