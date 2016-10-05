@@ -57,18 +57,28 @@ class IntroOverlay extends React.Component {
     browserHistory.push('/');
   }
 
+  getCustomKeyActions () {
+    const { intl } = this.props;
+    const customKeyActions = [];
+
+    const keyCodeNearby = intl.formatMessage({ id: 'LANG_SEARCH_NEARBY_KEYCODE'});
+    if (keyCodeNearby) {
+      customKeyActions.push([keyCodeNearby, this.searchNearby]);
+    }
+    const keyCodeAnywhere = intl.formatMessage({ id: 'LANG_SEARCH_ANYWHERE_KEYCODE'});
+    if (keyCodeAnywhere) {
+      customKeyActions.push([keyCodeAnywhere, this.searchAnywhere]);
+    }
+    return customKeyActions;
+  }
+
   render () {
     const { loading, intl } = this.props;
     const classes = (loading) ? 'loading' : '';
 
-    const customKeyActions = [
-      [intl.formatMessage({ id: 'LANG_SEARCH_NEARBY_KEYCODE'}), this.searchNearby],
-      [intl.formatMessage({ id: 'LANG_SEARCH_ANYWHERE_KEYCODE'}), this.searchAnywhere]
-    ];
-
     return (
       <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close} outerHTML={this.getLoader()}
-        customKeyActions={customKeyActions}>
+        customKeyActions={this.getCustomKeyActions()}>
         <div>
           <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby} disabled={loading}>
             <i className="glyphicon glyphicon-home" />
