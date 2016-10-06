@@ -21,7 +21,6 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 - Auto zoom field
 - examine searches + confirm we're not duplicating requests
 - zoom problem on duplicate searches
-- revise build process to include version: bundle-2.0.0.js
 - UX of settings modal
 	- "Search" button - no save.
 - bug. Searching for a location that returns no results on the immediate map, but can be zoomed out to see one. Needs to automatically zoom out to an appropriate zoom level.
@@ -43,7 +42,6 @@ Locations Seen modal
 
 Small stuff
 - button styles
-- translations
 
 --------------------------------------------
 
