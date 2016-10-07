@@ -52,6 +52,7 @@ export default {
 	pleaseEnterSpecificLocation: 'Please enter a more specific location.',
 	popularBirdingLocations: "Popular birding locations",
   rightNow: 'right now',
+  search: 'Search',
   searchAnywhere: 'Search <u>A</u>nywhere',
 	searchNearby: 'Search <u>N</u>earby',
   searchSettings: 'Search settings',

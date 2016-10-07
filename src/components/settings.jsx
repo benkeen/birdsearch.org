@@ -18,7 +18,9 @@ class SettingsOverlay extends React.Component {
   render () {
     const { dispatch, searchSettings } = this.props;
     const allClass = 'result-type' + ((searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? ' selected' : '');
-    const notableClass = 'result-type' + ((searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE) ? ' selected' : '');
+
+//    This setting controls how the map should behave after a search. <b>Auto-zoom</b> sets the zoom level
+//    appropriately, based on your search. <b>Show full search</b> zooms out to show the entire search.
 
     return (
       <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
@@ -41,22 +43,29 @@ class SettingsOverlay extends React.Component {
 
         <div className="result-type-row">
           <span className="result-type-label">Zooming</span>
-          <span className={allClass}>
+          <span>
+            <input type="radio" name="resultType" id="rt2"
+              checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
+              onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
             Auto-zoom
           </span>
-          <span className={allClass}>
+          <span>
+            <input type="radio" name="resultType" id="rt2"
+              checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
+              onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
             Show full search range
           </span>
         </div>
-
-This setting controls how the map should behave after a search. <b>Auto-zoom</b> sets the zoom level 
-appropriately, based on your search. <b>Show full search</b> zooms out to show the entire search.
 
         <div>
           Show observations made in the last
           <DaysDropdown value={searchSettings.observationRecency}
             onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} />days.
         </div>
+
+        <footer>
+          <button className="btn btn-primary"><FormattedMessage id="search" /></button>
+        </footer>
       </Overlay>
     );
   }

@@ -18,17 +18,16 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 - improve loading speed of species panel
 - E.SET_MAP_TYPE
 - browsers that don't support geolocation (or user says nope)
-- Auto zoom field
 - examine searches + confirm we're not duplicating requests
-- zoom problem on duplicate searches
-- UX of settings modal
-	- "Search" button - no save.
 - bug. Searching for a location that returns no results on the immediate map, but can be zoomed out to see one. Needs to automatically zoom out to an appropriate zoom level.
 - check that doing a second "Search nearby" doesn't re-request the user's location.
 - translate Map, Satellite on google maps [localize entire map...? custom buttons...?]
 
+### looking at:
+- zoom problem on duplicate searches
+- should auto-zoom out to show at least 1 result.
+
 ##### Bugs
-- zoom level is incorrect after second search
 - search for Manaus. Why isn't it centered?
 - If no results, need to show a message saying as much.
 - "51 bird species seen in the last 1 days" -> fix. Translate.

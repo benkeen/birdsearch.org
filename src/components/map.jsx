@@ -115,10 +115,6 @@ export class Map extends React.Component {
 
     this.applyLocationFilter(nextProps);
 
-    if (nextProps.zoom !== this.props.zoom) {
-      _map.setZoom(this.props.zoom);
-    }
-
     if ((this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) &&
       (_.isNumber(nextProps.lat) && _.isNumber(nextProps.lng))) {
       _map.setCenter({
@@ -126,6 +122,11 @@ export class Map extends React.Component {
         lng: nextProps.lng
       });
       _addSearchRangeIndicator();
+    }
+
+    if (nextProps.zoom !== this.props.zoom) {
+//      console.log('setting zoom....', nextProps.zoom);
+      _map.setZoom(nextProps.zoom);
     }
 
     if (this.props.bounds === null && nextProps.bounds !== null) {
@@ -140,17 +141,16 @@ export class Map extends React.Component {
     var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
     var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
     if (numLocationsChanged || windowResized) {
-      this.updateMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings);
+      this.updateMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings, true, nextProps.zoom);
     }
 
-    // rename!
-    this.showLocations(nextProps);
+    this.showMarkerColours(nextProps);
 
     // never update the map with React. We do it all internally. It's way too slow otherwise
     return false;
   }
 
-  showLocations (nextProps) {
+  showMarkerColours (nextProps) {
     _.each(nextProps.results.visibleLocations, function (locInfo) {
       var locId = locInfo.i;
       var locationSightings = nextProps.results.locationSightings[locId].data;
@@ -181,7 +181,7 @@ export class Map extends React.Component {
   }
 
   // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown.
-  updateMapMarkers (locations, locationSightings) {
+  updateMapMarkers (locations, locationSightings, zoomOutToShowResults = false, zoom = null) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
     var hotspotsInBounds = [];
@@ -211,10 +211,19 @@ export class Map extends React.Component {
       //  _addBirdMarker(locationID, latlng, currMarkerInfo);
       //} else if (searchType === "notable") {
       //  _addNotableMarker(locationID, latlng, currMarkerInfo);
-      //} else if (searchType === "hotspots") {
-      //  _addHotspotMarker(locationID, latlng, currMarkerInfo);
       //}
     });
+
+    // for new searches, the default search zoom level may not show any results. We know there are results so we zoom
+    // out as far as needed to show the first result
+    if (zoomOutToShowResults && hotspotsInBounds.length === 0) {
+      console.log('setting zoom....', this.props.zoom);
+
+      const newZoom = zoom - 1;
+      _map.setZoom(newZoom);
+      console.log('zooming out!', zoom, newZoom);
+      return this.updateMapMarkers(locations, locationSightings, true, newZoom);
+    }
 
     // if the list of hotspots in the map boundary changed, publish the info
     if (_.intersection(_currentHotspotIDsInMapBoundaries, hotspotIDsInBounds).length !== hotspotIDsInBounds.length) {
@@ -229,12 +238,9 @@ export class Map extends React.Component {
     for (var locationID in _data.all.markers) {
       _data.all.markers[locationID].marker.setMap(null);
     }
-    //for (var locationID in _data.notable.markers) {
-    //  _data.notable.markers[locationID].setMap(null);
-    //}
-    //for (var locationID in _data.hotspots.markers) {
-    //  _data.hotspots.markers[locationID].setMap(null);
-    //}
+    for (var locationID in _data.notable.markers) {
+      _data.notable.markers[locationID].setMap(null);
+    }
   }
 
   onMapBoundsChange () {
@@ -244,6 +250,7 @@ export class Map extends React.Component {
 
   addEventHandlers () {
     const dispatch = this.props.dispatch;
+
     $(document).on('click', '.viewLocationSightingDetails', (e) => {
       this.props.dispatch(actions.selectLocation($(e.target).data('locationId')));
       this.props.dispatch(actions.showSpeciesPanel());

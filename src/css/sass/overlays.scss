@@ -103,10 +103,14 @@
 
 #settings-overlay {
   height: 120px;
-  width: 488px;
-
+  width: 520px;
   select.num-days {
     width: 60px;
+  }
+  footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #cccccc;
   }
 }
 
@@ -125,23 +129,13 @@
 .result-type-row {
   display: flex;
   flex-direction: row;
-  margin-bottom: 15px;
-
   .result-type-label {
-    flex: 0 1 auto;
+    flex: 0 1 100px;
     padding-left: 0;
   }
   &>span {
     flex: 1;
     padding: 10px;
-    border-radius: 3px;
-    &.selected {
-      background-color: $blue;
-      @include transition-all($transition-speed);
-      label {
-        color: white;
-      }
-    }
     input {
       float: left;
       margin-right: 10px;
