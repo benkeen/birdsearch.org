@@ -54,7 +54,6 @@ function searchSettings (state = {
     location: '',
     lat: null,
     lng: null,
-    limitByObservationRecency: true,
     observationRecency: C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS,
     zoomHandling: C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM
   }, action) {
@@ -67,6 +66,7 @@ function searchSettings (state = {
 
     case E.SEARCH_REQUEST_STARTED:
       return Object.assign({}, state, {
+        searchType: action.searchType,
         location: action.location,
         lat: action.lat,
         lng: action.lng
@@ -92,6 +92,11 @@ function searchSettings (state = {
       storage.set('searchType', action.searchType);
       return Object.assign({}, state, {
         searchType: action.searchType
+      });
+
+    case E.SET_ZOOM_HANDLING:
+      return Object.assign({}, state, {
+        zoomHandling: action.zoomHandling
       });
 
     default:

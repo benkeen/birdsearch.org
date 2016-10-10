@@ -24,16 +24,24 @@ const setSearchType = (searchType) => {
   };
 };
 
+const setZoomHandling = (zoomHandling) => {
+  return {
+    type: E.SET_ZOOM_HANDLING,
+    zoomHandling
+  };
+};
+
 const setObservationRecency = (recency) => {
   return {
     type: E.SET_SEARCH_OBSERVATION_RECENCY,
     recency
   };
-}
+};
 
-const startSearchRequest = (location, lat, lng, bounds) => {
+const startSearchRequest = (searchType, location, lat, lng, bounds) => {
   return {
     type: E.SEARCH_REQUEST_STARTED,
+    searchType: searchType,
     lat: lat,
     lng: lng,
     location: location,
@@ -49,27 +57,39 @@ const searchRequestComplete = () => {
   return { type: E.SEARCH_REQUEST_ENDED };
 };
 
-const search = (locationString, lat, lng, mapBounds, limitByObservationRecency, observationRecency) => {
+const search = (searchType, locationString, lat, lng, mapBounds, observationRecency) => {
   return function (dispatch) {
 
-    dispatch(startSearchRequest(locationString, lat, lng, mapBounds));
+    dispatch(startSearchRequest(searchType, locationString, lat, lng, mapBounds));
 
     var searchParams = {
       lat: lat,
       lng: lng,
-      limitByObservationRecency: limitByObservationRecency,
       observationRecency: observationRecency
     };
 
+    if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
+
+      // this makes a request for the hotspots, converts the results to JSON (which is async for some reason...?) then
+      // publishes the appropriate action
+      return fetchLocations(searchParams)
+        .then(res => res.json())
+        .then(
+          json  => dispatch(searchLocationsFound(dispatch, json),
+          error => dispatch(searchLocationRequestError(dispatch, error))
+        )
+      );
+    }
+
     // this makes a request for the hotspots, converts the results to JSON (which is async for some reason...?) then
     // publishes the appropriate action
-    return fetchLocations(searchParams)
+    return fetchNotableSightings(searchParams)
       .then(res => res.json())
       .then(
-        json  => dispatch(searchLocationsFound(dispatch, json),
-        error => dispatch(searchLocationRequestError(dispatch, error))
-      )
-    );
+        function (resp) {
+          console.log("response: ", resp);
+        }
+      );
   }
 };
 
@@ -79,7 +99,7 @@ const searchLocationsFound = (dispatch, locations) => {
     success: true,
     locations
   };
-}
+};
 
 const searchLocationRequestError = (dispatch, error) => {
   dispatch(searchRequestComplete());
@@ -90,9 +110,23 @@ const searchLocationRequestError = (dispatch, error) => {
   };
 };
 
+
+const notableResultsReturned = (dispatch, data) => {
+//  return {
+//    type: E.SEARCH_LOCATIONS_RETURNED,
+//    success: true,
+//    locations
+//  };
+};
+
 const fetchLocations = (searchParams) => {
   const queryParams = helpers.queryParams(searchParams);
   return fetch('/api/getHotspotLocations?' + queryParams, { method: 'GET' });
+};
+
+const fetchNotableSightings = (searchParams) => {
+  const queryParams = helpers.queryParams(searchParams);
+  return fetch('/api/getNotableSightings?' + queryParams, { method: 'GET' });
 };
 
 const setIntroOverlayVisibility = (visible) => {
@@ -223,7 +257,6 @@ const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) =
   });
 
   if (locationIDs.length === 0) {
-    console.log('none?');
     dispatch(searchRequestComplete());
     return;
   }
@@ -330,6 +363,7 @@ export {
   setLocale,
   setSearchLocation,
   setSearchType,
+  setZoomHandling,
   setObservationRecency,
   search,
   setIntroOverlayVisibility,

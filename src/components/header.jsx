@@ -31,8 +31,8 @@ class Header extends React.Component {
 
   onSubmitNewSearch (mapSettings) {
     const { dispatch, searchSettings } = this.props;
-    dispatch(actions.search(mapSettings.location, mapSettings.lat, mapSettings.lng, mapSettings.bounds,
-      searchSettings.limitByObservationRecency, searchSettings.observationRecency));
+    dispatch(actions.search(searchSettings.searchType, mapSettings.location, mapSettings.lat, mapSettings.lng,
+      mapSettings.bounds, searchSettings.observationRecency));
   }
 
   setLocation (location) {
@@ -78,12 +78,12 @@ class Header extends React.Component {
         <ul className="nav-items">
           <li>
             <OverlayTrigger placement="bottom" overlay={searchSettingsTooltip}>
-              <a href="#" onClick={(e) => this.showSettingsOverlay(e)} className="icon icon-cog"></a>
+              <a href="#" onClick={(e) => this.showSettingsOverlay(e)} className="icon icon-cog" />
             </OverlayTrigger>
           </li>
           <li>
             <OverlayTrigger placement="bottom" overlay={infoTooltip}>
-              <a href="#" onClick={(e) => this.showAboutOverlay(e)} className="icon icon-info"></a>
+              <a href="#" onClick={(e) => this.showAboutOverlay(e)} className="icon icon-info" />
             </OverlayTrigger>
           </li>
           <li className="lang-toggle">

@@ -7,11 +7,9 @@ const _ = require('underscore');
  * This file contains all code for calling eBird for the actual data.
  */
 
-const getHotspotLocations = ({ lat, lng, limitByObservationRecency, observationRecency }, res) => {
-  let url = `http://ebird.org/ws1.1/ref/hotspot/geo?lat=${lat}&lng=${lng}&dist=50&fmt=xml`;
-  if (limitByObservationRecency == 'true') {
-    url += `&back=${observationRecency}`;
-  }
+const getHotspotLocations = ({ lat, lng, observationRecency }, res) => {
+  const endpoint = 'http://ebird.org/ws1.1/ref/hotspot/geo';
+  const url = `${endpoint}?lat=${lat}&lng=${lng}&dist=50&fmt=xml&back=${observationRecency}`;
   request.get(url, function (error, response, body) {
     let json = [];
     xml2js.parseString(body, (parseErr, data) => {
@@ -44,8 +42,9 @@ const getHotspotSightingsPacket = ({ locationIDs, recency }, res) => {
 };
 
 
-const getNotableObservations = ({ lat, lng, recency }, res) => {
-  const url = `http://ebird.org/ws1.1/data/notable/geo/recent?lat=${lat}&lng=${lng}&fmt=json&back=${recency}&dist=250&hotspot=false&detail=full`;
+const getNotableSightings = ({ lat, lng, observationRecency }, res) => {
+  const endpoint = 'http://ebird.org/ws1.1/data/notable/geo/recent';
+  const url = `${endpoint}?lat=${lat}&lng=${lng}&fmt=json&back=${observationRecency}&dist=250&hotspot=false&detail=full`;
   request.get(url, function (error, response, body) {
     res.send(body);
   });
@@ -55,5 +54,5 @@ const getNotableObservations = ({ lat, lng, recency }, res) => {
 module.exports = {
   getHotspotLocations,
   getHotspotSightingsPacket,
-  getNotableObservations
+  getNotableSightings
 };

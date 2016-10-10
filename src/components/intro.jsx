@@ -19,8 +19,8 @@ class IntroOverlay extends React.Component {
 
     // if the user's location was just found automatically search
     if (prevProps.userLocationFound !== this.props.userLocationFound && this.props.userLocationFound === true) {
-      dispatch(actions.search(searchSettings.location, searchSettings.lat, searchSettings.lng, mapSettings.bounds,
-        searchSettings.limitByObservationRecency, searchSettings.observationRecency));
+      dispatch(actions.search(searchSettings.searchType, searchSettings.location, searchSettings.lat, searchSettings.lng,
+        mapSettings.bounds, searchSettings.observationRecency));
     }
   }
 
@@ -73,7 +73,7 @@ class IntroOverlay extends React.Component {
   }
 
   render () {
-    const { loading, intl } = this.props;
+    const { loading } = this.props;
     const classes = (loading) ? 'loading' : '';
 
     return (
