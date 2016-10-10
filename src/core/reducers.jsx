@@ -25,37 +25,13 @@ function env (state = {
 }
 
 
-// these are any settings that are stored in local storage for any public user
-function storedSettings (state = {
-  locale: C.DEFAULT_LOCALE,
-  mapType: C.DEFAULT_MAP_TYPE
-}, action) {
-  switch (action.type) {
-    case E.SET_LOCALE:
-      storage.set('locale', action.locale);
-      return Object.assign({}, state, {
-        locale: action.locale
-      });
-
-    case E.SET_MAP_TYPE:
-      storage.set('locale', action.mapType);
-      return Object.assign({}, state, {
-        mapType: action.mapType
-      });
-
-    default:
-      return state;
-  }
-}
-
-
 function searchSettings (state = {
     searchType: C.SEARCH_SETTINGS.SEARCH_TYPES.ALL,
     location: '',
     lat: null,
     lng: null,
-    observationRecency: C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS,
-    zoomHandling: C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM
+    observationRecency: null,
+    zoomHandling: null
   }, action) {
 
   switch (action.type) {
@@ -95,6 +71,7 @@ function searchSettings (state = {
       });
 
     case E.SET_ZOOM_HANDLING:
+      storage.set('zoomHandling', action.zoomHandling);
       return Object.assign({}, state, {
         zoomHandling: action.zoomHandling
       });
@@ -107,7 +84,7 @@ function searchSettings (state = {
 
 function mapSettings (state = {
     zoom: 3,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    mapTypeId: C.DEFAULT_MAP_TYPE,
     lat: 30,
     lng: 0,
     bounds: null,
@@ -122,7 +99,6 @@ function mapSettings (state = {
         bounds: action.bounds,
         searchCounter: state.searchCounter + 1
       });
-      break;
 
     case E.RECEIVED_USER_LOCATION:
       return Object.assign({}, state, {
@@ -133,9 +109,16 @@ function mapSettings (state = {
       });
       break;
 
+    case E.SET_MAP_TYPE:
+      storage.set('locale', action.mapType);
+      return Object.assign({}, state, {
+        mapType: action.mapType
+      });
+
     case E.WINDOW_RESIZED:
     case E.HOTSPOT_SIGHTINGS_UPDATE:
     case E.SET_LOCATION_FILTER:
+    case E.STORE_NOTABLE_SIGHTINGS:
     case E.SEARCH_LOCATIONS_RETURNED:
       return Object.assign({}, state, {
         searchCounter: state.searchCounter + 1
@@ -215,7 +198,8 @@ function user (state = {
   userLocationFound: false,
   lat: null,
   lng: null,
-  address: ''
+  address: '',
+  locale: C.DEFAULT_LOCALE
 }, action) {
   switch (action.type) {
     case E.REQUESTING_USER_LOCATION:
@@ -230,6 +214,13 @@ function user (state = {
         lng: action.lng,
         address: action.address
       });
+
+    case E.SET_LOCALE:
+      storage.set('locale', action.locale);
+      return Object.assign({}, state, {
+        locale: action.locale
+      });
+
     default:
       return state;
   }
@@ -256,13 +247,11 @@ function results (state = {
       return Object.assign({}, state, {
         isFetching: true
       });
-      break;
 
     case E.SEARCH_REQUEST_ENDED:
       return Object.assign({}, state, {
         isFetching: false
       });
-      break;
 
     case E.SEARCH_LOCATIONS_RETURNED:
       var locationSightings = Object.assign({}, state.locationSightings);
@@ -276,7 +265,6 @@ function results (state = {
         allLocations: action.locations,
         locationSightings: locationSightings
       });
-      break;
 
     case E.HOTSPOT_SIGHTINGS_RETURNED:
       var locationSightings = Object.assign({}, state.locationSightings);
@@ -287,13 +275,26 @@ function results (state = {
       return Object.assign({}, state, {
         locationSightings: locationSightings
       });
-      break;
+
+    case E.STORE_NOTABLE_SIGHTINGS:
+      var locationSightings = {};
+      _.each(action.sightings, (sightings, locationID) => {
+        locationSightings[locationID] = {
+          fetched: true,
+          data: sightings
+        }
+      });
+      console.log('1');
+      return Object.assign({}, state, {
+        isFetching: false,
+        allLocations: action.locations,
+        locationSightings: locationSightings
+      });
 
     case E.VISIBLE_LOCATIONS_UPDATED:
       return Object.assign({}, state, {
         visibleLocations: action.locations
       });
-      break;
 
     default:
       return state;
@@ -462,7 +463,6 @@ function misc (state = {
 
 export {
   env,
-  storedSettings,
   searchSettings,
   mapSettings,
   user,

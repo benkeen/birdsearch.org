@@ -59,7 +59,6 @@ const searchRequestComplete = () => {
 
 const search = (searchType, locationString, lat, lng, mapBounds, observationRecency) => {
   return function (dispatch) {
-
     dispatch(startSearchRequest(searchType, locationString, lat, lng, mapBounds));
 
     var searchParams = {
@@ -86,9 +85,7 @@ const search = (searchType, locationString, lat, lng, mapBounds, observationRece
     return fetchNotableSightings(searchParams)
       .then(res => res.json())
       .then(
-        function (resp) {
-          console.log("response: ", resp);
-        }
+        json => dispatch(notableResultsReturned(dispatch, json))
       );
   }
 };
@@ -110,13 +107,18 @@ const searchLocationRequestError = (dispatch, error) => {
   };
 };
 
-
 const notableResultsReturned = (dispatch, data) => {
-//  return {
-//    type: E.SEARCH_LOCATIONS_RETURNED,
-//    success: true,
-//    locations
-//  };
+  var worker = new Worker('./worker-processNotableSightings.js');
+  worker.postMessage({
+    sightings: data,
+    maxSearchDays: C.MISC.MAX_SEARCH_DAYS
+  });
+
+  worker.onmessage = function (e) {
+    dispatch(storeNotableSightings(e.data.locations, e.data.sightings));
+  };
+
+  return { type: E.NOTABLE_SEARCH_RETURNED };
 };
 
 const fetchLocations = (searchParams) => {
@@ -133,6 +135,14 @@ const setIntroOverlayVisibility = (visible) => {
   return {
     type: E.SET_INTRO_OVERLAY_VISIBILITY,
     visible
+  };
+};
+
+const storeNotableSightings = (locations, sightings) => {
+  return {
+    type: E.STORE_NOTABLE_SIGHTINGS,
+    locations,
+    sightings
   };
 };
 

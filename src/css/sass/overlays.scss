@@ -134,17 +134,6 @@
     flex: 0 1 100px;
     padding-left: 0;
   }
-  .search-results {
-    label {
-      float: left;
-    }
-  }
-  .zoom-handling-auto-zoom {
-    margin-right: 10px;
-  }
-  .zoom-handling-full-search {
-    margin-left: 15px;
-  }
 
   &>span {
     flex: 1;
@@ -157,10 +146,14 @@
   label {
     margin-bottom: 0;
     display: inline-block;
+    float: left;
   }
   .zoom-tip {
     float: right;
     cursor: pointer;
+  }
+  .margin-left {
+    margin-left: 15px;
   }
 }
 
@@ -176,5 +169,9 @@
 #search-results-tooltip {
   .tooltip-inner {
     text-align: left;
+    font-size: 14px;
+  }
+  &.in {
+    opacity: 0.85;
   }
 }

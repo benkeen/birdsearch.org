@@ -98,7 +98,7 @@ class Header extends React.Component {
 }
 
 export default injectIntl(connect(state => ({
-  locale: state.storedSettings.locale,
+  locale: state.user.locale,
   introOverlay: state.introOverlay,
   searchSettingsOverlay: state.searchSettingsOverlay,
   searchSettings: state.searchSettings,

@@ -145,13 +145,15 @@ export class SpeciesPanel extends React.Component {
 
     var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
 
+    const tabLangKey = searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL ? 'birdSpecies' : 'notableBirds';
+
     return (
       <section id="species-panel" style={{ width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH }}>
 
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
           <div>
             <h2>
-              <FormattedMessage id="birdSpecies" />
+              <FormattedMessage id={tabLangKey} />
               {(!results.allFetched) ? <LineLoader className="species-loading" /> : null}
             </h2>
             <span className="toggle-section glyphicon glyphicon-menu-hamburger" />

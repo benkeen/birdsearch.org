@@ -2,59 +2,34 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
 import { FormattedMessage } from 'react-intl';
-import { _, actions, helpers } from '../core/core';
+import { C, _, actions, helpers } from '../core/core';
 
 
 var _icons = {
-  range1: {
-    url: 'images/markers/white.png',
-    scaledSize: new google.maps.Size(21, 26)
-  },
-  range2: {
-    url: 'images/markers/grey.png',
-    scaledSize: new google.maps.Size(21, 26)
-  },
-  range3: {
-    url: 'images/markers/sea-blue.png',
-    scaledSize: new google.maps.Size(21, 26)
-  },
-  range4: {
-    url: 'images/markers/turquoise.png',
-    scaledSize: new google.maps.Size(21, 26)
-  },
-  range5: {
-    url: 'images/markers/green.png',
-    scaledSize: new google.maps.Size(21, 26)
-  },
-  range6: {
-    url: 'images/markers/yellow.png',
-    scaledSize: new google.maps.Size(21, 26)
-  },
-  range7: {
-    url: 'images/markers/orange.png',
-    scaledSize: new google.maps.Size(21, 26)
-  },
-  range8: {
-    url: 'images/markers/red.png',
-    scaledSize: new google.maps.Size(21, 26)
-  }
+  range1: { url: 'images/markers/white.png', scaledSize: new google.maps.Size(21, 26) },
+  range2: { url: 'images/markers/grey.png', scaledSize: new google.maps.Size(21, 26) },
+  range3: { url: 'images/markers/sea-blue.png', scaledSize: new google.maps.Size(21, 26) },
+  range4: { url: 'images/markers/turquoise.png', scaledSize: new google.maps.Size(21, 26) },
+  range5: { url: 'images/markers/green.png', scaledSize: new google.maps.Size(21, 26) },
+  range6: { url: 'images/markers/yellow.png', scaledSize: new google.maps.Size(21, 26) },
+  range7: { url: 'images/markers/orange.png', scaledSize: new google.maps.Size(21, 26) },
+  range8: { url: 'images/markers/red.png', scaledSize: new google.maps.Size(21, 26) }
 };
 var _circleOverlays = {};
 var _circleOverlayIndex = 0;
 
-
 // stores all map-related data, grouped by search type
 var _map;
 var _data = {
-  all: {
-    defaultZoomLevel: 11,
+  [C.SEARCH_SETTINGS.SEARCH_TYPES.ALL]: {
+    defaultZoomLevel: 9,
     circleRadius: 60000,
     lastSearch: [],
     infoWindows: {},
     openInfoWindows: [],
     markers: {}
   },
-  notable: {
+  [C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE]: {
     defaultZoomLevel: 7,
     circleRadius: 250000,
     lastSearch: [],
@@ -67,6 +42,7 @@ var _data = {
 // any time the map boundary changes, the list of hotspots may change. This keeps a list of the hotspots within the
 // boundary, ignoring what is visible on the map (i.e. via a location filter)
 var _currentHotspotIDsInMapBoundaries = [];
+var _currentSearchType;
 
 
 export class Map extends React.Component {
@@ -81,11 +57,11 @@ export class Map extends React.Component {
     var defaultMapOptions = {
 
       // customizable
-      zoom: this.props.zoom,
       mapTypeId: this.props.mapTypeId,
       center: new google.maps.LatLng(this.props.lat, this.props.lng),
 
       // not customizable
+      zoom: 3,
       streetViewControl: false,
       mapTypeControlOptions: {
         style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
@@ -107,11 +83,15 @@ export class Map extends React.Component {
   }
 
   shouldComponentUpdate (nextProps) {
-
     // map updates are explicitly throttled by incrementing mapSettings.searchCounter
     if (this.props.searchCounter === nextProps.searchCounter) {
       return false;
     }
+
+    _currentSearchType = nextProps.searchSettings.searchType;
+
+    // this may need tweaking.
+    const isNewLocationSearch = this.props.searchSettings.location !== nextProps.searchSettings.location;
 
     this.applyLocationFilter(nextProps);
 
@@ -124,18 +104,19 @@ export class Map extends React.Component {
       _addSearchRangeIndicator();
     }
 
-    if (nextProps.zoom !== this.props.zoom) {
-//      console.log('setting zoom....', nextProps.zoom);
-      _map.setZoom(nextProps.zoom);
-    }
-
-    if (this.props.bounds === null && nextProps.bounds !== null) {
-      _map.fitBounds({
-        north: nextProps.bounds.north,
-        south: nextProps.bounds.south,
-        east: nextProps.bounds.east,
-        west: nextProps.bounds.west
-      });
+    if (isNewLocationSearch) {
+      if (nextProps.searchSettings.zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM) {
+        if (this.props.bounds === null && nextProps.bounds !== null) {
+          _map.fitBounds({
+            north: nextProps.bounds.north,
+            south: nextProps.bounds.south,
+            east: nextProps.bounds.east,
+            west: nextProps.bounds.west
+          });
+        }
+      } else {
+        _map.setZoom(_data[_currentSearchType].defaultZoomLevel);
+      }
     }
 
     var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
@@ -143,10 +124,9 @@ export class Map extends React.Component {
     if (numLocationsChanged || windowResized) {
       this.updateMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings, true, nextProps.zoom);
     }
-
     this.showMarkerColours(nextProps);
 
-    // never update the map with React. We do it all internally. It's way too slow otherwise
+    // we never update the map with React - it's done internally. It's way too slow otherwise.
     return false;
   }
 
@@ -161,21 +141,21 @@ export class Map extends React.Component {
       }
 
       if (numSpecies < 10) {
-        _data.all.markers[locId].marker.setIcon(_icons.range1);
+        _data[_currentSearchType].markers[locId].marker.setIcon(_icons.range1);
       } else if (numSpecies < 20) {
-        _data.all.markers[locId].marker.setIcon(_icons.range2);
+        _data[_currentSearchType].markers[locId].marker.setIcon(_icons.range2);
       } else if (numSpecies < 30) {
-        _data.all.markers[locId].marker.setIcon(_icons.range3);
+        _data[_currentSearchType].markers[locId].marker.setIcon(_icons.range3);
       } else if (numSpecies < 40) {
-        _data.all.markers[locId].marker.setIcon(_icons.range4);
+        _data[_currentSearchType].markers[locId].marker.setIcon(_icons.range4);
       } else if (numSpecies < 50) {
-        _data.all.markers[locId].marker.setIcon(_icons.range5);
+        _data[_currentSearchType].markers[locId].marker.setIcon(_icons.range5);
       } else if (numSpecies < 60) {
-        _data.all.markers[locId].marker.setIcon(_icons.range6);
+        _data[_currentSearchType].markers[locId].marker.setIcon(_icons.range6);
       } else if (numSpecies < 70) {
-        _data.all.markers[locId].marker.setIcon(_icons.range7);
+        _data[_currentSearchType].markers[locId].marker.setIcon(_icons.range7);
       } else {
-        _data.all.markers[locId].marker.setIcon(_icons.range8);
+        _data[_currentSearchType].markers[locId].marker.setIcon(_icons.range8);
       }
     }, this);
   }
@@ -187,23 +167,26 @@ export class Map extends React.Component {
     var hotspotsInBounds = [];
     let hotspotIDsInBounds = [];
 
+//    console.log('now', locations, locationSightings);
+
     locations.forEach((locInfo) => {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
       var locID = locInfo.i;
 
       // filter out-of-bounds markers
       if (!boundsObj.contains(latlng)) {
-        if (_.has(_data.all.markers, locID)) {
-          _data.all.markers[locID].marker.setMap(null);
+        if (_.has(_data[_currentSearchType].markers, locID)) {
+          _data[_currentSearchType].markers[locID].marker.setMap(null);
         }
         return;
       }
 
-      if (_.has(_data.all.markers, locID)) {
+      if (_.has(_data[_currentSearchType].markers, locID)) {
         this.showMarkerWithFilter(locInfo);
       } else {
         this.createBirdMarker(locID, latlng, locInfo);
       }
+
       hotspotsInBounds.push(locInfo);
       hotspotIDsInBounds.push(locInfo.i);
 
@@ -216,14 +199,11 @@ export class Map extends React.Component {
 
     // for new searches, the default search zoom level may not show any results. We know there are results so we zoom
     // out as far as needed to show the first result
-    if (zoomOutToShowResults && hotspotsInBounds.length === 0) {
-      console.log('setting zoom....', this.props.zoom);
-
-      const newZoom = zoom - 1;
-      _map.setZoom(newZoom);
-      console.log('zooming out!', zoom, newZoom);
-      return this.updateMapMarkers(locations, locationSightings, true, newZoom);
-    }
+//    if (zoomOutToShowResults && hotspotsInBounds.length === 0) {
+//      const newZoom = zoom - 1;
+//      //_map.setZoom(newZoom);
+//      return this.updateMapMarkers(locations, locationSightings, true, newZoom);
+//    }
 
     // if the list of hotspots in the map boundary changed, publish the info
     if (_.intersection(_currentHotspotIDsInMapBoundaries, hotspotIDsInBounds).length !== hotspotIDsInBounds.length) {
@@ -235,16 +215,16 @@ export class Map extends React.Component {
 
   // only call this after a new search
   clearHotspots () {
-    for (var locationID in _data.all.markers) {
-      _data.all.markers[locationID].marker.setMap(null);
+    for (var locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers) {
+      _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers[locationID].marker.setMap(null);
     }
-    for (var locationID in _data.notable.markers) {
-      _data.notable.markers[locationID].setMap(null);
+    for (var locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers) {
+      _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers[locationID].setMap(null);
     }
   }
 
   onMapBoundsChange () {
-    const { results } = this.props;
+    const { results, searchSettings } = this.props;
     this.updateMapMarkers(results.allLocations, results.locationSightings);
   }
 
@@ -252,14 +232,15 @@ export class Map extends React.Component {
     const dispatch = this.props.dispatch;
 
     $(document).on('click', '.viewLocationSightingDetails', (e) => {
-      this.props.dispatch(actions.selectLocation($(e.target).data('locationId')));
-      this.props.dispatch(actions.showSpeciesPanel());
+      dispatch(actions.selectLocation($(e.target).data('locationId')));
+      dispatch(actions.showSpeciesPanel());
     });
 
     // called any time the map has had its bounds changed
     google.maps.event.addListener(_map, 'dragend', this.onMapBoundsChange);
     google.maps.event.addListener(_map, 'zoom_changed', this.onMapBoundsChange);
   }
+
 
   applyLocationFilter (nextProps) {
     const { locationFilter } = this.props;
@@ -269,13 +250,13 @@ export class Map extends React.Component {
       var regexp = new RegExp(nextProps.locationFilter, 'i');
       _.each(nextProps.results.visibleLocations, (locInfo) => {
         if (regexp.test(locInfo.n)) {
-          if (!_data.all.markers[locInfo.i].visible) {
-            _data.all.markers[locInfo.i].visible = true;
-            _data.all.markers[locInfo.i].marker.setMap(_map);
+          if (!_data[_currentSearchType].markers[locInfo.i].visible) {
+            _data[_currentSearchType].markers[locInfo.i].visible = true;
+            _data[_currentSearchType].markers[locInfo.i].marker.setMap(_map);
           }
         } else {
-          _data.all.markers[locInfo.i].visible = false;
-          _data.all.markers[locInfo.i].marker.setMap(null);
+          _data[_currentSearchType].markers[locInfo.i].visible = false;
+          _data[_currentSearchType].markers[locInfo.i].marker.setMap(null);
         }
       });
     }
@@ -290,19 +271,19 @@ export class Map extends React.Component {
       show = regexp.test(locInfo.n);
     }
     if (show) {
-      _data.all.markers[locInfo.i].marker.setMap(_map);
+      _data[_currentSearchType].markers[locInfo.i].marker.setMap(_map);
     }
   }
 
   createBirdMarker (locationID, latlng, currMarkerInfo) {
-    if (_.has(_data.all.markers, locationID)) {
-      if (_data.all.markers[locationID].marker.map === null) {
-        _data.all.markers[locationID].marker.setMap(_map);
+    if (_.has(_data[_currentSearchType].markers, locationID)) {
+      if (_data[_currentSearchType].markers[locationID].marker.map === null) {
+        _data[_currentSearchType].markers[locationID].marker.setMap(_map);
       }
       return;
     }
 
-    _data.all.markers[locationID] = {
+    _data[_currentSearchType].markers[locationID] = {
       visible: false,
       marker: new google.maps.Marker({
         position: latlng,
@@ -312,7 +293,7 @@ export class Map extends React.Component {
         locationID: locationID
       })
     };
-    _data.all.infoWindows[locationID] = new google.maps.InfoWindow();
+    _data[_currentSearchType].infoWindows[locationID] = new google.maps.InfoWindow();
 
     let getBirdSightingsInfoWindow = this.getBirdSightingsInfoWindow;
     ((marker, infoWindow, locInfo) => {
@@ -320,12 +301,12 @@ export class Map extends React.Component {
         infoWindow.setContent(ReactDOMServer.renderToString(getBirdSightingsInfoWindow(locInfo)));
         infoWindow.open(_map, this);
       });
-    })(_data.all.markers[locationID].marker, _data.all.infoWindows[locationID], currMarkerInfo);
+    })(_data[_currentSearchType].markers[locationID].marker, _data[_currentSearchType].infoWindows[locationID], currMarkerInfo);
   };
 
+  createNotableMarker (locationID, latlng, currMarkerInfo) {
 
-  // this DOES have access to the latest props, but NOT FormattedMessage ...????????
-
+  }
 
   getBirdSightingsInfoWindow (locInfo) {
     const { results, searchSettings } = this.props;
@@ -364,7 +345,6 @@ export class Map extends React.Component {
 // <div class="dialogBottomLink">
 // 	<a href="#" class="viewNotableSightingDetails" data-location-id="<%=locationID%>"><%=L.view_full_info%> &raquo;</a>
 // </div>
-
   }
   
   render () {
@@ -389,7 +369,7 @@ var _addSearchRangeIndicator = () => {
   _circleOverlays[_circleOverlayIndex] = new InvertedCircle({
     center: _map.getCenter(),
     map: _map,
-    radius: _data['all'].circleRadius,
+    radius: _data[_currentSearchType].circleRadius,
     editable: false,
     stroke_weight: 0,
     always_fit_to_map: false

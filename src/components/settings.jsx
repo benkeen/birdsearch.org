@@ -74,37 +74,39 @@ class SettingsOverlay extends React.Component {
       <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
         <div className="settings-row">
           <span className="settings-row-label"><FormattedMessage id="resultType" /></span>
-          <span>
-            <input type="radio" name="resultType" id="rt1"
-              checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
-              onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }} />
-            <label htmlFor="rt1"><FormattedMessage id="birdSightings" /></label>
-          </span>
-          <span>
-            <input type="radio" name="resultType" id="rt2"
-              checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
-              onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
-            <label htmlFor="rt2"><FormattedMessage id="notableSightings" /></label>
+          <span className="search-type">
+            <span>
+              <input type="radio" name="search-type" id="rt1"
+                checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
+                onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }} />
+              <label htmlFor="rt1"><FormattedMessage id="birdSightings" /></label>
+            </span>
+            <span>
+              <input type="radio" name="search-type" id="rt2" className="margin-left"
+                checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
+                onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
+              <label htmlFor="rt2"><FormattedMessage id="notableSightings" /></label>
+            </span>
           </span>
         </div>
 
         <div className="settings-row">
           <span className="settings-row-label"><FormattedMessage id="searchResults" /></span>
           <span className="search-results">
-            <span className="zoom-handling-auto-zoom">
-              <input type="radio" name="zoomHandling" id="sr1"
+            <span>
+              <input type="radio" name="zoom-handling" id="zh1"
                 checked={searchSettings.zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM}
                 onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM)); }} />
-              <label htmlFor="sr1"><FormattedMessage id="autoZoom" /></label>
+              <label htmlFor="zh1"><FormattedMessage id="autoZoom" /></label>
             </span>
             <span>
               <OverlayTrigger placement="left" overlay={infoTooltip}>
                 <span className="zoom-tip glyphicon glyphicon-info-sign" />
               </OverlayTrigger>
-              <input type="radio" name="zoomHandling" className="zoom-handling-full-search" id="sr2"
+              <input type="radio" name="zoom-handling" className="margin-left" id="zh2"
                 checked={searchSettings.zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH}
                 onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH)); }} />
-              <label htmlFor="sr2"><FormattedMessage id="showFullSearchRange" /></label>
+              <label htmlFor="zh2"><FormattedMessage id="showFullSearchRange" /></label>
             </span>
           </span>
         </div>
