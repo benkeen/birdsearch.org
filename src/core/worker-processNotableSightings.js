@@ -56,19 +56,24 @@ onmessage = function (e) {
 
   // we've added all the observation data, set the numSpecies counts
   for (var locationID in data) {
-    var uniqueSpecies = {};
-    var numUniqueSpecies = 0;
+    let uniqueSpecies = {};
+    let numUniqueSpecies = 0;
 
-    for (var i=0; i<maxSearchDays; i++) {
-      var currDaySightings = data[locationID][i].obs;
+    for (let i=0; i<maxSearchDays; i++) {
+      let currDaySightings = data[locationID][i].obs;
 
       // the number of species seen on the current day
       data[locationID][i].numSpecies = currDaySightings.length;
 
-      for (var j = 0; j < currDaySightings.length; j++) {
+
+      for (var j=0; j<currDaySightings.length; j++) {
+        if (locationID === 'L283821') {
+          self.console.log(currDaySightings[j].sciName, uniqueSpecies);
+        }
         if (currDaySightings[j].sciName in uniqueSpecies) {
           continue;
         }
+
         uniqueSpecies[currDaySightings[j].sciName] = null;
         numUniqueSpecies++;
       }
