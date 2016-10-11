@@ -65,7 +65,6 @@ onmessage = function (e) {
       // the number of species seen on the current day
       data[locationID][i].numSpecies = currDaySightings.length;
 
-
       for (var j=0; j<currDaySightings.length; j++) {
         if (locationID === 'L283821') {
           self.console.log(currDaySightings[j].sciName, uniqueSpecies);

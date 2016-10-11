@@ -24,17 +24,13 @@ var _data = {
   [C.SEARCH_SETTINGS.SEARCH_TYPES.ALL]: {
     defaultZoomLevel: 9,
     circleRadius: 60000,
-    lastSearch: [],
     infoWindows: {},
-    openInfoWindows: [],
     markers: {}
   },
   [C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE]: {
     defaultZoomLevel: 7,
     circleRadius: 250000,
-    lastSearch: [],
     infoWindows: {},
-    openInfoWindows: [],
     markers: {}
   }
 };
@@ -124,7 +120,12 @@ export class Map extends React.Component {
     if (numLocationsChanged || windowResized) {
       this.updateMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings, true, nextProps.zoom);
     }
-    this.showMarkerColours(nextProps);
+
+    if (_currentSearchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
+      this.showMarkerColours(nextProps);
+    } else {
+      this.setNotableMarkerColours(nextProps);
+    }
 
     // we never update the map with React - it's done internally. It's way too slow otherwise.
     return false;
@@ -160,14 +161,18 @@ export class Map extends React.Component {
     }, this);
   }
 
+  setNotableMarkerColours (nextProps) {
+    _.each(nextProps.results.visibleLocations, (locInfo) => {
+      _data[_currentSearchType].markers[locInfo.i].marker.setIcon(_icons.range5);
+    });
+  }
+
   // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown.
   updateMapMarkers (locations, locationSightings, zoomOutToShowResults = false, zoom = null) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
     var hotspotsInBounds = [];
     let hotspotIDsInBounds = [];
-
-//    console.log('now', locations, locationSightings);
 
     locations.forEach((locInfo) => {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
