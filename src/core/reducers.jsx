@@ -345,6 +345,7 @@ function locationsPanel (state = {
       });
 
     case E.SEARCH_LOCATIONS_RETURNED:
+    case E.STORE_NOTABLE_SIGHTINGS:
       return Object.assign({}, state, {
         visible: true,
         updateCounter: state.updateCounter+1

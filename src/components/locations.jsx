@@ -129,13 +129,15 @@ export class LocationsPanel extends React.Component {
   }
 
   getLocationList () {
-    if (!this.props.locations.length) {
+    var { dispatch, locations, searchSettings } = this.props;
+
+    if (!locations.length) {
       return (
         <p><FormattedMessage id="noLocations" /></p>
       );
     }
-
-    var { dispatch } = this.props;
+    
+    const totalSectionClassOverride = (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSightingsTotal';
 
     return (
       <div id="locations-table-wrapper">
@@ -154,7 +156,7 @@ export class LocationsPanel extends React.Component {
             <tr className="all-locations-row" data-location-id="">
               <td className="location"><FormattedMessage id="allLocations" /></td>
               <td className="num-species">
-                <LocationCount count={this.getTotalSpecies()} />
+                <LocationCount count={this.getTotalSpecies()} classNameOverride={totalSectionClassOverride} />
               </td>
             </tr>
             {this.getLocationRows()}
@@ -255,8 +257,7 @@ class LocationRow extends React.Component {
     }
 
     const classNameOverride = (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSighting';
-
-    var locationNameData = helpers.highlightString(location.n, filter);
+    const locationNameData = helpers.highlightString(location.n, filter);
     return (
       <tr className={rowClass} data-location-id={location.i}>
         <td className="location">
