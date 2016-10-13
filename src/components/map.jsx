@@ -48,6 +48,7 @@ export class Map extends React.Component {
     super(props);
     this.onMapBoundsChange = this.onMapBoundsChange.bind(this);
     this.getBirdSightingsInfoWindow = this.getBirdSightingsInfoWindow.bind(this);
+    this.getNotableSightingsInfoWindow = this.getNotableSightingsInfoWindow.bind(this);
   }
 
   componentDidMount () {
@@ -173,8 +174,8 @@ export class Map extends React.Component {
   updateMapMarkers (searchType, locations, locationSightings, zoomOutToShowResults = false, zoom = null) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-    var hotspotsInBounds = [];
-    let hotspotIDsInBounds = [];
+    var locationsInBounds = [];
+    let locationIDsInBounds = [];
 
     locations.forEach((locInfo) => {
       var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
@@ -191,18 +192,18 @@ export class Map extends React.Component {
       if (_.has(_data[_currentSearchType].markers, locID)) {
         this.showMarkerWithFilter(locInfo);
       } else {
-        this.createBirdMarker(searchType, locID, latlng, locInfo);
+
+        if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
+          this.addBirdMarker(searchType, locID, latlng, locInfo);
+        } else {
+          this.addNotableMarker(searchType, locID, latlng, locInfo);
+        }
       }
 
-      hotspotsInBounds.push(locInfo);
-      hotspotIDsInBounds.push(locInfo.i);
-
-      //if (searchType === "all") {
-      //  _addBirdMarker(locationID, latlng, currMarkerInfo);
-      //} else if (searchType === "notable") {
-      //  _addNotableMarker(locationID, latlng, currMarkerInfo);
-      //}
+      locationsInBounds.push(locInfo);
+      locationIDsInBounds.push(locInfo.i);
     });
+
 
     // for new searches, the default search zoom level may not show any results. We know there are results so we zoom
     // out as far as needed to show the first result
@@ -213,11 +214,11 @@ export class Map extends React.Component {
 //    }
 
     // if the list of hotspots in the map boundary changed, publish the info
-    if (_.intersection(_currentHotspotIDsInMapBoundaries, hotspotIDsInBounds).length !== hotspotIDsInBounds.length) {
-      this.props.dispatch(actions.visibleLocationsFound(hotspotsInBounds, locationSightings));
+    if (_.intersection(_currentHotspotIDsInMapBoundaries, locationIDsInBounds).length !== locationIDsInBounds.length) {
+      this.props.dispatch(actions.visibleLocationsFound(locationsInBounds, locationSightings));
     }
 
-    _currentHotspotIDsInMapBoundaries = hotspotIDsInBounds;
+    _currentHotspotIDsInMapBoundaries = locationIDsInBounds;
   }
 
   // only call this after a new search
@@ -282,7 +283,7 @@ export class Map extends React.Component {
     }
   }
 
-  createBirdMarker (searchType, locationID, latlng, currMarkerInfo) {
+  addBirdMarker (searchType, locationID, latlng, currMarkerInfo) {
     if (_.has(_data[_currentSearchType].markers, locationID)) {
       if (_data[_currentSearchType].markers[locationID].marker.map === null) {
         _data[_currentSearchType].markers[locationID].marker.setMap(_map);
@@ -302,17 +303,42 @@ export class Map extends React.Component {
     };
     _data[_currentSearchType].infoWindows[locationID] = new google.maps.InfoWindow();
 
-    let getBirdSightingsInfoWindow = this.getBirdSightingsInfoWindow;
+    let getInfoWindow = this.getBirdSightingsInfoWindow;
     ((marker, infoWindow, locInfo) => {
       google.maps.event.addListener(marker, 'click', function () {
-        infoWindow.setContent(ReactDOMServer.renderToString(getBirdSightingsInfoWindow(locInfo)));
+        infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo)));
         infoWindow.open(_map, this);
       });
     })(_data[_currentSearchType].markers[locationID].marker, _data[_currentSearchType].infoWindows[locationID], currMarkerInfo);
   };
 
-  createNotableMarker (locationID, latlng, currMarkerInfo) {
+  addNotableMarker (searchType, locationID, latlng, currMarkerInfo) {
+    if (_.has(_data[_currentSearchType].markers, locationID)) {
+      if (_data[_currentSearchType].markers[locationID].marker.map === null) {
+        _data[_currentSearchType].markers[locationID].marker.setMap(_map);
+      }
+      return;
+    }
 
+    _data[_currentSearchType].markers[locationID] = {
+      visible: false,
+      marker: new google.maps.Marker({
+        position: latlng,
+        map: _map,
+        title: currMarkerInfo.n,
+        icon: (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? _icons.range1 : _icons.notable,
+        locationID: locationID
+      })
+    };
+    _data[_currentSearchType].infoWindows[locationID] = new google.maps.InfoWindow();
+
+    let getInfoWindow = this.getNotableSightingsInfoWindow;
+    ((marker, infoWindow, locInfo) => {
+      google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo)));
+        infoWindow.open(_map, this);
+      });
+    })(_data[_currentSearchType].markers[locationID].marker, _data[_currentSearchType].infoWindows[locationID], currMarkerInfo);
   }
 
   getBirdSightingsInfoWindow (locInfo) {
@@ -334,24 +360,53 @@ export class Map extends React.Component {
     );
   };
 
-  getNotableSightingsInfoWindow () {
+  getNotableSightingsInfoWindow (locInfo) {
+    const { results, searchSettings } = this.props;
+    var locationSightings = results.locationSightings[locInfo.i].data;
+    const obsRecency = searchSettings.observationRecency;
+//    var numSpecies = 0;
+//    if (results.locationSightings[locInfo.i].fetched) {
+//      numSpecies = locationSightings[obsRecency - 1].numSpeciesRunningTotal;
+//    }
 
-// <h4><%=locationName%></h4>
+    // use helpers.getNotableSightingsList()
 
-// <table class="dialogTable">
-// 	<tbody>
-// 	<% _.each(sightings, function(sighting, index) { %>
-// 	<tr>
-// 		<td style="padding-right:30px"><%=sighting.comName%></td>
-// 		<td><%=sighting.obsDt%></td>
-// 	</tr>
-// 	<% }); %>
-// 	</tbody>
-// </table>
+    const sightings = [];
+    for (var i=0; i<obsRecency; i++) {
+      for (var j=0; j<locationSightings[i].obs.length; j++) {
+        sightings.push(locationSightings[i].obs[j]);
+      }
+    }
 
-// <div class="dialogBottomLink">
-// 	<a href="#" class="viewNotableSightingDetails" data-location-id="<%=locationID%>"><%=L.view_full_info%> &raquo;</a>
-// </div>
+    return (
+      <div className="marker-popup">
+        <h4>{locInfo.n}</h4>
+
+        <div className="notable-sightings-list-wrapper">
+          <table className="notable-sightings-list">
+            <tbody>
+            {this.getNotableRows(sightings)}
+            </tbody>
+          </table>
+        </div>
+        <a href="#" className="viewLocationSightingDetails" data-location-id={locInfo.i}>View full information</a>
+      </div>
+    );
+  }
+
+  getNotableRows (sightings) {
+    return _.map(sightings, (sighting) => {
+      const checklistLink = `http://ebird.org/ebird/view/checklist/${sighting.subID}`;
+      return (
+        <tr key={sighting.obsID}>
+          <td className="species-name">{sighting.comName}</td>
+          <td className="obs-date">{sighting.obsDt}</td>
+          <td>
+            <a href={checklistLink} target="_blank" className="checklist-link glyphicon glyphicon-list" title="View Checklist"></a>
+          </td>
+        </tr>
+      );
+    });
   }
   
   render () {

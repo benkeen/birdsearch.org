@@ -188,6 +188,10 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 };
 
 
+const getNotableSightingsList = () => {
+
+};
+
 const highlightString = (string, filter) => {
 	if (filter === '') {
 		return {
