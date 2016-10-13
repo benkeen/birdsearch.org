@@ -208,7 +208,7 @@ const highlightString = (string, filter) => {
 };
 
 
-const sortLocations = (locations, locationSightings, observationRecency, sort, sortDir, filter) => {
+const sortLocations = (locations, locationSightings, observationRecency, sort, sortDir, filter, prop) => {
 	var sortedLocations = locations;
 
 	// apply the appropriate sort
@@ -220,7 +220,7 @@ const sortLocations = (locations, locationSightings, observationRecency, sort, s
 		sortedLocations = _.sortBy(locations, function (locInfo) {
 			var sightings = locationSightings[locInfo.i];
 			if (sightings.fetched) {
-				return 10000 - sightings.data[observationRecency - 1].numSpeciesRunningTotal;
+				return 10000 - sightings.data[observationRecency - 1][prop];
 			}
 			return 10000;
 		});

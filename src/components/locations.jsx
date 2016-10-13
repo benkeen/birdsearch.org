@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../core/core';
-import { LineLoader, LocationSpeciesCount } from './general';
+import { LineLoader, LocationCount } from './general';
 
 
 export class LocationsPanel extends React.Component {
@@ -19,13 +19,16 @@ export class LocationsPanel extends React.Component {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
   }
 
-  shouldComponentUpdate (nextProps) {
-    if (this.props.updateCounter === nextProps.updateCounter) {
+  shouldComponentUpdate ({ updateCounter, searchSettings, locations, locationSightings, sort, sortDir, filter }) {
+    if (this.props.updateCounter === updateCounter) {
       return false;
     }
 
-    this.sortedFilteredLocations = helpers.sortLocations(nextProps.locations, nextProps.locationSightings,
-      nextProps.searchSettings.observationRecency, nextProps.sort, nextProps.sortDir, nextProps.filter);
+    const searchProp = (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ?
+      'numSpeciesRunningTotal' : 'numBirdsRunningTotal';
+
+    this.sortedFilteredLocations = helpers.sortLocations(locations, locationSightings,
+      searchSettings.observationRecency, sort, sortDir, filter, searchProp);
 
     return true;
   }
@@ -77,6 +80,7 @@ export class LocationsPanel extends React.Component {
       return (
         <LocationRow
           key={location.i}
+          searchType={searchSettings.searchType}
           filter={filter}
           location={location}
           sightings={locationSightings[location.i]}
@@ -150,7 +154,7 @@ export class LocationsPanel extends React.Component {
             <tr className="all-locations-row" data-location-id="">
               <td className="location"><FormattedMessage id="allLocations" /></td>
               <td className="num-species">
-                <LocationSpeciesCount count={this.getTotalSpecies()} />
+                <LocationCount count={this.getTotalSpecies()} />
               </td>
             </tr>
             {this.getLocationRows()}
@@ -240,14 +244,17 @@ LocationsPanel.PropTypes = {
 
 class LocationRow extends React.Component {
   render () {
-    const { sightings, observationRecency, filter, location } = this.props;
+    const { searchType, sightings, observationRecency, filter, location } = this.props;
 
     var count = null;
     var rowClass = 'loading';
     if (sightings.fetched) {
-      count = sightings.data[observationRecency - 1].numSpeciesRunningTotal;
+      let prop = (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? 'numSpeciesRunningTotal' : 'numBirdsRunningTotal';
+      count = sightings.data[observationRecency - 1][prop];
       rowClass = '';
     }
+
+    const classNameOverride = (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSighting';
 
     var locationNameData = helpers.highlightString(location.n, filter);
     return (
@@ -256,13 +263,14 @@ class LocationRow extends React.Component {
           <div title={location.n} dangerouslySetInnerHTML={{ __html: locationNameData.string }}></div>
         </td>
         <td className="num-species">
-          <LocationSpeciesCount count={count} />
+          <LocationCount count={count} classNameOverride={classNameOverride} />
         </td>
       </tr>
     );
   }
 }
 LocationRow.PropTypes = {
+  searchType: React.PropTypes.string.isRequired,
   location: React.PropTypes.object.isRequired,
   sightings: React.PropTypes.object.isRequired,
   observationRecency: React.PropTypes.number.isRequired,

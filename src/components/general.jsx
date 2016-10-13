@@ -179,37 +179,50 @@ LocationsDropdown.PropTypes = {
   selected: React.PropTypes.string.isRequired
 };
 
-// draws a pretty count element with the appropriate colour for the # of species
-class LocationSpeciesCount extends React.Component {
+// draws a pretty count element with the appropriate colour
+class LocationCount extends React.Component {
   render () {
-    if (this.props.count === null) {
+    const { count, classNameOverride } = this.props;
+
+    if (count === null) {
       return (<span>...</span>);
     }
 
     var className = 'range ';
-    if (this.props.count < 10) {
+
+    if (classNameOverride) {
+      className += ' ' + classNameOverride;
+    } else if (count < 10) {
       className += 'range1';
-    } else if (this.props.count < 20) {
+    } else if (count < 20) {
       className += 'range2';
-    } else if (this.props.count < 30) {
+    } else if (count < 30) {
       className += 'range3';
-    } else if (this.props.count < 40) {
+    } else if (count < 40) {
       className += 'range4';
-    } else if (this.props.count < 50) {
+    } else if (count < 50) {
       className += 'range5';
-    } else if (this.props.count < 60) {
+    } else if (count < 60) {
       className += 'range6';
-    } else if (this.props.count < 70) {
+    } else if (count < 70) {
       className += 'range7';
     } else {
       className += 'range8';
     }
 
     return (
-      <span className={className}>{this.props.count}</span>
+      <span className={className}>{count}</span>
     );
   }
 }
+LocationCount.PropTypes = {
+  count: React.PropTypes.number,
+  classNameOverride: React.PropTypes.string
+};
+LocationCount.defaultProps = {
+  count: null,
+  classNameOverride: null
+};
 
 
 export {
@@ -218,5 +231,5 @@ export {
   ClosePanel,
   LineLoader,
   LocationsDropdown,
-  LocationSpeciesCount
+  LocationCount
 };

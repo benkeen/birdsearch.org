@@ -13,7 +13,9 @@ var _icons = {
   range5: { url: 'images/markers/green.png', scaledSize: new google.maps.Size(21, 26) },
   range6: { url: 'images/markers/yellow.png', scaledSize: new google.maps.Size(21, 26) },
   range7: { url: 'images/markers/orange.png', scaledSize: new google.maps.Size(21, 26) },
-  range8: { url: 'images/markers/red.png', scaledSize: new google.maps.Size(21, 26) }
+  range8: { url: 'images/markers/red.png', scaledSize: new google.maps.Size(21, 26) },
+
+  notable: { url: 'images/markers/notable.png', scaledSize: new google.maps.Size(21, 26) },
 };
 var _circleOverlays = {};
 var _circleOverlayIndex = 0;
@@ -118,11 +120,11 @@ export class Map extends React.Component {
     var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
     var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
     if (numLocationsChanged || windowResized) {
-      this.updateMapMarkers(nextProps.results.allLocations, nextProps.results.locationSightings, true, nextProps.zoom);
+      this.updateMapMarkers(nextProps.searchSettings.searchType, nextProps.results.allLocations, nextProps.results.locationSightings, true, nextProps.zoom);
     }
 
     if (_currentSearchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
-      this.showMarkerColours(nextProps);
+      this.setMarkerColours(nextProps);
     } else {
       this.setNotableMarkerColours(nextProps);
     }
@@ -131,7 +133,7 @@ export class Map extends React.Component {
     return false;
   }
 
-  showMarkerColours (nextProps) {
+  setMarkerColours (nextProps) {
     _.each(nextProps.results.visibleLocations, function (locInfo) {
       var locId = locInfo.i;
       var locationSightings = nextProps.results.locationSightings[locId].data;
@@ -163,12 +165,12 @@ export class Map extends React.Component {
 
   setNotableMarkerColours (nextProps) {
     _.each(nextProps.results.visibleLocations, (locInfo) => {
-      _data[_currentSearchType].markers[locInfo.i].marker.setIcon(_icons.range5);
+      _data[_currentSearchType].markers[locInfo.i].marker.setIcon(_icons.notable);
     });
   }
 
   // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown.
-  updateMapMarkers (locations, locationSightings, zoomOutToShowResults = false, zoom = null) {
+  updateMapMarkers (searchType, locations, locationSightings, zoomOutToShowResults = false, zoom = null) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
     var hotspotsInBounds = [];
@@ -189,7 +191,7 @@ export class Map extends React.Component {
       if (_.has(_data[_currentSearchType].markers, locID)) {
         this.showMarkerWithFilter(locInfo);
       } else {
-        this.createBirdMarker(locID, latlng, locInfo);
+        this.createBirdMarker(searchType, locID, latlng, locInfo);
       }
 
       hotspotsInBounds.push(locInfo);
@@ -207,7 +209,7 @@ export class Map extends React.Component {
 //    if (zoomOutToShowResults && hotspotsInBounds.length === 0) {
 //      const newZoom = zoom - 1;
 //      //_map.setZoom(newZoom);
-//      return this.updateMapMarkers(locations, locationSightings, true, newZoom);
+//      return this.updateMapMarkers(searchType, locations, locationSightings, true, newZoom);
 //    }
 
     // if the list of hotspots in the map boundary changed, publish the info
@@ -230,7 +232,7 @@ export class Map extends React.Component {
 
   onMapBoundsChange () {
     const { results, searchSettings } = this.props;
-    this.updateMapMarkers(results.allLocations, results.locationSightings);
+    this.updateMapMarkers(searchSettings.searchType, results.allLocations, results.locationSightings);
   }
 
   addEventHandlers () {
@@ -280,7 +282,7 @@ export class Map extends React.Component {
     }
   }
 
-  createBirdMarker (locationID, latlng, currMarkerInfo) {
+  createBirdMarker (searchType, locationID, latlng, currMarkerInfo) {
     if (_.has(_data[_currentSearchType].markers, locationID)) {
       if (_data[_currentSearchType].markers[locationID].marker.map === null) {
         _data[_currentSearchType].markers[locationID].marker.setMap(_map);
@@ -294,7 +296,7 @@ export class Map extends React.Component {
         position: latlng,
         map: _map,
         title: currMarkerInfo.n,
-        icon: _icons.range1,
+        icon: (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? _icons.range1 : _icons.notable,
         locationID: locationID
       })
     };

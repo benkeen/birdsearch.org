@@ -18,7 +18,7 @@ onmessage = function (e) {
     if (!data[locationID]) {
       data[locationID] = [];
       for (let j=0; j<maxSearchDays; j++) {
-        data[locationID].push({ obs: [], numSpecies: 0, numSpeciesRunningTotal: 0 });
+        data[locationID].push({ obs: [], numSpecies: 0, numBirdsRunningTotal: 0 });
       }
       locations.push({
         la: sightings[i].lat,
@@ -54,32 +54,11 @@ onmessage = function (e) {
     data[locationID][daysAgo-1].obs.push(sightings[i]);
   }
 
-  // we've added all the observation data, set the numSpecies counts
   for (var locationID in data) {
-    let uniqueSpecies = {};
-    let numUniqueSpecies = 0;
-
+    let runningTotal = 0;
     for (let i=0; i<maxSearchDays; i++) {
-      let currDaySightings = data[locationID][i].obs;
-
-      // the number of species seen on the current day
-      data[locationID][i].numSpecies = currDaySightings.length;
-
-      for (var j=0; j<currDaySightings.length; j++) {
-        if (locationID === 'L283821') {
-          self.console.log(currDaySightings[j].sciName, uniqueSpecies);
-        }
-        if (currDaySightings[j].sciName in uniqueSpecies) {
-          continue;
-        }
-
-        uniqueSpecies[currDaySightings[j].sciName] = null;
-        numUniqueSpecies++;
-      }
-
-      // now set the numSpeciesRunningTotal property. This is the running total seen in that time
-      // range: e.g. 3 days would include the total species seen on days 1-3, 4 days would have 1-4 etc.
-      data[locationID][i].numSpeciesRunningTotal = numUniqueSpecies;
+      runningTotal += data[locationID][i].obs.length;
+      data[locationID][i].numBirdsRunningTotal = runningTotal;
     }
   }
 

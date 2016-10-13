@@ -4,7 +4,7 @@ import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../core/core';
-import { LineLoader, LocationSpeciesCount } from './general';
+import { LineLoader, LocationCount } from './general';
 
 
 export class SpeciesPanel extends React.Component {
@@ -90,7 +90,7 @@ export class SpeciesPanel extends React.Component {
 
       if (sightings[selectedLocation].fetched) {
         var numSpecies = sightings[selectedLocation].data[searchSettings.observationRecency-1].numSpeciesRunningTotal;
-        counter = <LocationSpeciesCount count={numSpecies} />;
+        counter = <LocationCount count={numSpecies} />;
       }
 
       title = (
