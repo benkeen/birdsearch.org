@@ -11,7 +11,6 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 -------------------------------------------
 #### Remaining. Notes.
 
-- Notable searches
 - get loading spinner to load continually
 - after clicking "anywhere" should have a bouncy thing pointing to the search bar.
 - Improve speed of filter on species panel
@@ -22,6 +21,7 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 - bug. Searching for a location that returns no results on the immediate map, but can be zoomed out to see one. Needs to automatically zoom out to an appropriate zoom level.
 - check that doing a second "Search nearby" doesn't re-request the user's location.
 - translate Map, Satellite on google maps [localize entire map...? custom buttons...?]
+- num reported should have nice formatting for thousands
 
 ### looking at:
 - zoom problem on duplicate searches

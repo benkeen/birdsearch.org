@@ -28,6 +28,7 @@ import Settings from '../components/settings';
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
 const mapTypeId = storage.get('mapTypeId') || google.maps.MapTypeId.ROADMAP;
 const searchType = storage.get('searchType') || C.SEARCH_SETTINGS.DEFAULT_SEARCH_TYPE;
+const obsRecency = storage.get('obsRecency') || C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS;
 const zoomHandling = storage.get('zoomHandling') || C.SEARCH_SETTINGS.DEFAULT_ZOOM_HANDLING;
 
 // bah, this sucks. You can't init a store with redux by passing in only specific nested values to be overridden
@@ -47,14 +48,13 @@ const store = initStore({
     lng: 0,
     bounds: null,
     searchCounter: 0
-
   },
   searchSettings: {
     searchType: searchType,
     location: '',
     lat: null,
     lng: null,
-    observationRecency: C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS,
+    observationRecency: obsRecency,
     zoomHandling: zoomHandling
   }
 });

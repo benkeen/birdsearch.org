@@ -60,6 +60,7 @@ function searchSettings (state = {
       });
 
     case E.SET_SEARCH_OBSERVATION_RECENCY:
+      storage.set('obsRecency', action.recency);
       return Object.assign({}, state, {
         observationRecency: action.recency
       });
@@ -284,7 +285,6 @@ function results (state = {
           data: sightings
         }
       });
-      console.log('1');
       return Object.assign({}, state, {
         isFetching: false,
         allLocations: action.locations,
