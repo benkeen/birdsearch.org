@@ -317,7 +317,7 @@ const sortLocations = (sort) => {
   }
 };
 
-const sortSpecies = (sort) => {
+const sortSightings = (sort) => {
   return {
     type: E.SPECIES_SORTED,
     sort: sort
@@ -388,7 +388,7 @@ export {
   showSpeciesPanel,
   hideSpeciesPanel,
   setSpeciesFilter,
-  sortSpecies,
+  sortSightings,
   searchAnywhere,
   selectAboutTab,
   showModal

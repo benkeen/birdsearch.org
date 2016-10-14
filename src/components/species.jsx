@@ -344,7 +344,7 @@ class SpeciesTable extends React.Component {
               <tr>
                 <th className="row-num"></th>
                 <th className="species-col sortable">
-                  <span onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.SPECIES))}>
+                  <span onClick={() => dispatch(actions.sortSightings(C.SPECIES_SORT.FIELDS.SPECIES))}>
                     <span className="species-header"><FormattedMessage id="species" /></span>
                     {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.SPECIES)}
                   </span>
@@ -352,18 +352,14 @@ class SpeciesTable extends React.Component {
                     onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
                   {this.getClearSpeciesFilterIcon()}
                 </th>
-                <th className="locations-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS))}>
-                  <FormattedMessage id="locationsSeen" />
-                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS)}
-                </th>
-                <th className="last-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.LAST_SEEN))}>
-                  <FormattedMessage id="lastSeen" />
-                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.LAST_SEEN)}
-                </th>
-                <th className="num-reported sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_REPORTED))}>
-                  <FormattedMessage id="numReported" />
-                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_REPORTED)}
-                </th>
+                <SortableColHeader dispatch={dispatch}
+                   label="locationsSeen" colClass="locations-seen" sortField={C.SPECIES_SORT.FIELDS.NUM_LOCATIONS} />
+
+                <SortableColHeader dispatch={dispatch}
+                   label="lastSeen" colClass="last-seen" sortField={C.SPECIES_SORT.FIELDS.LAST_SEEN} />
+
+                <SortableColHeader dispatch={dispatch}
+                   label="numReported" colClass="num-reported" sortField={C.SPECIES_SORT.FIELDS.NUM_REPORTED} />
               </tr>
             </thead>
           </table>
@@ -523,22 +519,7 @@ class NotableSightingsTable extends React.Component {
     );
   }
 
-  getSpeciesColSort (field) {
-    const { sort, sortDir } = this.props;
-    if (sort !== field) {
-      return null;
-    }
-
-    var className = 'col-sort glyphicon ';
-    className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
-
-    return (
-      <span className={className} />
-    );
-  }
-
   getContent () {
-    console.log(this.props);
     const { species } = this.props;
 
     if (!species.length) {
@@ -576,6 +557,19 @@ class NotableSightingsTable extends React.Component {
     });
   }
 
+  getLocationColHeader () {
+    if (!this.props.selectedLocation) {
+      return null;
+    }
+
+    return (
+      <th className="locations sortable" onClick={() => dispatch(actions.sortSightings(C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION))}>
+        <FormattedMessage id="location" />
+        {this.getColSort(C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION)}
+      </th>
+    )
+  }
+
   render () {
     const { filter, dispatch, intl } = this.props;
 
@@ -586,27 +580,29 @@ class NotableSightingsTable extends React.Component {
             <thead>
             <tr>
               <th className="row-num"></th>
+              {this.getLocationColHeader()}
+
               <th className="species-col sortable">
-                <span onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.SPECIES))}>
+                <span onClick={() => dispatch(actions.sortSightings(C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES))}>
                   <span className="species-header"><FormattedMessage id="species" /></span>
-                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.SPECIES)}
+                  {this.getColSort(C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES)}
                 </span>
                 <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })} className="filter-field" value={filter}
                   onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
                 {this.getClearSpeciesFilterIcon()}
               </th>
-              <th className="locations-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS))}>
-                <FormattedMessage id="locationsSeen" />
-                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS)}
-              </th>
-              <th className="last-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.LAST_SEEN))}>
-                <FormattedMessage id="lastSeen" />
-                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.LAST_SEEN)}
-              </th>
-              <th className="num-reported sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_REPORTED))}>
-                <FormattedMessage id="numReported" />
-                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_REPORTED)}
-              </th>
+
+              <SortableColHeader dispatch={dispatch}
+                label="dateSeen" colClass="last-seen" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.DATE_SEEN} />
+
+              <SortableColHeader dispatch={dispatch}
+                label="numReported" colClass="num-sortable" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.NUM_REPORTED} />
+
+              <SortableColHeader dispatch={dispatch}
+                label="reportedBy" colClass="reporter" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.REPORTER} />
+
+              <SortableColHeader dispatch={dispatch}
+                label="status" colClass="status" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.STATUS} />
             </tr>
             </thead>
           </table>
@@ -620,6 +616,38 @@ class NotableSightingsTable extends React.Component {
     );
   }
 }
+
+class SortableColHeader extends React.Component {
+  getColSort (field) {
+    const { sort, sortDir } = this.props;
+    if (sort !== field) {
+      return null;
+    }
+
+    var className = 'col-sort glyphicon ';
+    className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
+
+    return (
+      <span className={className} />
+    );
+  }
+
+  render () {
+    const { dispatch, label, sortField, colClass } = this.props;
+    const className = 'sortable ' + colClass;
+    return (
+      <th className={className} onClick={() => dispatch(actions.sortSightings(sortField))}>
+        <FormattedMessage id={label} />
+        {this.getColSort(sortField)}
+      </th>
+    )
+  }
+}
+SortableColHeader.propTypes = {
+  label: React.PropTypes.string.isRequired,
+  sortField: React.PropTypes.string.isRequired,
+  colClass: React.PropTypes.string.isRequired
+};
 
 
 // <div class="fixedHeader">

@@ -236,7 +236,7 @@ function results (state = {
   // map boundaries
   allLocations: [],
 
-  // stores all locations currently visible on the user's map. This may include locations that have been 
+  // stores all locations currently visible on the user's map. N.B. this may include locations that have been
   // hidden by entering a location filter string
   visibleLocations: [],
   locationSightings: {} // an object of [location ID] => sighting info. Populated as need be, based on what's visible
@@ -380,6 +380,7 @@ function locationsPanel (state = {
 }
 
 
+// TODO rename to sightingsPanel
 function speciesPanel (state = {
   visible: false,
   filter: '',
