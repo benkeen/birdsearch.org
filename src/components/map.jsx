@@ -141,7 +141,7 @@ export class Map extends React.Component {
 
       var numSpecies = 0;
       if (nextProps.results.locationSightings[locId].fetched) {
-        numSpecies = locationSightings[nextProps.searchSettings.observationRecency - 1].numSpeciesRunningTotal;
+        numSpecies = locationSightings[nextProps.searchSettings.observationRecency - 1].runningTotal;
       }
 
       if (numSpecies < 10) {
@@ -347,7 +347,7 @@ export class Map extends React.Component {
     const obsRecency = searchSettings.observationRecency;
     var numSpecies = 0;
     if (results.locationSightings[locInfo.i].fetched) {
-      numSpecies = locationSightings[obsRecency - 1].numSpeciesRunningTotal;
+      numSpecies = locationSightings[obsRecency - 1].runningTotal;
     }
 
     return (

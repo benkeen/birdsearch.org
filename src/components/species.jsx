@@ -89,7 +89,7 @@ export class SpeciesPanel extends React.Component {
       var locationInfo = helpers.getLocationById(locations, selectedLocation);
 
       if (sightings[selectedLocation].fetched) {
-        var numSpecies = sightings[selectedLocation].data[searchSettings.observationRecency-1].numSpeciesRunningTotal;
+        var numSpecies = sightings[selectedLocation].data[searchSettings.observationRecency-1].runningTotal;
         counter = <LocationCount count={numSpecies} />;
       }
 
@@ -106,7 +106,7 @@ export class SpeciesPanel extends React.Component {
       <div className="species-heading-row">
         <h1>{title}</h1>
         <div className="counter">{counter}</div>
-        {this.getEBirdHotspotLink(selectedLocation)}
+        {(searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? this.getEBirdHotspotLink(selectedLocation) : null}
       </div>
     );
   }
@@ -115,9 +115,10 @@ export class SpeciesPanel extends React.Component {
     const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, speciesFilter, sort, sortDir,
       intl } = this.props;
 
+    var selLocation = (selectedLocation) ? selectedLocation : null;
+
     if (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
-      var selLocation = (selectedLocation) ? selectedLocation : null;
-      var sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
+      let sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
 
       return (
         <SpeciesTable
@@ -133,12 +134,25 @@ export class SpeciesPanel extends React.Component {
       );
     }
 
-    return <NotableSightingsTable />
+    console.log(1);
+    let sightingsData = helpers.getNotableSightings(locations, sightings, searchSettings.observationRecency, selLocation);
+
+    return (
+      <NotableSightingsTable
+        dispatch={dispatch}
+        tabVisible={visible}
+        species={sightingsData}
+        selectedLocation={selectedLocation}
+        observationRecency={searchSettings.observationRecency}
+        filter={speciesFilter}
+        sort={sort}
+        sortDir={sortDir}
+        intl={intl} />
+    );
   }
 
   render () {
     const { dispatch, locations, sightings, searchSettings, env } = this.props;
-
     if (!locations.length) {
       return null;
     }
@@ -194,19 +208,6 @@ SpeciesPanel.PropTypes = {
 // TODO move all this data manipulation to reducers (sort, etc). Drop this.sortedSpecies.
 
 class SpeciesTable extends React.Component {
-  getContent () {
-    const { species } = this.props;
-
-    if (!species.length) {
-      return null;
-    }
-
-    return (
-      <tbody>
-        {this.getRows()}
-      </tbody>
-    )
-  }
 
   componentDidMount () {
     this.sortedSpecies = this.props.species;
@@ -268,6 +269,20 @@ class SpeciesTable extends React.Component {
         }
         break;
     }
+  }
+
+  getContent () {
+    const { species } = this.props;
+
+    if (!species.length) {
+      return null;
+    }
+
+    return (
+      <tbody>
+        {this.getRows()}
+      </tbody>
+    )
   }
 
   getRows () {
@@ -435,9 +450,173 @@ class SpeciesRow extends React.Component {
 
 
 class NotableSightingsTable extends React.Component {
-  render () {
+
+  componentDidMount () {
+    this.sortedSpecies = this.props.species;
+  }
+
+  shouldComponentUpdate (nextProps) {
+    // don't update anything if the user is closing the tab - it's super slow
+    if (nextProps.tabVisible !== this.props.tabVisible && !nextProps.tabVisible) {
+      return false;
+    }
+    return true;
+  }
+
+  componentWillReceiveProps ({ species, sort, sortDir }) {
+    const numSpeciesChanged = species.length !== this.props.species.length;
+    const sortChanged = sort !== this.props.sort;
+    const sortDirChanged = sortDir !== this.props.sortDir;
+
+    if (!numSpeciesChanged && !sortChanged && !sortDirChanged) {
+      return;
+    }
+
+    this.sortedSpecies = species;
+    this.sortSpecies(sort, sortDir);
+  }
+
+  sortSpecies (sort, sortDir) {
+    switch (sort) {
+      case C.SPECIES_SORT.FIELDS.NUM_LOCATIONS:
+        if (sortDir === C.SORT_DIR.DEFAULT) {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.locations.length; });
+        } else {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.locations.length; });
+        }
+        break;
+
+      case C.SPECIES_SORT.FIELDS.LAST_SEEN:
+        if (sortDir === C.SORT_DIR.DEFAULT) {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.mostRecentObservation.format('X'); });
+        } else {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.mostRecentObservation.format('X'); });
+        }
+        break;
+
+      case C.SPECIES_SORT.FIELDS.NUM_REPORTED:
+        if (sortDir === C.SORT_DIR.DEFAULT) {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.howManyCount; });
+        } else {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.howManyCount; });
+        }
+        break;
+
+      // species name
+      default:
+        if (sortDir === C.SORT_DIR.DEFAULT) {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase(); });
+        } else {
+          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase().charCodeAt() * -1; });
+        }
+        break;
+    }
+  }
+
+  getClearSpeciesFilterIcon () {
+    const { dispatch, filter } = this.props;
+    if (!filter) {
+      return;
+    }
     return (
-      <div></div>
+      <span className="clear-filter-icon glyphicon glyphicon-remove" onClick={() => dispatch(actions.setSpeciesFilter(''))} />
+    );
+  }
+
+  getSpeciesColSort (field) {
+    const { sort, sortDir } = this.props;
+    if (sort !== field) {
+      return null;
+    }
+
+    var className = 'col-sort glyphicon ';
+    className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
+
+    return (
+      <span className={className} />
+    );
+  }
+
+  getContent () {
+    console.log(this.props);
+    const { species } = this.props;
+
+    if (!species.length) {
+      return null;
+    }
+
+    return (
+      <tbody>
+        {this.getRows()}
+      </tbody>
+    )
+  }
+
+  getRows () {
+    const { dispatch, filter } = this.props;
+
+    return _.map(this.sortedSpecies, function (speciesInfo, index) {
+      var comNameData = helpers.highlightString(speciesInfo.comName, filter);
+      var sciNameData = helpers.highlightString(speciesInfo.sciName, filter);
+      if (!comNameData.match && !sciNameData.match) {
+        return null;
+      }
+
+      return (
+        <SpeciesRow
+          dispatch={dispatch}
+          filter={filter}
+          species={speciesInfo}
+          rowNum={index+1}
+          comName={speciesInfo.comName}
+          comNameDisplay={comNameData.string}
+          sciNameDisplay={sciNameData.string}
+          key={index} />
+      );
+    });
+  }
+
+  render () {
+    const { filter, dispatch, intl } = this.props;
+
+    return (
+      <div className="species-table">
+        <div className="species-table-header" style={{ width: 'calc(100% - 30px)' }}>
+          <table className="table table-striped">
+            <thead>
+            <tr>
+              <th className="row-num"></th>
+              <th className="species-col sortable">
+                <span onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.SPECIES))}>
+                  <span className="species-header"><FormattedMessage id="species" /></span>
+                  {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.SPECIES)}
+                </span>
+                <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })} className="filter-field" value={filter}
+                  onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
+                {this.getClearSpeciesFilterIcon()}
+              </th>
+              <th className="locations-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS))}>
+                <FormattedMessage id="locationsSeen" />
+                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_LOCATIONS)}
+              </th>
+              <th className="last-seen sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.LAST_SEEN))}>
+                <FormattedMessage id="lastSeen" />
+                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.LAST_SEEN)}
+              </th>
+              <th className="num-reported sortable" onClick={() => dispatch(actions.sortSpecies(C.SPECIES_SORT.FIELDS.NUM_REPORTED))}>
+                <FormattedMessage id="numReported" />
+                {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.NUM_REPORTED)}
+              </th>
+            </tr>
+            </thead>
+          </table>
+        </div>
+        <div className="species-table-content-wrapper">
+          <table className="species-table-content table table-striped">
+            {this.getContent()}
+          </table>
+        </div>
+      </div>
     );
   }
 }

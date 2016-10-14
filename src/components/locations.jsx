@@ -24,11 +24,8 @@ export class LocationsPanel extends React.Component {
       return false;
     }
 
-    const searchProp = (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ?
-      'numSpeciesRunningTotal' : 'numBirdsRunningTotal';
-
-    this.sortedFilteredLocations = helpers.sortLocations(locations, locationSightings,
-      searchSettings.observationRecency, sort, sortDir, filter, searchProp);
+    this.sortedFilteredLocations = helpers.sortLocations(locations, locationSightings, searchSettings.observationRecency,
+      sort, sortDir, filter);
 
     return true;
   }
@@ -138,7 +135,6 @@ export class LocationsPanel extends React.Component {
     }
     
     const totalSectionClassOverride = (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSightingsTotal';
-
     return (
       <div id="locations-table-wrapper">
         <table className="table table-striped" >
@@ -251,8 +247,7 @@ class LocationRow extends React.Component {
     var count = null;
     var rowClass = 'loading';
     if (sightings.fetched) {
-      let prop = (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? 'numSpeciesRunningTotal' : 'numBirdsRunningTotal';
-      count = sightings.data[observationRecency - 1][prop];
+      count = sightings.data[observationRecency - 1].runningTotal;
       rowClass = '';
     }
 

@@ -10,7 +10,7 @@ onmessage = function (e) {
   locationIDs.forEach((locationID) => {
     var template = [];
     for (var i=0; i<maxSearchDays; i++) {
-      template.push({obs: [], numSpecies: 0, numSpeciesRunningTotal: 0});
+      template.push({obs: [], numSpecies: 0, runningTotal: 0});
     }
 
     data[locationID] = template;
@@ -69,9 +69,9 @@ onmessage = function (e) {
         numUniqueSpecies++;
       }
 
-      // now set the numSpeciesRunningTotal property. This is the running total seen in that time
-      // range: e.g. 3 days would include the total species seen on days 1-3, 4 days would have 1-4 etc.
-      data[locationID][i].numSpeciesRunningTotal = numUniqueSpecies;
+      // now set the runningTotal property. This is the running total seen in that time range: e.g. 3 days would
+      // include the total species seen on days 1-3, 4 days would have 1-4 etc.
+      data[locationID][i].runningTotal = numUniqueSpecies;
     }
 
     postMessage({ locationID: locationID, sightings: data[locationID] });

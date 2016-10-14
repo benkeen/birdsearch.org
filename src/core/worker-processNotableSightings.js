@@ -18,7 +18,7 @@ onmessage = function (e) {
     if (!data[locationID]) {
       data[locationID] = [];
       for (let j=0; j<maxSearchDays; j++) {
-        data[locationID].push({ obs: [], numSpecies: 0, numBirdsRunningTotal: 0 });
+        data[locationID].push({ obs: [], numSpecies: 0, runningTotal: 0 });
       }
       locations.push({
         la: sightings[i].lat,
@@ -58,7 +58,7 @@ onmessage = function (e) {
     let runningTotal = 0;
     for (let i=0; i<maxSearchDays; i++) {
       runningTotal += data[locationID][i].obs.length;
-      data[locationID][i].numBirdsRunningTotal = runningTotal;
+      data[locationID][i].runningTotal = runningTotal;
     }
   }
 

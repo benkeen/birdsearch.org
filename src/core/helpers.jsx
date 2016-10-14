@@ -111,9 +111,8 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 	var dataBySpecies = {};
 	var numSpecies = 0;
 
-	_.each(locationIDs, function (locationID) {
+	_.each(locationIDs, (locationID) => {
 		var currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
-
 		if (targetLocationID === null || locationID === targetLocationID) {
 			_.each(currLocationSpeciesInfo.species, function (info, sciName) {
 				if (!_.has(dataBySpecies, sciName)) {
@@ -146,7 +145,6 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 				dataBySpecies[sciName].locations.push({locName: info.locName, locID: info.locID, subID: info.subID });
 			}
 		});
-
 	});
 
 	// now convert the sightings into an array
@@ -188,8 +186,27 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 };
 
 
-const getNotableSightingsList = () => {
+const getNotableSightings = (locations, sightings, obsRecency, targetLocationID = null) => {
+	const locationIDs = _.pluck(locations, 'i');
 
+	const data = [];
+	_.each(sightings, (sightingData, locationID) => {
+		if (!sightingData.fetched) {
+			return;
+		}
+		if (locationIDs.indexOf(locationID) === -1) {
+			return;
+		}
+
+		for (let i=0; i<obsRecency; i++) {
+			let daySightings = sightingData.data[i].obs;
+			for (let j=0; j<daySightings.length; j++) {
+				console.log(daySightings[j]);
+			}
+		}
+	});
+
+	return data;
 };
 
 const highlightString = (string, filter) => {
@@ -212,7 +229,7 @@ const highlightString = (string, filter) => {
 };
 
 
-const sortLocations = (locations, locationSightings, observationRecency, sort, sortDir, filter, prop) => {
+const sortLocations = (locations, locationSightings, observationRecency, sort, sortDir, filter) => {
 	var sortedLocations = locations;
 
 	// apply the appropriate sort
@@ -224,7 +241,7 @@ const sortLocations = (locations, locationSightings, observationRecency, sort, s
 		sortedLocations = _.sortBy(locations, function (locInfo) {
 			var sightings = locationSightings[locInfo.i];
 			if (sightings.fetched) {
-				return 10000 - sightings.data[observationRecency - 1][prop];
+				return 10000 - sightings.data[observationRecency - 1].runningTotal;
 			}
 			return 10000;
 		});
@@ -244,7 +261,7 @@ const getNumLoadedLocations = (locations, sightings) => {
 	_.each(locations, function (location) {
 		if (sightings[location.i].fetched) {
 			count++;
-			//return 10000 - sightings.data[observationRecency - 1].numSpeciesRunningTotal;
+			//return 10000 - sightings.data[observationRecency - 1].runningTotal;
 		}
 	});
 
@@ -291,6 +308,7 @@ export {
 	getLocationSpeciesList,
 	getLocationById,
 	getSightings,
+	getNotableSightings,
 	highlightString,
 	sortLocations,
 	getNumLoadedLocations,
