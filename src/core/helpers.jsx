@@ -201,7 +201,23 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 		for (let i=0; i<obsRecency; i++) {
 			let daySightings = sightingData.data[i].obs;
 			for (let j=0; j<daySightings.length; j++) {
-				console.log(daySightings[j]);
+				const info = daySightings[j];
+
+        console.log(info);
+
+				data.push({
+					comName: info.comName,
+					sciName: info.sciName,
+					howMany: info.howMany,
+					lat: info.lat,
+					lng: info.lng,
+					locID: info.locID,
+					locName: info.locName,
+          reporter: `${info.firstName} ${info.lastName}`,
+					obsDt: moment(info.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a'),
+					obsReviewed: info.obsReviewed,
+					obsValid: info.obsValid
+				});
 			}
 		}
 	});
@@ -300,6 +316,20 @@ const chunkArray = (arr, chunkSize) => {
 };
 
 
+const getColSort = (field, sort, sortDir) => {
+	if (sort !== field) {
+		return null;
+	}
+
+	var className = 'col-sort glyphicon ';
+	className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
+
+	return (
+		<span className={className} />
+	);
+};
+
+
 export {
 	getBestBounds,
 	getLocationIDs,
@@ -314,5 +344,6 @@ export {
 	getNumLoadedLocations,
 	queryParams,
 	getPacketSize,
-	chunkArray
+	chunkArray,
+	getColSort
 };

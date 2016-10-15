@@ -505,3 +505,26 @@ body .filter-field {
 .nav-pills li > a:hover {
 	background-color: $blue;
 }
+
+/** the notable sightings table just re-uses the bulk of the species-table rules, and overrides and adds a couple of things */
+.notable-table {
+	.status, .reporter, .last-seen {
+		white-space: nowrap;
+	}
+	.status {
+		.confirmed {
+			color: green;
+		}
+		.not-reviewed {
+			color: orange;
+		}
+		.reviewed {
+			color: brown;
+		}
+	}
+
+	.notable-count {
+		margin-left: 6px;
+		color: #85bfe9;
+	}
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
+import { FormattedMessage, FormattedNumber, intlShape, injectIntl } from 'react-intl';
 import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../core/core';
@@ -134,8 +134,8 @@ export class SpeciesPanel extends React.Component {
       );
     }
 
-    console.log(1);
     let sightingsData = helpers.getNotableSightings(locations, sightings, searchSettings.observationRecency, selLocation);
+    console.log('sightings: ', sightingsData);
 
     return (
       <NotableSightingsTable
@@ -319,22 +319,8 @@ class SpeciesTable extends React.Component {
     );
   }
 
-  getSpeciesColSort (field) {
-    const { sort, sortDir } = this.props;
-    if (sort !== field) {
-      return null;
-    }
-
-    var className = 'col-sort glyphicon ';
-    className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
-
-    return (
-      <span className={className} />
-    );
-  }
-
   render () {
-    const { filter, dispatch, intl } = this.props;
+    const { filter, dispatch, intl, sort, sortDir } = this.props;
 
     return (
       <div className="species-table">
@@ -346,7 +332,7 @@ class SpeciesTable extends React.Component {
                 <th className="species-col sortable">
                   <span onClick={() => dispatch(actions.sortSightings(C.SPECIES_SORT.FIELDS.SPECIES))}>
                     <span className="species-header"><FormattedMessage id="species" /></span>
-                    {this.getSpeciesColSort(C.SPECIES_SORT.FIELDS.SPECIES)}
+                    {helpers.getColSort(C.SPECIES_SORT.FIELDS.SPECIES, sort, sortDir)}
                   </span>
                   <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })} className="filter-field" value={filter}
                     onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
@@ -521,7 +507,6 @@ class NotableSightingsTable extends React.Component {
 
   getContent () {
     const { species } = this.props;
-
     if (!species.length) {
       return null;
     }
@@ -534,22 +519,23 @@ class NotableSightingsTable extends React.Component {
   }
 
   getRows () {
-    const { dispatch, filter } = this.props;
+    const { dispatch, selectedLocation, filter } = this.props;
 
-    return _.map(this.sortedSpecies, function (speciesInfo, index) {
-      var comNameData = helpers.highlightString(speciesInfo.comName, filter);
-      var sciNameData = helpers.highlightString(speciesInfo.sciName, filter);
+    return _.map(this.sortedSpecies, function (row, index) {
+      var comNameData = helpers.highlightString(row.comName, filter);
+      var sciNameData = helpers.highlightString(row.sciName, filter);
       if (!comNameData.match && !sciNameData.match) {
         return null;
       }
 
       return (
-        <SpeciesRow
+        <NotableSpeciesRow
           dispatch={dispatch}
+          selectedLocation={selectedLocation}
           filter={filter}
-          species={speciesInfo}
+          row={row}
           rowNum={index+1}
-          comName={speciesInfo.comName}
+          comName={row.comName}
           comNameDisplay={comNameData.string}
           sciNameDisplay={sciNameData.string}
           key={index} />
@@ -558,23 +544,22 @@ class NotableSightingsTable extends React.Component {
   }
 
   getLocationColHeader () {
-    if (!this.props.selectedLocation) {
+    const { selectedLocation, dispatch } = this.props;
+    if (selectedLocation) {
       return null;
     }
 
     return (
-      <th className="locations sortable" onClick={() => dispatch(actions.sortSightings(C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION))}>
-        <FormattedMessage id="location" />
-        {this.getColSort(C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION)}
-      </th>
-    )
+      <SortableColHeader dispatch={dispatch}
+        label="location" colClass="locations" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION} />
+    );
   }
 
   render () {
-    const { filter, dispatch, intl } = this.props;
+    const { filter, dispatch, intl, sort, sortDir } = this.props;
 
     return (
-      <div className="species-table">
+      <div className="species-table notable-table">
         <div className="species-table-header" style={{ width: 'calc(100% - 30px)' }}>
           <table className="table table-striped">
             <thead>
@@ -585,7 +570,7 @@ class NotableSightingsTable extends React.Component {
               <th className="species-col sortable">
                 <span onClick={() => dispatch(actions.sortSightings(C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES))}>
                   <span className="species-header"><FormattedMessage id="species" /></span>
-                  {this.getColSort(C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES)}
+                  {helpers.getColSort(C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES, sort, sortDir)}
                 </span>
                 <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })} className="filter-field" value={filter}
                   onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
@@ -594,9 +579,6 @@ class NotableSightingsTable extends React.Component {
 
               <SortableColHeader dispatch={dispatch}
                 label="dateSeen" colClass="last-seen" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.DATE_SEEN} />
-
-              <SortableColHeader dispatch={dispatch}
-                label="numReported" colClass="num-sortable" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.NUM_REPORTED} />
 
               <SortableColHeader dispatch={dispatch}
                 label="reportedBy" colClass="reporter" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.REPORTER} />
@@ -618,27 +600,13 @@ class NotableSightingsTable extends React.Component {
 }
 
 class SortableColHeader extends React.Component {
-  getColSort (field) {
-    const { sort, sortDir } = this.props;
-    if (sort !== field) {
-      return null;
-    }
-
-    var className = 'col-sort glyphicon ';
-    className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
-
-    return (
-      <span className={className} />
-    );
-  }
-
   render () {
-    const { dispatch, label, sortField, colClass } = this.props;
+    const { dispatch, label, sortField, colClass, sort, sortDir } = this.props;
     const className = 'sortable ' + colClass;
     return (
       <th className={className} onClick={() => dispatch(actions.sortSightings(sortField))}>
         <FormattedMessage id={label} />
-        {this.getColSort(sortField)}
+        {helpers.getColSort(sortField, sort, sortDir)}
       </th>
     )
   }
@@ -648,6 +616,56 @@ SortableColHeader.propTypes = {
   sortField: React.PropTypes.string.isRequired,
   colClass: React.PropTypes.string.isRequired
 };
+
+
+class NotableSpeciesRow extends React.Component {
+  getLocationField () {
+    const { selectedLocation, row } = this.props;
+    if (selectedLocation) {
+      return null;
+    }
+    return (
+      <td>{row.locName}</td>
+    );
+  }
+
+  getStatus (row) {
+    let status = null;
+    if (row.obsValid) {
+      status = <span className="confirmed"><FormattedMessage id="confirmed" /></span>;
+    } else if (row.obsReviewed) {
+      status = <span className="reviewed"><FormattedMessage id="reviewed" /></span>;
+    } else {
+      status = <span className="not-reviewed"><FormattedMessage id="notReviewed" /></span>;
+    }
+    return status;
+  }
+
+  render () {
+    const { row, comName, comNameDisplay, sciNameDisplay, rowNum } = this.props;
+    const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
+
+    return (
+      <tr>
+        <td className="row-num">{rowNum}</td>
+        {this.getLocationField()}
+        <td className="species-col">
+          <div>
+            <span className="com-name" dangerouslySetInnerHTML={{ __html: comNameDisplay }}></span>
+            <span className="notable-count">(<FormattedNumber value={row.howMany} />)</span>
+          </div>
+          <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+        </td>
+        <td className="last-seen">{row.obsDt}</td>
+        <td className="reporter">{row.reporter}</td>
+        <td className="status">{this.getStatus(row)}</td>
+        <td>
+          <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />
+        </td>
+      </tr>
+    );
+  }
+}
 
 
 // <div class="fixedHeader">
@@ -687,17 +705,6 @@ SortableColHeader.propTypes = {
 // 			<td><%=sighting.sciName%></td>
 // 			<td><%=sighting.reporterName%></td>
 // 			<td data-u="<%=sighting.obsDt_unixtime%>" nowrap><%=sighting.obsDt%></td>
-// 			<td>
-// 				<% if (sighting.obsValid) { %>
-// 					<span class="confirmed"><%=L.confirmed%></span>
-// 				<% } else if (sighting.obsReviewed) { %>
-// 					<span class="reviewed"><%=L.reviewed%></span>
-// 				<% } else if (!sighting.obsReviewed) { %>
-// 					<span class="not_reviewed"><%=L.not_reviewed%></span>
-// 				<% } %>
-// 			</td>
-// 		</tr>
-// 		<% }); %>
 // 		</tbody>
 // 	</table>
 // </div>
