@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router';
 import { FormattedMessage, FormattedNumber, intlShape, injectIntl } from 'react-intl';
 import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
@@ -135,8 +136,6 @@ export class SpeciesPanel extends React.Component {
     }
 
     let sightingsData = helpers.getNotableSightings(locations, sightings, searchSettings.observationRecency, selLocation);
-    console.log('sightings: ', sightingsData);
-
     return (
       <NotableSightingsTable
         dispatch={dispatch}
@@ -148,6 +147,18 @@ export class SpeciesPanel extends React.Component {
         sort={sort}
         sortDir={sortDir}
         intl={intl} />
+    );
+  }
+
+  getSettingsLink () {
+    const { searchSettings, intl } = this.props;
+    if (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
+      return;
+    }
+    return (
+      <span id="header-settings-link">
+        <Link to="/settings">{intl.formatMessage({ id: 'searchSettings' }).toLowerCase()}</Link>
+      </span>
     );
   }
 
@@ -170,6 +181,8 @@ export class SpeciesPanel extends React.Component {
               <FormattedMessage id={tabLangKey} />
               {(!results.allFetched) ? <LineLoader className="species-loading" /> : null}
             </h2>
+
+            {this.getSettingsLink()}
             <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
           </div>
         </header>
@@ -551,7 +564,7 @@ class NotableSightingsTable extends React.Component {
 
     return (
       <SortableColHeader dispatch={dispatch}
-        label="location" colClass="locations" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION} />
+        label="location" colClass="location-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION} />
     );
   }
 
@@ -560,31 +573,26 @@ class NotableSightingsTable extends React.Component {
 
     return (
       <div className="species-table notable-table">
-        <div className="species-table-header" style={{ width: 'calc(100% - 30px)' }}>
+        <div className="species-table-header" style={{ width: 'calc(100% - 15px)' }}>
           <table className="table table-striped">
             <thead>
             <tr>
               <th className="row-num"></th>
               {this.getLocationColHeader()}
 
-              <th className="species-col sortable">
-                <span onClick={() => dispatch(actions.sortSightings(C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES))}>
-                  <span className="species-header"><FormattedMessage id="species" /></span>
-                  {helpers.getColSort(C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES, sort, sortDir)}
-                </span>
-                <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })} className="filter-field" value={filter}
-                  onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
-                {this.getClearSpeciesFilterIcon()}
-              </th>
+              <SortableColHeader dispatch={dispatch}
+                label="species" colClass="species-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES} />
 
               <SortableColHeader dispatch={dispatch}
-                label="dateSeen" colClass="last-seen" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.DATE_SEEN} />
+                label="dateSeen" colClass="last-seen-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.DATE_SEEN} />
 
               <SortableColHeader dispatch={dispatch}
-                label="reportedBy" colClass="reporter" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.REPORTER} />
+                label="reportedBy" colClass="reporter-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.REPORTER} />
 
               <SortableColHeader dispatch={dispatch}
-                label="status" colClass="status" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.STATUS} />
+                label="status" colClass="status-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.STATUS} />
+
+              <th className="icon-col"></th>
             </tr>
             </thead>
           </table>
@@ -625,7 +633,7 @@ class NotableSpeciesRow extends React.Component {
       return null;
     }
     return (
-      <td>{row.locName}</td>
+      <td className="location-col">{row.locName}</td>
     );
   }
 
@@ -644,6 +652,7 @@ class NotableSpeciesRow extends React.Component {
   render () {
     const { row, comName, comNameDisplay, sciNameDisplay, rowNum } = this.props;
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
+    const checklistLink = `http://ebird.org/ebird/view/checklist/${row.subID}`;
 
     return (
       <tr>
@@ -656,55 +665,16 @@ class NotableSpeciesRow extends React.Component {
           </div>
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
         </td>
-        <td className="last-seen">{row.obsDt}</td>
-        <td className="reporter">{row.reporter}</td>
-        <td className="status">{this.getStatus(row)}</td>
-        <td>
+        <td className="last-seen-col">{row.obsDt}</td>
+        <td className="reporter-col">{row.reporter}</td>
+        <td className="status-col">{this.getStatus(row)}</td>
+        <td className="checklist-col">
+          <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list" title="View Checklist"></a>
+        </td>
+        <td className="wikipedia-col">
           <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />
         </td>
       </tr>
     );
   }
 }
-
-
-// <div class="fixedHeader">
-// 	<div>
-// 		<h1>
-// 			<% if (isSingleLocation) { %>
-// 			<a href="#" class="showNotableSightingsTable"><%=L.notable_sightings%></a>
-// 				<span class="joiner">&raquo;</span> <%= locationName %>
-// 			<% } else { %>
-// 				<%=L.notable_sightings%>
-// 			<% } %>
-// 		</h1>
-// 		<h2><%=L.last%> <%=searchObservationRecency%> <% if (searchObservationRecency == 1) { %><%=L.day%><% } else {%><%=L.days%><% } %></h2>
-// 		<div class="clear"></div>
-// 	</div>
-// </div>
-
-// <div class="fixedContent">
-// 	<table class="table tablesorter table-striped table-hover" id="notableSightings">
-// 		<thead>
-// 			<tr>
-// 				<% if (!isSingleLocation) { %><th>Location</th><% } %>
-// 				<th><%=L.species%></th>
-// 				<th>#</th>
-// 				<th><%=L.scientific_name%></th>
-// 				<th><%=L.reported_by%></th>
-// 				<th class="{ sorter: 'customdate' }"><%=L.date%></th>
-// 				<th><%=L.status%></th>
-// 			</tr>
-// 		</thead>
-// 		<tbody>
-// 		<% _.each(sightings, function(sighting, index) { %>
-// 		<tr>
-// 			<% if (!isSingleLocation) { %><td><a href="#" class="filterNotableSightingByLocation" data-location-id="<%=sighting.locationID%>"><%=sighting.locationName%></a></td><% } %>
-// 			<td class="species"><%=sighting.comName%></td>
-// 			<td><%=sighting.howMany%></td>
-// 			<td><%=sighting.sciName%></td>
-// 			<td><%=sighting.reporterName%></td>
-// 			<td data-u="<%=sighting.obsDt_unixtime%>" nowrap><%=sighting.obsDt%></td>
-// 		</tbody>
-// 	</table>
-// </div>

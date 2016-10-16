@@ -10,7 +10,7 @@ import { C, _, actions } from '../core/core';
 class SettingsOverlay extends React.Component {
   constructor (props) {
     super(props);
-    this.maybeSearch = this.maybeSearch.bind(this);
+    this.search = this.search.bind(this);
   }
 
   close () {
@@ -35,11 +35,7 @@ class SettingsOverlay extends React.Component {
     });
   }
 
-  maybeSearch () {
-    if (this.isChanged()) {
-//      dispatch(actions.search(mapSettings.location, mapSettings.lat, mapSettings.lng, mapSettings.bounds,
-//        searchSettings.observationRecency));
-    }
+  search () {
     browserHistory.push('/');
   }
 
@@ -51,7 +47,7 @@ class SettingsOverlay extends React.Component {
 
     return (
       <footer>
-        <button className="btn btn-primary" onClick={this.maybeSearch} disabled={!this.isChanged()}>
+        <button className="btn btn-primary" onClick={this.search}>
           <FormattedMessage id="search" />
         </button>
       </footer>
@@ -63,10 +59,33 @@ class SettingsOverlay extends React.Component {
 
     const infoTooltip = (
       <Tooltip id="search-results-tooltip">
-        <FormattedMessage id="autoZoomSetting" values={{
-          autoZoom: <b>{intl.formatMessage({ id: 'autoZoom' })}</b>,
-          showFullSearch: <b>{intl.formatMessage({ id: 'showFullSearchRange' })}</b>
-         }} />
+        <div>
+          <FormattedMessage id="autoZoomSetting1" />
+          <ul>
+            <li>
+              <FormattedMessage id="autoZoomSetting2" values={{ autoZoom: <b>{intl.formatMessage({ id: 'autoZoom' })}</b> }} />
+            </li>
+            <li>
+              <FormattedMessage id="autoZoomSetting3" values={{ showFullSearch: <b>{intl.formatMessage({ id: 'showFullSearchRange' })}</b> }} />
+            </li>
+          </ul>
+        </div>
+      </Tooltip>
+    );
+
+    const searchTypeTooltip = (
+      <Tooltip id="search-type-tooltip">
+        <div>
+          <FormattedMessage id="resultType1" />
+          <ul>
+            <li>
+              <FormattedMessage id="resultType2" values={{ birdSightings: <b>{intl.formatMessage({ id: 'birdSightings' })}</b> }} />
+            </li>
+            <li>
+              <FormattedMessage id="resultType3" values={{ notableSightings: <b>{intl.formatMessage({ id: 'notableSightings' })}</b> }} />
+            </li>
+          </ul>
+        </div>
       </Tooltip>
     );
 
@@ -82,6 +101,9 @@ class SettingsOverlay extends React.Component {
               <label htmlFor="rt1"><FormattedMessage id="birdSightings" /></label>
             </span>
             <span>
+              <OverlayTrigger placement="left" overlay={searchTypeTooltip}>
+                <span className="zoom-tip glyphicon glyphicon-info-sign" />
+              </OverlayTrigger>
               <input type="radio" name="search-type" id="rt2" className="margin-left"
                 checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
                 onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />

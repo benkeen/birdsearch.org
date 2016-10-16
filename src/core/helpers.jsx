@@ -203,14 +203,13 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 			for (let j=0; j<daySightings.length; j++) {
 				const info = daySightings[j];
 
-        console.log(info);
-
 				data.push({
 					comName: info.comName,
 					sciName: info.sciName,
 					howMany: info.howMany,
 					lat: info.lat,
 					lng: info.lng,
+          subID: info.subID,
 					locID: info.locID,
 					locName: info.locName,
           reporter: `${info.firstName} ${info.lastName}`,

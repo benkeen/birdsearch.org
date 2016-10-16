@@ -166,12 +166,22 @@
   vertical-align: middle;
 }
 
-#search-results-tooltip {
+#search-type-tooltip, #search-results-tooltip {
+  width: 300px;
   .tooltip-inner {
     text-align: left;
-    font-size: 14px;
+    font-size: 13.5px;
+    padding: 15px;
+    max-width: 300px;
+    b {
+      color: #85bfe9;
+    }
+    ul {
+      margin-top: 8px;
+    }
   }
   &.in {
     opacity: 0.85;
   }
 }
+
