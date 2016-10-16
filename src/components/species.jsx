@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import { FormattedMessage, FormattedNumber, intlShape, injectIntl } from 'react-intl';
 import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
@@ -156,9 +156,9 @@ export class SpeciesPanel extends React.Component {
       return;
     }
     return (
-      <span id="header-settings-link">
-        <Link to="/settings">{intl.formatMessage({ id: 'searchSettings' }).toLowerCase()}</Link>
-      </span>
+      <Link id="header-settings-link" onClick={(e) => { e.stopPropagation(); browserHistory.push('/'); }}>
+        {intl.formatMessage({ id: 'editSearchSettings' })}
+      </Link>
     );
   }
 

@@ -202,8 +202,13 @@ const togglePanelVisibility = (panel) => {
   };
 };
 
+
 // once the visible locations are identified, it automatically requests all observations for them
-const visibleLocationsFound = (visibleLocations, allLocationSightings) => {
+const visibleLocationsFound = (searchType, visibleLocations, allLocationSightings) => {
+  if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE) {
+    return updateVisibleLocations(visibleLocations);
+  }
+
   return function (dispatch) {
     dispatch(initSearchRequest());
     dispatch(updateVisibleLocations(visibleLocations));
@@ -255,7 +260,6 @@ const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) =
       counter++;
     };
   };
-
 
   // divvy up the requests for the sightings into packets, the size of which depends on the total number of hotspots
   // to query 

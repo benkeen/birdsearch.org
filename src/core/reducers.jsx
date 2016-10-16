@@ -179,8 +179,14 @@ function aboutOverlay (state = {
 }
 
 
+// the search settings overlay has its own copy of the actual search settings. This allows the user to change settings
+// there and not have them immediately effect the rest of the UI. Only after a search is performed do the settings
+// get copied over to searchSettings
 function searchSettingsOverlay (state = {
-  visible: false
+  visible: false,
+  searchType: null,
+  observationRecency: null,
+  zoomHandling: null
 }, action) {
 
   switch (action.type) {

@@ -204,7 +204,6 @@ export class Map extends React.Component {
       locationIDsInBounds.push(locInfo.i);
     });
 
-
     // for new searches, the default search zoom level may not show any results. We know there are results so we zoom
     // out as far as needed to show the first result
 //    if (zoomOutToShowResults && hotspotsInBounds.length === 0) {
@@ -213,12 +212,15 @@ export class Map extends React.Component {
 //      return this.updateMapMarkers(searchType, locations, locationSightings, true, newZoom);
 //    }
 
+    const newSorted = locationIDsInBounds.sort();
+
     // if the list of hotspots in the map boundary changed, publish the info
-    if (_.intersection(_currentHotspotIDsInMapBoundaries, locationIDsInBounds).length !== locationIDsInBounds.length) {
-      this.props.dispatch(actions.visibleLocationsFound(locationsInBounds, locationSightings));
+    if (!_.isEqual(newSorted, _currentHotspotIDsInMapBoundaries)) {
+      console.log('dispatch...');
+      this.props.dispatch(actions.visibleLocationsFound(searchType, locationsInBounds, locationSightings));
     }
 
-    _currentHotspotIDsInMapBoundaries = locationIDsInBounds;
+    _currentHotspotIDsInMapBoundaries = newSorted;
   }
 
   // only call this after a new search
@@ -233,6 +235,7 @@ export class Map extends React.Component {
 
   onMapBoundsChange () {
     const { results, searchSettings } = this.props;
+    console.log('.');
     this.updateMapMarkers(searchSettings.searchType, results.allLocations, results.locationSightings);
   }
 

@@ -56,6 +56,12 @@ const store = initStore({
     lng: null,
     observationRecency: obsRecency,
     zoomHandling: zoomHandling
+  },
+  searchSettingsOverlay: {
+    visible: false,
+    searchType: searchType,
+    observationRecency: obsRecency,
+    zoomHandling: zoomHandling
   }
 });
 

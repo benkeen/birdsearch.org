@@ -57,6 +57,7 @@ const getUniqueSpeciesInLocationList = (locations, sightings, obsRecency) => {
 };
 
 
+
 // return the species seen for a particular location and observation recency
 const getLocationSpeciesList = (locationID, sightings, obsRecency) => {
 	if (!_.has(sightings, locationID)) {
@@ -198,6 +199,10 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 			return;
 		}
 
+    if (targetLocationID && locationID !== targetLocationID) {
+      return;
+    }
+
 		for (let i=0; i<obsRecency; i++) {
 			let daySightings = sightingData.data[i].obs;
 			for (let j=0; j<daySightings.length; j++) {
@@ -222,6 +227,26 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 	});
 
 	return data;
+};
+
+const getNumNotableSightings = (locations, sightings, obsRecency) => {
+  const locationIDs = _.pluck(locations, 'i');
+
+  let count = 0;
+  _.each(sightings, (sightingData, locationID) => {
+    if (!sightingData.fetched) {
+      return;
+    }
+    if (locationIDs.indexOf(locationID) === -1) {
+      return;
+    }
+
+    for (let i=0; i<obsRecency; i++) {
+      count += sightingData.data[i].obs.length;
+    }
+  });
+
+  return count;
 };
 
 const highlightString = (string, filter) => {
@@ -338,6 +363,7 @@ export {
 	getLocationById,
 	getSightings,
 	getNotableSightings,
+  getNumNotableSightings,
 	highlightString,
 	sortLocations,
 	getNumLoadedLocations,

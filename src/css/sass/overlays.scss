@@ -8,7 +8,7 @@
   z-index: 2;
   left: 0;
   right: 0;
-  top: 0;
+  top: 60px;
   bottom: 0;
   font-size: 14px;
 
@@ -47,7 +47,7 @@
 }
 
 #intro-overlay {
-  height: 120px;
+  height: 184px;
   width: 488px;
 
   .loader {
@@ -102,8 +102,11 @@
 }
 
 #settings-overlay {
-  height: 120px;
+  height: 197px;
   width: 520px;
+  &.with-search {
+    height: 253px;
+  }
   select.num-days {
     width: 60px;
   }
@@ -115,7 +118,7 @@
 }
 
 #about-overlay {
-  height: 300px;
+  height: 304px;
   width: 600px;
 }
 
@@ -130,9 +133,16 @@
   display: flex;
   flex-direction: row;
 
+  span {
+    color: #888888;
+  }
+
   .settings-row-label {
     flex: 0 1 100px;
     padding-left: 0;
+    span {
+      color: #111111;
+    }
   }
 
   &>span {
@@ -148,9 +158,13 @@
     display: inline-block;
     float: left;
   }
-  .zoom-tip {
+  span.zoom-tip {
     float: right;
     cursor: pointer;
+    color: $blue;
+    &:hover {
+      color: $linkHover;
+    }
   }
   .margin-left {
     margin-left: 15px;
@@ -167,12 +181,12 @@
 }
 
 #search-type-tooltip, #search-results-tooltip {
-  width: 300px;
+  width: 350px;
   .tooltip-inner {
     text-align: left;
     font-size: 13.5px;
     padding: 15px;
-    max-width: 300px;
+    max-width: 350px;
     b {
       color: #85bfe9;
     }

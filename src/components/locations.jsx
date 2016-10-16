@@ -86,10 +86,16 @@ export class LocationsPanel extends React.Component {
     }, this);
   }
 
-  getTotalSpecies () {
+  getAllLocationsCount () {
     const { locations, locationSightings, searchSettings } = this.props;
-    var results = helpers.getUniqueSpeciesInLocationList(locations, locationSightings, searchSettings.observationRecency);
-    return results.count;
+    let count = 0;
+    if (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
+      var results = helpers.getUniqueSpeciesInLocationList(locations, locationSightings, searchSettings.observationRecency);
+      count = results.count;
+    } else {
+      count = helpers.getNumNotableSightings(locations, locationSightings, searchSettings.observationRecency);
+    }
+    return count;
   }
 
   getLocationColSort () {
@@ -152,7 +158,7 @@ export class LocationsPanel extends React.Component {
             <tr className="all-locations-row" data-location-id="">
               <td className="location"><FormattedMessage id="allLocations" /></td>
               <td className="num-species">
-                <LocationCount count={this.getTotalSpecies()} classNameOverride={totalSectionClassOverride} />
+                <LocationCount count={this.getAllLocationsCount()} classNameOverride={totalSectionClassOverride} />
               </td>
             </tr>
             {this.getLocationRows()}
