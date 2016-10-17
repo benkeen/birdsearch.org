@@ -353,6 +353,41 @@ const getColSort = (field, sort, sortDir) => {
 	);
 };
 
+const rad = (x) => {
+  return x * Math.PI/180;
+};
+
+
+const findClosestLatLng = (sourceLat, sourceLng, list) => {
+  const R = 6371; // radius of earth in km
+
+  var distances = [];
+  var closest = null;
+
+  for (let i=0; i<list.length; i++) {
+    let lat = list[i][0];
+    let lng = list[i][1];
+
+    var deltaLat = rad(lat - sourceLat);
+    var deltaLng = rad(lng - sourceLng);
+    var a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) + Math.cos(rad(lat)) *
+      Math.cos(rad(lat)) * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+
+    distances[i] = d;
+
+    if (closest === null || d < distances[closest]) {
+      closest = i;
+    }
+  }
+  return {
+    lat: list[closest][0],
+    lng: list[closest][1]
+  };
+};
+
 
 export {
 	getBestBounds,
@@ -370,5 +405,7 @@ export {
 	queryParams,
 	getPacketSize,
 	chunkArray,
-	getColSort
+	getColSort,
+  rad,
+  findClosestLatLng
 };

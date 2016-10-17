@@ -162,7 +162,6 @@ export class SpeciesPanel extends React.Component {
 
     return (
       <section id="species-panel" style={{ width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH }}>
-
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
           <div>
             <h2>

@@ -121,7 +121,7 @@ export class Map extends React.Component {
     var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
     var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
     if (numLocationsChanged || windowResized) {
-      this.updateMapMarkers(nextProps.searchSettings.searchType, nextProps.results.allLocations, nextProps.results.locationSightings, true, nextProps.zoom);
+      this.updateMapMarkers(nextProps.searchSettings.searchType, nextProps.results.allLocations, nextProps.results.locationSightings, true);
     }
 
     if (_currentSearchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
@@ -171,14 +171,19 @@ export class Map extends React.Component {
   }
 
   // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown.
-  updateMapMarkers (searchType, locations, locationSightings, zoomOutToShowResults = false, zoom = null) {
+  updateMapMarkers (searchType, locations, locationSightings, zoomOutToShowResults = false) {
     var mapBoundary = _map.getBounds();
     var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
     var locationsInBounds = [];
     let locationIDsInBounds = [];
+    let latLngList = [];
 
     locations.forEach((locInfo) => {
-      var latlng = new google.maps.LatLng(locInfo.la, locInfo.lg);
+      let lat = locInfo.la;
+      let lng = locInfo.lg;
+      latLngList.push([lat, lng]);
+
+      var latlng = new google.maps.LatLng(lat, lng);
       var locID = locInfo.i;
 
       // filter out-of-bounds markers
@@ -192,7 +197,6 @@ export class Map extends React.Component {
       if (_.has(_data[_currentSearchType].markers, locID)) {
         this.showMarkerWithFilter(locInfo);
       } else {
-
         if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
           this.addBirdMarker(searchType, locID, latlng, locInfo);
         } else {
@@ -206,11 +210,16 @@ export class Map extends React.Component {
 
     // for new searches, the default search zoom level may not show any results. We know there are results so we zoom
     // out as far as needed to show the first result
-//    if (zoomOutToShowResults && hotspotsInBounds.length === 0) {
-//      const newZoom = zoom - 1;
-//      //_map.setZoom(newZoom);
-//      return this.updateMapMarkers(searchType, locations, locationSightings, true, newZoom);
-//    }
+    if (zoomOutToShowResults && locationsInBounds.length === 0) {
+      let center = _map.getCenter();
+      const closestLatLng = helpers.findClosestLatLng(center.lat(), center.lng(), latLngList);
+
+      // find the smallest bounds that fits the current map centerpoint and the closest point
+      const boundsObj = new google.maps.LatLngBounds(center, { lat: closestLatLng.lat, lng: closestLatLng.lng });
+      _map.fitBounds(boundsObj);
+
+      return this.updateMapMarkers(searchType, locations, locationSightings, true);
+    }
 
     const newSorted = locationIDsInBounds.sort();
 
