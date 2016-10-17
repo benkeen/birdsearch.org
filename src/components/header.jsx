@@ -29,10 +29,10 @@ class Header extends React.Component {
     browserHistory.push('/intro');
   }
 
-  onSubmitNewSearch (mapSettings) {
-    const { dispatch, searchSettings } = this.props;
-    dispatch(actions.search(searchSettings.searchType, mapSettings.location, mapSettings.lat, mapSettings.lng,
-      mapSettings.bounds, searchSettings.observationRecency));
+  onSubmitNewSearch ({ location, lat, lng, bounds }) {
+    const { dispatch } = this.props;
+    const { searchType, observationRecency, zoomHandling } = this.props.searchSettingsOverlay;
+    dispatch(actions.search(searchType, location, lat, lng, bounds, observationRecency, zoomHandling));
   }
 
   setLocation (location) {

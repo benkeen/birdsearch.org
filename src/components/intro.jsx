@@ -15,12 +15,13 @@ class IntroOverlay extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { dispatch, searchSettings, mapSettings } = this.props;
+    const { dispatch, mapSettings, userLocationFound } = this.props;
+    const { location, lat, lng } = this.props.searchSettings;
+    const { searchType, observationRecency, zoomHandling } = this.props.searchSettingsOverlay;
 
-    // if the user's location was just found automatically search
-    if (prevProps.userLocationFound !== this.props.userLocationFound && this.props.userLocationFound === true) {
-      dispatch(actions.search(searchSettings.searchType, searchSettings.location, searchSettings.lat, searchSettings.lng,
-        mapSettings.bounds, searchSettings.observationRecency));
+    // if the user's location was just found, automatically search
+    if (prevProps.userLocationFound !== userLocationFound && userLocationFound === true) {
+      dispatch(actions.search(searchType, location, lat, lng, mapSettings.bounds, observationRecency, zoomHandling));
     }
   }
 
@@ -109,6 +110,7 @@ export default injectIntl(connect(state => ({
   loading: state.user.isFetching,
   userLocationFound: state.user.userLocationFound,
   searchSettings: state.searchSettings,
+  searchSettingsOverlay: state.searchSettingsOverlay,
   mapSettings: state.mapSettings
 }))(IntroOverlay));
 

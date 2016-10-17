@@ -40,12 +40,18 @@ function searchSettings (state = {
         location: action.location
       });
 
+    // when a request is started, the action passes the latest & greatest settings from the settings overlay modal
+    // (search type, observation recency, zoom handling). This ensures the main search settings ONLY reflect those
+    // values upon an actual search
+    // TODO reset other data via this request too
     case E.SEARCH_REQUEST_STARTED:
       return Object.assign({}, state, {
         searchType: action.searchType,
         location: action.location,
         lat: action.lat,
-        lng: action.lng
+        lng: action.lng,
+        observationRecency: action.observationRecency,
+        zoomHandling: action.zoomHandling
       });
 
     case E.RECEIVED_USER_LOCATION:

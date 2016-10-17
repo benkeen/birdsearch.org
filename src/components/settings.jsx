@@ -18,20 +18,20 @@ class SettingsOverlay extends React.Component {
   }
 
   componentDidMount () {
-    const { searchSettings } = this.props;
+    const { searchType, zoomHandling, observationRecency } = this.props.settings;
     this.state = {
-      searchType: searchSettings.searchType,
-      zoomHandling: searchSettings.zoomHandling,
-      observationRecency: searchSettings.observationRecency
+      searchType: searchType,
+      zoomHandling: zoomHandling,
+      observationRecency: observationRecency
     };
   }
 
   isChanged () {
-    const { searchSettings } = this.props;
+    const { searchType, zoomHandling, observationRecency } = this.props.settings;
     return !_.isEqual(this.state, {
-      searchType: searchSettings.searchType,
-      zoomHandling: searchSettings.zoomHandling,
-      observationRecency: searchSettings.observationRecency
+      searchType: searchType,
+      zoomHandling: zoomHandling,
+      observationRecency: observationRecency
     });
   }
 
@@ -40,7 +40,7 @@ class SettingsOverlay extends React.Component {
   }
 
   getSearchRow () {
-    const { location } = this.props.searchSettings;
+    const { location } = this.props.location;
     if (!location) {
       return false;
     }
@@ -55,7 +55,8 @@ class SettingsOverlay extends React.Component {
   }
 
   render () {
-    const { dispatch, searchSettings, intl } = this.props;
+    const { dispatch, intl } = this.props;
+    const { searchType, zoomHandling, observationRecency } = this.props.settings;
 
     const infoTooltip = (
       <Tooltip id="search-results-tooltip">
@@ -96,7 +97,7 @@ class SettingsOverlay extends React.Component {
           <span className="search-type">
             <span>
               <input type="radio" name="search-type" id="rt1"
-                checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
+                checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
                 onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }} />
               <label htmlFor="rt1"><FormattedMessage id="birdSightings" /></label>
             </span>
@@ -105,7 +106,7 @@ class SettingsOverlay extends React.Component {
                 <span className="zoom-tip glyphicon glyphicon-info-sign" />
               </OverlayTrigger>
               <input type="radio" name="search-type" id="rt2" className="margin-left"
-                checked={searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
+                checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
                 onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
               <label htmlFor="rt2"><FormattedMessage id="notableSightings" /></label>
             </span>
@@ -117,7 +118,7 @@ class SettingsOverlay extends React.Component {
           <span className="search-results">
             <span>
               <input type="radio" name="zoom-handling" id="zh1"
-                checked={searchSettings.zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM}
+                checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM}
                 onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM)); }} />
               <label htmlFor="zh1"><FormattedMessage id="autoZoom" /></label>
             </span>
@@ -126,7 +127,7 @@ class SettingsOverlay extends React.Component {
                 <span className="zoom-tip glyphicon glyphicon-info-sign" />
               </OverlayTrigger>
               <input type="radio" name="zoom-handling" className="margin-left" id="zh2"
-                checked={searchSettings.zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH}
+                checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH}
                 onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH)); }} />
               <label htmlFor="zh2"><FormattedMessage id="showFullSearchRange" /></label>
             </span>
@@ -136,8 +137,7 @@ class SettingsOverlay extends React.Component {
         <div className="observation-recency-setting">
           <span>
             Show observations made in the last
-            <DaysDropdown value={searchSettings.observationRecency}
-              onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} />days.
+            <DaysDropdown value={observationRecency} onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} />days.
           </span>
         </div>
 
@@ -149,7 +149,8 @@ class SettingsOverlay extends React.Component {
 
 export default injectIntl(connect(state => ({
   userLocationFound: state.user.userLocationFound,
-  searchSettings: state.searchSettings,
+  settings: state.searchSettingsOverlay,
+  location: state.searchSettings.location,
   mapSettings: state.mapSettings
 }))(SettingsOverlay));
 

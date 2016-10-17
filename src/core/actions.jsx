@@ -38,14 +38,16 @@ const setObservationRecency = (recency) => {
   };
 };
 
-const startSearchRequest = (searchType, location, lat, lng, bounds) => {
+const startSearchRequest = (searchType, location, lat, lng, bounds, observationRecency, zoomHandling) => {
   return {
     type: E.SEARCH_REQUEST_STARTED,
-    searchType: searchType,
-    lat: lat,
-    lng: lng,
-    location: location,
-    bounds: bounds
+    searchType,
+    lat,
+    lng,
+    location,
+    bounds,
+    observationRecency,
+    zoomHandling
   };
 };
 
@@ -57,9 +59,11 @@ const searchRequestComplete = () => {
   return { type: E.SEARCH_REQUEST_ENDED };
 };
 
-const search = (searchType, locationString, lat, lng, mapBounds, observationRecency) => {
+// our one and only search method. This fires off the initial requests for the data. Notable sightings are a single
+// request; bird sightings are much more complex.
+const search = (searchType, locationString, lat, lng, mapBounds, observationRecency, zoomHandling) => {
   return function (dispatch) {
-    dispatch(startSearchRequest(searchType, locationString, lat, lng, mapBounds));
+    dispatch(startSearchRequest(searchType, locationString, lat, lng, mapBounds, observationRecency, zoomHandling));
 
     var searchParams = {
       lat: lat,
