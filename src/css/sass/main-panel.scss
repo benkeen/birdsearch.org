@@ -522,7 +522,7 @@ body .filter-field {
 
 	.species-table-header  {
 		.status-col {
-			width: 160px;
+			width: 210px;
 		}
 	}
 	.notable-count {
@@ -539,19 +539,20 @@ body .filter-field {
 			color: $blue;
 		}
 	}
+
 	.location-col {
-		width: 260px;
+		max-width: 150px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
 	}
 	.species-col {
-		width: inherit;
-		&>div {
-			white-space: nowrap;
-		}
+		width: 245px;
 	}
 	.icon-col {
 		width: 60px;
 	}
-	.last-seen-col {
+	.date-seen-col {
 		width: 200px;
 		white-space: nowrap;
 	}

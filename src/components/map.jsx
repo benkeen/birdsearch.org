@@ -216,7 +216,6 @@ export class Map extends React.Component {
 
     // if the list of hotspots in the map boundary changed, publish the info
     if (!_.isEqual(newSorted, _currentHotspotIDsInMapBoundaries)) {
-      console.log('dispatch...');
       this.props.dispatch(actions.visibleLocationsFound(searchType, locationsInBounds, locationSightings));
     }
 
@@ -235,7 +234,6 @@ export class Map extends React.Component {
 
   onMapBoundsChange () {
     const { results, searchSettings } = this.props;
-    console.log('.');
     this.updateMapMarkers(searchSettings.searchType, results.allLocations, results.locationSightings);
   }
 

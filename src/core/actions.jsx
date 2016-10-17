@@ -205,11 +205,16 @@ const togglePanelVisibility = (panel) => {
 
 // once the visible locations are identified, it automatically requests all observations for them
 const visibleLocationsFound = (searchType, visibleLocations, allLocationSightings) => {
-  if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE) {
-    return updateVisibleLocations(visibleLocations);
-  }
 
   return function (dispatch) {
+
+    if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE) {
+      dispatch(updateVisibleLocations(visibleLocations));
+
+      // we explicitly 
+      return dispatch(searchRequestComplete());
+    }
+
     dispatch(initSearchRequest());
     dispatch(updateVisibleLocations(visibleLocations));
     return getBirdHotspotObservations(dispatch, visibleLocations, allLocationSightings);

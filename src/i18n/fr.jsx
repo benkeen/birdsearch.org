@@ -3,6 +3,7 @@
 // ------------------------------------------------------------------------------------------------
 
 export default {
+
 	// language-specific stuff
 	LANG: 'Français',
 	LANG_KEY: 'fr', // corresponds to file name
@@ -15,13 +16,19 @@ export default {
 	aboutPara2: 'Les données sont extraites de {eBirdSiteLink} qui fournit beaucoup d\'autres options pour l\'affichage des données d\'observation historique. Vérifiez-le.',
 	aboutBirdsearch: 'Sur birdsearch.org',
 	allLocations: 'Toutes les localités',
+  autoZoom: 'Auto-zoom',
+  autoZoomSetting1: 'This controls how the map should behave after a search.',
+  autoZoomSetting2: '{autoZoom} sets the zoom level to whatever you were searching.',
+  autoZoomSetting3: '{showFullSearch} zooms out to show the full search boundary.',
 	birds: 'des oiseaux',
 	birdSightings: 'Observations d\'oiseaux',
 	birdSpecies: 'Espèces d\'Oiseaux',
 	birdingLocations: 'Lieux Ornithologiques',
+  confirmed: 'Confirmé',
 	contact: 'Contact',
 	contactPara1: 'Vous avez trouvé un bug? Vous avez une suggestion de fonctionnalité? Don\'t comme la façon dont se comporte quelque chose? Je\'ai l\'amour de vous entendre. Faire un commentaire sur {postLink} ou envoyez-moi un courriel à l\'adresse {email}.',
 	contactPara2: 'S\'il vous plaît noter que ce site est un projet de passe-temps, {openSourceLink}, et génère un revenu nul. Donc, si je n\'t répondre tout de suite, je\'m probablement hors birding. :)',
+  dateSeen: 'Date de Vu',
 	filterLocations: 'Filtre Emplacements',
 	filterSpecies: 'Filtrer les espèces',
 	findingYourLocation: 'Trouver votre emplacement ...',

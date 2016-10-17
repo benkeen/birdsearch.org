@@ -150,18 +150,6 @@ export class SpeciesPanel extends React.Component {
     );
   }
 
-  getSettingsLink () {
-    const { searchSettings, intl } = this.props;
-    if (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
-      return;
-    }
-    return (
-      <Link id="header-settings-link" onClick={(e) => { e.stopPropagation(); browserHistory.push('/'); }}>
-        {intl.formatMessage({ id: 'editSearchSettings' })}
-      </Link>
-    );
-  }
-
   render () {
     const { dispatch, locations, sightings, searchSettings, env } = this.props;
     if (!locations.length) {
@@ -181,8 +169,6 @@ export class SpeciesPanel extends React.Component {
               <FormattedMessage id={tabLangKey} />
               {(!results.allFetched) ? <LineLoader className="species-loading" /> : null}
             </h2>
-
-            {this.getSettingsLink()}
             <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
           </div>
         </header>
@@ -445,6 +431,9 @@ class SpeciesRow extends React.Component {
 
 
 class NotableSightingsTable extends React.Component {
+  constructor (props) {
+    super(props);
+  }
 
   componentDidMount () {
     this.sortedSpecies = this.props.species;
@@ -563,42 +552,40 @@ class NotableSightingsTable extends React.Component {
     }
 
     return (
-      <SortableColHeader dispatch={dispatch}
+      <SortableColHeader dispatch={dispatch} ref="location"
         label="location" colClass="location-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION} />
     );
   }
 
   render () {
-    const { filter, dispatch, intl, sort, sortDir } = this.props;
+    const { dispatch } = this.props;
 
     return (
       <div className="species-table notable-table">
-        <div className="species-table-header" style={{ width: 'calc(100% - 15px)' }}>
+        <div className="species-table-header">
           <table className="table table-striped">
             <thead>
             <tr>
-              <th className="row-num"></th>
+              <th className="row-num" />
               {this.getLocationColHeader()}
 
               <SortableColHeader dispatch={dispatch}
                 label="species" colClass="species-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES} />
 
               <SortableColHeader dispatch={dispatch}
-                label="dateSeen" colClass="last-seen-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.DATE_SEEN} />
+                label="dateSeen" colClass="date-seen-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.DATE_SEEN} />
 
               <SortableColHeader dispatch={dispatch}
                 label="reportedBy" colClass="reporter-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.REPORTER} />
 
               <SortableColHeader dispatch={dispatch}
                 label="status" colClass="status-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.STATUS} />
-
-              <th className="icon-col"></th>
             </tr>
             </thead>
           </table>
         </div>
         <div className="species-table-content-wrapper">
-          <table className="species-table-content table table-striped">
+          <table className="species-table-content table table-striped" id="notable-sightings-table">
             {this.getContent()}
           </table>
         </div>
@@ -609,10 +596,12 @@ class NotableSightingsTable extends React.Component {
 
 class SortableColHeader extends React.Component {
   render () {
-    const { dispatch, label, sortField, colClass, sort, sortDir } = this.props;
+    const { dispatch, label, sortField, colClass, sort, sortDir, width } = this.props;
     const className = 'sortable ' + colClass;
+
+    const style = (width) ? { width: width + 'px' } : {};
     return (
-      <th className={className} onClick={() => dispatch(actions.sortSightings(sortField))}>
+      <th className={className} onClick={() => dispatch(actions.sortSightings(sortField))} style={style}>
         <FormattedMessage id={label} />
         {helpers.getColSort(sortField, sort, sortDir)}
       </th>
@@ -627,6 +616,7 @@ SortableColHeader.propTypes = {
 
 
 class NotableSpeciesRow extends React.Component {
+
   getLocationField () {
     const { selectedLocation, row } = this.props;
     if (selectedLocation) {
@@ -665,7 +655,7 @@ class NotableSpeciesRow extends React.Component {
           </div>
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
         </td>
-        <td className="last-seen-col">{row.obsDt}</td>
+        <td className="date-seen-col">{row.obsDt}</td>
         <td className="reporter-col">{row.reporter}</td>
         <td className="status-col">{this.getStatus(row)}</td>
         <td className="checklist-col">
