@@ -381,6 +381,10 @@ const showModal = () => {
   return { type: E.SHOW_MODAL };
 };
 
+const selectSearchSettingsTab = (tab) => {
+
+};
+
 
 export {
   setLocale,
@@ -404,5 +408,6 @@ export {
   sortSightings,
   searchAnywhere,
   selectAboutTab,
-  showModal
+  showModal,
+  selectSearchSettingsTab
 };

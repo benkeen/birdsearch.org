@@ -189,6 +189,7 @@ function aboutOverlay (state = {
 // there and not have them immediately effect the rest of the UI. Only after a search is performed do the settings
 // get copied over to searchSettings
 function searchSettingsOverlay (state = {
+  selectedTab: C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS,
   visible: false,
   searchType: null,
   observationRecency: null,

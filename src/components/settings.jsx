@@ -54,7 +54,16 @@ class SettingsOverlay extends React.Component {
     );
   }
 
-  render () {
+  getContent () {
+    const { selectedTab } = this.props.settings;
+    if (selectedTab === C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS) {
+      return this.getSearchSettings();
+    } else {
+      return this.getMiscSettings();
+    }
+  }
+
+  getSearchSettings () {
     const { dispatch, intl } = this.props;
     const { searchType, zoomHandling, observationRecency } = this.props.settings;
 
@@ -91,14 +100,14 @@ class SettingsOverlay extends React.Component {
     );
 
     return (
-      <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
+      <div>
         <div className="settings-row">
           <span className="settings-row-label"><FormattedMessage id="resultType" /></span>
           <span className="search-type">
             <span>
               <input type="radio" name="search-type" id="rt1"
-                checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
-                onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }} />
+                     checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
+                     onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }} />
               <label htmlFor="rt1"><FormattedMessage id="birdSightings" /></label>
             </span>
             <span>
@@ -106,8 +115,8 @@ class SettingsOverlay extends React.Component {
                 <span className="zoom-tip glyphicon glyphicon-info-sign" />
               </OverlayTrigger>
               <input type="radio" name="search-type" id="rt2" className="margin-left"
-                checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
-                onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
+                     checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
+                     onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
               <label htmlFor="rt2"><FormattedMessage id="notableSightings" /></label>
             </span>
           </span>
@@ -118,8 +127,8 @@ class SettingsOverlay extends React.Component {
           <span className="search-results">
             <span>
               <input type="radio" name="zoom-handling" id="zh1"
-                checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM}
-                onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM)); }} />
+                     checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM}
+                     onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM)); }} />
               <label htmlFor="zh1"><FormattedMessage id="autoZoom" /></label>
             </span>
             <span>
@@ -127,8 +136,8 @@ class SettingsOverlay extends React.Component {
                 <span className="zoom-tip glyphicon glyphicon-info-sign" />
               </OverlayTrigger>
               <input type="radio" name="zoom-handling" className="margin-left" id="zh2"
-                checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH}
-                onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH)); }} />
+                     checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH}
+                     onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH)); }} />
               <label htmlFor="zh2"><FormattedMessage id="showFullSearchRange" /></label>
             </span>
           </span>
@@ -142,6 +151,43 @@ class SettingsOverlay extends React.Component {
         </div>
 
         {this.getSearchRow()}
+      </div>
+    );
+  }
+
+  getMiscSettings () {
+
+  }
+
+  selectTab (e, tab) {
+    e.preventDefault();
+    const { dispatch } = this.props;
+    const { selectedTab } = this.props.settings;
+    if (tab === selectedTab) {
+      return;
+    }
+    dispatch(actions.selectSearchSettingsTab(tab));
+  }
+
+  render () {
+    const { selectedTab } = this.props.settings;
+
+    const searchSettingsClasses = (selectedTab === C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS) ? 'active' : '';
+    const miscClasses = (selectedTab === C.SEARCH_SETTINGS_TABS.MISC) ? 'active' : '';
+
+    return (
+      <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
+        <div className="">
+          <ul className="nav nav-pills">
+            <li className={searchSettingsClasses}>
+              <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS)}><FormattedMessage id="searchSettings" /></a>
+            </li>
+            <li className={miscClasses}>
+              <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS)}><FormattedMessage id="misc" /></a>
+            </li>
+          </ul>
+        </div>
+        {this.getContent()}
       </Overlay>
     );
   }

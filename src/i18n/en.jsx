@@ -47,6 +47,7 @@ export default {
   locationNotFound: 'Sorry, that location couldn\'t be found, please try again.',
   locations: 'Locations',
 	login: 'Login',
+  misc: 'Misc',
   month: 'month',
   noLocations: 'No locations.',
   notableBirds: 'Notable Birds',

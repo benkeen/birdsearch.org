@@ -33,10 +33,10 @@ const zoomHandling = storage.get('zoomHandling') || C.SEARCH_SETTINGS.DEFAULT_ZO
 
 // bah, this sucks. You can't init a store with redux by passing in only specific nested values to be overridden
 // (i.e. our settings just pulled from local storage). Redux strongly urges you to keep a flat object of all settings,
-// but I found that led to confusion: it's much clearer to group the state info in the store (user, searchSettings,
-// etc). The problem with THAT is now we need to pass in ALL values for each overridden values, basically causing
-// duplications. I also tried pulling all these stored values into their own section the store, but the data felt
-// like it was badly organized.
+// but I found it much clearer to group the state info in the store (in my case user, searchSettings, etc). The
+// problem with THAT is now we need to pass in ALL values for each overridden values, causing the duplication below.
+// I also tried pulling all these stored values into their own section the store, but the data felt like it was badly
+// organized.
 const store = initStore({
   user: {
     locale: locale
@@ -58,6 +58,7 @@ const store = initStore({
     zoomHandling: zoomHandling
   },
   searchSettingsOverlay: {
+    selectedTab: C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS,
     visible: false,
     searchType: searchType,
     observationRecency: obsRecency,
