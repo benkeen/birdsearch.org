@@ -17,15 +17,13 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 - improve loading speed of species panel
 - E.SET_MAP_TYPE
 - browsers that don't support geolocation (or user says nope)
-- examine searches + confirm we're not duplicating requests
-- bug. Searching for a location that returns no results on the immediate map, but can be zoomed out to see one. Needs to automatically zoom out to an appropriate zoom level.
 - check that doing a second "Search nearby" doesn't re-request the user's location.
 - translate Map, Satellite on google maps [localize entire map...? custom buttons...?]
 - num reported should have nice formatting for thousands
 
 ### looking at:
 - zoom problem on duplicate searches
-- should auto-zoom out to show at least 1 result.
+- should auto-zoom out to show at least 1 result
 
 ##### Bugs
 - search for Manaus. Why isn't it centered?
