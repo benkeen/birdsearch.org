@@ -12,6 +12,9 @@ class IntroOverlay extends React.Component {
     this.close = this.close.bind(this);
     this.searchNearby = this.searchNearby.bind(this);
     this.searchAnywhere = this.searchAnywhere.bind(this);
+    this.state = {
+      supportsGeolocation: true
+    };
   }
 
   componentDidUpdate (prevProps) {
@@ -25,10 +28,12 @@ class IntroOverlay extends React.Component {
     }
   }
 
-  componentDidMount () {
-    // if the browser doesn't support geolocation, disable the option but don't hide it. Rub it in that they're using
-    // an old crap browser.
-    //navigator.geolocation) { }
+  componentWillMount () {
+    // if the browser doesn't support geolocation, disable the option but don't hide it. A message will appear
+    // saying the browser doesn't support it.
+    if (!navigator.geolocation) {
+      this.setState({ supportsGeoLocation: false });
+    }
   }
 
   getLoader () {
@@ -81,7 +86,7 @@ class IntroOverlay extends React.Component {
       <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close} outerHTML={this.getLoader()}
         customKeyActions={this.getCustomKeyActions()}>
         <div>
-          <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby} disabled={loading}>
+          <button className="btn btn-success" id="searchNearby" onClick={this.searchNearby} disabled={loading || !this.state.supportsGeoLocation}>
             <i className="glyphicon glyphicon-home" />
             <FormattedHTMLMessage id="searchNearby" />
           </button>
