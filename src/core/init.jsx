@@ -57,7 +57,7 @@ const store = initStore({
     observationRecency: obsRecency,
     zoomHandling: zoomHandling
   },
-  searchSettingsOverlay: {
+  settingsOverlay: {
     selectedTab: C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS,
     visible: false,
     searchType: searchType,

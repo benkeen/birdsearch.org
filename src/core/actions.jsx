@@ -381,8 +381,11 @@ const showModal = () => {
   return { type: E.SHOW_MODAL };
 };
 
-const selectSearchSettingsTab = (tab) => {
-
+const selectSettingsOverlayTab = (tab) => {
+  return {
+    type: E.SELECT_SETTINGS_OVERLAY_TAB,
+    tab: tab
+  };
 };
 
 
@@ -409,5 +412,5 @@ export {
   searchAnywhere,
   selectAboutTab,
   showModal,
-  selectSearchSettingsTab
+  selectSettingsOverlayTab
 };

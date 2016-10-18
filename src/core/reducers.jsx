@@ -65,24 +65,6 @@ function searchSettings (state = {
         lng: action.lng
       });
 
-    case E.SET_SEARCH_OBSERVATION_RECENCY:
-      storage.set('obsRecency', action.recency);
-      return Object.assign({}, state, {
-        observationRecency: action.recency
-      });
-
-    case E.SET_SEARCH_TYPE:
-      storage.set('searchType', action.searchType);
-      return Object.assign({}, state, {
-        searchType: action.searchType
-      });
-
-    case E.SET_ZOOM_HANDLING:
-      storage.set('zoomHandling', action.zoomHandling);
-      return Object.assign({}, state, {
-        zoomHandling: action.zoomHandling
-      });
-
     default:
       return state;
   }
@@ -114,7 +96,6 @@ function mapSettings (state = {
         bounds: action.bounds,
         searchCounter: state.searchCounter + 1
       });
-      break;
 
     case E.SET_MAP_TYPE:
       storage.set('locale', action.mapType);
@@ -130,7 +111,39 @@ function mapSettings (state = {
       return Object.assign({}, state, {
         searchCounter: state.searchCounter + 1
       });
-      break;
+
+    default:
+      return state;
+  }
+}
+
+
+function user (state = {
+  isFetching: false,
+  userLocationFound: false,
+  lat: null,
+  lng: null,
+  address: '',
+  locale: C.DEFAULT_LOCALE
+}, action) {
+  switch (action.type) {
+    case E.REQUESTING_USER_LOCATION:
+      return Object.assign({}, state, { isFetching: true });
+
+    case E.RECEIVED_USER_LOCATION:
+      return Object.assign({}, state, {
+        isFetching: false,
+        userLocationFound: action.userLocationFound,
+        lat: action.lat,
+        lng: action.lng,
+        address: action.address
+      });
+
+    case E.SET_LOCALE:
+      storage.set('locale', action.locale);
+      return Object.assign({}, state, {
+        locale: action.locale
+      });
 
     default:
       return state;
@@ -188,51 +201,35 @@ function aboutOverlay (state = {
 // the search settings overlay has its own copy of the actual search settings. This allows the user to change settings
 // there and not have them immediately effect the rest of the UI. Only after a search is performed do the settings
 // get copied over to searchSettings
-function searchSettingsOverlay (state = {
+function settingsOverlay (state = {
   selectedTab: C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS,
-  visible: false,
   searchType: null,
   observationRecency: null,
   zoomHandling: null
 }, action) {
 
   switch (action.type) {
-    case E.SET_ADVANCED_SEARCH_VISIBILITY:
+    case E.SELECT_SETTINGS_OVERLAY_TAB:
       return Object.assign({}, state, {
-        visible: action.visible
+        selectedTab: action.selectedTab
       });
 
-    default:
-      return state;
-  }
-}
-
-function user (state = {
-  isFetching: false,
-  userLocationFound: false,
-  lat: null,
-  lng: null,
-  address: '',
-  locale: C.DEFAULT_LOCALE
-}, action) {
-  switch (action.type) {
-    case E.REQUESTING_USER_LOCATION:
-      return Object.assign({}, state, { isFetching: true });
-      break;
-
-    case E.RECEIVED_USER_LOCATION:
+    case E.SET_SEARCH_OBSERVATION_RECENCY:
+      storage.set('obsRecency', action.recency);
       return Object.assign({}, state, {
-        isFetching: false,
-        userLocationFound: action.userLocationFound,
-        lat: action.lat,
-        lng: action.lng,
-        address: action.address
+        observationRecency: action.recency
       });
 
-    case E.SET_LOCALE:
-      storage.set('locale', action.locale);
+    case E.SET_SEARCH_TYPE:
+      storage.set('searchType', action.searchType);
       return Object.assign({}, state, {
-        locale: action.locale
+        searchType: action.searchType
+      });
+
+    case E.SET_ZOOM_HANDLING:
+      storage.set('zoomHandling', action.zoomHandling);
+      return Object.assign({}, state, {
+        zoomHandling: action.zoomHandling
       });
 
     default:
@@ -337,7 +334,6 @@ function locationsPanel (state = {
         sortDir: newSort,
         updateCounter: state.updateCounter+1
       });
-      break;
 
     case E.TOGGLE_PANEL_VISIBILITY:
       var newVisibility = state.visible;
@@ -427,7 +423,6 @@ function speciesPanel (state = {
         sortDir: newSort,
         updateCounter: state.updateCounter+1
       });
-      break;
 
     case E.SHOW_SPECIES_PANEL:
       return Object.assign({}, state, { visible: true, updateCounter: state.updateCounter+1 });
@@ -469,12 +464,12 @@ function misc (state = {
       return Object.assign({}, state, {
         nextAction: C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS
       });
-      break;
 
     default:
       return state;
   }
 }
+
 
 export {
   env,
@@ -484,8 +479,8 @@ export {
   results,
   locationsPanel,
   speciesPanel,
-  misc,
   introOverlay,
   aboutOverlay,
-  searchSettingsOverlay
+  settingsOverlay,
+  misc
 };

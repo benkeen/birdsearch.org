@@ -8,155 +8,32 @@ import { C, _, actions } from '../core/core';
 
 
 class SettingsOverlay extends React.Component {
-  constructor (props) {
-    super(props);
-    this.search = this.search.bind(this);
-  }
-
   close () {
     browserHistory.push('/');
   }
 
-  componentDidMount () {
-    const { searchType, zoomHandling, observationRecency } = this.props.settings;
-    this.state = {
-      searchType: searchType,
-      zoomHandling: zoomHandling,
-      observationRecency: observationRecency
-    };
-  }
-
-  isChanged () {
-    const { searchType, zoomHandling, observationRecency } = this.props.settings;
-    return !_.isEqual(this.state, {
-      searchType: searchType,
-      zoomHandling: zoomHandling,
-      observationRecency: observationRecency
-    });
-  }
-
-  search () {
-    browserHistory.push('/');
-  }
-
-  getSearchRow () {
-    const { location } = this.props.location;
-    if (!location) {
-      return false;
-    }
-
-    return (
-      <footer>
-        <button className="btn btn-primary" onClick={this.search}>
-          <FormattedMessage id="search" />
-        </button>
-      </footer>
-    );
-  }
-
   getContent () {
-    const { selectedTab } = this.props.settings;
+    const { selectedTab, searchType, zoomHandling, observationRecency } = this.props.settings;
+    const { dispatch, intl, location } = this.props;
+
     if (selectedTab === C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS) {
-      return this.getSearchSettings();
+      return (
+        <SearchSettings
+          dispatch={dispatch}
+          intl={intl}
+          zoomHandling={zoomHandling}
+          observationRecency={observationRecency}
+          location={location}
+          searchType={searchType} />
+      );
     } else {
-      return this.getMiscSettings();
+      return (
+        <MiscSettings
+          dispatch={dispatch}
+          intl={intl}
+          />
+      );
     }
-  }
-
-  getSearchSettings () {
-    const { dispatch, intl } = this.props;
-    const { searchType, zoomHandling, observationRecency } = this.props.settings;
-
-    const infoTooltip = (
-      <Tooltip id="search-results-tooltip">
-        <div>
-          <FormattedMessage id="autoZoomSetting1" />
-          <ul>
-            <li>
-              <FormattedMessage id="autoZoomSetting2" values={{ autoZoom: <b>{intl.formatMessage({ id: 'autoZoom' })}</b> }} />
-            </li>
-            <li>
-              <FormattedMessage id="autoZoomSetting3" values={{ showFullSearch: <b>{intl.formatMessage({ id: 'showFullSearchRange' })}</b> }} />
-            </li>
-          </ul>
-        </div>
-      </Tooltip>
-    );
-
-    const searchTypeTooltip = (
-      <Tooltip id="search-type-tooltip">
-        <div>
-          <FormattedMessage id="resultType1" />
-          <ul>
-            <li>
-              <FormattedMessage id="resultType2" values={{ birdSightings: <b>{intl.formatMessage({ id: 'birdSightings' })}</b> }} />
-            </li>
-            <li>
-              <FormattedMessage id="resultType3" values={{ notableSightings: <b>{intl.formatMessage({ id: 'notableSightings' })}</b> }} />
-            </li>
-          </ul>
-        </div>
-      </Tooltip>
-    );
-
-    return (
-      <div>
-        <div className="settings-row">
-          <span className="settings-row-label"><FormattedMessage id="resultType" /></span>
-          <span className="search-type">
-            <span>
-              <input type="radio" name="search-type" id="rt1"
-                     checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
-                     onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }} />
-              <label htmlFor="rt1"><FormattedMessage id="birdSightings" /></label>
-            </span>
-            <span>
-              <OverlayTrigger placement="left" overlay={searchTypeTooltip}>
-                <span className="zoom-tip glyphicon glyphicon-info-sign" />
-              </OverlayTrigger>
-              <input type="radio" name="search-type" id="rt2" className="margin-left"
-                     checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
-                     onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }} />
-              <label htmlFor="rt2"><FormattedMessage id="notableSightings" /></label>
-            </span>
-          </span>
-        </div>
-
-        <div className="settings-row">
-          <span className="settings-row-label"><FormattedMessage id="searchResults" /></span>
-          <span className="search-results">
-            <span>
-              <input type="radio" name="zoom-handling" id="zh1"
-                     checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM}
-                     onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM)); }} />
-              <label htmlFor="zh1"><FormattedMessage id="autoZoom" /></label>
-            </span>
-            <span>
-              <OverlayTrigger placement="left" overlay={infoTooltip}>
-                <span className="zoom-tip glyphicon glyphicon-info-sign" />
-              </OverlayTrigger>
-              <input type="radio" name="zoom-handling" className="margin-left" id="zh2"
-                     checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH}
-                     onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH)); }} />
-              <label htmlFor="zh2"><FormattedMessage id="showFullSearchRange" /></label>
-            </span>
-          </span>
-        </div>
-
-        <div className="observation-recency-setting">
-          <span>
-            Show observations made in the last
-            <DaysDropdown value={observationRecency} onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} />days.
-          </span>
-        </div>
-
-        {this.getSearchRow()}
-      </div>
-    );
-  }
-
-  getMiscSettings () {
-
   }
 
   selectTab (e, tab) {
@@ -166,12 +43,11 @@ class SettingsOverlay extends React.Component {
     if (tab === selectedTab) {
       return;
     }
-    dispatch(actions.selectSearchSettingsTab(tab));
+    dispatch(actions.selectSettingsOverlayTab(tab));
   }
 
   render () {
     const { selectedTab } = this.props.settings;
-
     const searchSettingsClasses = (selectedTab === C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS) ? 'active' : '';
     const miscClasses = (selectedTab === C.SEARCH_SETTINGS_TABS.MISC) ? 'active' : '';
 
@@ -195,11 +71,182 @@ class SettingsOverlay extends React.Component {
 
 export default injectIntl(connect(state => ({
   userLocationFound: state.user.userLocationFound,
-  settings: state.searchSettingsOverlay,
+  settings: state.settingsOverlay,
   location: state.searchSettings.location,
   mapSettings: state.mapSettings
 }))(SettingsOverlay));
 
+
+
+class SearchSettings extends React.Component {
+  constructor (props) {
+    super(props);
+    this.search = this.search.bind(this);
+  }
+
+  search () {
+    browserHistory.push('/');
+  }
+
+  getSearchRow () {
+    const { location } = this.props;
+    if (!location) {
+      return false;
+    }
+
+    return (
+      <footer>
+        <button className="btn btn-primary" onClick={this.search}>
+          <FormattedMessage id="search" />
+        </button>
+      </footer>
+    );
+  }
+
+  render() {
+    const { dispatch, searchType, zoomHandling, observationRecency } = this.props;
+
+    return (
+      <div>
+        <div className="settings-row">
+          <span className="settings-row-label"><FormattedMessage id="resultType"/></span>
+          <span className="search-type">
+            <span>
+              <input type="radio" name="search-type" id="rt1"
+                checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
+                onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }}/>
+              <label htmlFor="rt1"><FormattedMessage id="birdSightings"/></label>
+            </span>
+            <span>
+              <OverlayTrigger placement="left" overlay={<SearchTypeTooltip />}>
+                <span className="zoom-tip glyphicon glyphicon-info-sign"/>
+              </OverlayTrigger>
+              <input type="radio" name="search-type" id="rt2" className="margin-left"
+                checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
+                onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }}/>
+              <label htmlFor="rt2"><FormattedMessage id="notableSightings"/></label>
+            </span>
+          </span>
+        </div>
+
+        <div className="settings-row">
+          <span className="settings-row-label"><FormattedMessage id="searchResults"/></span>
+          <span className="search-results">
+            <span>
+              <input type="radio" name="zoom-handling" id="zh1"
+                checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM}
+                onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM)); }}/>
+              <label htmlFor="zh1"><FormattedMessage id="autoZoom"/></label>
+            </span>
+            <span>
+              <OverlayTrigger placement="left" overlay={<AutoZoomInfoTooltip />}>
+                <span className="zoom-tip glyphicon glyphicon-info-sign"/>
+              </OverlayTrigger>
+              <input type="radio" name="zoom-handling" className="margin-left" id="zh2"
+                checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH}
+                onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH)); }}/>
+              <label htmlFor="zh2"><FormattedMessage id="showFullSearchRange"/></label>
+            </span>
+          </span>
+        </div>
+
+        <div className="observation-recency-setting">
+          <span>
+            Show observations made in the last
+            <DaysDropdown value={observationRecency}
+              onChange={(val) => { dispatch(actions.setObservationRecency(val)); }}/>days.
+          </span>
+        </div>
+
+        {this.getSearchRow()}
+      </div>
+    );
+  }
+}
+SearchSettings.propTypes = {
+  searchType: React.PropTypes.string.isRequired,
+  zoomHandling: React.PropTypes.string.isRequired,
+  observationRecency: React.PropTypes.string.isRequired,
+  location: React.PropTypes.string.isRequired
+};
+
+
+class MiscSettings extends React.Component {
+  render () {
+    return (
+      <div>
+        <div className="settings-row">
+          <span className="settings-row-label"><FormattedMessage id="resultType"/></span>
+          <span className="search-type">
+            <span>
+              <input type="radio" name="search-type" id="rt1"
+                 checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL}
+                 onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.ALL)); }}/>
+              <label htmlFor="rt1"><FormattedMessage id="birdSightings"/></label>
+            </span>
+            <span>
+              <OverlayTrigger placement="left" overlay={<SearchTypeTooltip />}>
+                <span className="zoom-tip glyphicon glyphicon-info-sign"/>
+              </OverlayTrigger>
+              <input type="radio" name="search-type" id="rt2" className="margin-left"
+                     checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
+                     onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }}/>
+              <label htmlFor="rt2"><FormattedMessage id="notableSightings"/></label>
+            </span>
+          </span>
+        </div>
+      </div>
+    );
+  }
+}
+
+class AutoZoomInfoTooltip extends React.Component {
+  render () {
+    const { intl } = this.props;
+
+    return (
+      <Tooltip id="search-results-tooltip">
+        <div>
+          <FormattedMessage id="autoZoomSetting1"/>
+          <ul>
+            <li>
+              <FormattedMessage id="autoZoomSetting2"
+                values={{ autoZoom: <b>{intl.formatMessage({ id: 'autoZoom' })}</b> }}/>
+            </li>
+            <li>
+              <FormattedMessage id="autoZoomSetting3"
+                values={{ showFullSearch: <b>{intl.formatMessage({ id: 'showFullSearchRange' })}</b> }}/>
+            </li>
+          </ul>
+        </div>
+      </Tooltip>
+    );
+  }
+}
+
+class SearchTypeTooltip extends React.Component {
+  render () {
+    const { intl } = this.props;
+
+    return (
+      <Tooltip id="search-type-tooltip">
+        <div>
+          <FormattedMessage id="resultType1"/>
+          <ul>
+            <li>
+              <FormattedMessage id="resultType2"
+                values={{ birdSightings: <b>{intl.formatMessage({ id: 'birdSightings' })}</b> }}/>
+            </li>
+            <li>
+              <FormattedMessage id="resultType3"
+                values={{ notableSightings: <b>{intl.formatMessage({ id: 'notableSightings' })}</b> }}/>
+            </li>
+          </ul>
+        </div>
+      </Tooltip>
+    );
+  }
+}
 
 
 class DaysDropdown extends React.Component {
@@ -222,3 +269,5 @@ class DaysDropdown extends React.Component {
 DaysDropdown.propTypes = {
   onChange: React.PropTypes.func.isRequired
 };
+
+
