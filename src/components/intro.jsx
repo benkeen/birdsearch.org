@@ -13,14 +13,14 @@ class IntroOverlay extends React.Component {
     this.searchNearby = this.searchNearby.bind(this);
     this.searchAnywhere = this.searchAnywhere.bind(this);
     this.state = {
-      supportsGeolocation: true
+      supportsGeoLocation: true
     };
   }
 
   componentDidUpdate (prevProps) {
     const { dispatch, mapSettings, userLocationFound } = this.props;
     const { location, lat, lng } = this.props.searchSettings;
-    const { searchType, observationRecency, zoomHandling } = this.props.searchSettingsOverlay;
+    const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
 
     // if the user's location was just found, automatically search
     if (prevProps.userLocationFound !== userLocationFound && userLocationFound === true) {
@@ -32,6 +32,7 @@ class IntroOverlay extends React.Component {
     // if the browser doesn't support geolocation, disable the option but don't hide it. A message will appear
     // saying the browser doesn't support it.
     if (!navigator.geolocation) {
+      console.log('hahhhh!');
       this.setState({ supportsGeoLocation: false });
     }
   }
@@ -82,6 +83,8 @@ class IntroOverlay extends React.Component {
     const { loading } = this.props;
     const classes = (loading) ? 'loading' : '';
 
+    console.log(loading, this.state.supportsGeoLocation);
+
     return (
       <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close} outerHTML={this.getLoader()}
         customKeyActions={this.getCustomKeyActions()}>
@@ -115,7 +118,7 @@ export default injectIntl(connect(state => ({
   loading: state.user.isFetching,
   userLocationFound: state.user.userLocationFound,
   searchSettings: state.searchSettings,
-  searchSettingsOverlay: state.searchSettingsOverlay,
+  settingsOverlay: state.settingsOverlay,
   mapSettings: state.mapSettings
 }))(IntroOverlay));
 

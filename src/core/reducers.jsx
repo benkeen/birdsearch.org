@@ -162,7 +162,6 @@ function introOverlay (state = {
 
   switch (action.type) {
     case E.SET_INTRO_OVERLAY_VISIBILITY:
-
       const data = {
         visible: action.visible
       };
@@ -202,7 +201,7 @@ function aboutOverlay (state = {
 // there and not have them immediately effect the rest of the UI. Only after a search is performed do the settings
 // get copied over to searchSettings
 function settingsOverlay (state = {
-  selectedTab: C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS,
+  selectedTab: C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS,
   searchType: null,
   observationRecency: null,
   zoomHandling: null

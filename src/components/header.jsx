@@ -31,7 +31,7 @@ class Header extends React.Component {
 
   onSubmitNewSearch ({ location, lat, lng, bounds }) {
     const { dispatch } = this.props;
-    const { searchType, observationRecency, zoomHandling } = this.props.searchSettingsOverlay;
+    const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
     dispatch(actions.search(searchType, location, lat, lng, bounds, observationRecency, zoomHandling));
   }
 
@@ -55,7 +55,7 @@ class Header extends React.Component {
   }
 
   render () {
-    const { dispatch, locale, searchSettings, introOverlay, searchSettingsOverlay, intl } = this.props;
+    const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, intl } = this.props;
     const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="searchSettings" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
 
@@ -68,7 +68,7 @@ class Header extends React.Component {
 
         <HeaderSearch
           ref="headerSearch"
-          disabled={introOverlay.visible || searchSettingsOverlay.visible}
+          disabled={introOverlay.visible || settingsOverlay.visible}
           location={searchSettings.location}
           onChange={(str) => dispatch(actions.setSearchLocation(str))}
           intl={intl}
@@ -100,10 +100,11 @@ class Header extends React.Component {
 export default injectIntl(connect(state => ({
   locale: state.user.locale,
   introOverlay: state.introOverlay,
-  searchSettingsOverlay: state.searchSettingsOverlay,
+  settingsOverlay: state.settingsOverlay,
   searchSettings: state.searchSettings,
   nextAction: state.misc.nextAction
 }))(Header));
+
 
 
 // TODO settings icon doesn't belong here any more

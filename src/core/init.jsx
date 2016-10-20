@@ -39,7 +39,12 @@ const zoomHandling = storage.get('zoomHandling') || C.SEARCH_SETTINGS.DEFAULT_ZO
 // organized.
 const store = initStore({
   user: {
-    locale: locale
+    locale: locale,
+    isFetching: false,
+    userLocationFound: false,
+    lat: null,
+    lng: null,
+    address: ''
   },
   mapSettings: {
     zoom: 3,
@@ -58,14 +63,13 @@ const store = initStore({
     zoomHandling: zoomHandling
   },
   settingsOverlay: {
-    selectedTab: C.SEARCH_SETTINGS_TABS.SEARCH_SETTINGS,
+    selectedTab: C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS,
     visible: false,
     searchType: searchType,
     observationRecency: obsRecency,
     zoomHandling: zoomHandling
   }
 });
-
 
 // meh. Gotta go somewhere.
 $('body').addClass(locale);
