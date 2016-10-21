@@ -128,7 +128,7 @@ export class LocationsPanel extends React.Component {
 
   selectLocation (e) {
     this.props.dispatch(actions.selectLocation($(e.target).closest('tr').data('locationId')));
-    this.props.dispatch(actions.showSpeciesPanel());
+    this.props.dispatch(actions.showSightingsPanel());
   }
 
   getLocationList () {

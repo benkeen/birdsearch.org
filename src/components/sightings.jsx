@@ -8,7 +8,7 @@ import { C, helpers, _, actions } from '../core/core';
 import { LineLoader, LocationCount } from './general';
 
 
-export class SpeciesPanel extends React.Component {
+export class SightingsPanel extends React.Component {
   constructor (props) {
     super(props);
     this.getTitle = this.getTitle.bind(this);
@@ -113,8 +113,7 @@ export class SpeciesPanel extends React.Component {
   }
 
   getTable () {
-    const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, speciesFilter, sort, sortDir,
-      intl } = this.props;
+    const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, speciesFilter, sort, sortDir, intl } = this.props;
 
     var selLocation = (selectedLocation) ? selectedLocation : null;
 
@@ -191,7 +190,7 @@ export class SpeciesPanel extends React.Component {
     );
   }
 }
-SpeciesPanel.PropTypes = {
+SightingsPanel.PropTypes = {
   visible: React.PropTypes.bool.isRequired,
   updateCounter: React.PropTypes.number.isRequired,
   locations: React.PropTypes.array.isRequired,
@@ -202,8 +201,6 @@ SpeciesPanel.PropTypes = {
   intl: intlShape.isRequired
 };
 
-
-// TODO move all this data manipulation to reducers (sort, etc). Drop this.sortedSpecies.
 
 class SpeciesTable extends React.Component {
 
@@ -228,45 +225,7 @@ class SpeciesTable extends React.Component {
       return;
     }
 
-    this.sortedSpecies = species;
-    this.sortSpecies(sort, sortDir);
-  }
-
-  sortSpecies (sort, sortDir) {
-    switch (sort) {
-      case C.SPECIES_SORT.FIELDS.NUM_LOCATIONS:
-        if (sortDir === C.SORT_DIR.DEFAULT) {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.locations.length; });
-        } else {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.locations.length; });
-        }
-        break;
-
-      case C.SPECIES_SORT.FIELDS.LAST_SEEN:
-        if (sortDir === C.SORT_DIR.DEFAULT) {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.mostRecentObservation.format('X'); });
-        } else {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.mostRecentObservation.format('X'); });
-        }
-        break;
-
-      case C.SPECIES_SORT.FIELDS.NUM_REPORTED:
-        if (sortDir === C.SORT_DIR.DEFAULT) {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.howManyCount; });
-        } else {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.howManyCount; });
-        }
-        break;
-
-      // species name
-      default:
-        if (sortDir === C.SORT_DIR.DEFAULT) {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase(); });
-        } else {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase().charCodeAt() * -1; });
-        }
-        break;
-    }
+    this.sortedSpecies = helpers.sortSightings(species, sort, sortDir);
   }
 
   getContent () {
@@ -326,24 +285,24 @@ class SpeciesTable extends React.Component {
           <table className="table table-striped">
             <thead>
               <tr>
-                <th className="row-num"></th>
+                <th className="row-num" />
                 <th className="species-col sortable">
-                  <span onClick={() => dispatch(actions.sortSightings(C.SPECIES_SORT.FIELDS.SPECIES))}>
+                  <span onClick={() => dispatch(actions.sortSightings(C.SIGHTINGS_SORT.FIELDS.SPECIES))}>
                     <span className="species-header"><FormattedMessage id="species" /></span>
-                    {helpers.getColSort(C.SPECIES_SORT.FIELDS.SPECIES, sort, sortDir)}
+                    {helpers.getColSort(C.SIGHTINGS_SORT.FIELDS.SPECIES, sort, sortDir)}
                   </span>
                   <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })} className="filter-field" value={filter}
                     onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
                   {this.getClearSpeciesFilterIcon()}
                 </th>
-                <SortableColHeader dispatch={dispatch}
-                   label="locationsSeen" colClass="locations-seen" sortField={C.SPECIES_SORT.FIELDS.NUM_LOCATIONS} />
+                <SortableColHeader dispatch={dispatch} label="locationsSeen" colClass="locations-seen"
+                  sortField={C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS} sort={sort} sortDir={sortDir} />
 
-                <SortableColHeader dispatch={dispatch}
-                   label="lastSeen" colClass="last-seen" sortField={C.SPECIES_SORT.FIELDS.LAST_SEEN} />
+                <SortableColHeader dispatch={dispatch} label="lastSeen" colClass="last-seen"
+                  sortField={C.SIGHTINGS_SORT.FIELDS.LAST_SEEN} sort={sort} sortDir={sortDir} />
 
-                <SortableColHeader dispatch={dispatch}
-                   label="numReported" colClass="num-reported" sortField={C.SPECIES_SORT.FIELDS.NUM_REPORTED} />
+                <SortableColHeader dispatch={dispatch} label="numReported" colClass="num-reported"
+                  sortField={C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED} sort={sort} sortDir={sortDir} />
               </tr>
             </thead>
           </table>
@@ -454,46 +413,7 @@ class NotableSightingsTable extends React.Component {
     if (!numSpeciesChanged && !sortChanged && !sortDirChanged) {
       return;
     }
-
-    this.sortedSpecies = species;
-    this.sortSpecies(sort, sortDir);
-  }
-
-  sortSpecies (sort, sortDir) {
-    switch (sort) {
-      case C.SPECIES_SORT.FIELDS.NUM_LOCATIONS:
-        if (sortDir === C.SORT_DIR.DEFAULT) {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.locations.length; });
-        } else {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.locations.length; });
-        }
-        break;
-
-      case C.SPECIES_SORT.FIELDS.LAST_SEEN:
-        if (sortDir === C.SORT_DIR.DEFAULT) {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.mostRecentObservation.format('X'); });
-        } else {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.mostRecentObservation.format('X'); });
-        }
-        break;
-
-      case C.SPECIES_SORT.FIELDS.NUM_REPORTED:
-        if (sortDir === C.SORT_DIR.DEFAULT) {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.howManyCount; });
-        } else {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return -i.howManyCount; });
-        }
-        break;
-
-      // species name
-      default:
-        if (sortDir === C.SORT_DIR.DEFAULT) {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase(); });
-        } else {
-          this.sortedSpecies = _.sortBy(this.sortedSpecies, function (i) { return i.comName.toLowerCase().charCodeAt() * -1; });
-        }
-        break;
-    }
+    this.sortedSpecies = helpers.sortSightings(species, sort, sortDir);
   }
 
   getClearSpeciesFilterIcon () {
@@ -545,19 +465,19 @@ class NotableSightingsTable extends React.Component {
   }
 
   getLocationColHeader () {
-    const { selectedLocation, dispatch } = this.props;
+    const { selectedLocation, dispatch, sort, sortDir } = this.props;
     if (selectedLocation) {
       return null;
     }
 
     return (
-      <SortableColHeader dispatch={dispatch} ref="location"
-        label="location" colClass="location-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.LOCATION} />
+      <SortableColHeader dispatch={dispatch} ref="location" label="location" colClass="location-col"
+        sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION} sort={sort} sortDir={sortDir} />
     );
   }
 
   render () {
-    const { dispatch } = this.props;
+    const { dispatch, sort, sortDir } = this.props;
 
     return (
       <div className="species-table notable-table">
@@ -568,17 +488,17 @@ class NotableSightingsTable extends React.Component {
               <th className="row-num" />
               {this.getLocationColHeader()}
 
-              <SortableColHeader dispatch={dispatch}
-                label="species" colClass="species-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.SPECIES} />
+              <SortableColHeader dispatch={dispatch} label="species" colClass="species-col"
+                sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.SPECIES} sort={sort} sortDir={sortDir} />
 
-              <SortableColHeader dispatch={dispatch}
-                label="dateSeen" colClass="date-seen-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.DATE_SEEN} />
+              <SortableColHeader dispatch={dispatch} label="dateSeen" colClass="date-seen-col"
+                sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN} sort={sort} sortDir={sortDir} />
 
-              <SortableColHeader dispatch={dispatch}
-                label="reportedBy" colClass="reporter-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.REPORTER} />
+              <SortableColHeader dispatch={dispatch} label="reportedBy" colClass="reporter-col"
+                sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER} sort={sort} sortDir={sortDir} />
 
-              <SortableColHeader dispatch={dispatch}
-                label="status" colClass="status-col" sortField={C.NOTABLE_SPECIES_SORT.FIELDS.STATUS} />
+              <SortableColHeader dispatch={dispatch} label="status" colClass="status-col"
+                sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS} sort={sort} sortDir={sortDir} />
             </tr>
             </thead>
           </table>

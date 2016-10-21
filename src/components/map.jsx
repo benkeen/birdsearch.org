@@ -251,7 +251,7 @@ export class Map extends React.Component {
 
     $(document).on('click', '.viewLocationSightingDetails', (e) => {
       dispatch(actions.selectLocation($(e.target).data('locationId')));
-      dispatch(actions.showSpeciesPanel());
+      dispatch(actions.showSightingsPanel());
     });
 
     // called any time the map has had its bounds changed

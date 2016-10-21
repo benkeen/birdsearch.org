@@ -1,3 +1,4 @@
+import React from 'react';
 import { C, _ } from './core';
 import moment from 'moment';
 
@@ -353,6 +354,58 @@ const getColSort = (field, sort, sortDir) => {
 	);
 };
 
+const sortSightings = (sightings, sort, sortDir) => {
+  let sorted = [];
+
+  console.log(sightings);
+
+  switch (sort) {
+    case C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS:
+      if (sortDir === C.SORT_DIR.DEFAULT) {
+        sorted = _.sortBy(sightings, function (i) { return i.locations.length; });
+      } else {
+        sorted = _.sortBy(sightings, function (i) { return -i.locations.length; });
+      }
+      break;
+
+    case C.SIGHTINGS_SORT.FIELDS.LAST_SEEN:
+      if (sortDir === C.SORT_DIR.DEFAULT) {
+        sorted = _.sortBy(sightings, function (i) { return i.mostRecentObservation.format('X'); });
+      } else {
+        sorted = _.sortBy(sightings, function (i) { return -i.mostRecentObservation.format('X'); });
+      }
+      break;
+
+    case C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
+      if (sortDir === C.SORT_DIR.DEFAULT) {
+        sorted = _.sortBy(sightings, function (i) { return i.howManyCount; });
+      } else {
+        sorted = _.sortBy(sightings, function (i) { return -i.howManyCount; });
+      }
+      break;
+
+    case C.SIGHTINGS_SORT.FIELDS.LOCATION:
+      if (sortDir === C.SORT_DIR.DEFAULT) {
+        sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase());
+      } else {
+        sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase().charCodeAt() * -1);
+      }
+      break;
+
+    // species name
+    default:
+      if (sortDir === C.SORT_DIR.DEFAULT) {
+        sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase() );
+      } else {
+        sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase().charCodeAt() * -1);
+      }
+      break;
+  }
+
+  return sorted;
+};
+
+
 const rad = (x) => {
   return x * Math.PI/180;
 };
@@ -406,6 +459,7 @@ export {
 	getPacketSize,
 	chunkArray,
 	getColSort,
+  sortSightings,
   rad,
   findClosestLatLng
 };

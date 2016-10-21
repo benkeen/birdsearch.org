@@ -332,7 +332,7 @@ const sortLocations = (sort) => {
 
 const sortSightings = (sort) => {
   return {
-    type: E.SPECIES_SORTED,
+    type: E.SIGHTINGS_SORTED,
     sort: sort
   }
 };
@@ -348,12 +348,12 @@ const hideLocationsPanel = () => {
   return { type: E.HIDE_LOCATIONS_PANEL };
 };
 
-const showSpeciesPanel = () => {
-  return { type: E.SHOW_SPECIES_PANEL };
+const showSightingsPanel = () => {
+  return { type: E.SHOW_SIGHTINGS_PANEL };
 };
 
-const hideSpeciesPanel = () => {
-  return { type: E.HIDE_SPECIES_PANEL };
+const hideSightingsPanel = () => {
+  return { type: E.HIDE_SIGHTINGS_PANEL };
 };
 
 const setLocationFilter = (filter) => {
@@ -405,8 +405,8 @@ export {
   hideLocationsPanel,
   setLocationFilter,
   selectLocation,
-  showSpeciesPanel,
-  hideSpeciesPanel,
+  showSightingsPanel,
+  hideSightingsPanel,
   setSpeciesFilter,
   sortSightings,
   searchAnywhere,

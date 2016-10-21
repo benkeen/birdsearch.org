@@ -305,6 +305,8 @@ function results (state = {
         visibleLocations: action.locations
       });
 
+
+
     default:
       return state;
   }
@@ -388,12 +390,11 @@ function locationsPanel (state = {
 }
 
 
-// TODO rename to sightingsPanel
-function speciesPanel (state = {
+function sightingsPanel (state = {
   visible: false,
   filter: '',
   updateCounter: 0,
-  sort: C.SPECIES_SORT.FIELDS.SPECIES,
+  sort: C.SIGHTINGS_SORT.FIELDS.SPECIES,
   sortDir: C.SORT_DIR.DEFAULT
 }, action) {
 
@@ -410,7 +411,7 @@ function speciesPanel (state = {
         updateCounter: updateCounter
       });
 
-    case E.SPECIES_SORTED:
+    case E.SIGHTINGS_SORTED:
       var newSort = C.SORT_DIR.DEFAULT;
       if (state.sort === action.sort) {
         if (state.sortDir === C.SORT_DIR.DEFAULT) {
@@ -423,10 +424,10 @@ function speciesPanel (state = {
         updateCounter: state.updateCounter+1
       });
 
-    case E.SHOW_SPECIES_PANEL:
+    case E.SHOW_SIGHTINGS_PANEL:
       return Object.assign({}, state, { visible: true, updateCounter: state.updateCounter+1 });
 
-    case E.HIDE_SPECIES_PANEL:
+    case E.HIDE_SIGHTINGS_PANEL:
       return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
 
     case E.SET_SPECIES_FILTER:
@@ -477,7 +478,7 @@ export {
   user,
   results,
   locationsPanel,
-  speciesPanel,
+  sightingsPanel,
   introOverlay,
   aboutOverlay,
   settingsOverlay,

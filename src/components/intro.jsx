@@ -32,7 +32,6 @@ class IntroOverlay extends React.Component {
     // if the browser doesn't support geolocation, disable the option but don't hide it. A message will appear
     // saying the browser doesn't support it.
     if (!navigator.geolocation) {
-      console.log('hahhhh!');
       this.setState({ supportsGeoLocation: false });
     }
   }
@@ -82,8 +81,6 @@ class IntroOverlay extends React.Component {
   render () {
     const { loading } = this.props;
     const classes = (loading) ? 'loading' : '';
-
-    console.log(loading, this.state.supportsGeoLocation);
 
     return (
       <Overlay id="intro-overlay" className={classes} showCloseIcon={true} onClose={this.close} outerHTML={this.getLoader()}

@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
-import { C, _, actions } from '../core/core';
+import { _, actions } from '../core/core';
 import Header from './header';
 import { Map } from './map';
 import { Loader } from './general';
 import { LocationsPanel } from './locations';
-import { SpeciesPanel } from './species';
+import { SightingsPanel } from './sightings';
 import IntroOverlay from './intro';
 
 
@@ -54,7 +54,7 @@ class App extends React.Component {
   }
 
   render () {
-    const { dispatch, env, mapSettings, searchSettings, locationsPanel, speciesPanel, results, intl } = this.props;
+    const { dispatch, env, mapSettings, searchSettings, locationsPanel, sightingsPanel, results, intl } = this.props;
 
     const classes = 'flex-body' + (results.visibleLocations.length > 0 ? ' has-results' : '');
     return (
@@ -93,20 +93,20 @@ class App extends React.Component {
             intl={intl}
             env={env} />
 
-          <SpeciesPanel
+          <SightingsPanel
             dispatch={dispatch}
-            visible={speciesPanel.visible}
-            updateCounter={speciesPanel.updateCounter}
+            visible={sightingsPanel.visible}
+            updateCounter={sightingsPanel.updateCounter}
             locations={results.visibleLocations}
             sightings={results.locationSightings}
             selectedLocation={locationsPanel.selectedLocation}
             searchSettings={searchSettings}
-            speciesFilter={speciesPanel.filter}
+            speciesFilter={sightingsPanel.filter}
             env={env}
             intl={intl}
             results={results}
-            sort={speciesPanel.sort}
-            sortDir={speciesPanel.sortDir} />
+            sort={sightingsPanel.sort}
+            sortDir={sightingsPanel.sortDir} />
         </section>
       </div>
     );
@@ -119,7 +119,7 @@ export default injectIntl(connect(state => ({
   searchSettings: state.searchSettings,
   introOverlay: state.introOverlay,
   locationsPanel: state.locationsPanel,
-  speciesPanel: state.speciesPanel,
+  sightingsPanel: state.sightingsPanel,
   user: state.user,
   results: state.results
 }))(App));
