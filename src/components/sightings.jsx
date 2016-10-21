@@ -574,7 +574,7 @@ class NotableSpeciesRow extends React.Component {
           </div>
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
         </td>
-        <td className="date-seen-col">{row.obsDt}</td>
+        <td className="date-seen-col">{row.obsDtDisplay}</td>
         <td className="reporter-col">{row.reporter}</td>
         <td className="status-col">{this.getStatus(row)}</td>
         <td className="checklist-col">

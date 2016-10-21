@@ -208,6 +208,16 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 			let daySightings = sightingData.data[i].obs;
 			for (let j=0; j<daySightings.length; j++) {
 				const info = daySightings[j];
+        const time = moment(info.obsDt, 'YYYY-MM-DD HH:mm');
+
+        let status;
+        if (info.obsValid) {
+          status = 'confirmed';
+        } else if (info.obsReviewed) {
+          status = 'reviewed';
+        } else {
+          status = 'not-reviewed';
+        }
 
 				data.push({
 					comName: info.comName,
@@ -219,7 +229,9 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 					locID: info.locID,
 					locName: info.locName,
           reporter: `${info.firstName} ${info.lastName}`,
-					obsDt: moment(info.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a'),
+          obsDt: time,
+          status: status,
+					obsDtDisplay: time.format('MMM Do, H:mm a'),
 					obsReviewed: info.obsReviewed,
 					obsValid: info.obsValid
 				});
@@ -376,6 +388,7 @@ const sortSightings = (sightings, sort, sortDir) => {
       }
       break;
 
+    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
     case C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
       if (sortDir === C.SORT_DIR.DEFAULT) {
         sorted = _.sortBy(sightings, function (i) { return i.howManyCount; });
@@ -384,11 +397,35 @@ const sortSightings = (sightings, sort, sortDir) => {
       }
       break;
 
-    case C.SIGHTINGS_SORT.FIELDS.LOCATION:
+    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION:
       if (sortDir === C.SORT_DIR.DEFAULT) {
         sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase());
       } else {
         sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase().charCodeAt() * -1);
+      }
+      break;
+
+    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN:
+      if (sortDir === C.SORT_DIR.DEFAULT) {
+        sorted = _.sortBy(sightings, function (i) { return i.obsDt.format('X'); });
+      } else {
+        sorted = _.sortBy(sightings, function (i) { return -i.obsDt.format('X'); });
+      }
+      break;
+
+    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER:
+      if (sortDir === C.SORT_DIR.DEFAULT) {
+        sorted = _.sortBy(sightings, (i) => i.reporter.toLowerCase());
+      } else {
+        sorted = _.sortBy(sightings, (i) => i.reporter.toLowerCase().charCodeAt() * -1);
+      }
+      break;
+
+    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS:
+      if (sortDir === C.SORT_DIR.DEFAULT) {
+        sorted = _.sortBy(sightings, (i) => i.status);
+      } else {
+        sorted = _.sortBy(sightings, (i) => i.status.charCodeAt() * -1);
       }
       break;
 

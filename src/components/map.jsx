@@ -410,7 +410,7 @@ export class Map extends React.Component {
       return (
         <tr key={sighting.obsID}>
           <td className="species-name">{sighting.comName}</td>
-          <td className="obs-date">{sighting.obsDt}</td>
+          <td className="obs-date">{sighting.obsDtDisplay}</td>
           <td>
             <a href={checklistLink} target="_blank" className="checklist-link glyphicon glyphicon-list" title="View Checklist"></a>
           </td>
