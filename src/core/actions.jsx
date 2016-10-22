@@ -389,7 +389,6 @@ const selectSettingsOverlayTab = (tab) => {
 };
 
 const setScientificNameVisibility = (show) => {
-  console.log(show);
   return {
     type: E.SET_SCIENTIFIC_NAME_VISIBILITY,
     show

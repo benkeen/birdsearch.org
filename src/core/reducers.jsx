@@ -233,7 +233,7 @@ function settingsOverlay (state = {
       });
 
     case E.SET_SCIENTIFIC_NAME_VISIBILITY:
-      storage.set('showScientificName', action.show);
+      storage.set('showScientificName', action.show ? 1 : 0);
       return Object.assign({}, state, {
         showScientificName: action.show
       });
@@ -311,8 +311,6 @@ function results (state = {
       return Object.assign({}, state, {
         visibleLocations: action.locations
       });
-
-
 
     default:
       return state;
@@ -451,6 +449,7 @@ function sightingsPanel (state = {
     case E.SEARCH_REQUEST_STARTED:
     case E.SEARCH_REQUEST_ENDED:
     case E.WINDOW_RESIZED:
+    case E.SET_SCIENTIFIC_NAME_VISIBILITY:
       return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 
     default:

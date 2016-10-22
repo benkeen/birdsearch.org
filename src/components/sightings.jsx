@@ -400,7 +400,7 @@ class SpeciesRow extends React.Component {
           </OverlayTrigger>
         </td>
         <td className="last-seen">{species.mostRecentObservationTime}</td>
-        <td className="num-reported">{species.howManyCount}</td>
+        <td className="num-reported"><FormattedNumber value={species.howManyCount} /></td>
         <td>
           <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />
         </td>

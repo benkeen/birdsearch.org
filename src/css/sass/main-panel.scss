@@ -423,11 +423,14 @@ body .filter-field {
 		font-size: 12px;
 		max-height: 200px;
 		overflow: auto;
+		padding: 6px 14px 9px;
+
 		li {
 			cursor: pointer;
 			line-height: inherit;
 			display: flex;
 			flex-direction: row;
+			padding: 2px 0;
 			span, a {
 				padding: 1px 0;
 				&:hover {
@@ -454,7 +457,6 @@ body .filter-field {
 		margin: 0;
 	}
 }
-
 
 .species-table {
 	display: flex;

@@ -43,14 +43,14 @@ class Header extends React.Component {
   showAboutOverlay (e) {
     e.preventDefault();
     const { dispatch } = this.props;
-    dispatch(actions.showModal());
+    //dispatch(actions.showModal());
     browserHistory.push('/about');
   }
 
   showSettingsOverlay (e) {
     e.preventDefault();
     const { dispatch } = this.props;
-    dispatch(actions.showModal());
+    //dispatch(actions.showModal());
     browserHistory.push('/settings');
   }
 

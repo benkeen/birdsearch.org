@@ -212,7 +212,6 @@ class MiscSettings extends React.Component {
 
   render () {
     const { showScientificName } = this.props;
-
     return (
       <div>
         <div className="settings-row">
@@ -220,7 +219,7 @@ class MiscSettings extends React.Component {
           <span className="search-type">
             <span>
               <input type="checkbox" id="scientific-name" checked={showScientificName} onChange={this.toggleScientificName} />
-                <label htmlFor="scientific-name">include scientific name</label>
+                <label htmlFor="scientific-name"><FormattedMessage id="includeSciName" /></label>
             </span>
           </span>
         </div>

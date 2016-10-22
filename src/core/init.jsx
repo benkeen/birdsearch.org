@@ -30,7 +30,9 @@ const mapTypeId = storage.get('mapTypeId') || google.maps.MapTypeId.ROADMAP;
 const searchType = storage.get('searchType') || C.SEARCH_SETTINGS.DEFAULT_SEARCH_TYPE;
 const obsRecency = storage.get('obsRecency') || C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS;
 const zoomHandling = storage.get('zoomHandling') || C.SEARCH_SETTINGS.DEFAULT_ZOOM_HANDLING;
-const showScientificName = storage.get('showScientificName') || false;
+
+const sciName = storage.get('showScientificName');
+const showScientificName = (sciName && sciName === '1');
 
 // bah, this sucks. You can't init a store with redux by passing in only specific nested values to be overridden
 // (i.e. our settings just pulled from local storage). Redux strongly urges you to keep a flat object of all settings,

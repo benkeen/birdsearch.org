@@ -106,6 +106,7 @@ export class Map extends React.Component {
     if (isNewLocationSearch) {
       if (nextProps.searchSettings.zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM) {
         if (this.props.bounds === null && nextProps.bounds !== null) {
+          console.log('setting bounds 1');
           _map.fitBounds({
             north: nextProps.bounds.north,
             south: nextProps.bounds.south,
@@ -212,13 +213,15 @@ export class Map extends React.Component {
     // out as far as needed to show the first result
     if (zoomOutToShowResults && locationsInBounds.length === 0) {
       let center = _map.getCenter();
-      const closestLatLng = helpers.findClosestLatLng(center.lat(), center.lng(), latLngList);
+      const closestResult = helpers.findClosestLatLng(center.lat(), center.lng(), latLngList);
+      const closestLatLng = new google.maps.LatLng(parseFloat(closestResult.lat), parseFloat(closestResult.lng));
 
-      // find the smallest bounds that fits the current map centerpoint and the closest point
-      const boundsObj = new google.maps.LatLngBounds(center, { lat: closestLatLng.lat, lng: closestLatLng.lng });
-      _map.fitBounds(boundsObj);
+      var bounds = new google.maps.LatLngBounds();
+      bounds.extend(center);
+      bounds.extend(closestLatLng);
+      _map.fitBounds(bounds);
 
-      return this.updateMapMarkers(searchType, locations, locationSightings, true);
+      return this.updateMapMarkers(searchType, locations, locationSightings);
     }
 
     const newSorted = locationIDsInBounds.sort();
@@ -413,7 +416,6 @@ export class Map extends React.Component {
       );
     });
   }
-  
   render () {
     return (
       <div className="flex-body"></div>
