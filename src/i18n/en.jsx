@@ -69,6 +69,8 @@ export default {
 	searchNearby: 'Search <u>N</u>earby',
   searchResults: 'Search results',
   searchSettings: 'Search settings',
+  settings: 'Settings',
+  speciesName: 'Species name',
   resultType1: 'There are two types of searches:',
   resultType2: '{birdSightings} returns all sightings made at eBird hotspots.',
   resultType3: '{notableSightings} returns any sighting that has been marked as unusual for the area. This may mean the species is rare in the region or that it is out of season.',

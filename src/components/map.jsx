@@ -374,12 +374,7 @@ export class Map extends React.Component {
     const { results, searchSettings } = this.props;
     var locationSightings = results.locationSightings[locInfo.i].data;
     const obsRecency = searchSettings.observationRecency;
-//    var numSpecies = 0;
-//    if (results.locationSightings[locInfo.i].fetched) {
-//      numSpecies = locationSightings[obsRecency - 1].numSpeciesRunningTotal;
-//    }
-
-    // use helpers.getNotableSightingsList()
+    console.log(locInfo);
 
     const sightings = [];
     for (var i=0; i<obsRecency; i++) {

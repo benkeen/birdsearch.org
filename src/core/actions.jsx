@@ -366,14 +366,14 @@ const setLocationFilter = (filter) => {
 const setSpeciesFilter = (filter) => {
   return {
     type: E.SET_SPECIES_FILTER,
-    filter: filter
+    filter
   };
 };
 
 const selectAboutTab = (tab) => {
   return {
     type: E.SELECT_ABOUT_TAB,
-    tab: tab
+    tab
   };
 };
 
@@ -384,7 +384,15 @@ const showModal = () => {
 const selectSettingsOverlayTab = (tab) => {
   return {
     type: E.SELECT_SETTINGS_OVERLAY_TAB,
-    tab: tab
+    tab
+  };
+};
+
+const setScientificNameVisibility = (show) => {
+  console.log(show);
+  return {
+    type: E.SET_SCIENTIFIC_NAME_VISIBILITY,
+    show
   };
 };
 
@@ -412,5 +420,6 @@ export {
   searchAnywhere,
   selectAboutTab,
   showModal,
-  selectSettingsOverlayTab
+  selectSettingsOverlayTab,
+  setScientificNameVisibility
 };

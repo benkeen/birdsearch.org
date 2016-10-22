@@ -56,7 +56,7 @@ class Header extends React.Component {
 
   render () {
     const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, intl } = this.props;
-    const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="searchSettings" /></Tooltip>;
+    const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="settings" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
 
     return (

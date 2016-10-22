@@ -8,12 +8,16 @@ import { C, _, actions } from '../core/core';
 
 
 class SettingsOverlay extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
   close () {
     browserHistory.push('/');
   }
 
   getContent () {
-    const { selectedTab, searchType, zoomHandling, observationRecency } = this.props.settings;
+    const { selectedTab, searchType, zoomHandling, observationRecency, showScientificName } = this.props.settings;
     const { dispatch, intl, location } = this.props;
 
     if (selectedTab === C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS) {
@@ -30,7 +34,8 @@ class SettingsOverlay extends React.Component {
       return (
         <MiscSettings
           dispatch={dispatch}
-          intl={intl} />
+          intl={intl}
+          showScientificName={showScientificName} />
       );
     }
   }
@@ -48,7 +53,7 @@ class SettingsOverlay extends React.Component {
   render () {
     const { selectedTab } = this.props.settings;
     const searchSettingsClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS) ? 'active' : '';
-    const miscClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.MISC) ? 'active' : '';
+    const miscClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.MISC_TAB) ? 'active' : '';
 
     return (
       <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
@@ -58,7 +63,7 @@ class SettingsOverlay extends React.Component {
               <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS)}><FormattedMessage id="searchSettings" /></a>
             </li>
             <li className={miscClasses}>
-              <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS)}><FormattedMessage id="miscSettings" /></a>
+              <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.MISC_TAB)}><FormattedMessage id="miscSettings" /></a>
             </li>
           </ul>
         </div>
@@ -195,17 +200,27 @@ SearchSettings.propTypes = {
 
 
 class MiscSettings extends React.Component {
+  constructor (props) {
+    super(props);
+    this.toggleScientificName = this.toggleScientificName.bind(this);
+  }
+
+  toggleScientificName () {
+    const { dispatch, showScientificName } = this.props;
+    dispatch(actions.setScientificNameVisibility(!showScientificName));
+  }
+
   render () {
+    const { showScientificName } = this.props;
+
     return (
       <div>
         <div className="settings-row">
-          <span className="settings-row-label"><FormattedMessage id="resultType"/></span>
+          <span className="settings-row-label"><FormattedMessage id="speciesName" /></span>
           <span className="search-type">
             <span>
-              <label htmlFor="rt1"><FormattedMessage id="birdSightings"/></label>
-            </span>
-            <span>
-              
+              <input type="checkbox" id="scientific-name" checked={showScientificName} onChange={this.toggleScientificName} />
+                <label htmlFor="scientific-name">include scientific name</label>
             </span>
           </span>
         </div>

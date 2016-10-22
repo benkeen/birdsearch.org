@@ -11,19 +11,12 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 -------------------------------------------
 #### Remaining. Notes.
 
-- get loading spinner to load continually
+- misc tab
 - after clicking "anywhere" should have a bouncy thing pointing to the search bar.
 - Improve speed of filter on species panel
-- improve loading speed of species panel
-- E.SET_MAP_TYPE
-- browsers that don't support geolocation (or user says nope)
-- check that doing a second "Search nearby" doesn't re-request the user's location.
+- remember E.SET_MAP_TYPE
 - translate Map, Satellite on google maps [localize entire map...? custom buttons...?]
 - num reported should have nice formatting for thousands
-
-### looking at:
-- zoom problem on duplicate searches
-- should auto-zoom out to show at least 1 result
 
 ##### Bugs
 - search for Manaus. Why isn't it centered?
@@ -36,9 +29,6 @@ Locations Seen modal
 
 #### At end
 - translations
-
-Small stuff
-- button styles
 
 --------------------------------------------
 

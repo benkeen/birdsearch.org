@@ -204,13 +204,14 @@ function settingsOverlay (state = {
   selectedTab: C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS,
   searchType: null,
   observationRecency: null,
-  zoomHandling: null
+  zoomHandling: null,
+  showScientificName: false
 }, action) {
 
   switch (action.type) {
     case E.SELECT_SETTINGS_OVERLAY_TAB:
       return Object.assign({}, state, {
-        selectedTab: action.selectedTab
+        selectedTab: action.tab
       });
 
     case E.SET_SEARCH_OBSERVATION_RECENCY:
@@ -229,6 +230,12 @@ function settingsOverlay (state = {
       storage.set('zoomHandling', action.zoomHandling);
       return Object.assign({}, state, {
         zoomHandling: action.zoomHandling
+      });
+
+    case E.SET_SCIENTIFIC_NAME_VISIBILITY:
+      storage.set('showScientificName', action.show);
+      return Object.assign({}, state, {
+        showScientificName: action.show
       });
 
     default:

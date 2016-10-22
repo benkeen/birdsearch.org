@@ -113,7 +113,8 @@ export class SightingsPanel extends React.Component {
   }
 
   getTable () {
-    const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, speciesFilter, sort, sortDir, intl } = this.props;
+    const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, showScientificName,
+      speciesFilter, sort, sortDir, intl } = this.props;
 
     var selLocation = (selectedLocation) ? selectedLocation : null;
 
@@ -127,6 +128,7 @@ export class SightingsPanel extends React.Component {
           species={sightingsData}
           selectedLocation={selectedLocation}
           observationRecency={searchSettings.observationRecency}
+          showScientificName={showScientificName}
           filter={speciesFilter}
           sort={sort}
           sortDir={sortDir}
@@ -142,6 +144,7 @@ export class SightingsPanel extends React.Component {
         species={sightingsData}
         selectedLocation={selectedLocation}
         observationRecency={searchSettings.observationRecency}
+        showScientificName={showScientificName}
         filter={speciesFilter}
         sort={sort}
         sortDir={sortDir}
@@ -156,7 +159,6 @@ export class SightingsPanel extends React.Component {
     }
 
     var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
-
     const tabLangKey = searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL ? 'birdSpecies' : 'notableBirds';
 
     return (
@@ -197,6 +199,7 @@ SightingsPanel.PropTypes = {
   sightings: React.PropTypes.object.isRequired,
   searchSettings: React.PropTypes.object.isRequired,
   speciesFilter: React.PropTypes.string.isRequired,
+  showScientificName: React.PropTypes.bool.isRequired,
   env: React.PropTypes.object.isRequired,
   intl: intlShape.isRequired
 };
@@ -243,26 +246,35 @@ class SpeciesTable extends React.Component {
   }
 
   getRows () {
-    const { dispatch, filter } = this.props;
+    const { dispatch, filter, showScientificName } = this.props;
 
     return _.map(this.sortedSpecies, function (speciesInfo, index) {
       var comNameData = helpers.highlightString(speciesInfo.comName, filter);
-      var sciNameData = helpers.highlightString(speciesInfo.sciName, filter);
-      if (!comNameData.match && !sciNameData.match) {
-        return null;
+
+      var sciNameData = {
+        match: false,
+        string: ''
+      };
+      if (showScientificName) {
+        sciNameData = helpers.highlightString(speciesInfo.sciName, filter);
       }
 
-      return (
-        <SpeciesRow
-          dispatch={dispatch}
-          filter={filter}
-          species={speciesInfo}
-          rowNum={index+1}
-          comName={speciesInfo.comName}
-          comNameDisplay={comNameData.string}
-          sciNameDisplay={sciNameData.string}
-          key={index} />
-      );
+      if (comNameData.match || (showScientificName && sciNameData.match)) {
+        return (
+          <SpeciesRow
+            dispatch={dispatch}
+            filter={filter}
+            species={speciesInfo}
+            rowNum={index+1}
+            showScientificName={showScientificName}
+            comName={speciesInfo.comName}
+            comNameDisplay={comNameData.string}
+            sciNameDisplay={sciNameData.string}
+            key={index}/>
+        );
+      }
+
+      return null;
     });
   }
 
@@ -350,8 +362,18 @@ class SpeciesRow extends React.Component {
     });
   }
 
+  getSciName () {
+    const { showScientificName, sciNameDisplay } = this.props;
+    if (!showScientificName) {
+      return null;
+    }
+    return (
+      <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+    );
+  }
+
   render () {
-    const { dispatch, species, comName, comNameDisplay, sciNameDisplay, rowNum } = this.props;
+    const { dispatch, species, comName, comNameDisplay, rowNum } = this.props;
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
 
     var locations = this.getLocations();
@@ -361,7 +383,7 @@ class SpeciesRow extends React.Component {
         <td className="row-num">{rowNum}</td>
         <td className="species-col">
           <div className="com-name" dangerouslySetInnerHTML={{ __html: comNameDisplay }}></div>
-          <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+          {this.getSciName()}
         </td>
         <td ref="cell" className="locations-seen species-num-locations-cell">
           <OverlayTrigger trigger="click" placement="bottom" rootClose={true} container={this.refs.cell}
@@ -535,7 +557,6 @@ SortableColHeader.propTypes = {
 
 
 class NotableSpeciesRow extends React.Component {
-
   getLocationField () {
     const { selectedLocation, row } = this.props;
     if (selectedLocation) {
@@ -569,7 +590,7 @@ class NotableSpeciesRow extends React.Component {
         {this.getLocationField()}
         <td className="species-col">
           <div>
-            <span className="com-name" dangerouslySetInnerHTML={{ __html: comNameDisplay }}></span>
+            <span className="com-name" dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
             <span className="notable-count">(<FormattedNumber value={row.howMany} />)</span>
           </div>
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
@@ -578,7 +599,7 @@ class NotableSpeciesRow extends React.Component {
         <td className="reporter-col">{row.reporter}</td>
         <td className="status-col">{this.getStatus(row)}</td>
         <td className="checklist-col">
-          <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list" title="View Checklist"></a>
+          <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list" title="View Checklist" />
         </td>
         <td className="wikipedia-col">
           <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />

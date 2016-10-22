@@ -54,7 +54,8 @@ class App extends React.Component {
   }
 
   render () {
-    const { dispatch, env, mapSettings, searchSettings, locationsPanel, sightingsPanel, results, intl } = this.props;
+    const { dispatch, env, mapSettings, searchSettings, locationsPanel, sightingsPanel, results,
+      showScientificName, intl } = this.props;
 
     const classes = 'flex-body' + (results.visibleLocations.length > 0 ? ' has-results' : '');
     return (
@@ -102,6 +103,7 @@ class App extends React.Component {
             selectedLocation={locationsPanel.selectedLocation}
             searchSettings={searchSettings}
             speciesFilter={sightingsPanel.filter}
+            showScientificName={showScientificName}
             env={env}
             intl={intl}
             results={results}
@@ -120,6 +122,7 @@ export default injectIntl(connect(state => ({
   introOverlay: state.introOverlay,
   locationsPanel: state.locationsPanel,
   sightingsPanel: state.sightingsPanel,
+  showScientificName: state.settingsOverlay.showScientificName,
   user: state.user,
   results: state.results
 }))(App));
