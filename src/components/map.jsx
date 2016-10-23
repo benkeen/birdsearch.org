@@ -82,11 +82,14 @@ export class Map extends React.Component {
   }
 
   shouldComponentUpdate (nextProps) {
-
     let isNewSearch = false;
     if (this.props.resetSearchCounter !== nextProps.resetSearchCounter) {
+      console.log('new search');
       isNewSearch = true;
       this.clearHotspots();
+
+//      _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers = {};
+//      _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers = {};
     }
 
     // map updates are explicitly throttled by incrementing mapSettings.searchUpdateCounter
@@ -109,7 +112,7 @@ export class Map extends React.Component {
 
     if (isNewSearch) {
       if (nextProps.searchSettings.zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM) {
-        if (this.props.bounds === null && nextProps.bounds !== null) {
+        if (nextProps.bounds !== null) {
           _map.fitBounds({
             north: nextProps.bounds.north,
             south: nextProps.bounds.south,
@@ -238,10 +241,10 @@ export class Map extends React.Component {
   }
 
   clearHotspots () {
-    for (var locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers) {
+    for (let locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers) {
       _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers[locationID].marker.setMap(null);
     }
-    for (var locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers) {
+    for (let locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers) {
       _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers[locationID].setMap(null);
     }
   }
@@ -293,6 +296,7 @@ export class Map extends React.Component {
       show = regexp.test(locInfo.n);
     }
     if (show) {
+      console.log('.');
       _data[_currentSearchType].markers[locInfo.i].marker.setMap(_map);
     }
   }
@@ -300,11 +304,11 @@ export class Map extends React.Component {
   addBirdMarker (searchType, locationID, latlng, currMarkerInfo) {
     if (_.has(_data[_currentSearchType].markers, locationID)) {
       if (_data[_currentSearchType].markers[locationID].marker.map === null) {
+        console.log('...');
         _data[_currentSearchType].markers[locationID].marker.setMap(_map);
       }
       return;
     }
-
     _data[_currentSearchType].markers[locationID] = {
       visible: false,
       marker: new google.maps.Marker({
@@ -329,6 +333,7 @@ export class Map extends React.Component {
   addNotableMarker (searchType, locationID, latlng, currMarkerInfo) {
     if (_.has(_data[_currentSearchType].markers, locationID)) {
       if (_data[_currentSearchType].markers[locationID].marker.map === null) {
+        console.log("*");
         _data[_currentSearchType].markers[locationID].marker.setMap(_map);
       }
       return;
@@ -429,7 +434,6 @@ Map.PropTypes = {
 
 
 var _addSearchRangeIndicator = () => {
-
   // lame, but setting the map to null doesn't work, so keep adding more & hiding the previous
   if (_circleOverlayIndex > 0) {
     _circleOverlays[_circleOverlayIndex-1].set("visible", false);

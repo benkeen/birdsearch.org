@@ -10,21 +10,32 @@ import { C, _, actions } from '../core/core';
 class SettingsOverlay extends React.Component {
   constructor (props) {
     super(props);
+    this.search = this.search.bind(this);
   }
 
   close () {
     browserHistory.push('/');
   }
 
+  search () {
+    const { dispatch, searchSettings, settingsOverlay, mapSettings } = this.props;
+    const { lat, lng, location } = searchSettings;
+    const { searchType, observationRecency, zoomHandling } = settingsOverlay;
+
+    dispatch(actions.search(searchType, location, lat, lng, mapSettings.bounds, observationRecency, zoomHandling));
+    browserHistory.push('/');
+  }
+
   getContent () {
-    const { selectedTab, searchType, zoomHandling, observationRecency, showScientificName } = this.props.settings;
     const { dispatch, intl, location } = this.props;
+    const { selectedTab, searchType, zoomHandling, observationRecency, showScientificName } = this.props.settingsOverlay;
 
     if (selectedTab === C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS) {
       return (
         <SearchSettings
           dispatch={dispatch}
           intl={intl}
+          search={this.search}
           zoomHandling={zoomHandling}
           observationRecency={observationRecency}
           location={location}
@@ -43,7 +54,7 @@ class SettingsOverlay extends React.Component {
   selectTab (e, tab) {
     e.preventDefault();
     const { dispatch } = this.props;
-    const { selectedTab } = this.props.settings;
+    const { selectedTab } = this.props.settingsOverlay;
     if (tab === selectedTab) {
       return;
     }
@@ -51,7 +62,7 @@ class SettingsOverlay extends React.Component {
   }
 
   render () {
-    const { selectedTab } = this.props.settings;
+    const { selectedTab } = this.props.settingsOverlay;
     const searchSettingsClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS) ? 'active' : '';
     const miscClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.MISC_TAB) ? 'active' : '';
 
@@ -75,7 +86,8 @@ class SettingsOverlay extends React.Component {
 
 export default injectIntl(connect(state => ({
   userLocationFound: state.user.userLocationFound,
-  settings: state.settingsOverlay,
+  searchSettings: state.searchSettings,
+  settingsOverlay: state.settingsOverlay,
   location: state.searchSettings.location,
   mapSettings: state.mapSettings
 }))(SettingsOverlay));
@@ -83,24 +95,15 @@ export default injectIntl(connect(state => ({
 
 
 class SearchSettings extends React.Component {
-  constructor (props) {
-    super(props);
-    this.search = this.search.bind(this);
-  }
-
-  search () {
-    browserHistory.push('/');
-  }
-
   getSearchRow () {
-    const { location } = this.props;
+    const { location, search } = this.props;
     if (!location) {
       return false;
     }
 
     return (
       <footer>
-        <button className="btn btn-primary" onClick={this.search}>
+        <button className="btn btn-primary" onClick={search}>
           <FormattedMessage id="search" />
         </button>
       </footer>

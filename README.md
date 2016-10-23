@@ -12,18 +12,18 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 #### Remaining. Notes.
 
 - after clicking "anywhere" should have a bouncy thing pointing to the search bar.
-- Improve speed of filter on species panel
-- num reported should have nice formatting for thousands
 
 ##### Bugs
 - search for Manaus. Why isn't it centered?
-- If no results, need to show a message saying as much.
 - translations
+- "Search" button in settings popup doesn't work
+- switching from notable to regular doesn't work
 
 #### For 2.0.1:
 - remember E.SET_MAP_TYPE
 - translate map buttons
 - "51 bird species seen in the last 1 days"
+- Improve speed of filter on species panel
 
 --------------------------------------------
 
