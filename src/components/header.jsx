@@ -42,20 +42,18 @@ class Header extends React.Component {
 
   showAboutOverlay (e) {
     e.preventDefault();
-    const { dispatch } = this.props;
     browserHistory.push('/about');
   }
 
   showSettingsOverlay (e) {
     e.preventDefault();
-    const { dispatch } = this.props;
     browserHistory.push('/settings');
   }
 
   render () {
     const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, searchError, intl } = this.props;
     const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="settings" /></Tooltip>;
-    const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
+    const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="about" /></Tooltip>;
 
     return (
       <header className="flex-fill">
@@ -189,9 +187,11 @@ class HeaderSearch extends React.Component {
   }
 
   render () {
+    const { intl } = this.props;
+
     return (
       <div className="header-search">
-        <input type="text" placeholder="Enter Location" ref="searchField" value={this.props.location}
+        <input type="text" placeholder={intl.formatMessage({ id: 'enterLocation' })} ref="searchField" value={this.props.location}
           onChange={this.onChangeLocation.bind(this)} />
         <div className="location-error">
           <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }} component="div">

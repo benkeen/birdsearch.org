@@ -11,13 +11,17 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 -------------------------------------------
 #### Remaining. Notes.
 
-- after clicking "anywhere" should have a bouncy thing pointing to the search bar.
+- after clicking "anywhere" should have a bouncy thing pointing to the search bar
+- translations
+- check different browsers
 
 ##### Bugs
 - search for Manaus. Why isn't it centered?
-- translations
-- "Search" button in settings popup doesn't work
-- switching from notable to regular doesn't work
+- "Search" button in settings popup
+    - doesn't work
+    - doesn't always appear when a search has been made
+- switching from notable to regular doesn't work properly.
+
 
 #### For 2.0.1:
 - remember E.SET_MAP_TYPE

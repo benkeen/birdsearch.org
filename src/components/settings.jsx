@@ -27,7 +27,7 @@ class SettingsOverlay extends React.Component {
   }
 
   getContent () {
-    const { dispatch, intl, location } = this.props;
+    const { dispatch, intl, searchSettings } = this.props;
     const { selectedTab, searchType, zoomHandling, observationRecency, showScientificName } = this.props.settingsOverlay;
 
     if (selectedTab === C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS) {
@@ -38,7 +38,7 @@ class SettingsOverlay extends React.Component {
           search={this.search}
           zoomHandling={zoomHandling}
           observationRecency={observationRecency}
-          location={location}
+          location={searchSettings.location}
           searchType={searchType} />
       );
     } else {
@@ -88,7 +88,6 @@ export default injectIntl(connect(state => ({
   userLocationFound: state.user.userLocationFound,
   searchSettings: state.searchSettings,
   settingsOverlay: state.settingsOverlay,
-  location: state.searchSettings.location,
   mapSettings: state.mapSettings
 }))(SettingsOverlay));
 
@@ -128,7 +127,7 @@ class SearchSettings extends React.Component {
     const searchTypeTooltip = (
       <Tooltip id="search-type-tooltip">
         <div>
-          <FormattedMessage id="resultType1"/>
+          <FormattedMessage id="show"/>
           <ul>
             <li><FormattedMessage id="resultType2" values={{ birdSightings: <b>{intl.formatMessage({ id: 'birdSightings' })}</b> }}/></li>
             <li><FormattedMessage id="resultType3" values={{ notableSightings: <b>{intl.formatMessage({ id: 'notableSightings' })}</b> }}/></li>
@@ -183,9 +182,10 @@ class SearchSettings extends React.Component {
 
         <div className="observation-recency-setting">
           <span>
-            Show observations made in the last
-            <DaysDropdown value={observationRecency}
-              onChange={(val) => { dispatch(actions.setObservationRecency(val)); }}/>days.
+            <FormattedMessage id="showObservationsMade"
+              values={{
+                days: <DaysDropdown value={observationRecency} onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} />
+              }} />
           </span>
         </div>
 

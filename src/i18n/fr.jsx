@@ -7,14 +7,13 @@ export default {
 	// language-specific stuff
 	LANG: 'Français',
 	LANG_KEY: 'fr', // corresponds to file name
-	LANG_SEARCH_NEARBY_KEYCODE: '',
-	LANG_SEARCH_ANYWHERE_KEYCODE: '',
+	LANG_SEARCH_NEARBY_KEYCODE: 'p',
+	LANG_SEARCH_ANYWHERE_KEYCODE: 't',
 
 	// strings
 	about: 'Sur',
 	aboutPara1: '{birdsearchSite} vous permet de rechercher et de parcourir ces dernières observations d\'oiseaux à travers le monde. Recherches renvoient des observations faites dans la dernière {week}, mais vous pouvez chercher aussi loin que d\'un {month} en éditant le {settingsLink}.',
 	aboutPara2: 'Les données sont extraites de {eBirdSiteLink} qui fournit beaucoup d\'autres options pour l\'affichage des données d\'observation historique. Vérifiez-le.',
-	aboutBirdsearch: 'Sur birdsearch.org',
 	allLocations: 'Toutes les localités',
   autoZoom: 'Auto-zoom',
   autoZoomSetting1: 'Ce contrôle la façon dont la carte doit se comporter après une recherche.',

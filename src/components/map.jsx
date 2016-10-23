@@ -14,8 +14,7 @@ var _icons = {
   range6: { url: 'images/markers/yellow.png', scaledSize: new google.maps.Size(21, 26) },
   range7: { url: 'images/markers/orange.png', scaledSize: new google.maps.Size(21, 26) },
   range8: { url: 'images/markers/red.png', scaledSize: new google.maps.Size(21, 26) },
-
-  notable: { url: 'images/markers/notable.png', scaledSize: new google.maps.Size(21, 26) },
+  notable: { url: 'images/markers/notable.png', scaledSize: new google.maps.Size(21, 26) }
 };
 var _circleOverlays = {};
 var _circleOverlayIndex = 0;
@@ -84,7 +83,6 @@ export class Map extends React.Component {
   shouldComponentUpdate (nextProps) {
     let isNewSearch = false;
     if (this.props.resetSearchCounter !== nextProps.resetSearchCounter) {
-      console.log('new search');
       isNewSearch = true;
       this.clearHotspots();
 
@@ -380,7 +378,7 @@ export class Map extends React.Component {
   };
 
   getNotableSightingsInfoWindow (locInfo) {
-    const { results, searchSettings } = this.props;
+    const { results, searchSettings, intl } = this.props;
     var locationSightings = results.locationSightings[locInfo.i].data;
     const obsRecency = searchSettings.observationRecency;
 
