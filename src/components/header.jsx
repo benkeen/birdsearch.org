@@ -55,7 +55,7 @@ class Header extends React.Component {
   }
 
   render () {
-    const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, intl } = this.props;
+    const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, searchError, intl } = this.props;
     const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="settings" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="aboutBirdsearch" /></Tooltip>;
 
@@ -70,6 +70,7 @@ class Header extends React.Component {
           ref="headerSearch"
           disabled={introOverlay.visible || settingsOverlay.visible}
           location={searchSettings.location}
+          searchError={searchError}
           onChange={(str) => dispatch(actions.setSearchLocation(str))}
           intl={intl}
           onSubmit={this.onSubmitNewSearch}
@@ -102,16 +103,19 @@ export default injectIntl(connect(state => ({
   introOverlay: state.introOverlay,
   settingsOverlay: state.settingsOverlay,
   searchSettings: state.searchSettings,
-  nextAction: state.misc.nextAction
+  nextAction: state.misc.nextAction,
+  searchError: state.results.searchError
 }))(Header));
 
 
 
-// TODO settings icon doesn't belong here any more
 class HeaderSearch extends React.Component {
   constructor (props) {
     super(props);
-    this.state = { showError: false, error: '' };
+    this.state = {
+      showError: false,
+      error: ''
+    };
   }
 
   componentDidMount () {
@@ -159,8 +163,22 @@ class HeaderSearch extends React.Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    const { intl, searchError } = this.props;
+
+    // if an error is being fed in from a parent, only display it once. This relies on the reducer code resetting
+    // the error to blank before setting it to a value again. Again, React handles one-offs like this very poorly.
+    if (!searchError && nextProps.searchError) {
+      this.setState({
+        showError: true,
+        error: intl.formatMessage({ id: nextProps.searchError }) });
+    }
+  }
+
   hideError () {
-    this.setState({ showError: false });
+    this.setState({
+      showError: false
+    });
   }
 
   focus () {

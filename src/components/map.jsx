@@ -82,15 +82,19 @@ export class Map extends React.Component {
   }
 
   shouldComponentUpdate (nextProps) {
-    // map updates are explicitly throttled by incrementing mapSettings.searchCounter
-    if (this.props.searchCounter === nextProps.searchCounter) {
+
+    let isNewSearch = false;
+    if (this.props.resetSearchCounter !== nextProps.resetSearchCounter) {
+      isNewSearch = true;
+      this.clearHotspots();
+    }
+
+    // map updates are explicitly throttled by incrementing mapSettings.searchUpdateCounter
+    if (this.props.searchUpdateCounter === nextProps.searchUpdateCounter) {
       return false;
     }
 
     _currentSearchType = nextProps.searchSettings.searchType;
-
-    // this may need tweaking.
-    const isNewLocationSearch = this.props.searchSettings.location !== nextProps.searchSettings.location;
 
     this.applyLocationFilter(nextProps);
 
@@ -103,10 +107,9 @@ export class Map extends React.Component {
       _addSearchRangeIndicator();
     }
 
-    if (isNewLocationSearch) {
+    if (isNewSearch) {
       if (nextProps.searchSettings.zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.AUTO_ZOOM) {
         if (this.props.bounds === null && nextProps.bounds !== null) {
-          console.log('setting bounds 1');
           _map.fitBounds({
             north: nextProps.bounds.north,
             south: nextProps.bounds.south,
@@ -131,7 +134,7 @@ export class Map extends React.Component {
       this.setNotableMarkerColours(nextProps);
     }
 
-    // we never update the map with React - it's done internally. It's way too slow otherwise.
+    // never update the map with React - it's way too slow.
     return false;
   }
 
@@ -211,7 +214,7 @@ export class Map extends React.Component {
 
     // for new searches, the default search zoom level may not show any results. We know there are results so we zoom
     // out as far as needed to show the first result
-    if (zoomOutToShowResults && locationsInBounds.length === 0) {
+    if (zoomOutToShowResults && locations.length > 0 && locationsInBounds.length === 0) {
       let center = _map.getCenter();
       const closestResult = helpers.findClosestLatLng(center.lat(), center.lng(), latLngList);
       const closestLatLng = new google.maps.LatLng(parseFloat(closestResult.lat), parseFloat(closestResult.lng));
@@ -234,7 +237,6 @@ export class Map extends React.Component {
     _currentHotspotIDsInMapBoundaries = newSorted;
   }
 
-  // only call this after a new search
   clearHotspots () {
     for (var locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers) {
       _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers[locationID].marker.setMap(null);
@@ -261,7 +263,6 @@ export class Map extends React.Component {
     google.maps.event.addListener(_map, 'dragend', this.onMapBoundsChange);
     google.maps.event.addListener(_map, 'zoom_changed', this.onMapBoundsChange);
   }
-
 
   applyLocationFilter (nextProps) {
     const { locationFilter } = this.props;
@@ -377,7 +378,6 @@ export class Map extends React.Component {
     const { results, searchSettings } = this.props;
     var locationSightings = results.locationSightings[locInfo.i].data;
     const obsRecency = searchSettings.observationRecency;
-    console.log(locInfo);
 
     const sightings = [];
     for (var i=0; i<obsRecency; i++) {

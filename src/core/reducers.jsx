@@ -43,7 +43,6 @@ function searchSettings (state = {
     // when a request is started, the action passes the latest & greatest settings from the settings overlay modal
     // (search type, observation recency, zoom handling). This ensures the main search settings ONLY reflect those
     // values upon an actual search
-    // TODO reset other data via this request too
     case E.SEARCH_REQUEST_STARTED:
       return Object.assign({}, state, {
         searchType: action.searchType,
@@ -72,12 +71,12 @@ function searchSettings (state = {
 
 
 function mapSettings (state = {
-    zoom: 3,
     mapTypeId: C.DEFAULT_MAP_TYPE,
     lat: 30,
     lng: 0,
     bounds: null,
-    searchCounter: 0
+    searchUpdateCounter: 0,
+    resetSearchCounter: 0
   }, action) {
 
   switch (action.type) {
@@ -86,7 +85,8 @@ function mapSettings (state = {
         lat: action.lat,
         lng: action.lng,
         bounds: action.bounds,
-        searchCounter: state.searchCounter + 1
+        searchUpdateCounter: state.searchUpdateCounter + 1,
+        resetSearchCounter: state.resetSearchCounter + 1
       });
 
     case E.RECEIVED_USER_LOCATION:
@@ -94,7 +94,7 @@ function mapSettings (state = {
         lat: action.lat,
         lng: action.lng,
         bounds: action.bounds,
-        searchCounter: state.searchCounter + 1
+        searchUpdateCounter: state.searchUpdateCounter + 1
       });
 
     case E.SET_MAP_TYPE:
@@ -109,7 +109,7 @@ function mapSettings (state = {
     case E.STORE_NOTABLE_SIGHTINGS:
     case E.SEARCH_LOCATIONS_RETURNED:
       return Object.assign({}, state, {
-        searchCounter: state.searchCounter + 1
+        searchUpdateCounter: state.searchUpdateCounter + 1
       });
 
     default:
@@ -255,11 +255,20 @@ function results (state = {
   // stores all locations currently visible on the user's map. N.B. this may include locations that have been
   // hidden by entering a location filter string
   visibleLocations: [],
-  locationSightings: {} // an object of [location ID] => sighting info. Populated as need be, based on what's visible
+  locationSightings: {}, // an object of [location ID] => sighting info. Populated as need be, based on what's visible
 
+  searchError: ''
 }, action) {
   switch (action.type) {
     case E.SEARCH_REQUEST_STARTED:
+      return Object.assign({}, state, {
+        allLocations: [],
+        visibleLocations: [],
+        locationSightings: {},
+        isFetching: true,
+        searchError: ''
+      });
+
     case E.INIT_SEARCH_REQUEST:
       return Object.assign({}, state, {
         isFetching: true
@@ -272,15 +281,23 @@ function results (state = {
 
     case E.SEARCH_LOCATIONS_RETURNED:
       var locationSightings = Object.assign({}, state.locationSightings);
+
+      let searchError = '';
+      if (action.locations.length === 0) {
+        searchError = 'noResultsFound';
+      }
       action.locations.forEach(function (locInfo) {
         locationSightings[locInfo.i] = {
           fetched: false,
           data: []
         }
       });
+
       return Object.assign({}, state, {
+        isFetching: (action.locations.length === 0 || !action.success) ? false : state.isFetching,
         allLocations: action.locations,
-        locationSightings: locationSightings
+        locationSightings: locationSightings,
+        searchError: searchError
       });
 
     case E.HOTSPOT_SIGHTINGS_RETURNED:
@@ -381,8 +398,14 @@ function locationsPanel (state = {
     case E.SHOW_MODAL:
       return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
 
-    case E.SET_LOCALE:
     case E.SEARCH_REQUEST_STARTED:
+      return Object.assign({}, state, {
+        filter: '',
+        selectedLocation: '',
+        updateCounter: state.updateCounter+1
+      });
+
+    case E.SET_LOCALE:
     case E.SEARCH_REQUEST_ENDED:
     case E.HOTSPOT_SIGHTINGS_UPDATE:
     case E.VISIBLE_LOCATIONS_UPDATED:

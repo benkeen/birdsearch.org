@@ -51,6 +51,7 @@ export default {
   miscSettings: 'Misc settings',
   month: 'month',
   noLocations: 'No locations.',
+  noResultsFound: 'Sorry, no results were found.',
   notableBirds: 'Notable Birds',
 	notableSightings: 'Notable sightings',
   notReviewed: 'Not reviewed',

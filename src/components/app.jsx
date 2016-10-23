@@ -69,7 +69,8 @@ class App extends React.Component {
             zoom={mapSettings.zoom}
             lat={mapSettings.lat}
             lng={mapSettings.lng}
-            searchCounter={mapSettings.searchCounter}
+            searchUpdateCounter={mapSettings.searchUpdateCounter}
+            resetSearchCounter={mapSettings.resetSearchCounter}
             mapTypeId={mapSettings.mapTypeId}
             bounds={mapSettings.bounds}
             searchSettings={searchSettings}

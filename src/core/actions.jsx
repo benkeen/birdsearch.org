@@ -59,6 +59,7 @@ const searchRequestComplete = () => {
   return { type: E.SEARCH_REQUEST_ENDED };
 };
 
+
 // our one and only search method. This fires off the initial requests for the data. Notable sightings are a single
 // request; bird sightings are much more complex.
 const search = (searchType, locationString, lat, lng, mapBounds, observationRecency, zoomHandling) => {
