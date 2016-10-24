@@ -121,6 +121,7 @@ function mapSettings (state = {
 function user (state = {
   isFetching: false,
   userLocationFound: false,
+  errorRetrievingUserLocation: false,
   lat: null,
   lng: null,
   address: '',
@@ -129,6 +130,12 @@ function user (state = {
   switch (action.type) {
     case E.REQUESTING_USER_LOCATION:
       return Object.assign({}, state, { isFetching: true });
+
+    case E.GEO_REQUEST_ERROR:
+      return Object.assign({}, state, {
+        isFetching: false,
+        errorRetrievingUserLocation: true
+      });
 
     case E.RECEIVED_USER_LOCATION:
       return Object.assign({}, state, {

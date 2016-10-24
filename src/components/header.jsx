@@ -189,10 +189,19 @@ class HeaderSearch extends React.Component {
   render () {
     const { intl } = this.props;
 
+    const tooltip = (
+      <Tooltip id="intro-tooltip">
+        Enter any location in this field to view bird sightings seen in that region in the last <b>7</b> days.
+      </Tooltip>
+    );
+
     return (
       <div className="header-search">
-        <input type="text" placeholder={intl.formatMessage({ id: 'enterLocation' })} ref="searchField" value={this.props.location}
-          onChange={this.onChangeLocation.bind(this)} />
+        <OverlayTrigger placement="bottom" overlay={tooltip} trigger="click">
+          <input type="text" placeholder={intl.formatMessage({ id: 'enterLocation' })} ref="searchField" value={this.props.location}
+            onChange={this.onChangeLocation.bind(this)} />
+        </OverlayTrigger>
+
         <div className="location-error">
           <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }} component="div">
             {this.state.showError ? <div>{this.state.error}</div> : undefined}

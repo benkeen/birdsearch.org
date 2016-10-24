@@ -15,12 +15,12 @@ Pretty darn close! Should get it out the door in Oct, 2016. Honest.
 - translations
 - check different browsers
 
+
 ##### Bugs
 - search for Manaus. Why isn't it centered?
-- "Search" button in settings popup
-    - doesn't work
-    - doesn't always appear when a search has been made
-- switching from notable to regular doesn't work properly.
+- When species panel open, a fresh search doesn't automatically show the right contents.
+- ??? "Warning: Failed prop type: Invalid prop `observationRecency` of type `number` supplied to `SearchSettings`, expected `string`."
+- bloody columns still need to be correctly placed. 
 
 
 #### For 2.0.1:

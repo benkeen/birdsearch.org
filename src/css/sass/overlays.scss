@@ -130,15 +130,15 @@
 
 
 .settings-row {
-  display: flex;
-  flex-direction: row;
+  @include display-flex();
+  @include flex-direction(row);
 
   span {
     color: #888888;
   }
 
   .settings-row-label {
-    flex: 0 1 100px;
+    @include flex(0 1 100px);
     padding-left: 0;
     span {
       color: #111111;
@@ -146,7 +146,7 @@
   }
 
   &>span {
-    flex: 1;
+    @include flex(1);
     padding: 10px;
     input {
       float: left;

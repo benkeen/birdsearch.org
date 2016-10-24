@@ -77,7 +77,7 @@ export default {
   resultType2: '{birdSightings} returns all sightings made at eBird hotspots.',
   resultType3: '{notableSightings} returns any sighting that has been marked as unusual for the area. This may mean the species is rare in the region or that it is out of season.',
   showFullSearchRange: 'Show full search range',
-  showObservationsMade: 'Show observations made in the last {days} days.',
+  showObservationsMade: 'Show observations made in the last {days} day(s).',
   species: 'Species',
   status: 'Status',
   thisPost: 'this post',

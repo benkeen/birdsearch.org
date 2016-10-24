@@ -164,8 +164,16 @@ const requestGeoLocation = (callback) => {
     navigator.geolocation.getCurrentPosition(function (position) {
       convertLatLngToAddress(dispatch, position.coords.latitude, position.coords.longitude);
       callback();
+    }, function (e) {
+      console.log(e);
+      // for whatever reason the geolocation request failed
+      dispatch(geoRequestError());
     });
   };
+};
+
+const geoRequestError = () => {
+  return { type: E.GEO_REQUEST_ERROR };
 };
 
 const convertLatLngToAddress = (dispatch, lat, lng) => {

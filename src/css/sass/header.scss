@@ -1,5 +1,7 @@
 @import "variables";
+@import "mixins";
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700");
+
 
 body .navbar {
 	line-height: 56px;
@@ -18,7 +20,6 @@ body .navbar {
 		background: -moz-linear-gradient(top, rgba(34,111,136,1) 0%, rgba(28,97,120,1) 100%);
 		background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(34,111,136,1)), color-stop(100%, rgba(28,97,120,1)));
 		background: -webkit-linear-gradient(top, rgba(34,111,136,1) 0%, rgba(28,97,120,1) 100%);
-		background: -o-linear-gradient(top, rgba(34,111,136,1) 0%, rgba(28,97,120,1) 100%);
 		background: -ms-linear-gradient(top, rgba(34,111,136,1) 0%, rgba(28,97,120,1) 100%);
 		background: linear-gradient(to bottom, rgba(34,111,136,1) 0%, rgba(28,97,120,1) 100%);
 		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#226f88', endColorstr='#1c6178', GradientType=0 );
@@ -47,7 +48,7 @@ header {
 	}
 	.header-search {
 		position: relative;
-		display: flex;
+        @include display-flex();
 		height: 60px;
 		input {
 			margin: 13px;
@@ -63,11 +64,11 @@ header {
 		list-style-type: none;
 		padding: 0;
 		margin: 0;
-		display: flex;
-		flex-direction: row;
+        @include display-flex();
+        @include flex-direction(row);
 		font-size: 9pt;
 		li {
-			flex: 0 0 auto;
+            @include flex(0 0 auto);
 			font-size: 11pt;
 			a {
 				display: inline-block;
@@ -95,4 +96,16 @@ header {
 		background-color: #FFBABA;
 		color: #bb0000;
 	}
+}
+
+#intro-tooltip {
+  top: 57px !important;
+  left: 313px !important;
+
+  .tooltip-inner {
+    font-size: 15px;
+    padding: 20px;
+    max-width: 350px;
+    text-align: left;
+  }
 }

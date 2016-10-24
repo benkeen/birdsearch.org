@@ -40,6 +40,7 @@ var _data = {
 // boundary, ignoring what is visible on the map (i.e. via a location filter)
 var _currentHotspotIDsInMapBoundaries = [];
 var _currentSearchType;
+var _suppressBoundaryChangeUpdate = false;
 
 
 export class Map extends React.Component {
@@ -82,12 +83,11 @@ export class Map extends React.Component {
 
   shouldComponentUpdate (nextProps) {
     let isNewSearch = false;
+
     if (this.props.resetSearchCounter !== nextProps.resetSearchCounter) {
       isNewSearch = true;
-      this.clearHotspots();
-
-//      _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers = {};
-//      _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers = {};
+      this.clearMarkers();
+      _suppressBoundaryChangeUpdate = true;
     }
 
     // map updates are explicitly throttled by incrementing mapSettings.searchUpdateCounter
@@ -99,8 +99,9 @@ export class Map extends React.Component {
 
     this.applyLocationFilter(nextProps);
 
-    if ((this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) &&
-      (_.isNumber(nextProps.lat) && _.isNumber(nextProps.lng))) {
+    if (isNewSearch || (this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) &&
+        (_.isNumber(nextProps.lat) && _.isNumber(nextProps.lng))) {
+
       _map.setCenter({
         lat: nextProps.lat,
         lng: nextProps.lng
@@ -203,7 +204,7 @@ export class Map extends React.Component {
         this.showMarkerWithFilter(locInfo);
       } else {
         if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
-          this.addBirdMarker(searchType, locID, latlng, locInfo);
+          this.addBirdMarker(locID, latlng, locInfo);
         } else {
           this.addNotableMarker(searchType, locID, latlng, locInfo);
         }
@@ -238,18 +239,30 @@ export class Map extends React.Component {
     _currentHotspotIDsInMapBoundaries = newSorted;
   }
 
-  clearHotspots () {
+  clearMarkers () {
+    // remove the markers from the map, then delete them in memory
     for (let locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers) {
       _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers[locationID].marker.setMap(null);
     }
     for (let locationID in _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers) {
-      _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers[locationID].setMap(null);
+      _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers[locationID].marker.setMap(null);
     }
+    _data[C.SEARCH_SETTINGS.SEARCH_TYPES.ALL].markers = {};
+    _data[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE].markers = {};
   }
 
   onMapBoundsChange () {
     const { results, searchSettings } = this.props;
-    this.updateMapMarkers(searchSettings.searchType, results.allLocations, results.locationSightings);
+
+    // urgh. When a second search gets passed, any change in lat/lng or zoom trigger onMapBoundsChange. Thing is,
+    // we don't want to update the markers here - we let shouldComponentUpdate() handle it. Otherwise the map ends up
+    // showing deleted markers
+    if (!_suppressBoundaryChangeUpdate) {
+      this.updateMapMarkers(searchSettings.searchType, results.allLocations, results.locationSightings);
+    }
+
+    // we can immediately set it back
+    _suppressBoundaryChangeUpdate = false;
   }
 
   addEventHandlers () {
@@ -294,26 +307,25 @@ export class Map extends React.Component {
       show = regexp.test(locInfo.n);
     }
     if (show) {
-      console.log('.');
       _data[_currentSearchType].markers[locInfo.i].marker.setMap(_map);
     }
   }
 
-  addBirdMarker (searchType, locationID, latlng, currMarkerInfo) {
+  addBirdMarker (locationID, latlng, currMarkerInfo) {
     if (_.has(_data[_currentSearchType].markers, locationID)) {
       if (_data[_currentSearchType].markers[locationID].marker.map === null) {
-        console.log('...');
         _data[_currentSearchType].markers[locationID].marker.setMap(_map);
       }
       return;
     }
+
     _data[_currentSearchType].markers[locationID] = {
       visible: false,
       marker: new google.maps.Marker({
         position: latlng,
         map: _map,
         title: currMarkerInfo.n,
-        icon: (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? _icons.range1 : _icons.notable,
+        icon: _icons.range1,
         locationID: locationID
       })
     };
@@ -331,7 +343,6 @@ export class Map extends React.Component {
   addNotableMarker (searchType, locationID, latlng, currMarkerInfo) {
     if (_.has(_data[_currentSearchType].markers, locationID)) {
       if (_data[_currentSearchType].markers[locationID].marker.map === null) {
-        console.log("*");
         _data[_currentSearchType].markers[locationID].marker.setMap(_map);
       }
       return;
@@ -419,6 +430,7 @@ export class Map extends React.Component {
       );
     });
   }
+
   render () {
     return (
       <div className="flex-body"></div>

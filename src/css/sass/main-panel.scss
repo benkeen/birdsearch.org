@@ -16,7 +16,7 @@
 .section-header {
   height: 28px;
   cursor: pointer;
-  flex: 0 1 auto;
+  @include flex(0 1 auto);
   &>div {
     position: relative;
     width: 100%;
@@ -62,8 +62,8 @@
   top: 60px;
   left: 0;
   width: 300px;
-  display: flex;
-  flex-direction: column;
+  @include display-flex();
+  @include flex-direction(column);
 
   header, footer {
     background-color: rgba(26, 29, 34, 0.71);
@@ -73,7 +73,7 @@
   }
   .panel {
     background-color: rgba(0, 0, 5, 0.78);
-    flex: 1;
+	@include flex(1);
   }
   table {
     width: inherit;
@@ -127,17 +127,17 @@
 }
 
 #locations-panel-content > div, #species-panel-content > div {
-	display: flex;
-	flex-direction: column;
+	@include display-flex();
+	@include flex-direction(column);
 	height: 100%;
 	.panel {
-		display: flex;
-		flex-direction: column;
-		flex: 1;
+		@include display-flex();
+		@include flex-direction(column);
+		@include flex(1);
 		overflow-x: hidden;
 	}
 	footer {
-		flex: 0 0 auto;
+		@include flex(0 0 auto);
 		text-align: center;
 		cursor: pointer;
 		span {
@@ -154,7 +154,7 @@
 #species-panel-content {
   margin-left: -1px;
   & > div .panel table {
-    flex: 1;
+    @include flex(1);
   }
   .eBirdLink {
     float: right;
@@ -177,7 +177,7 @@
 }
 
 .filter-locations-row {
-	flex: 0 0 auto;
+	@include flex(0 0 auto);
 	padding: 8px 10px 0;
 	position: relative;
 	input {
@@ -199,7 +199,7 @@ body .clear-filter-icon {
 .species-heading-row {
 	position: relative;
 	padding: 8px 0 4px;
-	flex: 0 0 auto;
+	@include flex(0 0 auto);
 	margin: 0 4px;
 	border-bottom: 1px solid #666666;
 
@@ -227,7 +227,7 @@ body .clear-filter-icon {
 }
 
 .species-table {
-	flex: 1;
+	@include flex(1);
 	overflow: hidden;
 
 	.filter-field {
@@ -284,7 +284,7 @@ body .filter-field {
 }
 
 #locations-table-wrapper {
-	flex: 1;
+	@include flex(1);
 	overflow: auto;
 	overflow-x: hidden;
 
@@ -303,8 +303,8 @@ body .filter-field {
   position: absolute;
   top: 60px;
   left: 300px;
-  display: flex;
-  flex-direction: column;
+  @include display-flex();
+  @include flex-direction(column);
 
   .section-header {
     margin-left: -1px;
@@ -316,7 +316,7 @@ body .filter-field {
   .panel {
       background-color: rgba(0, 0, 5, 0.78);
       border-left: 1px solid #666666;
-      flex: 1;
+	  @include flex(1);
       padding: 0 10px;
       overflow: hidden;
   }
@@ -428,8 +428,8 @@ body .filter-field {
 		li {
 			cursor: pointer;
 			line-height: inherit;
-			display: flex;
-			flex-direction: row;
+			@include display-flex();
+			@include flex-direction(row);
 			padding: 2px 0;
 			span, a {
 				padding: 1px 0;
@@ -438,10 +438,10 @@ body .filter-field {
 				}
 			}
 			span {
-				flex: 1;
+				@include flex(1);
 			}
 			a {
-				flex-grow: 0;
+				@include flex-grow(0);
 				&:after {
 					content: ''
 				}
@@ -459,18 +459,18 @@ body .filter-field {
 }
 
 .species-table {
-	display: flex;
-	flex-direction: column;
+	@include display-flex();
+	@include flex-direction(column);
 }
 .species-table-header {
-	flex: 0;
+	@include flex(0 0 auto);
 	border-bottom: 2px solid black;
 }
 .species-header {
 	margin-top: 8px;
 }
 .species-table-content-wrapper {
-	flex: 1;
+	@include flex(1);
 	overflow-x: hidden;
 	overflow-y: scroll;
 }

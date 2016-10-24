@@ -231,7 +231,7 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
           reporter: `${info.firstName} ${info.lastName}`,
           obsDt: time,
           status: status,
-					obsDtDisplay: '12345', // time.format('MMM Do, H:mm a'),
+					obsDtDisplay: time.format('MMM Do, H:mm a'),
 					obsReviewed: info.obsReviewed,
 					obsValid: info.obsValid
 				});

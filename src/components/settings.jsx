@@ -127,7 +127,7 @@ class SearchSettings extends React.Component {
     const searchTypeTooltip = (
       <Tooltip id="search-type-tooltip">
         <div>
-          <FormattedMessage id="show"/>
+          <FormattedMessage id="resultType1"/>
           <ul>
             <li><FormattedMessage id="resultType2" values={{ birdSightings: <b>{intl.formatMessage({ id: 'birdSightings' })}</b> }}/></li>
             <li><FormattedMessage id="resultType3" values={{ notableSightings: <b>{intl.formatMessage({ id: 'notableSightings' })}</b> }}/></li>
@@ -139,7 +139,7 @@ class SearchSettings extends React.Component {
     return (
       <div>
         <div className="settings-row">
-          <span className="settings-row-label"><FormattedMessage id="resultType"/></span>
+          <span className="settings-row-label"><FormattedMessage id="show" /></span>
           <span className="search-type">
             <span>
               <input type="radio" name="search-type" id="rt1"
@@ -154,7 +154,7 @@ class SearchSettings extends React.Component {
               <input type="radio" name="search-type" id="rt2" className="margin-left"
                 checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
                 onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }}/>
-              <label htmlFor="rt2"><FormattedMessage id="notableSightings"/></label>
+              <label htmlFor="rt2"><FormattedMessage id="notableSightings" /></label>
             </span>
           </span>
         </div>

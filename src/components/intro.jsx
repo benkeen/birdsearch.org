@@ -28,6 +28,19 @@ class IntroOverlay extends React.Component {
     }
   }
 
+  // kludgy, but due to browser weirdnesses. If the user clicks "Search Nearby" then either denies allowing the site
+  // from finding their location, or even clicks "x" to close the panel, this code disables the button for the rest
+  // of their session. Kind of a pain, but the "x" button in Chrome throws the same error as when they deny access to the
+  // location so we just don't know which is which. The other weird thing about this is that if they DENY access to the
+  // location, refresh the page, the 
+  componentWillReceiveProps ({ errorRetrievingUserLocation }) {
+    if (errorRetrievingUserLocation) {
+      this.setState({
+        supportsGeoLocation: false
+      });
+    }
+  }
+
   componentWillMount () {
     // if the browser doesn't support geolocation, disable the option but don't hide it. A message will appear
     // saying the browser doesn't support it.
@@ -114,6 +127,7 @@ IntroOverlay.PropTypes = {
 export default injectIntl(connect(state => ({
   loading: state.user.isFetching,
   userLocationFound: state.user.userLocationFound,
+  errorRetrievingUserLocation: state.user.errorRetrievingUserLocation,
   searchSettings: state.searchSettings,
   settingsOverlay: state.settingsOverlay,
   mapSettings: state.mapSettings

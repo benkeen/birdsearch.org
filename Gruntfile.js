@@ -17,7 +17,7 @@ module.exports = function(grunt) {
     // this task converts javascript/JSX files and stashes an es5-friendly version of them in /dist
 		babel: {
 			options: {
-        plugins: ['transform-react-jsx'],
+        plugins: ['transform-react-jsx', 'transform-object-assign'],
 				sourceMap: true,
 				presets: ['es2015', 'react']
 			},
