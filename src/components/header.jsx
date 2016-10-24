@@ -189,9 +189,10 @@ class HeaderSearch extends React.Component {
   render () {
     const { intl } = this.props;
 
+    // <Link to="/settings">{intl.formatMessage({ id: 'searchSettings' }).toLowerCase()}</Link>
     const tooltip = (
       <Tooltip id="intro-tooltip">
-        Enter any location in this field to view bird sightings seen in that region in the last <b>7</b> days.
+        Enter any location here to view bird sightings made in the last <a href="#"><b>7</b> days</a>.
       </Tooltip>
     );
 
