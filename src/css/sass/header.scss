@@ -99,13 +99,43 @@ header {
 }
 
 #intro-tooltip {
-  top: 57px !important;
+  top: 62px !important;
   left: 313px !important;
 
+  .tooltip-arrow {
+    top: -5px;
+    border-width: 0 10px 10px;
+    border-bottom-color: #ffffff;
+  }
+
   .tooltip-inner {
-    font-size: 15px;
-    padding: 20px;
+    background-color: white;
+    color: #111111;
+    font-size: 16px;
+    padding: 16px;
     max-width: 350px;
     text-align: left;
+    line-height: 24px;
+    box-shadow: 0 1px 4px #222222;
   }
+}
+
+
+@keyframes bounce {
+  0% {
+    transform: translateY(35px);
+  }
+  15%, 45%, 80%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(20px);
+  }
+  60% {
+    transform: translateY(6px);
+  }
+}
+
+.bounce {
+  animation: 1.5s bounce;
 }

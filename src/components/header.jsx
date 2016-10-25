@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { Link } from 'react-router';
 import { browserHistory } from 'react-router';
 import { VelocityTransitionGroup } from 'velocity-react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
 import { C, _, actions, helpers } from '../core/core';
 import { LOCALES } from '../i18n/index';
 
@@ -191,7 +191,7 @@ class HeaderSearch extends React.Component {
 
     // <Link to="/settings">{intl.formatMessage({ id: 'searchSettings' }).toLowerCase()}</Link>
     const tooltip = (
-      <Tooltip id="intro-tooltip">
+      <Tooltip id="intro-tooltip" className="bounce">
         Enter any location here to view bird sightings made in the last <a href="#"><b>7</b> days</a>.
       </Tooltip>
     );
