@@ -492,13 +492,15 @@ function sightingsPanel (state = {
 // arbitrary input field in a different component somewhere. We need a one-off message sent to do a thing. This section
 // handles that.
 function misc (state = {
-  nextAction: ''
+  nextAction: '',
+  showHeaderTooltip: false
 }, action) {
 
   switch (action.type) {
     case E.SEARCH_ANYWHERE:
       return Object.assign({}, state, {
-        nextAction: C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS
+        nextAction: C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS,
+        showHeaderTooltip: true
       });
 
     default:

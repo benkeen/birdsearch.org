@@ -99,13 +99,16 @@ header {
 }
 
 #intro-tooltip {
-  top: 62px !important;
-  left: 313px !important;
+  top: 66px !important;
+  left: 306px !important;
+  opacity: 1;
 
   .tooltip-arrow {
     top: -5px;
     border-width: 0 10px 10px;
     border-bottom-color: #ffffff;
+    border-right-color: transparent;
+    left: 46%;
   }
 
   .tooltip-inner {
@@ -116,7 +119,15 @@ header {
     max-width: 350px;
     text-align: left;
     line-height: 24px;
-    box-shadow: 0 1px 4px #222222;
+    box-shadow: 0 1px 2px #777777;
+  }
+  .close-panel {
+    float: right;
+    margin: -4px -4px 0 0;
+    color: #b9b9b9;
+    &:hover {
+      color: #333333;
+    }
   }
 }
 

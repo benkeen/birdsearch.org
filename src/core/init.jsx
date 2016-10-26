@@ -23,6 +23,7 @@ import App from '../components/app';
 import Intro from '../components/intro';
 import About from '../components/about';
 import Settings from '../components/settings';
+import SearchTip from '../components/search-tip';
 
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
@@ -90,6 +91,7 @@ class I18NWrapper extends React.Component {
           <Route path="/" component={App}>
             <Route path="/about" component={About} />
             <Route path="/intro" component={Intro} />
+            <Route path="/search-tip" component={SearchTip} />
             <Route path="/settings" component={Settings} />
           </Route>
         </Router>

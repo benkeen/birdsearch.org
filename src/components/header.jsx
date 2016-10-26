@@ -7,6 +7,7 @@ import { browserHistory } from 'react-router';
 import { VelocityTransitionGroup } from 'velocity-react';
 import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
 import { C, _, actions, helpers } from '../core/core';
+import { ClosePanel } from './general';
 import { LOCALES } from '../i18n/index';
 
 
@@ -51,7 +52,7 @@ class Header extends React.Component {
   }
 
   render () {
-    const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, searchError, intl } = this.props;
+    const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, searchError, showHeaderTooltip, intl } = this.props;
     const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="settings" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="about" /></Tooltip>;
 
@@ -68,6 +69,7 @@ class Header extends React.Component {
           location={searchSettings.location}
           searchError={searchError}
           onChange={(str) => dispatch(actions.setSearchLocation(str))}
+          showHeaderTooltip={showHeaderTooltip}
           intl={intl}
           onSubmit={this.onSubmitNewSearch}
           setLocation={this.setLocation} />
@@ -100,7 +102,8 @@ export default injectIntl(connect(state => ({
   settingsOverlay: state.settingsOverlay,
   searchSettings: state.searchSettings,
   nextAction: state.misc.nextAction,
-  searchError: state.results.searchError
+  searchError: state.results.searchError,
+  showHeaderTooltip: state.misc.showHeaderTooltip
 }))(Header));
 
 
@@ -186,22 +189,17 @@ class HeaderSearch extends React.Component {
     this.props.onChange(e.target.value);
   }
 
+  close () {
+
+  }
+
   render () {
     const { intl } = this.props;
 
-    // <Link to="/settings">{intl.formatMessage({ id: 'searchSettings' }).toLowerCase()}</Link>
-    const tooltip = (
-      <Tooltip id="intro-tooltip" className="bounce">
-        Enter any location here to view bird sightings made in the last <a href="#"><b>7</b> days</a>.
-      </Tooltip>
-    );
-
     return (
       <div className="header-search">
-        <OverlayTrigger placement="bottom" overlay={tooltip} trigger="click">
           <input type="text" placeholder={intl.formatMessage({ id: 'enterLocation' })} ref="searchField" value={this.props.location}
             onChange={this.onChangeLocation.bind(this)} />
-        </OverlayTrigger>
 
         <div className="location-error">
           <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }} component="div">
@@ -218,7 +216,8 @@ HeaderSearch.PropTypes = {
   onChangeLocation: React.PropTypes.func.isRequired,
   onSubmit: React.PropTypes.func.isRequired,
   setLocation: React.PropTypes.func.isRequired,
-  intl: intlShape.isRequired
+  showHeaderTooltip: React.PropTypes.bool.isRequired,
+  intl: intlShape.isRequired,
 };
 
 
