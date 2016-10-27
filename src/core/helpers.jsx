@@ -369,8 +369,6 @@ const getColSort = (field, sort, sortDir) => {
 const sortSightings = (sightings, sort, sortDir) => {
   let sorted = [];
 
-  console.log(sightings);
-
   switch (sort) {
     case C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS:
       if (sortDir === C.SORT_DIR.DEFAULT) {

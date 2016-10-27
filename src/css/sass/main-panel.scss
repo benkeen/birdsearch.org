@@ -256,13 +256,16 @@ body .clear-filter-icon {
 		}
 	}
 	.last-seen {
-		width: 17%;
+		width: 20%;
+		div {
+			margin-left: -10px;
+		}
 	}
 	.locations-seen {
-		width: 17%;
+		width: 20%;
 	}
 	.num-reported {
-		width: 17%;
+		width: 60px;
 	}
 
 	.icon {
@@ -414,6 +417,7 @@ body .filter-field {
 	cursor: pointer;
 	padding: 2px;
 	font-size: 12px;
+	margin-left: 23px;
 }
 
 .species-num-locations-cell {
@@ -468,6 +472,9 @@ body .filter-field {
 .species-table-header {
 	@include flex(0 0 auto);
 	border-bottom: 2px solid black;
+	.last-seen {
+		width: 21%;
+	}
 }
 .species-header {
 	margin-top: 8px;

@@ -105,9 +105,6 @@ class HistoryTab extends React.Component {
         <p>
           <FormattedMessage id="historyPara2" values={{ rightNow: <i>{intl.formatMessage({ id: 'rightNow' })}</i> }} />
         </p>
-        <p>
-          <FormattedMessage id="historyPara3" />
-        </p>
       </div>
     );
   }

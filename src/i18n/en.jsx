@@ -70,7 +70,7 @@ export default {
 	searchNearby: 'Search <u>N</u>earby',
   searchResults: 'Search results',
   searchSettings: 'Search settings',
-  searchTip: 'Enter any location here to view bird sightings made in the last {days}.',
+  searchTip: 'Enter any location to view bird sightings made in the last {days}.',
   searchTipDays: '{obsRecency, plural, one {day} other {days}',
   settings: 'Settings',
   show: 'Show',
