@@ -17,10 +17,17 @@ class SearchTip extends React.Component {
     };
   }
 
+  // automatically display the tooltip after the URL changes
   componentDidMount () {
-    setTimeout(() => {
-      this.setState({ visible: true });
-    }, 500);
+    const { dispatch } = this.props;
+    setTimeout(() => { this.setState({ visible: true }); }, 500);
+    dispatch(actions.searchAnywhere());
+  }
+
+  componentWillUpdate (nextProps) {
+//    if (nextProps.hideTip) {
+//      this.setState({ visible: false });
+//    }
   }
 
   close () {
@@ -29,7 +36,7 @@ class SearchTip extends React.Component {
 
   getTooltip () {
     const { obsRecency } = this.props;
-    const classes = 'bounce' + ((!this.state.visible) ? ' hidden' : '');
+    const classes = 'bounce' + ((!this.state.visible) ? ' is-hidden' : '');
 
     return (
       <Tooltip id="intro-tooltip" className={classes}>
@@ -61,6 +68,7 @@ class SearchTip extends React.Component {
 }
 
 export default injectIntl(connect(state => ({
-  obsRecency: state.settingsOverlay.observationRecency
+  obsRecency: state.settingsOverlay.observationRecency,
+  hideTip: state.misc
 }))(SearchTip));
 

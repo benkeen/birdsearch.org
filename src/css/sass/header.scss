@@ -102,9 +102,9 @@ header {
   top: 66px !important;
   left: 306px !important;
   opacity: 1;
-  transition: opacity 2000ms;
+  transition: opacity 300ms ease-in;
 
-  &.hidden {
+  &.is-hidden {
     opacity: 0;
   }
 
@@ -124,7 +124,6 @@ header {
     max-width: 350px;
     text-align: left;
     line-height: 24px;
-    box-shadow: 0 1px 2px #777777;
   }
   .close-panel {
     float: right;

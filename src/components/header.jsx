@@ -19,8 +19,10 @@ class Header extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
+    const { dispatch } = this.props;
     if (prevProps.nextAction !== this.props.nextAction && this.props.nextAction === C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS) {
       this.refs.headerSearch.focus();
+      dispatch(actions.clearNextAction());
     }
   }
 
@@ -52,7 +54,7 @@ class Header extends React.Component {
   }
 
   render () {
-    const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, searchError, showHeaderTooltip, intl } = this.props;
+    const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, searchError, intl } = this.props;
     const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="settings" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="about" /></Tooltip>;
 
@@ -69,7 +71,6 @@ class Header extends React.Component {
           location={searchSettings.location}
           searchError={searchError}
           onChange={(str) => dispatch(actions.setSearchLocation(str))}
-          showHeaderTooltip={showHeaderTooltip}
           intl={intl}
           onSubmit={this.onSubmitNewSearch}
           setLocation={this.setLocation} />
@@ -102,8 +103,7 @@ export default injectIntl(connect(state => ({
   settingsOverlay: state.settingsOverlay,
   searchSettings: state.searchSettings,
   nextAction: state.misc.nextAction,
-  searchError: state.results.searchError,
-  showHeaderTooltip: state.misc.showHeaderTooltip
+  searchError: state.results.searchError
 }))(Header));
 
 
@@ -189,10 +189,6 @@ class HeaderSearch extends React.Component {
     this.props.onChange(e.target.value);
   }
 
-  close () {
-
-  }
-
   render () {
     const { intl } = this.props;
 
@@ -216,8 +212,7 @@ HeaderSearch.PropTypes = {
   onChangeLocation: React.PropTypes.func.isRequired,
   onSubmit: React.PropTypes.func.isRequired,
   setLocation: React.PropTypes.func.isRequired,
-  showHeaderTooltip: React.PropTypes.bool.isRequired,
-  intl: intlShape.isRequired,
+  intl: intlShape.isRequired
 };
 
 

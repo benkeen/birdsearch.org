@@ -496,15 +496,15 @@ function sightingsPanel (state = {
 // handles that.
 function misc (state = {
   nextAction: '',
-  showHeaderTooltip: false
+  hideSearchTooltip: false
 }, action) {
 
   switch (action.type) {
     case E.SEARCH_ANYWHERE:
-      return Object.assign({}, state, {
-        nextAction: C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS,
-        showHeaderTooltip: true
-      });
+      return Object.assign({}, state, { nextAction: C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS });
+
+    case E.CLEAR_NEXT_ACTION:
+      return Object.assign({}, state, { nextAction: '' });
 
     default:
       return state;

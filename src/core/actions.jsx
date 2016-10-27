@@ -155,6 +155,10 @@ const searchAnywhere = () => {
   return { type: E.SEARCH_ANYWHERE };
 };
 
+const clearNextAction = () => {
+  return { type: E.CLEAR_NEXT_ACTION };
+};
+
 const requestingUserLocation = () => {
   return { type: E.REQUESTING_USER_LOCATION };
 };
@@ -429,5 +433,6 @@ export {
   selectAboutTab,
   showModal,
   selectSettingsOverlayTab,
-  setScientificNameVisibility
+  setScientificNameVisibility,
+  clearNextAction
 };
