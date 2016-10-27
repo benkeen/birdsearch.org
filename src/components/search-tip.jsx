@@ -29,13 +29,10 @@ class SearchTip extends React.Component {
 
   getTooltip () {
     const { obsRecency } = this.props;
-
-    if (!this.state.visible) {
-      return null;
-    }
+    const classes = 'bounce' + ((!this.state.visible) ? ' hidden' : '');
 
     return (
-      <Tooltip id="intro-tooltip" className="bounce">
+      <Tooltip id="intro-tooltip" className={classes}>
         <ClosePanel onClose={this.close} />
         <FormattedMessage id="searchTip"
           values={{

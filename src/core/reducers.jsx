@@ -40,6 +40,9 @@ function searchSettings (state = {
         location: action.location
       });
 
+    case E.SEARCH_ANYWHERE:
+      return Object.assign({}, state, { location: '' });
+
     // when a request is started, the action passes the latest & greatest settings from the settings overlay modal
     // (search type, observation recency, zoom handling). This ensures the main search settings ONLY reflect those
     // values upon an actual search

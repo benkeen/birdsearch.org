@@ -536,6 +536,13 @@ body .filter-field {
 		.status-col {
 			width: 210px;
 		}
+		.species-col {
+			width: 225px;
+		}
+		.location-col {
+			width: 220px;
+			max-width: 220px;
+		}
 	}
 	.notable-count {
 		margin-left: 6px;
@@ -553,7 +560,8 @@ body .filter-field {
 	}
 
 	.location-col {
-		max-width: 150px;
+		max-width: 200px;
+		width: 200px;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		white-space: nowrap;

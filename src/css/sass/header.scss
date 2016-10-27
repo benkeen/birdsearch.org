@@ -102,6 +102,11 @@ header {
   top: 66px !important;
   left: 306px !important;
   opacity: 1;
+  transition: opacity 2000ms;
+
+  &.hidden {
+    opacity: 0;
+  }
 
   .tooltip-arrow {
     top: -5px;

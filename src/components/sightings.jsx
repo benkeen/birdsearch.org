@@ -594,7 +594,7 @@ class NotableSpeciesRow extends React.Component {
         {this.getLocationField()}
         <td className="species-col">
           <div>
-            <span className="com-name" dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
+            <span className="com-name" title={comName} dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
             <span className="notable-count">(<FormattedNumber value={row.howMany} />)</span>
           </div>
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
