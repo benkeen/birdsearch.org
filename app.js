@@ -28,7 +28,7 @@ app.get('/api/getNotableSightings', function (req, res) {
 
 // redirect everything else to index.html
 app.get('*', function (request, response) {
-  response.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+  response.sendFile(path.resolve(__dirname, 'index.html'));
 });
 
 app.listen(port);
