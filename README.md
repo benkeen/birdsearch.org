@@ -6,28 +6,24 @@ bird sightings and distribution.
 ## Versions
 
 ### v2.0.0
-Pretty darn close! Should get it out the door in Oct, 2016. Honest.
+Putting finishing touches. Should get out this weekend (Oct 28th).
 
 -------------------------------------------
 #### Remaining. Notes.
 
-- after clicking "anywhere" should have a bouncy thing pointing to the search bar
 - translations
 - check different browsers
 
-
 ##### Bugs
+- species tip should hide after typing
 - Bird species row should show up immediately after the first result returned.
 - When species panel open, a fresh search doesn't automatically show the right contents.
 - ??? "Warning: Failed prop type: Invalid prop `observationRecency` of type `number` supplied to `SearchSettings`, expected `string`."
-- bloody columns still need to be correctly placed. 
-
+- bloody columns still need to be correctly placed
+- search for Vancouver, birds. Then in the settings panel switch to Notable and search from there. No results.
 
 #### For 2.0.1:
-- remember E.SET_MAP_TYPE
-- translate map buttons
 - "51 bird species seen in the last 1 days"
-- Improve speed of filter on species panel
 
 --------------------------------------------
 

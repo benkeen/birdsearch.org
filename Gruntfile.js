@@ -60,7 +60,7 @@ module.exports = function(grunt) {
           data: { version: package.version }
         },
         files: {
-          'dist/index.html': ['template-index.html']
+          'dist/index.html': ['src/template-index.html']
         }
       }
     },
@@ -71,23 +71,32 @@ module.exports = function(grunt) {
           style: 'expanded'
         },
         files: {
-          [`dist/css/styles-${version}.css`]: 'src/css/sass/styles.scss'
+          'dist/css/styles.css': 'src/css/sass/styles.scss'
         }
       }
     },
 
-		copy: {
+    copy: {
       fonts: { src: './src/css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile' },
       libs: { src: './src/libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile' },
-      css: { src: './src/css/bootstrap.min.css', dest: 'dist/css/', flatten: true, expand: true, filter: 'isFile' },
       images: { src: '**/*', dest: 'dist/images/', cwd: 'src/images/', flatten: false, expand: true, filter: 'isFile' }
-		}
+    },
+
+    cssmin: {
+      options: {
+        shorthandCompacting: false,
+        roundingPrecision: -1
+        //processImport: false
+      },
+      target: {
+        files: {
+          'dist/css/bootstrap.min.css': ['src/css/bootstrap.css'],
+          [`dist/css/styles-${version}.css`]: ['dist/css/styles.css']
+        }
+      }
+    }
 	};
 
 	grunt.initConfig(config);
-  grunt.registerTask('local', ['babel:jsx', 'browserify', 'sass', 'copy']);
-  grunt.registerTask('start', ['local', 'watch']);
-
-  // whenever the version changes, run this to regenerate the index.html file with cache-busted JS and CSS files
-  grunt.registerTask('versionUpdate', ['template', 'local']);
+  grunt.registerTask('start', ['template', 'babel:jsx', 'browserify', 'sass', 'copy', 'cssmin', 'watch']);
 };
