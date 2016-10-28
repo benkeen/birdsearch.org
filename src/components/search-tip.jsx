@@ -24,12 +24,6 @@ class SearchTip extends React.Component {
     dispatch(actions.searchAnywhere());
   }
 
-  componentWillUpdate (nextProps) {
-//    if (nextProps.hideTip) {
-//      this.setState({ visible: false });
-//    }
-  }
-
   close () {
     browserHistory.push('/');
   }
@@ -69,6 +63,6 @@ class SearchTip extends React.Component {
 
 export default injectIntl(connect(state => ({
   obsRecency: state.settingsOverlay.observationRecency,
-  hideTip: state.misc
+  hideTooltip: state.misc.hideTooltip
 }))(SearchTip));
 

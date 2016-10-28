@@ -60,7 +60,7 @@ module.exports = function(grunt) {
           data: { version: package.version }
         },
         files: {
-          'src/index.html': ['template-index.html']
+          'dist/index.html': ['template-index.html']
         }
       }
     },

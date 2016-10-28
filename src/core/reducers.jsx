@@ -503,6 +503,12 @@ function misc (state = {
     case E.SEARCH_ANYWHERE:
       return Object.assign({}, state, { nextAction: C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS });
 
+//    case E.SET_SEARCH_LOCATION:
+//      const hide = (action.location === '') ? true : false;
+//      return Object.assign({}, state, {
+//        hideSearchTooltip: hide
+//      });
+
     case E.CLEAR_NEXT_ACTION:
       return Object.assign({}, state, { nextAction: '' });
 
