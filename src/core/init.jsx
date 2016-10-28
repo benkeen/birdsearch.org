@@ -91,7 +91,7 @@ class I18NWrapper extends React.Component {
           <Route path="/" component={App}>
             <Route path="/about" component={About} />
             <Route path="/intro" component={Intro} />
-            <Route path="/search-tip" component={SearchTip} />
+            <Route path="/search" component={SearchTip} />
             <Route path="/settings" component={Settings} />
           </Route>
         </Router>

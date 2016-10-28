@@ -1,5 +1,6 @@
 /**
- * The server for the local dev environments.
+ * Super-basic server that handles routing API requests and all requests to the main index.html file. It assumes
+ * `grunt build` has been ran beforehand to generate the build artifacts in /dist.
  */
 const express = require('express');
 const path = require('path');
@@ -31,7 +32,7 @@ app.get('/api/getNotableSightings', function (req, res) {
 
 // redirect everything else to index.html
 app.get('*', function (request, response) {
-  response.sendFile(path.resolve(__dirname, 'index.html'));
+  response.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(port);

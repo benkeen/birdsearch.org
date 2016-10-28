@@ -169,7 +169,6 @@ const requestGeoLocation = (callback) => {
       convertLatLngToAddress(dispatch, position.coords.latitude, position.coords.longitude);
       callback();
     }, function (e) {
-      console.log(e);
       // for whatever reason the geolocation request failed
       dispatch(geoRequestError());
     });
@@ -408,6 +407,17 @@ const setScientificNameVisibility = (show) => {
   };
 };
 
+const hideSearchTooltip = (forEntireSession = false) => {
+  return {
+    type: E.HIDE_SEARCH_TOOLTIP,
+    forEntireSession: forEntireSession
+  };
+};
+
+const clearSearchTooltipVisibility = () => {
+  return { type: E.CLEAR_SEARCH_TOOLTIP_VISIBILITY };
+};
+
 
 export {
   setLocale,
@@ -434,5 +444,7 @@ export {
   showModal,
   selectSettingsOverlayTab,
   setScientificNameVisibility,
-  clearNextAction
+  clearNextAction,
+  hideSearchTooltip,
+  clearSearchTooltipVisibility
 };

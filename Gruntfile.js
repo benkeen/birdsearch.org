@@ -86,7 +86,6 @@ module.exports = function(grunt) {
       options: {
         shorthandCompacting: false,
         roundingPrecision: -1
-        //processImport: false
       },
       target: {
         files: {
@@ -98,5 +97,6 @@ module.exports = function(grunt) {
 	};
 
 	grunt.initConfig(config);
-  grunt.registerTask('start', ['template', 'babel:jsx', 'browserify', 'sass', 'copy', 'cssmin', 'watch']);
+  grunt.registerTask('build', ['template', 'babel:jsx', 'browserify', 'sass', 'copy', 'cssmin']);
+  grunt.registerTask('start', ['build', 'watch']);
 };

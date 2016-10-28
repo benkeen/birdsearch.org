@@ -66,7 +66,7 @@ class IntroOverlay extends React.Component {
   searchAnywhere () {
     const { dispatch } = this.props;
     dispatch(actions.setIntroOverlayVisibility(false));
-    browserHistory.push('/search-tip');
+    browserHistory.push('/search');
   }
 
   close () {

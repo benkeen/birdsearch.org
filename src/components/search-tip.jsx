@@ -12,20 +12,42 @@ import { ClosePanel } from './general';
 class SearchTip extends React.Component {
   constructor (props) {
     super(props);
+
+    // ALWAYS hidden when this component
     this.state = {
       visible: false
     };
+    this.close = this.close.bind(this);
   }
 
-  // automatically display the tooltip after the URL changes
   componentDidMount () {
-    const { dispatch } = this.props;
-    setTimeout(() => { this.setState({ visible: true }); }, 500);
+    const { dispatch, searchTooltipHidden } = this.props;
+
+    // any time this component mounts, show the tooltip after a half a second, assuming it hasn't been explicitly closed
+    if (!searchTooltipHidden) {
+      setTimeout(() => { this.setState({ visible: true }); }, 500);
+    }
     dispatch(actions.searchAnywhere());
   }
 
+  componentWillUpdate (nextProps) {
+    const { visible } = this.state;
+    if (visible && nextProps.searchTooltipHidden) {
+      this.setState({ visible: false });
+    }
+  }
+
+  componentWillUnmount () {
+    const { dispatch } = this.props;
+
+    // clear the tooltip visibility in case the user returns to the /search URL again
+    dispatch(actions.clearSearchTooltipVisibility());
+  }
+
+  // if the user closes the tooltip explicitly, we don't show it again for the rest of the users session
   close () {
-    browserHistory.push('/');
+    const { dispatch } = this.props;
+    dispatch(actions.hideSearchTooltip(true));
   }
 
   getTooltip () {
@@ -63,6 +85,6 @@ class SearchTip extends React.Component {
 
 export default injectIntl(connect(state => ({
   obsRecency: state.settingsOverlay.observationRecency,
-  hideTooltip: state.misc.hideTooltip
+  searchTooltipHidden: state.misc.searchTooltipHidden
 }))(SearchTip));
 

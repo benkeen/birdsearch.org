@@ -496,21 +496,40 @@ function sightingsPanel (state = {
 // handles that.
 function misc (state = {
   nextAction: '',
-  hideSearchTooltip: false
+  searchTooltipHidden: false,
+
+  // bit klutzy, but we need to track if a user has explicitly hidden the search tip so as not to show it again
+  searchTooltipHiddenForSession: false
 }, action) {
 
   switch (action.type) {
     case E.SEARCH_ANYWHERE:
       return Object.assign({}, state, { nextAction: C.ONE_OFFS.MAIN_SEARCH_FIELD_FOCUS });
 
-//    case E.SET_SEARCH_LOCATION:
-//      const hide = (action.location === '') ? true : false;
-//      return Object.assign({}, state, {
-//        hideSearchTooltip: hide
-//      });
+    case E.SET_SEARCH_LOCATION:
+      return Object.assign({}, state, { searchTooltipHidden: true });
 
     case E.CLEAR_NEXT_ACTION:
       return Object.assign({}, state, { nextAction: '' });
+
+    // the search tooltip is either hidden automatically when the user starts typing in the location field, or when they
+    // actively click the "x" to dismiss it. The latter hides it for the whole session
+    case E.HIDE_SEARCH_TOOLTIP:
+      const newState = {
+        searchTooltipHidden: true
+      };
+      if (action.forEntireSession) {
+        newState.searchTooltipHiddenForSession = true;
+      }
+      return Object.assign({}, state, newState);
+
+    case E.CLEAR_SEARCH_TOOLTIP_VISIBILITY:
+      // only allow the tooltip to re-appear if searchTooltipHiddenForSession hasn't been set
+      const updatedState = {};
+      if (!state.searchTooltipHiddenForSession) {
+        updatedState.searchTooltipHidden = false;
+      }
+      return Object.assign({}, state, updatedState);
 
     default:
       return state;

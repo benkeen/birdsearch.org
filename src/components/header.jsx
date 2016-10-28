@@ -35,6 +35,14 @@ class Header extends React.Component {
   onSubmitNewSearch ({ location, lat, lng, bounds }) {
     const { dispatch } = this.props;
     const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
+
+    // this is here for the scenario where a user STARTS on /search. In that case we want to prevent the intro modal
+    // from appearing
+    dispatch(actions.setIntroOverlayVisibility(false));
+
+    // now ensure the URL is the root
+    browserHistory.push('/');
+
     dispatch(actions.search(searchType, location, lat, lng, bounds, observationRecency, zoomHandling));
   }
 
