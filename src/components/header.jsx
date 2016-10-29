@@ -7,7 +7,6 @@ import { browserHistory } from 'react-router';
 import { VelocityTransitionGroup } from 'velocity-react';
 import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
 import { C, _, actions, helpers } from '../core/core';
-import { ClosePanel } from './general';
 import { LOCALES } from '../i18n/index';
 
 

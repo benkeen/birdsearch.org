@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
 import { FormattedMessage } from 'react-intl';
 import { C, _, actions, helpers } from '../core/core';
+import moment from 'moment';
 
 
 var _icons = {
@@ -184,6 +185,8 @@ export class Map extends React.Component {
     let locationIDsInBounds = [];
     let latLngList = [];
 
+    console.log(locationSightings);
+
     locations.forEach((locInfo) => {
       let lat = locInfo.la;
       let lng = locInfo.lg;
@@ -334,6 +337,10 @@ export class Map extends React.Component {
     let getInfoWindow = this.getBirdSightingsInfoWindow;
     ((marker, infoWindow, locInfo) => {
       google.maps.event.addListener(marker, 'click', function () {
+
+        // pain we have to do it here...
+
+
         infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo)));
         infoWindow.open(_map, this);
       });
@@ -341,6 +348,8 @@ export class Map extends React.Component {
   };
 
   addNotableMarker (searchType, locationID, latlng, currMarkerInfo) {
+    const { intl } = this.props;
+
     if (_.has(_data[_currentSearchType].markers, locationID)) {
       if (_data[_currentSearchType].markers[locationID].marker.map === null) {
         _data[_currentSearchType].markers[locationID].marker.setMap(_map);
@@ -363,7 +372,12 @@ export class Map extends React.Component {
     let getInfoWindow = this.getNotableSightingsInfoWindow;
     ((marker, infoWindow, locInfo) => {
       google.maps.event.addListener(marker, 'click', function () {
-        infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo)));
+        const l10n = {
+          viewChecklist: intl.formatMessage({ id: 'viewChecklist' }),
+          viewFullInfo: intl.formatMessage({ id: 'viewFullInfo' })
+        };
+
+        infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo, l10n)));
         infoWindow.open(_map, this);
       });
     })(_data[_currentSearchType].markers[locationID].marker, _data[_currentSearchType].infoWindows[locationID], currMarkerInfo);
@@ -382,14 +396,14 @@ export class Map extends React.Component {
       <div className="marker-popup">
         <h4>{locInfo.n}</h4>
         <a href="#" className="viewLocationSightingDetails" data-location-id={locInfo.i}>
-          <b>{numSpecies}</b> bird species seen in the last <b>{obsRecency}</b> days
+          <b>{numSpecies}</b> bird species seen in the last <b>{obsRecency}</b> day(s)
         </a>
       </div>
     );
   };
 
-  getNotableSightingsInfoWindow (locInfo) {
-    const { results, searchSettings, intl } = this.props;
+  getNotableSightingsInfoWindow (locInfo, l10n) {
+    const { results, searchSettings } = this.props;
     var locationSightings = results.locationSightings[locInfo.i].data;
     const obsRecency = searchSettings.observationRecency;
 
@@ -407,24 +421,27 @@ export class Map extends React.Component {
         <div className="notable-sightings-list-wrapper">
           <table className="notable-sightings-list">
             <tbody>
-            {this.getNotableRows(sightings)}
+            {this.getNotableRows(sightings, l10n)}
             </tbody>
           </table>
         </div>
-        <a href="#" className="viewLocationSightingDetails" data-location-id={locInfo.i}>View full information</a>
+        <a href="#" className="viewLocationSightingDetails" data-location-id={locInfo.i}>{l10n.viewFullInfo}</a>
       </div>
     );
   }
 
-  getNotableRows (sightings) {
+  getNotableRows (sightings, l10n) {
+    console.log(l10n);
+
     return _.map(sightings, (sighting) => {
       const checklistLink = `http://ebird.org/ebird/view/checklist/${sighting.subID}`;
+      const sightingDate = moment(sighting.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
       return (
         <tr key={sighting.obsID}>
           <td className="species-name">{sighting.comName}</td>
-          <td className="obs-date">{sighting.obsDtDisplay}</td>
+          <td className="obs-date">{sightingDate}</td>
           <td>
-            <a href={checklistLink} target="_blank" className="checklist-link glyphicon glyphicon-list" title="View Checklist"></a>
+            <a href={checklistLink} target="_blank" className="checklist-link glyphicon glyphicon-list" title={l10n.viewChecklist} />
           </td>
         </tr>
       );

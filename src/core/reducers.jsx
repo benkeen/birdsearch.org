@@ -466,6 +466,12 @@ function sightingsPanel (state = {
         updateCounter: updateCounter
       });
 
+    case E.SEARCH_REQUEST_STARTED:
+      return Object.assign({}, state, {
+        visible: false,
+        updateCounter: state.updateCounter+1
+      });
+
     case E.SIGHTINGS_SORTED:
       var newSort = C.SORT_DIR.DEFAULT;
       if (state.sort === action.sort) {
@@ -496,7 +502,6 @@ function sightingsPanel (state = {
 
     case E.SET_LOCALE:
     case E.LOCATION_SELECTED:
-    case E.SEARCH_REQUEST_STARTED:
     case E.SEARCH_REQUEST_ENDED:
     case E.WINDOW_RESIZED:
     case E.SET_SCIENTIFIC_NAME_VISIBILITY:

@@ -85,6 +85,7 @@ export default {
   thisPost: 'this post',
   translate: 'Translate',
   translatePara1: 'Are you fluent in another language and would be interested in helping translate this site? The available languages are generated via Google Translate, so they\'re useful but not the highest quality. So if you\'d like to improve them or add a new language to the mix, I\'d like to hear from you. The translation files are {githubLink}. Send me an email if you have any questions.',
+  viewChecklist: 'View Checklist',
   viewFullInfo: 'View full information',
   week: 'week'
 };

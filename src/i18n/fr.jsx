@@ -83,6 +83,7 @@ export default {
   thisPost: 'ce post',
 	translate: 'Traduire',
 	translatePara1: 'Êtes-vous couramment dans une autre langue et serait intéressé à aider à traduire ce site? Les langues disponibles sont générées via Google Translate, ils sont donc utiles, mais pas la plus haute qualité. Donc, si vous voulez améliorer ceux-ci, ou ajouter une nouvelle langue à la combinaison, je voudrais vous entendre. Les fichiers de traduction sont {githubLink}. Envoyez-moi un e-mail si vous avez des questions.',
-  viewFullInfo: '',
+  viewChecklist: 'Vue liste',
+  viewFullInfo: 'Voir l\'information complète',
 	week: 'semaine'
 };

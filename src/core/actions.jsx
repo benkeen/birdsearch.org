@@ -166,7 +166,6 @@ const requestingUserLocation = () => {
 const requestGeoLocation = (callback) => {
   return function (dispatch) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      console.log('1');
       convertLatLngToAddress(dispatch, position.coords.latitude, position.coords.longitude);
       callback();
     }, function (e) {
