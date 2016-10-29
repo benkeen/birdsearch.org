@@ -154,7 +154,7 @@ class SearchSettings extends React.Component {
               <input type="radio" name="search-type" id="rt2" className="margin-left"
                 checked={searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE}
                 onChange={() => { dispatch(actions.setSearchType(C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE)); }}/>
-              <label htmlFor="rt2"><FormattedMessage id="notableSightings" /></label>
+              <label htmlFor="rt2" id="notable-sightings-setting"><FormattedMessage id="notableSightings" /></label>
             </span>
           </span>
         </div>
@@ -175,7 +175,7 @@ class SearchSettings extends React.Component {
               <input type="radio" name="zoom-handling" className="margin-left" id="zh2"
                 checked={zoomHandling === C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH}
                 onChange={() => { dispatch(actions.setZoomHandling(C.SEARCH_SETTINGS.ZOOM_HANDLING.FULL_SEARCH)); }}/>
-              <label htmlFor="zh2"><FormattedMessage id="showFullSearchRange"/></label>
+              <label htmlFor="zh2" id="zoom-handling-setting"><FormattedMessage id="showFullSearchRange"/></label>
             </span>
           </span>
         </div>
