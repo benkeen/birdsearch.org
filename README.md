@@ -8,22 +8,23 @@ bird sightings and distribution.
 ### v2.0.0
 Putting finishing touches. Should get out this weekend (Oct 28th).
 
+
 -------------------------------------------
-#### Remaining. Notes.
+#### Remaining
 
 - translations
 - check different browsers
 
 ##### Bugs
-- species tip should hide after typing
-- Bird species row should show up immediately after the first result returned.
-- When species panel open, a fresh search doesn't automatically show the right contents.
-- ??? "Warning: Failed prop type: Invalid prop `observationRecency` of type `number` supplied to `SearchSettings`, expected `string`."
-- bloody columns still need to be correctly placed
+- loading spinner doesn't do it's thing after 1st search
+- select a location. Zoom in so the location is no longer in range. Click to show all items. Error thrown.
 - search for Vancouver, birds. Then in the settings panel switch to Notable and search from there. No results.
+- When species panel open, a fresh search doesn't automatically show the right contents.
 
 #### For 2.0.1:
 - "51 bird species seen in the last 1 days"
+- Bird species row should show up immediately after the first result returned.
+- improve column spacing
 
 --------------------------------------------
 

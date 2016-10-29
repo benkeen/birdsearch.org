@@ -405,6 +405,20 @@ function locationsPanel (state = {
         updateCounter: state.updateCounter+1
       });
 
+    // when the visible locations change (e.g. a fresh search or a map zoom/pan), check that the selected location
+    // is still in the list of available locations. If not, reset the sucker
+    case E.VISIBLE_LOCATIONS_UPDATED:
+      const updatedState = {
+        updateCounter: state.updateCounter+1
+      };
+      if (state.selectedLocation) {
+        let found = _.findWhere(action.locations, { i: state.selectedLocation });
+        if (!found) {
+          updatedState.selectedLocation = '';
+        }
+      }
+      return Object.assign({}, state, updatedState);
+
     case E.SHOW_MODAL:
       return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
 
@@ -418,7 +432,6 @@ function locationsPanel (state = {
     case E.SET_LOCALE:
     case E.SEARCH_REQUEST_ENDED:
     case E.HOTSPOT_SIGHTINGS_UPDATE:
-    case E.VISIBLE_LOCATIONS_UPDATED:
     case E.WINDOW_RESIZED:
       return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 

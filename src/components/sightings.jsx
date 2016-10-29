@@ -372,6 +372,14 @@ class SpeciesRow extends React.Component {
     );
   }
 
+  getNumReported (species) {
+    if (species.howManyCount && species.howManyCount !== '0') {
+      return (<FormattedNumber value={species.howManyCount} />);
+    }
+
+    return <span className="unknown-count">-</span>;
+  }
+
   render () {
     const { dispatch, species, comName, comNameDisplay, rowNum } = this.props;
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
@@ -402,9 +410,7 @@ class SpeciesRow extends React.Component {
         <td className="last-seen">
           <div>{species.mostRecentObservationTime}</div>
         </td>
-        <td className="num-reported">
-          <FormattedNumber value={species.howManyCount} />
-        </td>
+        <td className="num-reported">{this.getNumReported(species)}</td>
         <td>
           <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />
         </td>
@@ -583,6 +589,13 @@ class NotableSpeciesRow extends React.Component {
     return status;
   }
 
+  getCount (row) {
+    if (row.howMany) {
+      return <span>(<FormattedNumber value={row.howMany}/>)</span>;
+    }
+    return null;
+  }
+
   render () {
     const { row, comName, comNameDisplay, sciNameDisplay, rowNum } = this.props;
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
@@ -595,7 +608,7 @@ class NotableSpeciesRow extends React.Component {
         <td className="species-col">
           <div>
             <span className="com-name" title={comName} dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
-            <span className="notable-count">(<FormattedNumber value={row.howMany} />)</span>
+            <span className="notable-count">{this.getCount(row)}</span>
           </div>
           <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
         </td>

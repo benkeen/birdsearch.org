@@ -221,7 +221,6 @@ const togglePanelVisibility = (panel) => {
 
 // once the visible locations are identified, it automatically requests all observations for them
 const visibleLocationsFound = (searchType, visibleLocations, allLocationSightings) => {
-
   return function (dispatch) {
 
     if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE) {
