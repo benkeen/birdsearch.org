@@ -246,7 +246,7 @@ class SpeciesTable extends React.Component {
   }
 
   getRows () {
-    const { dispatch, filter, showScientificName } = this.props;
+    const { dispatch, filter, showScientificName, intl } = this.props;
 
     return _.map(this.sortedSpecies, function (speciesInfo, index) {
       var comNameData = helpers.highlightString(speciesInfo.comName, filter);
@@ -263,6 +263,7 @@ class SpeciesTable extends React.Component {
         return (
           <SpeciesRow
             dispatch={dispatch}
+            intl={intl}
             filter={filter}
             species={speciesInfo}
             rowNum={index+1}
@@ -270,7 +271,7 @@ class SpeciesTable extends React.Component {
             comName={speciesInfo.comName}
             comNameDisplay={comNameData.string}
             sciNameDisplay={sciNameData.string}
-            key={index}/>
+            key={index} />
         );
       }
 
@@ -381,10 +382,11 @@ class SpeciesRow extends React.Component {
   }
 
   render () {
-    const { dispatch, species, comName, comNameDisplay, rowNum } = this.props;
+    const { dispatch, species, comName, comNameDisplay, rowNum, intl } = this.props;
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
 
     var locations = this.getLocations();
+    const title = intl.formatMessage({ id: 'locations'});
 
     return (
       <tr>
@@ -396,7 +398,7 @@ class SpeciesRow extends React.Component {
         <td ref="cell" className="locations-seen species-num-locations-cell">
           <OverlayTrigger trigger="click" placement="bottom" rootClose={true} container={this.refs.cell}
             overlay={
-              <Popover title="Locations" id="locations-popover">
+              <Popover title={title} id="locations-popover">
                 <ul className="bird-location-sightings" onClick={(e) => this.selectLocation(dispatch, e.target)}>
                   {locations}
                 </ul>

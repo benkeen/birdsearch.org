@@ -273,7 +273,6 @@ function results (state = {
 }, action) {
   switch (action.type) {
     case E.SEARCH_REQUEST_STARTED:
-      console.log('is fetching: true');
       return Object.assign({}, state, {
         allLocations: [],
         visibleLocations: [],
@@ -288,7 +287,6 @@ function results (state = {
       });
 
     case E.SEARCH_REQUEST_ENDED:
-      console.log('is fetching: false...');
       return Object.assign({}, state, {
         isFetching: false
       });

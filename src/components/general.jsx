@@ -13,6 +13,8 @@ class Overlay extends React.Component {
         onClose();
         return;
       }
+      console.log(e.keyCode);
+
       _.each(customKeyActions, ([keyCode, action]) => {
         if (e.keyCode === parseInt(keyCode, 10)) {
           e.preventDefault();

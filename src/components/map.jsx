@@ -137,7 +137,7 @@ export class Map extends React.Component {
       this.setNotableMarkerColours(nextProps);
     }
 
-    // never update the map with React - it's way too slow.
+    // never update the map with React - it's way too slow
     return false;
   }
 
@@ -270,6 +270,7 @@ export class Map extends React.Component {
     const dispatch = this.props.dispatch;
 
     $(document).on('click', '.viewLocationSightingDetails', (e) => {
+      e.preventDefault();
       dispatch(actions.selectLocation($(e.target).data('locationId')));
       dispatch(actions.showSightingsPanel());
     });
@@ -313,6 +314,8 @@ export class Map extends React.Component {
   }
 
   addBirdMarker (locationID, latlng, currMarkerInfo) {
+    const { intl } = this.props;
+
     if (_.has(_data[_currentSearchType].markers, locationID)) {
       if (_data[_currentSearchType].markers[locationID].marker.map === null) {
         _data[_currentSearchType].markers[locationID].marker.setMap(_map);
@@ -335,11 +338,7 @@ export class Map extends React.Component {
     let getInfoWindow = this.getBirdSightingsInfoWindow;
     ((marker, infoWindow, locInfo) => {
       google.maps.event.addListener(marker, 'click', function () {
-
-        // pain we have to do it here...
-
-
-        infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo)));
+        infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo, intl)));
         infoWindow.open(_map, this);
       });
     })(_data[_currentSearchType].markers[locationID].marker, _data[_currentSearchType].infoWindows[locationID], currMarkerInfo);
@@ -381,7 +380,7 @@ export class Map extends React.Component {
     })(_data[_currentSearchType].markers[locationID].marker, _data[_currentSearchType].infoWindows[locationID], currMarkerInfo);
   }
 
-  getBirdSightingsInfoWindow (locInfo) {
+  getBirdSightingsInfoWindow (locInfo, intl) {
     const { results, searchSettings } = this.props;
     var locationSightings = results.locationSightings[locInfo.i].data;
     const obsRecency = searchSettings.observationRecency;
@@ -390,12 +389,18 @@ export class Map extends React.Component {
       numSpecies = locationSightings[obsRecency - 1].runningTotal;
     }
 
+    // this is a hack to get around react-intl not being able to be used in this context. God I dislike react-intl. You
+    // can't seem to pass DOM nodes into formatMessage so I can't embolden the params. But I can't use <FormattedMessage />
+    // in this context either, so I either hack it even more or accept that I'm pooched
+    const linkText = intl.formatMessage({ id: 'numSightingsAtLocation' }, {
+      numSpecies: numSpecies,
+      obsRecency: obsRecency
+    });
+
     return (
       <div className="marker-popup">
         <h4>{locInfo.n}</h4>
-        <a href="#" className="viewLocationSightingDetails" data-location-id={locInfo.i}>
-          <b>{numSpecies}</b> bird species seen in the last <b>{obsRecency}</b> day(s)
-        </a>
+        <a href="#" className="viewLocationSightingDetails" data-location-id={locInfo.i}>{linkText}</a>
       </div>
     );
   };

@@ -113,8 +113,6 @@ const searchLocationRequestError = (dispatch, error) => {
 };
 
 const notableResultsReturned = (dispatch, data) => {
-  console.log('?');
-
   var worker = new Worker('./worker-processNotableSightings.js');
   worker.postMessage({
     sightings: data,
@@ -122,11 +120,8 @@ const notableResultsReturned = (dispatch, data) => {
   });
 
   worker.onmessage = function (e) {
-    console.log('1');
     dispatch(storeNotableSightings(e.data.locations, e.data.sightings));
   };
-
-  console.log('2');
   return { type: E.NOTABLE_SEARCH_RETURNED };
 };
 
