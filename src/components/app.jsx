@@ -66,7 +66,6 @@ class App extends React.Component {
           <Map
             dispatch={dispatch}
             env={env}
-            zoom={mapSettings.zoom}
             lat={mapSettings.lat}
             lng={mapSettings.lng}
             searchUpdateCounter={mapSettings.searchUpdateCounter}

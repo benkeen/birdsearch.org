@@ -16,10 +16,13 @@ Putting finishing touches. Should get out this weekend (Oct 28th).
 - check different browsers
 
 ##### Bugs
-- loading spinner doesn't do it's thing after 1st search
-- select a location. Zoom in so the location is no longer in range. Click to show all items. Error thrown.
+- loading spinner doesn't do its thing after 1st search. Sometimes.
 - search for Vancouver, birds. Then in the settings panel switch to Notable and search from there. No results.
-- When species panel open, a fresh search doesn't automatically show the right contents.
+- When species panel open, a fresh search doesn't automatically show the right contents. New searches should hide the panel by default, I think.
+- The "locations seen" count differs for a species when going from All Locations to a particular locaiotn.
+- search Perth. Then do "search nearby". Results don't show up.
+- zoom level is still weird between searches
+- clean up mapSettings.bounds!!! It's frickin' baffling.
 
 #### For 2.0.1:
 - "51 bird species seen in the last 1 days"

@@ -18,12 +18,12 @@ class IntroOverlay extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { dispatch, mapSettings, userLocationFound } = this.props;
+    const { dispatch, mapSettings, user } = this.props;
     const { location, lat, lng } = this.props.searchSettings;
     const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
 
     // if the user's location was just found, automatically search
-    if (prevProps.userLocationFound !== userLocationFound && userLocationFound === true) {
+    if (prevProps.user.userLocationFound !== user.userLocationFound && user.userLocationFound) {
       dispatch(actions.search(searchType, location, lat, lng, mapSettings.bounds, observationRecency, zoomHandling));
     }
   }
@@ -55,8 +55,14 @@ class IntroOverlay extends React.Component {
   }
 
   searchNearby () {
-    const { dispatch } = this.props;
-    dispatch(actions.getGeoLocation(this.onUserLocationFound));
+    const { dispatch, mapSettings, user } = this.props;
+    const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
+
+    if (!user.userLocationFound) {
+      dispatch(actions.getGeoLocation(this.onUserLocationFound));
+    } else {
+      dispatch(actions.search(searchType, user.address, user.lat, user.lng, mapSettings.bounds, observationRecency, zoomHandling));
+    }
   }
 
   onUserLocationFound () {
@@ -125,7 +131,7 @@ IntroOverlay.PropTypes = {
 
 export default injectIntl(connect(state => ({
   loading: state.user.isFetching,
-  userLocationFound: state.user.userLocationFound,
+  user: state.user,
   errorRetrievingUserLocation: state.user.errorRetrievingUserLocation,
   searchSettings: state.searchSettings,
   settingsOverlay: state.settingsOverlay,
