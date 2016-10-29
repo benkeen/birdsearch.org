@@ -1,9 +1,12 @@
 // German overrides
 .de {
-  #intro-overlay button {
-    width: 185px;
-    float: left;
-    margin-top: 2px;
+  #intro-overlay {
+    height: 200px;
+    button {
+      width: 185px;
+      float: left;
+      margin-top: 2px;
+    }
   }
   #locations-panel .location {
     width: 250px;
@@ -14,6 +17,9 @@
 
   #settings-overlay {
     height: 295px;
+  }
+  .has-results #settings-overlay {
+    height: 341px;
   }
 
   .search-type, .search-results {

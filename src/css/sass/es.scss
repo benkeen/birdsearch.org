@@ -1,4 +1,51 @@
 // Spanish overrides
 .es {
+  #intro-overlay {
+    height: 200px;
+    width: 530px;
+    button {
+      width: 223px;
+      float: left;
+      margin-top: 2px;
+    }
+  }
+  #locations-panel .location {
+    width: 250px;
+  }
+  #locations-panel .location div {
+    width: 230px;
+  }
 
+  #settings-overlay {
+    height: 295px;
+    width: 550px;
+  }
+  .has-results #settings-overlay {
+    height: 341px;
+  }
+
+  .search-type, .search-results {
+    padding-top: 7px;
+
+    > span {
+      line-height: 25px;
+      display: block;
+
+      input, label {
+        float: none;
+      }
+      input {
+        margin-top: -1px;
+      }
+      .margin-left {
+        margin: 0;
+      }
+      .zoom-tip {
+        margin-top: -22px;
+      }
+      #notable-sightings-setting, #zoom-handling-setting {
+        padding-left: 10px;
+      }
+    }
+  }
 }
