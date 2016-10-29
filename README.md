@@ -22,10 +22,6 @@ Putting finishing touches. Should get out this weekend (Oct 28th).
 Remaining:
 - TODO: translations
 - TODO: check different browsers
-- Bug? loading spinner doesn't do its thing after 1st search. Sometimes...
-- Bug: search for Vancouver, birds. Then in the settings panel switch to Notable and search from there. No results.
-- Bug: The "locations seen" count differs for a species when going from All Locations to a particular location.
-
 
 ### v1.1.x
 This is a complete re-write of the script to better organize the code, improve the site design and add a little

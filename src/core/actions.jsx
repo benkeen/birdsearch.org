@@ -113,6 +113,8 @@ const searchLocationRequestError = (dispatch, error) => {
 };
 
 const notableResultsReturned = (dispatch, data) => {
+  console.log('?');
+
   var worker = new Worker('./worker-processNotableSightings.js');
   worker.postMessage({
     sightings: data,
@@ -120,9 +122,11 @@ const notableResultsReturned = (dispatch, data) => {
   });
 
   worker.onmessage = function (e) {
+    console.log('1');
     dispatch(storeNotableSightings(e.data.locations, e.data.sightings));
   };
 
+  console.log('2');
   return { type: E.NOTABLE_SEARCH_RETURNED };
 };
 
@@ -226,8 +230,15 @@ const visibleLocationsFound = (searchType, visibleLocations, allLocationSighting
     if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE) {
       dispatch(updateVisibleLocations(visibleLocations));
 
-      // we explicitly 
-      return dispatch(searchRequestComplete());
+      if (visibleLocations.length) {
+        return dispatch(searchRequestComplete());
+      } else {
+
+        // we need to return something to make redux happy, but we're not interested in this event. This occurs when
+        // a map's markers are all removed but a request isn't done yet, e.g. when doing a notable search after
+        // a regular search was performed.
+        return { type: 'NOT_APPLICABLE' };
+      }
     }
 
     dispatch(initSearchRequest());
