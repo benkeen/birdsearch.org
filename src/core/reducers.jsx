@@ -273,8 +273,6 @@ function results (state = {
 }, action) {
   switch (action.type) {
     case E.SEARCH_REQUEST_STARTED:
-      console.log('now');
-
       return Object.assign({}, state, {
         allLocations: [],
         visibleLocations: [],

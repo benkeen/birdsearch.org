@@ -185,8 +185,6 @@ export class Map extends React.Component {
     let locationIDsInBounds = [];
     let latLngList = [];
 
-    console.log(locationSightings);
-
     locations.forEach((locInfo) => {
       let lat = locInfo.la;
       let lng = locInfo.lg;
@@ -431,8 +429,6 @@ export class Map extends React.Component {
   }
 
   getNotableRows (sightings, l10n) {
-    console.log(l10n);
-
     return _.map(sightings, (sighting) => {
       const checklistLink = `http://ebird.org/ebird/view/checklist/${sighting.subID}`;
       const sightingDate = moment(sighting.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');

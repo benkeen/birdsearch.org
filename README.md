@@ -1,31 +1,30 @@
 # birdsearch.org
 
-This is an experiment to try different ways of viewing eBird data to provide a better understanding of
-bird sightings and distribution.
+Like many birders I know, discovering [eBird.org](http://ebird.org) was a cause for celebration. It brought birding 
+out of the dark ages of pen and pencil and into the digital age. Now we have a simple, centralized place to track 
+observations, share knowledge and open up the data for everyone.
+
+But as a birder, I wanted a no-fuss high-level overview of a region; I wanted to see all observations being made in 
+an area <i>right now</i>. The search options available on eBird are excellent, but don't quite fit the bill. This 
+site was written to plug the gap. 
+
+
+This is now the third incarnation of this script. The first was a quick hack to test out their API and get a feel 
+for what I could do with the data. The second (1.1.0) was a re-write to add in some new functionality and to use 
+requireJS and other technologies. The latest version (Oct, 2016) was another complete rewrite, this time using 
+React, Redux, react-intl, Node.
 
 ## Versions
 
 ### v2.0.0
 Putting finishing touches. Should get out this weekend (Oct 28th).
 
-
--------------------------------------------
-#### Remaining
-
-- translations
-- check different browsers
-
-##### Bugs
-- loading spinner doesn't do its thing after 1st search. Sometimes.
-- search for Vancouver, birds. Then in the settings panel switch to Notable and search from there. No results.
-- The "locations seen" count differs for a species when going from All Locations to a particular locaiotn.
-- "51 bird species seen in the last 1 days"
-
-#### For 2.0.1:
-- Bird species row should show up immediately after the first result returned.
-- improve column spacing
-
---------------------------------------------
+Remaining:
+- TODO: translations
+- TODO: check different browsers
+- Bug? loading spinner doesn't do its thing after 1st search. Sometimes...
+- Bug: search for Vancouver, birds. Then in the settings panel switch to Notable and search from there. No results.
+- Bug: The "locations seen" count differs for a species when going from All Locations to a particular location.
 
 
 ### v1.1.x

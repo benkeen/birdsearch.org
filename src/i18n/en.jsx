@@ -25,7 +25,7 @@ export default {
   birdingLocations: 'Birding Locations',
   confirmed: 'Confirmed',
   contact: 'Contact',
-  contactPara1: 'Found a bug? Have a feature suggestion? Don\'t like the way something behaves? Make a comment on {postLink} or send me an email at {email}.',
+  contactPara1: 'Found a bug? Have a feature suggestion? Don\'t like the way something behaves? Create an issue on {postLink} or send me an email at {email}.',
   contactPara2: 'Please note that this site is a hobby project, {openSourceLink}, and generates zero income. If I don\'t respond right away, I\'m probably out birding. :)',
   dateSeen: 'Date Seen',
   enterLocation: 'Enter Location',

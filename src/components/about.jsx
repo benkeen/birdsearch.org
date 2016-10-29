@@ -138,7 +138,7 @@ class ContactTab extends React.Component {
         <p>
           <FormattedMessage id="contactPara1"
             values={{
-              postLink: <a href="" target="_blank">{intl.formatMessage({ id: 'thisPost' })}</a>,
+              postLink: <a href="https://github.com/benkeen/birdsearch.org/issues" target="_blank">github</a>,
               email: <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>
             }} />
         </p>
