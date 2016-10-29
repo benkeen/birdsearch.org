@@ -127,6 +127,7 @@ function user (state = {
   errorRetrievingUserLocation: false,
   lat: null,
   lng: null,
+  bounds: null,
   address: '',
   locale: C.DEFAULT_LOCALE
 }, action) {
@@ -146,6 +147,7 @@ function user (state = {
         userLocationFound: action.userLocationFound,
         lat: action.lat,
         lng: action.lng,
+        bounds: action.bounds,
         address: action.address
       });
 

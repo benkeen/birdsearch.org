@@ -55,13 +55,14 @@ class IntroOverlay extends React.Component {
   }
 
   searchNearby () {
-    const { dispatch, mapSettings, user } = this.props;
+    const { dispatch, user } = this.props;
     const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
 
     if (!user.userLocationFound) {
       dispatch(actions.getGeoLocation(this.onUserLocationFound));
     } else {
-      dispatch(actions.search(searchType, user.address, user.lat, user.lng, mapSettings.bounds, observationRecency, zoomHandling));
+      dispatch(actions.search(searchType, user.address, user.lat, user.lng, user.bounds, observationRecency, zoomHandling));
+      browserHistory.push('/');
     }
   }
 

@@ -20,9 +20,7 @@ Putting finishing touches. Should get out this weekend (Oct 28th).
 - search for Vancouver, birds. Then in the settings panel switch to Notable and search from there. No results.
 - When species panel open, a fresh search doesn't automatically show the right contents. New searches should hide the panel by default, I think.
 - The "locations seen" count differs for a species when going from All Locations to a particular locaiotn.
-- search Perth. Then do "search nearby". Results don't show up.
-- zoom level is still weird between searches
-- clean up mapSettings.bounds!!! It's frickin' baffling.
+- zoom level is still weird between searches.
 
 #### For 2.0.1:
 - "51 bird species seen in the last 1 days"
