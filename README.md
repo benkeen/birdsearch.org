@@ -8,7 +8,6 @@ But as a birder, I wanted a no-fuss high-level overview of a region; I wanted to
 an area <i>right now</i>. The search options available on eBird are excellent, but don't quite fit the bill. This 
 site was written to plug the gap. 
 
-
 This is now the third incarnation of this script. The first was a quick hack to test out their API and get a feel 
 for what I could do with the data. The second (1.1.0) was a re-write to add in some new functionality and to use 
 requireJS and other technologies. The latest version (Oct, 2016) was another complete rewrite, this time using 
@@ -16,12 +15,8 @@ React, Redux, react-intl, Node.
 
 ## Versions
 
-### v2.0.0
-Putting finishing touches. Should get out this weekend (Oct 28th).
-
-Remaining:
-- TODO: translations
-- TODO: check different browsers
+### v2.0.0 - Oct 29th, 2016
+New everything! New UI, new code. Rewritten in React, Redux with a node backend. 
 
 ### v1.1.x
 This is a complete re-write of the script to better organize the code, improve the site design and add a little
