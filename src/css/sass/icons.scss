@@ -51,6 +51,7 @@
 header .icon {
   font-size: 14pt;
   @include transition-all($transition-speed);
+  background: none;
   &:hover {
     color: $blue;
   }
