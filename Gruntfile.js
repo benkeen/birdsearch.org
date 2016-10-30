@@ -32,6 +32,18 @@ module.exports = function(grunt) {
 			}
 		},
 
+    uglify: {
+      js: {
+        files: {
+          [`dist/bundle-${version}.min.js`]: [`dist/bundle-${version}.js`]
+        },
+        options: {
+          report: "min",
+          compress: {}
+        }
+      }
+    },
+
     // bundles up the whole shebang
     browserify: {
       dist: {
@@ -39,6 +51,12 @@ module.exports = function(grunt) {
         files: {
           [`dist/bundle-${version}.js`]: 'dist/core/init.js'
         }
+      }
+    },
+
+    env: {
+      build : {
+        NODE_ENV: 'production'
       }
     },
 
@@ -97,6 +115,6 @@ module.exports = function(grunt) {
 	};
 
 	grunt.initConfig(config);
-  grunt.registerTask('build', ['template', 'babel:jsx', 'browserify', 'sass', 'copy', 'cssmin']);
+  grunt.registerTask('build', ['template', 'env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin']);
   grunt.registerTask('start', ['build', 'watch']);
 };
