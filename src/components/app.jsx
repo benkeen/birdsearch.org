@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
-import { _, actions } from '../core/core';
+import { C, _, actions } from '../core/core';
 import Header from './header';
 import { Map } from './map';
 import { Loader } from './general';
@@ -46,8 +46,14 @@ class App extends React.Component {
       }
     }
 
+    // hack. The transition
+    let isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    const duration = (isFirefox) ? 1 : C.TRANSITION_SPEED;
+
     return (
-      <VelocityTransitionGroup runOnMount={true} enter={{ animation: 'fadeIn' }} leave={{ animation: 'fadeOut' }} component="div">
+      <VelocityTransitionGroup runOnMount={true} component="div"
+        enter={{ animation: 'fadeIn', duration: duration }}
+        leave={{ animation: 'fadeOut', duration: duration }}>
         {modal ? React.cloneElement(modal, { key: location.pathname }) : undefined}
       </VelocityTransitionGroup>
     );
