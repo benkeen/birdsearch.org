@@ -71,5 +71,6 @@ button.btn {
 }
 
 .capitalize, .capitalize span {
+	white-space: nowrap;
 	text-transform: capitalize;
 }
