@@ -69,7 +69,7 @@ class Header extends React.Component {
     const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, searchError, intl } = this.props;
     const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="settings" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="about" /></Tooltip>;
-    const reportSightingsTooltip = <Tooltip id="report-sightings-tooltip">Report bird sightings</Tooltip>;
+    const reportSightingsTooltip = <Tooltip id="report-sightings-tooltip"><FormattedMessage id="reportBirdSightings" /></Tooltip>;
 
     return (
       <header className="flex-fill">
@@ -101,7 +101,7 @@ class Header extends React.Component {
           </li>
           <li>
             <OverlayTrigger placement="bottom" overlay={reportSightingsTooltip}>
-              <button className="report-sightings-icon btn btn-default" onClick={(e) => this.showReportSightingsOverlay(e)}>
+              <button className="report-sightings-icon btn btn-success" onClick={(e) => this.showReportSightingsOverlay(e)}>
                 <span className="glyphicon glyphicon-plus-sign" />
               </button>
             </OverlayTrigger>

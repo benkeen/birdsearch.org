@@ -4,7 +4,7 @@ import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory, Link } from 'react-router';
 import { Modal, Button } from 'react-bootstrap';
 import { Overlay, ClosePanel } from './general';
-import { C, _, actions } from '../core/core';
+import { _, actions } from '../core/core';
 
 
 class ReportSightingsOverlay extends React.Component {
@@ -31,13 +31,11 @@ class ReportSightingsOverlay extends React.Component {
         <ClosePanel onClose={this.onClose} />
         <div>
           <p>
-            The bird sightings listed on this site come from <a href="http://ebird.org">eBird.org</a>. Anyone in the
-            world can sign up and submit their own observations. Click the button below to get started!
+            <FormattedMessage id="reportSightingsText" values={{ link: <a href="http://ebird.org" target="_blank">eBird.org</a> }} />
           </p>
-
           <a href="http://ebird.org/ebird/submit" className="btn btn-primary" id="report-sightings-btn" target="_blank">
             <span className="glyphicon glyphicon-plus-sign" />
-            Report Sightings
+            <FormattedMessage id="reportSightings" />
           </a>
         </div>
       </Overlay>
