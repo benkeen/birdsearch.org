@@ -153,13 +153,14 @@ export class SightingsPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, locations, sightings, searchSettings, env } = this.props;
+    const { dispatch, locations, sightings, searchSettings, visible, env } = this.props;
     if (!locations.length) {
       return null;
     }
 
     var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
     const tabLangKey = searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL ? 'birdSpecies' : 'notableBirds';
+    const headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
 
     return (
       <section id="species-panel" style={{ width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH }}>
@@ -169,7 +170,7 @@ export class SightingsPanel extends React.Component {
               <FormattedMessage id={tabLangKey} />
               {(!results.allFetched) ? <LineLoader className="species-loading" /> : null}
             </h2>
-            <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
+            <span className={headerIconClasses} />
           </div>
         </header>
 

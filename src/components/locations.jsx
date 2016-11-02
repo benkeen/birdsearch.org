@@ -179,7 +179,7 @@ export class LocationsPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, locations, locationSightings, filter, intl } = this.props;
+    const { dispatch, locations, locationSightings, filter, visible, intl } = this.props;
 
     if (!locations.length) {
       return null;
@@ -199,6 +199,8 @@ export class LocationsPanel extends React.Component {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
 
+    let headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
+
     return (
       <section id="locations-panel">
         <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
@@ -207,7 +209,7 @@ export class LocationsPanel extends React.Component {
               <FormattedMessage id="locations" />
               {loader}
             </h2>
-            <span className="toggle-section glyphicon glyphicon-menu-hamburger" />
+            <span className={headerIconClasses} />
           </div>
         </header>
 
