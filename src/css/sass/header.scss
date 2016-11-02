@@ -136,6 +136,24 @@ header {
   }
 }
 
+.report-sightings-icon {
+  border-radius: 0;
+  margin: 0;
+  padding: 18px 14px;
+  font-size: 19px;
+  &:focus {
+    outline: none;
+  }
+}
+
+#report-sightings-btn {
+  box-shadow: none;
+  display: inline-block;
+  &:after {
+    content: '';
+  }
+}
+
 
 @keyframes bounce {
   0% {
@@ -154,4 +172,8 @@ header {
 
 .bounce {
   animation: 1.8s bounce;
+}
+
+#report-sightings-tooltip {
+  top: 59px !important;
 }

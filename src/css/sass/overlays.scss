@@ -122,6 +122,19 @@
   width: 600px;
 }
 
+#report-sightings-overlay {
+  height: 190px;
+  width: 500px;
+}
+
+#report-sightings-btn {
+  padding: 6px 19px 7px 14px;
+  margin: 0;
+  span {
+    margin-right: 4px;
+  }
+}
+
 .photo {
   float: right;
   margin-left: 15px;

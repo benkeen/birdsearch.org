@@ -60,10 +60,16 @@ class Header extends React.Component {
     browserHistory.push('/settings');
   }
 
+  showReportSightingsOverlay (e) {
+    e.preventDefault();
+    browserHistory.push('/report');
+  }
+
   render () {
     const { dispatch, locale, searchSettings, introOverlay, settingsOverlay, searchError, intl } = this.props;
     const searchSettingsTooltip = <Tooltip id="search-settings-tooltip"><FormattedMessage id="settings" /></Tooltip>;
     const infoTooltip = <Tooltip id="info-tooltip"><FormattedMessage id="about" /></Tooltip>;
+    const reportSightingsTooltip = <Tooltip id="report-sightings-tooltip">Report bird sightings</Tooltip>;
 
     return (
       <header className="flex-fill">
@@ -91,6 +97,13 @@ class Header extends React.Component {
           <li>
             <OverlayTrigger placement="bottom" overlay={infoTooltip}>
               <a href="#" onClick={(e) => this.showAboutOverlay(e)} className="icon icon-info" />
+            </OverlayTrigger>
+          </li>
+          <li>
+            <OverlayTrigger placement="bottom" overlay={reportSightingsTooltip}>
+              <button className="report-sightings-icon btn btn-default" onClick={(e) => this.showReportSightingsOverlay(e)}>
+                <span className="glyphicon glyphicon-plus-sign" />
+              </button>
             </OverlayTrigger>
           </li>
           <li className="lang-toggle">

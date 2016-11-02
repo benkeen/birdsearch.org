@@ -22,6 +22,7 @@ addLocaleData(de);
 import App from '../components/app';
 import Intro from '../components/intro';
 import About from '../components/about';
+import Report from '../components/report';
 import Settings from '../components/settings';
 import SearchTip from '../components/search-tip';
 
@@ -93,6 +94,7 @@ class I18NWrapper extends React.Component {
             <Route path="/intro" component={Intro} />
             <Route path="/search" component={SearchTip} />
             <Route path="/settings" component={Settings} />
+            <Route path="/report" component={Report} />
           </Route>
         </Router>
       </IntlProvider>
