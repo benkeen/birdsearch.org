@@ -28,6 +28,7 @@ import SearchTip from '../components/search-tip';
 
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
+const mapStyle = storage.get('mapStyle') || C.MAP_STYLES.DEFAULT;
 const mapTypeId = storage.get('mapTypeId') || google.maps.MapTypeId.ROADMAP;
 const searchType = storage.get('searchType') || C.SEARCH_SETTINGS.DEFAULT_SEARCH_TYPE;
 const obsRecency = storage.get('obsRecency') || C.SEARCH_SETTINGS.DEFAULT_SEARCH_DAYS;
@@ -74,7 +75,8 @@ const store = initStore({
     searchType: searchType,
     observationRecency: obsRecency,
     zoomHandling: zoomHandling,
-    showScientificName: showScientificName
+    showScientificName: showScientificName,
+    mapStyle: mapStyle
   }
 });
 

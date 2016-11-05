@@ -61,7 +61,7 @@ class App extends React.Component {
 
   render () {
     const { dispatch, env, mapSettings, searchSettings, locationsPanel, sightingsPanel, results,
-      showScientificName, intl } = this.props;
+      showScientificName, mapStyle, intl } = this.props;
 
     const classes = 'flex-body' + (results.visibleLocations.length > 0 ? ' has-results' : '');
     return (
@@ -81,7 +81,8 @@ class App extends React.Component {
             searchSettings={searchSettings}
             results={results}
             intl={intl}
-            locationFilter={locationsPanel.filter} />
+            locationFilter={locationsPanel.filter}
+            mapStyle={mapStyle} />
 
           {this.getModal()}
 
@@ -128,6 +129,7 @@ export default injectIntl(connect(state => ({
   introOverlay: state.introOverlay,
   locationsPanel: state.locationsPanel,
   sightingsPanel: state.sightingsPanel,
+  mapStyle: state.settingsOverlay.mapStyle,
   showScientificName: state.settingsOverlay.showScientificName,
   user: state.user,
   results: state.results

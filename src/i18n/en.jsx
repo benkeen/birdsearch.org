@@ -47,6 +47,7 @@ export default {
   locationNotFound: 'Sorry, that location couldn\'t be found, please try again.',
   locations: 'Locations',
 	login: 'Login',
+  mapStyles: 'Map styles',
   miscSettings: 'Misc settings',
   month: 'month',
   noLocations: 'No locations.',

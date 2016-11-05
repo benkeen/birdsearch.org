@@ -73,12 +73,20 @@ module.exports = function(grunt) {
     },
 
     template: {
-      indexFile: {
+      dev: {
         options: {
           data: { version: package.version }
         },
         files: {
-          'dist/index.html': ['src/template-index.html']
+          'dist/index.html': ['src/template-dev.html']
+        }
+      },
+      prod: {
+        options: {
+          data: { version: package.version }
+        },
+        files: {
+          'dist/index.html': ['src/template-prod.html']
         }
       }
     },
@@ -115,6 +123,7 @@ module.exports = function(grunt) {
 	};
 
 	grunt.initConfig(config);
-  grunt.registerTask('build', ['template', 'env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin']);
-  grunt.registerTask('start', ['build', 'watch']);
+  grunt.registerTask('build', ['template:prod', 'env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin']);
+  grunt.registerTask('dev', ['template:dev', 'env', 'babel:jsx', 'browserify', 'sass', 'copy']);
+  grunt.registerTask('start', ['dev', 'watch']);
 };

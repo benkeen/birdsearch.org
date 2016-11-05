@@ -424,6 +424,14 @@ const clearSearchTooltipVisibility = () => {
 };
 
 
+const selectMapStyle = (mapStyle) => {
+  return {
+    type: E.SELECT_MAP_STYLE,
+    mapStyle: mapStyle
+  };
+};
+
+
 export {
   setLocale,
   setSearchLocation,
@@ -451,5 +459,6 @@ export {
   setScientificNameVisibility,
   clearNextAction,
   hideSearchTooltip,
-  clearSearchTooltipVisibility
+  clearSearchTooltipVisibility,
+  selectMapStyle
 };

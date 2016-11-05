@@ -28,7 +28,7 @@ class SettingsOverlay extends React.Component {
 
   getContent () {
     const { dispatch, intl, searchSettings } = this.props;
-    const { selectedTab, searchType, zoomHandling, observationRecency, showScientificName } = this.props.settingsOverlay;
+    const { selectedTab, searchType, zoomHandling, observationRecency, showScientificName, mapStyle } = this.props.settingsOverlay;
 
     if (selectedTab === C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS) {
       return (
@@ -40,6 +40,13 @@ class SettingsOverlay extends React.Component {
           observationRecency={observationRecency}
           location={searchSettings.location}
           searchType={searchType} />
+      );
+    } else if (selectedTab === C.SEARCH_OVERLAY_TABS.MAP_STYLES) {
+      return (
+        <MapStyles
+          dispatch={dispatch}
+          intl={intl}
+          selected={mapStyle} />
       );
     } else {
       return (
@@ -65,6 +72,7 @@ class SettingsOverlay extends React.Component {
     const { selectedTab } = this.props.settingsOverlay;
     const searchSettingsClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS) ? 'active' : '';
     const miscClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.MISC_TAB) ? 'active' : '';
+    const mapStyleClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.MAP_STYLES) ? 'active' : '';
 
     return (
       <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
@@ -72,6 +80,9 @@ class SettingsOverlay extends React.Component {
           <ul className="nav nav-pills">
             <li className={searchSettingsClasses}>
               <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS)}><FormattedMessage id="searchSettings" /></a>
+            </li>
+            <li className={mapStyleClasses}>
+              <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.MAP_STYLES)}><FormattedMessage id="mapStyles" /></a>
             </li>
             <li className={miscClasses}>
               <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.MISC_TAB)}><FormattedMessage id="miscSettings" /></a>
@@ -225,6 +236,62 @@ class MiscSettings extends React.Component {
                 <label htmlFor="scientific-name"><FormattedMessage id="includeSciName" /></label>
             </span>
           </span>
+        </div>
+      </div>
+    );
+  }
+}
+
+
+class MapStyles extends React.Component {
+  render () {
+    const { dispatch, intl, selected } = this.props;
+    const defaultStyleClasses = (selected === C.MAP_STYLES.DEFAULT) ? 'selected' : '';
+    const greyStyleClasses = (selected === C.MAP_STYLES.GREY) ? 'selected' : '';
+    const darkGreyStyleClasses = 'row-end' + ((selected === C.MAP_STYLES.DARK_GREY) ? ' selected' : '');
+    const neonStyleClasses = (selected === C.MAP_STYLES.NEON) ? 'selected' : '';
+
+    return (
+      <div className="map-styles-tab">
+        <div className="settings-row">
+          <ul id="map-styles">
+            <li className={defaultStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.DEFAULT)); }}>
+              <div>
+                <img src="images/map-styles/default.png" />
+                <div>Default</div>
+              </div>
+            </li>
+            <li className={greyStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.GREY))}}>
+              <div>
+                <img src="images/map-styles/grey.png" />
+                <div>Grey</div>
+              </div>
+            </li>
+            <li className={darkGreyStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.DARK_GREY))}}>
+              <div>
+                <img src="images/map-styles/dark.png" />
+                <div>Dark Grey</div>
+              </div>
+            </li>
+            <li className={neonStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.NEON))}}>
+              <div>
+                <img src="images/map-styles/neon.png" />
+                <div>Neon</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <img src="images/map-styles/grey.png" />
+                <div>Dark Grey</div>
+              </div>
+            </li>
+            <li className="row-end">
+              <div>
+                <img src="images/map-styles/grey.png" />
+                <div>Dark Grey</div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     );

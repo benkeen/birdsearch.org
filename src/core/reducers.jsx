@@ -217,7 +217,8 @@ function settingsOverlay (state = {
   searchType: null,
   observationRecency: null,
   zoomHandling: null,
-  showScientificName: false
+  showScientificName: false,
+  mapStyle: ''
 }, action) {
 
   switch (action.type) {
@@ -248,6 +249,12 @@ function settingsOverlay (state = {
       storage.set('showScientificName', action.show ? 1 : 0);
       return Object.assign({}, state, {
         showScientificName: action.show
+      });
+
+    case E.SELECT_MAP_STYLE:
+      storage.set('mapStyle', action.mapStyle);
+      return Object.assign({}, state, {
+        mapStyle: action.mapStyle
       });
 
     default:

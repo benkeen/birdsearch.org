@@ -2,6 +2,5 @@
 .idea*
 node_modules*
 dist/*
-!dist/bundle-2.0.0.min.js
 *.scssc
 .sass-cache*
