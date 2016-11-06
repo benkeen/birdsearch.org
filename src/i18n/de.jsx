@@ -47,7 +47,6 @@ export default {
   locationNotFound: 'Dieser Ort konnte nicht gefunden werden. Bitte versuchen Sie es erneut.',
   locations: 'Niederlassungen',
   login: 'Anmeldung',
-  miscSettings: 'Verschiedene Einstellungen',
   month: 'Monat',
   noLocations: 'Keine Standorte.',
   noResultsFound: 'Es wurden leider keine Ergebnisse gefunden.',

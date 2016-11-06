@@ -102,10 +102,10 @@
 }
 
 #settings-overlay {
-  height: 241px;
+  height: 281px;
   width: 520px;
   &.with-search {
-    height: 297px;
+    height: 331px;
   }
   select.num-days {
     width: 60px;
@@ -186,6 +186,7 @@
 
 .observation-recency-setting {
   margin-top: 7px;
+  margin-bottom: 4px;
 }
 
 .num-days {

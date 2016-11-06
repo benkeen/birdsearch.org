@@ -47,7 +47,6 @@ export default {
   locationNotFound: 'Lo sentimos, no se pudo encontrar esa ubicación. Vuelve a intentarlo.',
   locations: 'Ubicaciones',
   login: 'Iniciar sesión',
-  miscSettings: 'Otras configuraciones',
   month: 'mes',
   noLocations: 'No hay ubicaciones.',
   noResultsFound: 'Lo sentimos, no se encontraron resultados.',

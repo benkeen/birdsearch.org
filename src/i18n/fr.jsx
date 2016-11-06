@@ -47,7 +47,6 @@ export default {
 	locationNotFound: 'Désolé, cet endroit n\'a pas été trouvé, s\'il vous plaît essayer à nouveau.',
 	locations: 'Emplacements',
 	login: 'S\'identifier',
-  miscSettings: 'Divers paramètres',
   month: 'mois',
 	noLocations: 'Aucun emplacement.',
   noResultsFound: 'Désolé, aucun résultat n\'a été trouvé.',

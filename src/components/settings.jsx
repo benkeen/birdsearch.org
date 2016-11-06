@@ -39,21 +39,15 @@ class SettingsOverlay extends React.Component {
           zoomHandling={zoomHandling}
           observationRecency={observationRecency}
           location={searchSettings.location}
-          searchType={searchType} />
+          searchType={searchType}
+          showScientificName={showScientificName} />
       );
-    } else if (selectedTab === C.SEARCH_OVERLAY_TABS.MAP_STYLES) {
+    } else {
       return (
         <MapStyles
           dispatch={dispatch}
           intl={intl}
           selected={mapStyle} />
-      );
-    } else {
-      return (
-        <MiscSettings
-          dispatch={dispatch}
-          intl={intl}
-          showScientificName={showScientificName} />
       );
     }
   }
@@ -71,24 +65,19 @@ class SettingsOverlay extends React.Component {
   render () {
     const { selectedTab } = this.props.settingsOverlay;
     const searchSettingsClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS) ? 'active' : '';
-    const miscClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.MISC_TAB) ? 'active' : '';
     const mapStyleClasses = (selectedTab === C.SEARCH_OVERLAY_TABS.MAP_STYLES) ? 'active' : '';
+    const classes = (this.props.searchSettings.location) ? 'with-search' : null;
 
     return (
-      <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true}>
-        <div className="">
-          <ul className="nav nav-pills">
-            <li className={searchSettingsClasses}>
-              <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS)}><FormattedMessage id="searchSettings" /></a>
-            </li>
-            <li className={mapStyleClasses}>
-              <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.MAP_STYLES)}><FormattedMessage id="mapStyles" /></a>
-            </li>
-            <li className={miscClasses}>
-              <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.MISC_TAB)}><FormattedMessage id="miscSettings" /></a>
-            </li>
-          </ul>
-        </div>
+      <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true} className={classes}>
+        <ul className="nav nav-pills">
+          <li className={searchSettingsClasses}>
+            <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS)}><FormattedMessage id="searchSettings" /></a>
+          </li>
+          <li className={mapStyleClasses}>
+            <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.MAP_STYLES)}><FormattedMessage id="mapStyles" /></a>
+          </li>
+        </ul>
         {this.getContent()}
       </Overlay>
     );
@@ -105,6 +94,11 @@ export default injectIntl(connect(state => ({
 
 
 class SearchSettings extends React.Component {
+  constructor (props) {
+    super(props);
+    this.toggleScientificName = this.toggleScientificName.bind(this);
+  }
+
   getSearchRow () {
     const { location, search } = this.props;
     if (!location) {
@@ -120,8 +114,13 @@ class SearchSettings extends React.Component {
     );
   }
 
+  toggleScientificName () {
+    const { dispatch, showScientificName } = this.props;
+    dispatch(actions.setScientificNameVisibility(!showScientificName));
+  }
+
   render() {
-    const { dispatch, searchType, zoomHandling, observationRecency, intl } = this.props;
+    const { dispatch, searchType, zoomHandling, observationRecency, showScientificName, intl } = this.props;
 
     const autoZoomTooltip = (
       <Tooltip id="search-results-tooltip">
@@ -200,6 +199,16 @@ class SearchSettings extends React.Component {
           </span>
         </div>
 
+        <div className="settings-row">
+          <span className="settings-row-label"><FormattedMessage id="speciesName" /></span>
+          <span className="search-type">
+            <span>
+              <input type="checkbox" id="scientific-name" checked={showScientificName} onChange={this.toggleScientificName} />
+                <label htmlFor="scientific-name"><FormattedMessage id="includeSciName" /></label>
+            </span>
+          </span>
+        </div>
+
         {this.getSearchRow()}
       </div>
     );
@@ -213,36 +222,6 @@ SearchSettings.propTypes = {
 };
 
 
-class MiscSettings extends React.Component {
-  constructor (props) {
-    super(props);
-    this.toggleScientificName = this.toggleScientificName.bind(this);
-  }
-
-  toggleScientificName () {
-    const { dispatch, showScientificName } = this.props;
-    dispatch(actions.setScientificNameVisibility(!showScientificName));
-  }
-
-  render () {
-    const { showScientificName } = this.props;
-    return (
-      <div>
-        <div className="settings-row">
-          <span className="settings-row-label"><FormattedMessage id="speciesName" /></span>
-          <span className="search-type">
-            <span>
-              <input type="checkbox" id="scientific-name" checked={showScientificName} onChange={this.toggleScientificName} />
-                <label htmlFor="scientific-name"><FormattedMessage id="includeSciName" /></label>
-            </span>
-          </span>
-        </div>
-      </div>
-    );
-  }
-}
-
-
 class MapStyles extends React.Component {
   render () {
     const { dispatch, intl, selected } = this.props;
@@ -250,6 +229,8 @@ class MapStyles extends React.Component {
     const greyStyleClasses = (selected === C.MAP_STYLES.GREY) ? 'selected' : '';
     const darkGreyStyleClasses = 'row-end' + ((selected === C.MAP_STYLES.DARK_GREY) ? ' selected' : '');
     const neonStyleClasses = (selected === C.MAP_STYLES.NEON) ? 'selected' : '';
+    const oldStyleClasses = (selected === C.MAP_STYLES.OLD_STYLE) ? 'selected' : '';
+    const aquaStyleClasses = 'row-end' + ((selected === C.MAP_STYLES.AQUA) ? ' selected' : '');
 
     return (
       <div className="map-styles-tab">
@@ -258,37 +239,37 @@ class MapStyles extends React.Component {
             <li className={defaultStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.DEFAULT)); }}>
               <div>
                 <img src="images/map-styles/default.png" />
-                <div>Default</div>
+                <FormattedMessage id="default" tagName="div" />
               </div>
             </li>
             <li className={greyStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.GREY))}}>
               <div>
                 <img src="images/map-styles/grey.png" />
-                <div>Grey</div>
+                <FormattedMessage id="grey" tagName="div" />
               </div>
             </li>
             <li className={darkGreyStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.DARK_GREY))}}>
               <div>
                 <img src="images/map-styles/dark.png" />
-                <div>Dark Grey</div>
+                <FormattedMessage id="darkGrey" tagName="div" />
               </div>
             </li>
             <li className={neonStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.NEON))}}>
               <div>
                 <img src="images/map-styles/neon.png" />
-                <div>Neon</div>
+                <FormattedMessage id="neon" tagName="div" />
               </div>
             </li>
-            <li>
+            <li className={oldStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.OLD_STYLE))}}>
               <div>
-                <img src="images/map-styles/grey.png" />
-                <div>Dark Grey</div>
+                <img src="images/map-styles/old-style.png" />
+                <FormattedMessage id="oldStyle" tagName="div" />
               </div>
             </li>
-            <li className="row-end">
+            <li className={aquaStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.AQUA))}}>
               <div>
-                <img src="images/map-styles/grey.png" />
-                <div>Dark Grey</div>
+                <img src="images/map-styles/aqua.png" />
+                <FormattedMessage id="aqua" tagName="div" />
               </div>
             </li>
           </ul>
