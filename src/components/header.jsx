@@ -15,6 +15,7 @@ class Header extends React.Component {
     this.showIntroOverlay = this.showIntroOverlay.bind(this);
     this.onSubmitNewSearch = this.onSubmitNewSearch.bind(this);
     this.setLocation = this.setLocation.bind(this);
+    this.showSettingsOverlay = this.showSettingsOverlay.bind(this);
   }
 
   componentDidUpdate (prevProps) {
@@ -52,11 +53,13 @@ class Header extends React.Component {
 
   showAboutOverlay (e) {
     e.preventDefault();
+    $(e.target).trigger('blur');
     browserHistory.push('/about');
   }
 
   showSettingsOverlay (e) {
     e.preventDefault();
+    $(e.target).trigger('blur');
     browserHistory.push('/settings');
   }
 
