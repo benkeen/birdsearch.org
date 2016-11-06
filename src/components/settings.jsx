@@ -190,15 +190,6 @@ class SearchSettings extends React.Component {
           </span>
         </div>
 
-        <div className="observation-recency-setting">
-          <span>
-            <FormattedMessage id="showObservationsMade"
-              values={{
-                days: <DaysDropdown value={observationRecency} onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} />
-              }} />
-          </span>
-        </div>
-
         <div className="settings-row">
           <span className="settings-row-label"><FormattedMessage id="speciesName" /></span>
           <span className="search-type">
@@ -206,6 +197,15 @@ class SearchSettings extends React.Component {
               <input type="checkbox" id="scientific-name" checked={showScientificName} onChange={this.toggleScientificName} />
                 <label htmlFor="scientific-name"><FormattedMessage id="includeSciName" /></label>
             </span>
+          </span>
+        </div>
+
+        <div className="observation-recency-setting">
+          <span>
+            <FormattedMessage id="showObservationsMade"
+              values={{
+                days: <DaysDropdown value={observationRecency} onChange={(val) => { dispatch(actions.setObservationRecency(val)); }} />
+              }} />
           </span>
         </div>
 

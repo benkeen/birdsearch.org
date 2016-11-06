@@ -123,7 +123,7 @@ module.exports = function(grunt) {
 	};
 
 	grunt.initConfig(config);
-  grunt.registerTask('build', ['template:prod', 'env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin']);
-  grunt.registerTask('dev', ['template:dev', 'env', 'babel:jsx', 'browserify', 'sass', 'copy']);
+  grunt.registerTask('prod', ['env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin', 'template:prod']);
+  grunt.registerTask('dev', ['env', 'babel:jsx', 'browserify', 'sass', 'copy', 'template:dev']);
   grunt.registerTask('start', ['dev', 'watch']);
 };
