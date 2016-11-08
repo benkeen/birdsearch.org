@@ -16,9 +16,25 @@
 .has-results .map-btn {
   top: 27px !important;
 }
+.map-btn {
+  margin-top: 6px;
+  background-color: white;
+  cursor: pointer;
+  text-align: center;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 26px;
+  padding: 0 8px;
+}
 .map-btn-selected {
-  font-weight: bold;
-  color: #0086cc;
+  color: #111111;
+}
+.map-btn-first {
+  border-radius: 3px 0 0 3px;
+}
+.map-btn-last {
+  margin-right: 6px;
+  border-radius: 0 3px 3px 0;
 }
 
 .marker-popup {

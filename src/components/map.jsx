@@ -44,37 +44,6 @@ var _currentSearchType;
 var _suppressBoundaryChangeUpdate = false;
 
 
-//function CenterControl(controlDiv, map) {
-//  // Set CSS for the control border.
-//  var controlUI = document.createElement('div');
-//  controlUI.style.backgroundColor = '#fff';
-//  controlUI.style.border = '2px solid #fff';
-//  controlUI.style.borderRadius = '3px';
-//  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-//  controlUI.style.cursor = 'pointer';
-//  controlUI.style.marginBottom = '22px';
-//  controlUI.style.textAlign = 'center';
-//  //controlUI.title = 'Click to recenter the map';
-//  controlDiv.appendChild(controlUI);
-//
-//  // Set CSS for the control interior.
-//  var controlText = document.createElement('div');
-//  controlText.style.color = 'rgb(25,25,25)';
-//  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-//  controlText.style.fontSize = '12px';
-//  controlText.style.lineHeight = '26px';
-//  controlText.style.paddingLeft = '5px';
-//  controlText.style.paddingRight = '5px';
-//  controlText.innerHTML = 'Roadmap';
-//  controlUI.appendChild(controlText);
-//
-//  // Setup the click event listeners: simply set the map to Chicago.
-//  controlUI.addEventListener('click', function () {
-//    console.log('k');
-//  });
-//}
-
-
 var styles = {
   [C.MAP_STYLES.DEFAULT]: [{"featureType":"road","elementType":"geometry","stylers":[{"lightness":100},{"visibility":"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}],
   [C.MAP_STYLES.GREY]: [{"featureType":"all","elementType":"all","stylers":[{"hue":"#ff0000"},{"saturation":-100},{"lightness":-30}]},{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#353535"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#656565"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#505050"}]},{"featureType":"poi","elementType":"geometry.stroke","stylers":[{"color":"#808080"}]},{"featureType":"road","elementType":"geometry","stylers":[{"color":"#454545"}]}],
@@ -100,24 +69,21 @@ export class Map extends React.Component {
     var defaultMapOptions = {
       mapTypeId: mapTypeId,
       center: new google.maps.LatLng(this.props.lat, this.props.lng),
-      //disableDefaultUI: true,
+      disableDefaultUI: true,
       zoom: 3,
       streetViewControl: false,
       mapTypeControlOptions: {
-        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-        position: google.maps.ControlPosition.TOP_RIGHT,
-        mapTypeIds: ['roadmap', 'satellite']
+        mapTypeIds: []
       },
       styles: styles[mapStyle]
     };
 
+//        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+//        position: google.maps.ControlPosition.TOP_RIGHT,
+
     _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
     this.addEventHandlers();
-
-//    var centerControlDiv = document.createElement('div');
-//    var centerControl = new CenterControl(centerControlDiv, _map);
-//    centerControlDiv.index = 1;
-//    _map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+    addCustomControls();
 
     // precache all marker images
     _.each(_icons, function (key) {
@@ -522,4 +488,48 @@ var _addSearchRangeIndicator = () => {
     always_fit_to_map: false
   });
   _circleOverlayIndex++;
+};
+
+
+
+var addCustomControls = function() {
+  var btn1 = $('<div class="map-btn map-btn-first">Terrain</div>')[0];
+  var btn2 = $('<div class="map-btn map-btn-selected">Road Map</div>')[0];
+  var btn3 = $('<div class="map-btn">Satellite</div>')[0];
+  var btn4 = $('<div class="map-btn map-btn-last">Hybrid</div>')[0];
+
+  // add the controls to the map
+  _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
+  _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn3);
+  _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn2);
+  _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
+
+  const mapBtnClass = '.map-btn';
+  const selectedBtnClass = 'map-btn-selected';
+
+  // add the appropriate event handlers
+  google.maps.event.addDomListener(btn1, 'click', function() {
+    _map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+    $(mapBtnClass).removeClass(selectedBtnClass);
+    $(btn1).addClass(selectedBtnClass);
+  });
+  google.maps.event.addDomListener(btn2, 'click', function() {
+    _map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+    $(mapBtnClass).removeClass(selectedBtnClass);
+    $(btn2).addClass(selectedBtnClass);
+  });
+  google.maps.event.addDomListener(btn3, 'click', function() {
+    _map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+    $(mapBtnClass).removeClass(selectedBtnClass);
+    $(btn3).addClass(selectedBtnClass);
+  });
+  google.maps.event.addDomListener(btn4, 'click', function() {
+    _map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+    $(mapBtnClass).removeClass(selectedBtnClass);
+    $(btn4).addClass(selectedBtnClass);
+  });
+};
+
+var hideCustomControls = () => {
+  //$('.')
 };
