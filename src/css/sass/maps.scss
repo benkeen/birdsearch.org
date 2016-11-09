@@ -25,6 +25,14 @@
   font-size: 12px;
   line-height: 26px;
   padding: 0 8px;
+
+  &.hidden-on-load {
+    display: inherit;
+    opacity: 0.01;
+  }
+  &.hidden {
+    display: none;
+  }
 }
 .map-btn-selected {
   color: #111111;

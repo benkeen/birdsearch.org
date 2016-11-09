@@ -73,17 +73,18 @@ export class Map extends React.Component {
       zoom: 3,
       streetViewControl: false,
       mapTypeControlOptions: {
-        mapTypeIds: []
+        mapTypeIds: [],
       },
       styles: styles[mapStyle]
     };
 
-//        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-//        position: google.maps.ControlPosition.TOP_RIGHT,
-
     _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
     this.addEventHandlers();
-    addCustomControls();
+    addCustomControls(mapStyle === C.MAP_STYLES.DEFAULT);
+
+//    google.maps.event.addListenerOnce(_map, 'idle', function(){
+//      updateCustomControlVisibility(mapStyle);
+//    });
 
     // precache all marker images
     _.each(_icons, function (key) {
@@ -102,6 +103,7 @@ export class Map extends React.Component {
     }
 
     if (this.props.mapStyle !== nextProps.mapStyle) {
+      updateCustomControlVisibility(nextProps.mapStyle);
       _map.setOptions({ styles: styles[nextProps.mapStyle] });
     }
 
@@ -492,11 +494,18 @@ var _addSearchRangeIndicator = () => {
 
 
 
-var addCustomControls = function() {
-  var btn1 = $('<div class="map-btn map-btn-first">Terrain</div>')[0];
-  var btn2 = $('<div class="map-btn map-btn-selected">Road Map</div>')[0];
-  var btn3 = $('<div class="map-btn">Satellite</div>')[0];
-  var btn4 = $('<div class="map-btn map-btn-last">Hybrid</div>')[0];
+var addCustomControls = function(isVisible) {
+  const btn1Classes = 'map-btn map-btn-first' + ((isVisible) ? '': ' hidden');
+  const btn1 = $(`<div class="${btn1Classes}">Terrain</div>`)[0];
+
+  const btn2Classes = 'map-btn' + ((isVisible) ? '': ' hidden');
+  const btn2 = $(`<div class="${btn2Classes}">Road Map</div>`)[0];
+
+  const btn3Classes = 'map-btn' + ((isVisible) ? '': ' hidden');
+  const btn3 = $(`<div class="${btn3Classes}">Satellite</div>`)[0];
+
+  const btn4Classes = 'map-btn map-btn-last' + ((isVisible) ? '': ' hidden');
+  const btn4 = $(`<div class="${btn4Classes}">Hybrid</div>`)[0];
 
   // add the controls to the map
   _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
@@ -530,6 +539,18 @@ var addCustomControls = function() {
   });
 };
 
-var hideCustomControls = () => {
-  //$('.')
+const updateCustomControlVisibility = (mapStyle) => {
+  if (mapStyle === C.MAP_STYLES.DEFAULT) {
+    showCustomControls();
+  } else {
+    hideCustomControls();
+  }
+};
+
+const hideCustomControls = () => {
+  $('.map-btn').addClass('hidden');
+};
+
+const showCustomControls = () => {
+  $('.map-btn').removeClass('hidden');
 };
