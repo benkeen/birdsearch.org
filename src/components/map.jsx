@@ -63,7 +63,7 @@ export class Map extends React.Component {
   }
 
   componentDidMount () {
-    const { mapTypeId, mapStyle } = this.props;
+    const { mapTypeId, mapStyle, dispatch } = this.props;
 
     google.maps.visualRefresh = true;
     var defaultMapOptions = {
@@ -72,19 +72,14 @@ export class Map extends React.Component {
       disableDefaultUI: true,
       zoom: 3,
       streetViewControl: false,
-      mapTypeControlOptions: {
-        mapTypeIds: [],
-      },
       styles: styles[mapStyle]
     };
 
     _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
     this.addEventHandlers();
-    addCustomControls(mapStyle === C.MAP_STYLES.DEFAULT);
 
-//    google.maps.event.addListenerOnce(_map, 'idle', function(){
-//      updateCustomControlVisibility(mapStyle);
-//    });
+    const customControlsVisible = mapStyle === C.MAP_STYLES.DEFAULT;
+    addCustomControls(customControlsVisible, dispatch);
 
     // precache all marker images
     _.each(_icons, function (key) {
@@ -494,7 +489,7 @@ var _addSearchRangeIndicator = () => {
 
 
 
-var addCustomControls = function(isVisible) {
+var addCustomControls = function(isVisible, dispatch) {
   const btn1Classes = 'map-btn map-btn-first' + ((isVisible) ? '': ' hidden');
   const btn1 = $(`<div class="${btn1Classes}">Terrain</div>`)[0];
 
@@ -521,21 +516,25 @@ var addCustomControls = function(isVisible) {
     _map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
     $(mapBtnClass).removeClass(selectedBtnClass);
     $(btn1).addClass(selectedBtnClass);
+    dispatch(actions.setMapTypeId(google.maps.MapTypeId.TERRAIN));
   });
   google.maps.event.addDomListener(btn2, 'click', function() {
     _map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
     $(mapBtnClass).removeClass(selectedBtnClass);
     $(btn2).addClass(selectedBtnClass);
+    dispatch(actions.setMapTypeId(google.maps.MapTypeId.ROADMAP));
   });
   google.maps.event.addDomListener(btn3, 'click', function() {
     _map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
     $(mapBtnClass).removeClass(selectedBtnClass);
     $(btn3).addClass(selectedBtnClass);
+    dispatch(actions.setMapTypeId(google.maps.MapTypeId.SATELLITE));
   });
   google.maps.event.addDomListener(btn4, 'click', function() {
     _map.setMapTypeId(google.maps.MapTypeId.HYBRID);
     $(mapBtnClass).removeClass(selectedBtnClass);
     $(btn4).addClass(selectedBtnClass);
+    dispatch(actions.setMapTypeId(google.maps.MapTypeId.HYBRID));
   });
 };
 

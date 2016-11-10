@@ -100,10 +100,22 @@ function mapSettings (state = {
         searchUpdateCounter: state.searchUpdateCounter + 1
       });
 
-    case E.SET_MAP_TYPE:
-      storage.set('locale', action.mapType);
+    case E.SELECT_MAP_TYPE_ID:
+      storage.set('mapTypeId', action.mapTypeId);
       return Object.assign({}, state, {
-        mapType: action.mapType
+        mapTypeId: action.mapTypeId
+      });
+
+    // this ensures ROAD MAP is set any time you choose a non-default map style. Otherwise things like "satellite"
+    // would overwrite the styles. A little inelegant.
+    case E.SELECT_MAP_STYLE:
+      let mapTypeId = state.mapTypeId;
+      if (action.mapStyle !== C.MAP_STYLES.DEFAULT) {
+        mapTypeId = google.maps.MapTypeId.ROADMAP;
+      }
+      storage.set('mapTypeId', mapTypeId);
+      return Object.assign({}, state, {
+        mapTypeId
       });
 
     case E.WINDOW_RESIZED:

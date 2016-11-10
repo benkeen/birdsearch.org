@@ -427,7 +427,15 @@ const clearSearchTooltipVisibility = () => {
 const selectMapStyle = (mapStyle) => {
   return {
     type: E.SELECT_MAP_STYLE,
-    mapStyle: mapStyle
+    mapStyle
+  };
+};
+
+
+const setMapTypeId = (mapTypeId) => {
+  return {
+    type: E.SELECT_MAP_TYPE_ID,
+    mapTypeId
   };
 };
 
@@ -460,5 +468,6 @@ export {
   clearNextAction,
   hideSearchTooltip,
   clearSearchTooltipVisibility,
-  selectMapStyle
+  selectMapStyle,
+  setMapTypeId
 };
