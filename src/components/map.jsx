@@ -72,7 +72,11 @@ export class Map extends React.Component {
       disableDefaultUI: true,
       zoom: 3,
       streetViewControl: false,
-      styles: styles[mapStyle]
+      styles: styles[mapStyle],
+      zoomControl: true,
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_BOTTOM
+      }
     };
 
     _map = new google.maps.Map(ReactDOM.findDOMNode(this), defaultMapOptions);
