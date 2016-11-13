@@ -475,7 +475,7 @@ class NotableSightingsTable extends React.Component {
   }
 
   getRows () {
-    const { dispatch, selectedLocation, filter } = this.props;
+    const { dispatch, selectedLocation, showScientificName, filter, intl } = this.props;
 
     return _.map(this.sortedSpecies, function (row, index) {
       var comNameData = helpers.highlightString(row.comName, filter);
@@ -490,11 +490,13 @@ class NotableSightingsTable extends React.Component {
           selectedLocation={selectedLocation}
           filter={filter}
           row={row}
+          showScientificName={showScientificName}
           rowNum={index+1}
           comName={row.comName}
           comNameDisplay={comNameData.string}
           sciNameDisplay={sciNameData.string}
-          key={index} />
+          key={index}
+          intl={intl} />
       );
     });
   }
@@ -599,8 +601,18 @@ class NotableSpeciesRow extends React.Component {
     return null;
   }
 
+  getSciName () {
+    const { showScientificName, sciNameDisplay } = this.props;
+    if (!showScientificName) {
+      return null;
+    }
+    return (
+      <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+    );
+  }
+
   render () {
-    const { row, comName, comNameDisplay, sciNameDisplay, rowNum } = this.props;
+    const { row, comName, comNameDisplay, rowNum, intl } = this.props;
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
     const checklistLink = `http://ebird.org/ebird/view/checklist/${row.subID}`;
 
@@ -613,13 +625,14 @@ class NotableSpeciesRow extends React.Component {
             <span className="com-name" title={comName} dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
             <span className="notable-count">{this.getCount(row)}</span>
           </div>
-          <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+          {this.getSciName()}
         </td>
         <td className="date-seen-col">{row.obsDtDisplay}</td>
         <td className="reporter-col">{row.reporter}</td>
         <td className="status-col">{this.getStatus(row)}</td>
         <td className="checklist-col">
-          <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list" title="View Checklist" />
+          <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list"
+             title={intl.formatMessage({ id: 'viewChecklist' })} />
         </td>
         <td className="wikipedia-col">
           <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />
