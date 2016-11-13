@@ -25,13 +25,12 @@
   font-size: 12px;
   line-height: 26px;
   padding: 0 8px;
+  color: #999999;
 
-  &.hidden-on-load {
+  &.omit {
     display: inherit;
     opacity: 0.01;
-  }
-  &.hidden {
-    display: none;
+    cursor: inherit;
   }
 }
 .map-btn-selected {

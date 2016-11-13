@@ -79,7 +79,7 @@ export class Map extends React.Component {
     this.addEventHandlers();
 
     const customControlsVisible = mapStyle === C.MAP_STYLES.DEFAULT;
-    addCustomControls(customControlsVisible, dispatch);
+    addCustomControls(mapTypeId, customControlsVisible, dispatch);
 
     // precache all marker images
     _.each(_icons, function (key) {
@@ -489,17 +489,31 @@ var _addSearchRangeIndicator = () => {
 
 
 
-var addCustomControls = function(isVisible, dispatch) {
-  const btn1Classes = 'map-btn map-btn-first' + ((isVisible) ? '': ' hidden');
+var addCustomControls = function(mapTypeId, isVisible, dispatch) {
+  const selectedBtnClass = 'map-btn-selected';
+
+  let btn1Classes = 'map-btn map-btn-first' + ((isVisible) ? '': ' omit');
+  if (mapTypeId === google.maps.MapTypeId.TERRAIN) {
+    btn1Classes += ' ' + selectedBtnClass;
+  }
   const btn1 = $(`<div class="${btn1Classes}">Terrain</div>`)[0];
 
-  const btn2Classes = 'map-btn' + ((isVisible) ? '': ' hidden');
+  let btn2Classes = 'map-btn' + ((isVisible) ? '': ' omit');
+  if (mapTypeId === google.maps.MapTypeId.ROADMAP) {
+    btn2Classes += ' ' + selectedBtnClass;
+  }
   const btn2 = $(`<div class="${btn2Classes}">Road Map</div>`)[0];
 
-  const btn3Classes = 'map-btn' + ((isVisible) ? '': ' hidden');
+  let btn3Classes = 'map-btn' + ((isVisible) ? '': ' omit');
+  if (mapTypeId === google.maps.MapTypeId.SATELLITE) {
+    btn3Classes += ' ' + selectedBtnClass;
+  }
   const btn3 = $(`<div class="${btn3Classes}">Satellite</div>`)[0];
 
-  const btn4Classes = 'map-btn map-btn-last' + ((isVisible) ? '': ' hidden');
+  let btn4Classes = 'map-btn map-btn-last' + ((isVisible) ? '': ' omit');
+  if (mapTypeId === google.maps.MapTypeId.HYBRID) {
+    btn4Classes += ' ' + selectedBtnClass;
+  }
   const btn4 = $(`<div class="${btn4Classes}">Hybrid</div>`)[0];
 
   // add the controls to the map
@@ -509,28 +523,39 @@ var addCustomControls = function(isVisible, dispatch) {
   _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn1);
 
   const mapBtnClass = '.map-btn';
-  const selectedBtnClass = 'map-btn-selected';
 
   // add the appropriate event handlers
-  google.maps.event.addDomListener(btn1, 'click', function() {
+  google.maps.event.addDomListener(btn1, 'click', (e) => {
+    if ($(e.target).hasClass('omit')) {
+      return;
+    }
     _map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
     $(mapBtnClass).removeClass(selectedBtnClass);
     $(btn1).addClass(selectedBtnClass);
     dispatch(actions.setMapTypeId(google.maps.MapTypeId.TERRAIN));
   });
-  google.maps.event.addDomListener(btn2, 'click', function() {
+  google.maps.event.addDomListener(btn2, 'click', (e) => {
+    if ($(e.target).hasClass('omit')) {
+      return;
+    }
     _map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
     $(mapBtnClass).removeClass(selectedBtnClass);
     $(btn2).addClass(selectedBtnClass);
     dispatch(actions.setMapTypeId(google.maps.MapTypeId.ROADMAP));
   });
-  google.maps.event.addDomListener(btn3, 'click', function() {
+  google.maps.event.addDomListener(btn3, 'click', (e) => {
+    if ($(e.target).hasClass('omit')) {
+      return;
+    }
     _map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
     $(mapBtnClass).removeClass(selectedBtnClass);
     $(btn3).addClass(selectedBtnClass);
     dispatch(actions.setMapTypeId(google.maps.MapTypeId.SATELLITE));
   });
-  google.maps.event.addDomListener(btn4, 'click', function() {
+  google.maps.event.addDomListener(btn4, 'click', (e) => {
+    if ($(e.target).hasClass('omit')) {
+      return;
+    }
     _map.setMapTypeId(google.maps.MapTypeId.HYBRID);
     $(mapBtnClass).removeClass(selectedBtnClass);
     $(btn4).addClass(selectedBtnClass);
@@ -547,9 +572,9 @@ const updateCustomControlVisibility = (mapStyle) => {
 };
 
 const hideCustomControls = () => {
-  $('.map-btn').addClass('hidden');
+  $('.map-btn').addClass('omit');
 };
 
 const showCustomControls = () => {
-  $('.map-btn').removeClass('hidden');
+  $('.map-btn').removeClass('omit');
 };
