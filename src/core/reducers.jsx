@@ -97,7 +97,8 @@ function mapSettings (state = {
         lat: action.lat,
         lng: action.lng,
         bounds: action.bounds,
-        searchUpdateCounter: state.searchUpdateCounter + 1
+        searchUpdateCounter: state.searchUpdateCounter + 1,
+        resetSearchCounter: state.resetSearchCounter + 1
       });
 
     case E.SELECT_MAP_TYPE_ID:
