@@ -22,6 +22,11 @@ export class SightingsPanel extends React.Component {
   }
 
   shouldComponentUpdate (nextProps) {
+    const locationsJustAdded = this.props.locations.length === 0 && nextProps.locations.length > 0;
+    if (locationsJustAdded) {
+      return true;
+    }
+
     return this.props.updateCounter !== nextProps.updateCounter;
   }
 
