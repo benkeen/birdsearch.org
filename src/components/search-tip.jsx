@@ -59,16 +59,8 @@ class SearchTip extends React.Component {
         <ClosePanel onClose={this.close} />
         <FormattedMessage id="searchTip"
           values={{
-            days: (
-              <Link to="/settings">
-                <b>{obsRecency}</b>
-                <FormattedPlural
-                  value={obsRecency}
-                  one=" day"
-                  other=" days" />
-              </Link>
-              )
-            }} />
+            days: <Link to="/settings"><FormattedMessage id="searchTipDays" values={{ obsRecency: obsRecency }} /></Link>
+          }} />
       </Tooltip>
     );
   }

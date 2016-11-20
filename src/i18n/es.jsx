@@ -80,7 +80,7 @@ export default {
   searchResults: 'Resultados de la búsqueda',
   searchSettings: 'Configuración de búsqueda',
   searchTip: 'Ingrese cualquier lugar para ver avistamientos de aves realizados en los últimos {days}.',
-  searchTipDays: '{obsRecency, plural, one {día} other {días}',
+  searchTipDays: '{obsRecency} {obsRecency, plural, one {día} other {días}}',
   settings: 'Ajustes',
   show: 'Espectáculo',
   speciesName: 'Nombre de la especie',

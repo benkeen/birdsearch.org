@@ -80,7 +80,7 @@ export default {
   searchResults: 'Suchergebnisse',
   searchSettings: 'Sucheinstellungen',
   searchTip: 'Geben Sie einen beliebigen Ort ein, um Vogelbeobachtungen anzuzeigen, die in den letzten {days} erstellt wurden.',
-  searchTipDays: '{obsRecency, plural, one {tag} other {tage}',
+  searchTipDays: '{obsRecency} {obsRecency, plural, one {tag} other {tage}}',
   settings: 'Einstellungen',
   show: 'Show',
   speciesName: 'Name der Spezies',

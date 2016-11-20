@@ -80,7 +80,7 @@ export default {
   searchResults: 'Search results',
   searchSettings: 'Search settings',
   searchTip: 'Enter any location to view bird sightings made in the last {days}.',
-  searchTipDays: '{obsRecency, plural, one {day} other {days}',
+  searchTipDays: '{obsRecency} {obsRecency, plural, one {day} other {days}}',
   settings: 'Settings',
   show: 'Show',
   speciesName: 'Species name',
