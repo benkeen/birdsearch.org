@@ -62,7 +62,7 @@ export class Map extends React.Component {
   }
 
   componentDidMount () {
-    const { mapTypeId, mapStyle, dispatch } = this.props;
+    const { mapTypeId, mapStyle, intl, dispatch } = this.props;
 
     google.maps.visualRefresh = true;
     var defaultMapOptions = {
@@ -82,7 +82,7 @@ export class Map extends React.Component {
     this.addEventHandlers();
 
     const customControlsVisible = mapStyle === C.MAP_STYLES.DEFAULT;
-    addCustomControls(mapTypeId, customControlsVisible, dispatch);
+    addCustomControls(mapTypeId, customControlsVisible, intl, dispatch);
 
     // precache all marker images
     _.each(_icons, function (key) {
@@ -491,26 +491,29 @@ var _addSearchRangeIndicator = () => {
 
 
 
-var addCustomControls = function(mapTypeId, isVisible, dispatch) {
+var addCustomControls = function(mapTypeId, isVisible, intl, dispatch) {
   const selectedBtnClass = 'map-btn-selected';
 
   let btn1Classes = 'map-btn map-btn-first' + ((isVisible) ? '': ' omit');
   if (mapTypeId === google.maps.MapTypeId.TERRAIN) {
     btn1Classes += ' ' + selectedBtnClass;
   }
-  const btn1 = $(`<div class="${btn1Classes}">Terrain</div>`)[0];
+  const terrain = intl.formatMessage({ id: 'terrain' });
+  const btn1 = $(`<div class="${btn1Classes}">${terrain}</div>`)[0];
 
   let btn2Classes = 'map-btn' + ((isVisible) ? '': ' omit');
   if (mapTypeId === google.maps.MapTypeId.ROADMAP) {
     btn2Classes += ' ' + selectedBtnClass;
   }
-  const btn2 = $(`<div class="${btn2Classes}">Road Map</div>`)[0];
+  const roadMap = intl.formatMessage({ id: 'roadMap' });
+  const btn2 = $(`<div class="${btn2Classes}">${roadMap}</div>`)[0];
 
   let btn3Classes = 'map-btn' + ((isVisible) ? '': ' omit');
   if (mapTypeId === google.maps.MapTypeId.SATELLITE) {
     btn3Classes += ' ' + selectedBtnClass;
   }
-  const btn3 = $(`<div class="${btn3Classes}">Satellite</div>`)[0];
+  const satellite = intl.formatMessage({ id: 'satellite' });
+  const btn3 = $(`<div class="${btn3Classes}">${satellite}</div>`)[0];
 
   let btn4Classes = 'map-btn map-btn-last' + ((isVisible) ? '': ' omit');
   if (mapTypeId === google.maps.MapTypeId.HYBRID) {
