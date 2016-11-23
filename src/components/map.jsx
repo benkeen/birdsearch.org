@@ -19,6 +19,7 @@ var _icons = {
 };
 var _circleOverlays = {};
 var _circleOverlayIndex = 0;
+var _infoWindow; // as of 2.0.5 we only store a single infowindow at once. Feels cluttered otherwise
 
 // stores all map-related data, grouped by search type
 var _map;
@@ -26,13 +27,11 @@ var _data = {
   [C.SEARCH_SETTINGS.SEARCH_TYPES.ALL]: {
     defaultZoomLevel: 9,
     circleRadius: 60000,
-    infoWindows: {},
     markers: {}
   },
   [C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE]: {
     defaultZoomLevel: 7,
     circleRadius: 250000,
-    infoWindows: {},
     markers: {}
   }
 };
@@ -346,15 +345,15 @@ export class Map extends React.Component {
         locationID: locationID
       })
     };
-    _data[_currentSearchType].infoWindows[locationID] = new google.maps.InfoWindow();
 
+    initInfoWindow();
     let getInfoWindow = this.getBirdSightingsInfoWindow;
-    ((marker, infoWindow, locInfo) => {
+    ((marker, locInfo) => {
       google.maps.event.addListener(marker, 'click', function () {
-        infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo, intl)));
-        infoWindow.open(_map, this);
+        _infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo, intl)));
+        _infoWindow.open(_map, this);
       });
-    })(_data[_currentSearchType].markers[locationID].marker, _data[_currentSearchType].infoWindows[locationID], currMarkerInfo);
+    })(_data[_currentSearchType].markers[locationID].marker, currMarkerInfo);
   };
 
   addNotableMarker (searchType, locationID, latlng, currMarkerInfo) {
@@ -377,20 +376,19 @@ export class Map extends React.Component {
         locationID: locationID
       })
     };
-    _data[_currentSearchType].infoWindows[locationID] = new google.maps.InfoWindow();
 
+    initInfoWindow();
     let getInfoWindow = this.getNotableSightingsInfoWindow;
-    ((marker, infoWindow, locInfo) => {
+    ((marker, locInfo) => {
       google.maps.event.addListener(marker, 'click', function () {
         const l10n = {
           viewChecklist: intl.formatMessage({ id: 'viewChecklist' }),
           viewFullInfo: intl.formatMessage({ id: 'viewFullInfo' })
         };
-
-        infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo, l10n)));
-        infoWindow.open(_map, this);
+        _infoWindow.setContent(ReactDOMServer.renderToString(getInfoWindow(locInfo, l10n)));
+        _infoWindow.open(_map, this);
       });
-    })(_data[_currentSearchType].markers[locationID].marker, _data[_currentSearchType].infoWindows[locationID], currMarkerInfo);
+    })(_data[_currentSearchType].markers[locationID].marker, currMarkerInfo);
   }
 
   getBirdSightingsInfoWindow (locInfo, intl) {
@@ -565,6 +563,13 @@ var addCustomControls = function(mapTypeId, isVisible, dispatch) {
     $(btn4).addClass(selectedBtnClass);
     dispatch(actions.setMapTypeId(google.maps.MapTypeId.HYBRID));
   });
+};
+
+const initInfoWindow = () => {
+  if (_infoWindow) {
+    _infoWindow.close();
+  }
+  _infoWindow = new google.maps.InfoWindow();
 };
 
 const updateCustomControlVisibility = (mapStyle) => {
