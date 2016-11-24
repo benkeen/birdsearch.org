@@ -94,6 +94,11 @@ export class Map extends React.Component {
   shouldComponentUpdate (nextProps) {
     let isNewSearch = false;
 
+    if (this.props.locale !== nextProps.locale) {
+      return true;
+    }
+
+
     if (this.props.resetSearchCounter !== nextProps.resetSearchCounter) {
       isNewSearch = true;
       this.clearMarkers();
@@ -151,6 +156,14 @@ export class Map extends React.Component {
 
     // never update the map with React - it's way too slow
     return false;
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.locale !== this.props.locale) {
+      const { mapTypeId, mapStyle, intl, dispatch } = this.props;
+      const customControlsVisible = mapStyle === C.MAP_STYLES.DEFAULT;
+      updateMapButtonsLocale(mapTypeId, customControlsVisible, intl, dispatch);
+    }
   }
 
   setMarkerColours (nextProps) {
@@ -490,7 +503,6 @@ var _addSearchRangeIndicator = () => {
 };
 
 
-
 var addCustomControls = function(mapTypeId, isVisible, intl, dispatch) {
   const selectedBtnClass = 'map-btn-selected';
 
@@ -499,27 +511,28 @@ var addCustomControls = function(mapTypeId, isVisible, intl, dispatch) {
     btn1Classes += ' ' + selectedBtnClass;
   }
   const terrain = intl.formatMessage({ id: 'terrain' });
-  const btn1 = $(`<div class="${btn1Classes}">${terrain}</div>`)[0];
+  const btn1 = $(`<div class="${btn1Classes}" id="map-terrain-btn">${terrain}</div>`)[0];
 
   let btn2Classes = 'map-btn' + ((isVisible) ? '': ' omit');
   if (mapTypeId === google.maps.MapTypeId.ROADMAP) {
     btn2Classes += ' ' + selectedBtnClass;
   }
   const roadMap = intl.formatMessage({ id: 'roadMap' });
-  const btn2 = $(`<div class="${btn2Classes}">${roadMap}</div>`)[0];
+  const btn2 = $(`<div class="${btn2Classes}" id="map-roadmap-btn">${roadMap}</div>`)[0];
 
   let btn3Classes = 'map-btn' + ((isVisible) ? '': ' omit');
   if (mapTypeId === google.maps.MapTypeId.SATELLITE) {
     btn3Classes += ' ' + selectedBtnClass;
   }
   const satellite = intl.formatMessage({ id: 'satellite' });
-  const btn3 = $(`<div class="${btn3Classes}">${satellite}</div>`)[0];
+  const btn3 = $(`<div class="${btn3Classes}" id="map-satellite-btn">${satellite}</div>`)[0];
 
   let btn4Classes = 'map-btn map-btn-last' + ((isVisible) ? '': ' omit');
   if (mapTypeId === google.maps.MapTypeId.HYBRID) {
     btn4Classes += ' ' + selectedBtnClass;
   }
-  const btn4 = $(`<div class="${btn4Classes}">Hybrid</div>`)[0];
+  const hybrid = intl.formatMessage({ id: 'hybrid' });
+  const btn4 = $(`<div class="${btn4Classes}" id="map-hybrid-btn">${hybrid}</div>`)[0];
 
   // add the controls to the map
   _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btn4);
@@ -567,6 +580,12 @@ var addCustomControls = function(mapTypeId, isVisible, intl, dispatch) {
     dispatch(actions.setMapTypeId(google.maps.MapTypeId.HYBRID));
   });
 };
+
+const updateMapButtonsLocale = (mapTypeId, isVisible, intl, dispatch) => {
+  _map.controls[google.maps.ControlPosition.TOP_RIGHT].clear();
+  addCustomControls(mapTypeId, isVisible, intl, dispatch);
+};
+
 
 const initInfoWindow = () => {
   if (_infoWindow) {

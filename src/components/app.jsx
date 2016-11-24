@@ -61,7 +61,7 @@ class App extends React.Component {
 
   render () {
     const { dispatch, env, mapSettings, searchSettings, locationsPanel, sightingsPanel, results,
-      showScientificName, mapStyle, intl } = this.props;
+      showScientificName, mapStyle, user, intl } = this.props;
 
     const classes = 'flex-body' + (results.visibleLocations.length > 0 ? ' has-results' : '');
     return (
@@ -82,7 +82,8 @@ class App extends React.Component {
             results={results}
             intl={intl}
             locationFilter={locationsPanel.filter}
-            mapStyle={mapStyle} />
+            mapStyle={mapStyle}
+            locale={user.locale} />
 
           {this.getModal()}
 
