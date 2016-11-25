@@ -477,6 +477,18 @@ const findClosestLatLng = (sourceLat, sourceLng, list) => {
 };
 
 
+const getAllLocationsCount = (searchType, observationRecency, locations, locationSightings) => {
+	let count = 0;
+	if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
+		var results = getUniqueSpeciesInLocationList(locations, locationSightings, observationRecency);
+		count = results.count;
+	} else {
+		count = getNumNotableSightings(locations, locationSightings, observationRecency);
+	}
+	return count;
+};
+
+
 export {
 	getBestBounds,
 	getLocationIDs,
@@ -496,5 +508,6 @@ export {
 	getColSort,
   sortSightings,
   rad,
-  findClosestLatLng
+  findClosestLatLng,
+	getAllLocationsCount
 };

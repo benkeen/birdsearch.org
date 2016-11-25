@@ -86,17 +86,18 @@ export class SightingsPanel extends React.Component {
   }
 
   getTitle () {
-    const { dispatch, locations, selectedLocation, searchSettings, sightings, intl } = this.props;
+    const { dispatch, locations, sightings, selectedLocation, searchSettings, intl } = this.props;
+    const { searchType, observationRecency } = searchSettings;
+    const totalSectionClassOverride = (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSightingsTotal';
 
     var title = intl.formatMessage({ id: 'allLocations' });
-    var counter = null;
+    let numSpecies = 0;
 
     if (selectedLocation) {
       var locationInfo = helpers.getLocationById(locations, selectedLocation);
 
       if (sightings[selectedLocation].fetched) {
-        var numSpecies = sightings[selectedLocation].data[searchSettings.observationRecency-1].runningTotal;
-        counter = <LocationCount count={numSpecies} />;
+        numSpecies = sightings[selectedLocation].data[searchSettings.observationRecency-1].runningTotal;
       }
 
       title = (
@@ -106,12 +107,14 @@ export class SightingsPanel extends React.Component {
           <span>{locationInfo.n}</span>
         </span>
       );
+    } else {
+      numSpecies = helpers.getAllLocationsCount(searchType, observationRecency, locations, sightings);
     }
 
     return (
       <div className="species-heading-row">
         <h1>{title}</h1>
-        <div className="counter">{counter}</div>
+        <div className="counter"><LocationCount count={numSpecies} classNameOverride={totalSectionClassOverride} /></div>
         {(searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? this.getEBirdHotspotLink(selectedLocation) : null}
       </div>
     );

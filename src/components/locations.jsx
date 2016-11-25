@@ -86,18 +86,6 @@ export class LocationsPanel extends React.Component {
     }, this);
   }
 
-  getAllLocationsCount () {
-    const { locations, locationSightings, searchSettings } = this.props;
-    let count = 0;
-    if (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
-      var results = helpers.getUniqueSpeciesInLocationList(locations, locationSightings, searchSettings.observationRecency);
-      count = results.count;
-    } else {
-      count = helpers.getNumNotableSightings(locations, locationSightings, searchSettings.observationRecency);
-    }
-    return count;
-  }
-
   getLocationColSort () {
     const { sort, sortDir } = this.props;
     if (sort !== C.LOCATION_SORT.FIELDS.LOCATION) {
@@ -132,7 +120,8 @@ export class LocationsPanel extends React.Component {
   }
 
   getLocationList () {
-    var { dispatch, locations, searchSettings } = this.props;
+    const { dispatch, locations, locationSightings, searchSettings } = this.props;
+    const { searchType, observationRecency } = searchSettings;
 
     if (!locations.length) {
       return (
@@ -140,7 +129,9 @@ export class LocationsPanel extends React.Component {
       );
     }
     
-    const totalSectionClassOverride = (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSightingsTotal';
+    const totalSectionClassOverride = (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSightingsTotal';
+    const numAllLocations = helpers.getAllLocationsCount(searchType, observationRecency, locations, locationSightings);
+
     return (
       <div id="locations-table-wrapper">
         <table className="table table-striped" >
@@ -158,7 +149,7 @@ export class LocationsPanel extends React.Component {
             <tr className="all-locations-row" data-location-id="">
               <td className="location"><FormattedMessage id="allLocations" /></td>
               <td className="num-species">
-                <LocationCount count={this.getAllLocationsCount()} classNameOverride={totalSectionClassOverride} />
+                <LocationCount count={numAllLocations} classNameOverride={totalSectionClassOverride} />
               </td>
             </tr>
             {this.getLocationRows()}
