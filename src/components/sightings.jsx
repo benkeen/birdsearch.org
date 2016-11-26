@@ -131,6 +131,7 @@ export class SightingsPanel extends React.Component {
 
       return (
         <SpeciesTable
+          intl={intl}
           dispatch={dispatch}
           tabVisible={visible}
           species={sightingsData}
@@ -139,14 +140,14 @@ export class SightingsPanel extends React.Component {
           showScientificName={showScientificName}
           filter={speciesFilter}
           sort={sort}
-          sortDir={sortDir}
-          intl={intl} />
+          sortDir={sortDir} />
       );
     }
 
     let sightingsData = helpers.getNotableSightings(locations, sightings, searchSettings.observationRecency, selLocation);
     return (
       <NotableSightingsTable
+        intl={intl}
         dispatch={dispatch}
         tabVisible={visible}
         species={sightingsData}
@@ -155,8 +156,7 @@ export class SightingsPanel extends React.Component {
         showScientificName={showScientificName}
         filter={speciesFilter}
         sort={sort}
-        sortDir={sortDir}
-        intl={intl} />
+        sortDir={sortDir} />
     );
   }
 
@@ -220,12 +220,9 @@ class SpeciesTable extends React.Component {
     this.sortedSpecies = this.props.species;
   }
 
+  // we don't update anything if the user is closing the tab - it's super slow
   shouldComponentUpdate (nextProps) {
-    // don't update anything if the user is closing the tab - it's super slow
-    if (nextProps.tabVisible !== this.props.tabVisible && !nextProps.tabVisible) {
-      return false;
-    }
-    return true;
+    return !(nextProps.tabVisible !== this.props.tabVisible && !nextProps.tabVisible);
   }
 
   componentWillReceiveProps ({ species, sort, sortDir }) {
@@ -236,7 +233,6 @@ class SpeciesTable extends React.Component {
     if (!numSpeciesChanged && !sortChanged && !sortDirChanged) {
       return;
     }
-
     this.sortedSpecies = helpers.sortSightings(species, sort, sortDir);
   }
 
@@ -361,12 +357,15 @@ class SpeciesRow extends React.Component {
   }
 
   getLocations () {
-    return _.map(this.props.species.locations, function (locInfo) {
+    const { intl, species } = this.props;
+    const viewChecklistLabel = intl.formatMessage({ id: 'viewChecklist' });
+
+    return _.map(species.locations, function (locInfo) {
       const checklistLink = `http://ebird.org/ebird/view/checklist/${locInfo.subID}`;
       return (
         <li key={locInfo.locID}>
           <span data-id={locInfo.locID}>{locInfo.locName}</span>
-          <a href={checklistLink} target="_blank" className="glyphicon glyphicon-list" title="View Checklist"></a>
+          <a href={checklistLink} target="_blank" className="glyphicon glyphicon-list" title={viewChecklistLabel} />
         </li>
       );
     });
@@ -386,7 +385,6 @@ class SpeciesRow extends React.Component {
     if (species.howManyCount && species.howManyCount !== '0') {
       return (<FormattedNumber value={species.howManyCount} />);
     }
-
     return <span className="unknown-count">-</span>;
   }
 

@@ -109,47 +109,65 @@ const getLocationById = (locations, locationId) => {
 
 
 const getSightings = (locations, sightings, obsRecency, targetLocationID = null) => {
-	var locationIDs = getLocationIDs(locations);
-	var dataBySpecies = {};
-	var numSpecies = 0;
+	let locationIDs = getLocationIDs(locations);
+	let dataBySpecies = {};
+  let allDataBySpecies = {}; // needed to figure out how many locations each species is at
+	let numSpecies = 0;
 
+  // gah! Super complicated.
 	_.each(locationIDs, (locationID) => {
-		var currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
-		if (targetLocationID === null || locationID === targetLocationID) {
-			_.each(currLocationSpeciesInfo.species, function (info, sciName) {
-				if (!_.has(dataBySpecies, sciName)) {
-					dataBySpecies[sciName] = {
-						comName: info.comName,
-						sciName: sciName,
-						obs: [],
-						locations: [],
-						mostRecentObservationTime: null,
-						howManyCount: 0
-					};
-					numSpecies++;
-				}
-				dataBySpecies[sciName].obs.push({
-					howMany: info.howMany,
-					lat: info.lat,
-					lng: info.lng,
-					locID: info.locID,
-					locName: info.locName,
-					obsDt: info.obsDt,
-					obsReviewed: info.obsReviewed,
-					obsValid: info.obsValid
-				});
-			});
-		}
+		let currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
 
-		// now append ALL locations for the found species
-		_.each(currLocationSpeciesInfo.species, function (info, sciName) {
-			if (_.has(dataBySpecies, sciName)) {
-				dataBySpecies[sciName].locations.push({locName: info.locName, locID: info.locID, subID: info.subID });
-			}
+    // only include the species info if the users's looking as "All Locations", or if this current location
+    // is the specific one
+    _.each(currLocationSpeciesInfo.species, function (info, sciName) {
+      if (targetLocationID === null || locationID === targetLocationID) {
+        if (!_.has(dataBySpecies, sciName)) {
+          dataBySpecies[sciName] = {
+            comName: info.comName,
+            sciName: sciName,
+            obs: [],
+            locations: [],
+            mostRecentObservationTime: null,
+            howManyCount: 0
+          };
+          numSpecies++;
+        }
+        dataBySpecies[sciName].obs.push({
+          howMany: info.howMany,
+          lat: info.lat,
+          lng: info.lng,
+          locID: info.locID,
+          locName: info.locName,
+          obsDt: info.obsDt,
+          obsReviewed: info.obsReviewed,
+          obsValid: info.obsValid
+        });
+      }
+
+      // allDataBySpecies is a temp var in this method used to contain ALL observation details for each species,
+      // regardless of whether the user is viewing a specific location. This is used to show the full list of locations
+      // where a species has been seen
+      if (!_.has(allDataBySpecies, sciName)) {
+        allDataBySpecies[sciName] = [];
+      }
+      allDataBySpecies[sciName].push({ locID: info.locID, locName: info.locName, subID: info.subID });
 		});
 	});
 
-	// now convert the sightings into an array
+  // now append ALL locations for the found species. TODO this only needs to change when the search does. It shouldn't be here.
+  _.each(dataBySpecies, (speciesData, sciName) => {
+    const uniqueLocations = [];
+
+    _.each(allDataBySpecies[sciName], (obsInfo) => {
+      if (uniqueLocations.indexOf(obsInfo.locID) === -1) {
+        uniqueLocations.push(obsInfo.locID);
+        dataBySpecies[sciName].locations.push(obsInfo);
+      }
+    });
+  });
+
+  // now convert the sightings into an array
 	var sightingsData = _.values(dataBySpecies);
 	sightingsData.sort(function(a, b) { return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1; });
 
