@@ -67,6 +67,7 @@ class App extends React.Component {
     return (
       <div id="page-wrapper">
         <Header />
+        <div id="mobile-search-row"></div>
 
         <section id="main-panel" className={classes}>
           <Map

@@ -1,0 +1,67 @@
+#mobile-search-row {
+  display: none;
+}
+
+@media (max-width: 750px) {
+
+  #intro-overlay {
+    width: 100%;
+    span {
+      display: block;
+    }
+    .tab-content {
+      border-radius: 0;
+      & > div {
+        text-align: center;
+      }
+    }
+    button span {
+      display: inline;
+    }
+  }
+  #intro-tooltip {
+    top: 110px !important;
+    left: 5px !important;
+  }
+  #mobile-search-row {
+    display: flex;
+    height: 45px;
+  }
+  header .header-search {
+    position: absolute;
+    top: 46px;
+    width: 100%;
+  }
+  #map-overlay.editable-header {
+    top: 105px;
+  }
+  #locations-panel {
+    top: 104px;
+    width: 100%;
+    .section-header {
+      width: 50%;
+    }
+  }
+  #species-panel {
+    top: 104px;
+    left: 50%;
+    width: 50%;
+  }
+  header .nav-items {
+    display: none;
+  }
+
+  /* locations panels */
+  #filter-locations-row {
+    display: none;
+  }
+  #locations-panel .location {
+    width: 100%;
+  }
+  .locations-table-wrapper {
+    .range {
+      margin-right: 10px;
+    }
+  }
+}
+
