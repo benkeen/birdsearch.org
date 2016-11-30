@@ -183,6 +183,7 @@
 	@include flex(0 0 auto);
 	padding: 8px 10px 0;
 	position: relative;
+	margin-bottom: 8px;
 	input {
 		width: 100%;
 	}
@@ -235,12 +236,6 @@ body .clear-filter-icon {
 
 	.filter-field {
 		margin: 0;
-		&::-webkit-input-placeholder,
-		&::-moz-placeholder,
-		&:-ms-input-placeholder,
-		&:-moz-placeholder {
-			color: #333333;
-		}
 	}
 	.row-num {
 		width: 4%;
@@ -288,13 +283,14 @@ body .clear-filter-icon {
 
 body .filter-field {
 	padding: 13px 6px;
-	background-color: white;
+	height: 30px;
 }
 
 #locations-table-wrapper {
 	@include flex(1);
 	overflow: auto;
 	overflow-x: hidden;
+	color: #cccccc;
 
 	thead {
 		cursor: pointer;
@@ -316,6 +312,9 @@ body .filter-field {
 
   .section-header {
     margin-left: -1px;
+    h2 {
+		text-transform: uppercase;
+    }
   }
 
   span.num-species {

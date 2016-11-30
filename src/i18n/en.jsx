@@ -22,7 +22,6 @@ export default {
   autoZoomSetting3: '{showFullSearch} zooms out to show the full search boundary.',
   birds: 'birds',
 	birdSightings: 'Bird sightings',
-	birdSpecies: 'Bird Species',
   birdingLocations: 'Birding Locations',
   confirmed: 'Confirmed',
   contact: 'Contact',

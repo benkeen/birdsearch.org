@@ -22,7 +22,6 @@ export default {
   autoZoomSetting3: '{showFullSearch} se aleja para mostrar el límite de búsqueda completo.',
   birds: 'aves',
   birdSightings: 'avistamientos de aves',
-  birdSpecies: 'Especies de Aves',
   birdingLocations: 'Ubicaciones de observación de aves',
   confirmed: 'Confirmado',
   contact: 'Contacto',

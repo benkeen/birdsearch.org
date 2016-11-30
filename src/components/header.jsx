@@ -231,8 +231,8 @@ class HeaderSearch extends React.Component {
 
     return (
       <div className="header-search">
-          <input type="text" placeholder={intl.formatMessage({ id: 'enterLocation' })} ref="searchField" value={this.props.location}
-            onChange={this.onChangeLocation.bind(this)} />
+        <input type="text" className="search-input-field" placeholder={intl.formatMessage({ id: 'enterLocation' })}
+          ref="searchField" value={this.props.location} onChange={this.onChangeLocation.bind(this)} />
 
         <div className="location-error">
           <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }} component="div">

@@ -47,6 +47,7 @@ header {
 		margin: 0;
 		width: 90px;
 		height: 30px;
+		color: #333333;
 	}
 	.header-search {
 		position: relative;
@@ -55,12 +56,6 @@ header {
 		input {
 			margin: 13px;
 			padding: 0 10px;
-            height: 34px;
-			width: 100%;
-			background-color: white;
-			border: 1px solid #bbbbbb;
-			border-radius: 4px;
-			font-size: 15px;
 		}
 		button {
 			margin-left: 4px;

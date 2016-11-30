@@ -167,7 +167,7 @@ export class SightingsPanel extends React.Component {
     }
 
     var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
-    const tabLangKey = searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL ? 'birdSpecies' : 'notableBirds';
+    const tabLangKey = searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL ? 'birds' : 'notableBirds';
     const headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
 
     return (
@@ -309,7 +309,8 @@ class SpeciesTable extends React.Component {
                     <span className="species-header"><FormattedMessage id="species" /></span>
                     {helpers.getColSort(C.SIGHTINGS_SORT.FIELDS.SPECIES, sort, sortDir)}
                   </span>
-                  <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })} className="filter-field" value={filter}
+                  <input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })}
+                    className="filter-field search-input-field" value={filter}
                     onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
                   {this.getClearSpeciesFilterIcon()}
                 </th>

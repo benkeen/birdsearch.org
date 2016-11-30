@@ -22,7 +22,6 @@ export default {
   autoZoomSetting3: '{showFullSearch} vergrößert die gesamte Suchgrenze.',
   birds: 'Vögel',
   birdSightings: 'Vogelbeobachtungen',
-  birdSpecies: 'Bird Species',
   birdingLocations: 'Vogelbeobachtung',
   confirmed: 'Bestätigt',
   contact: 'Kontakt',

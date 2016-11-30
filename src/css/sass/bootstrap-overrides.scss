@@ -6,3 +6,21 @@
     color: $blue;
   }
 }
+
+body {
+  table {
+    background-color: transparent;
+  }
+  .table-striped tbody>tr:nth-child(odd)>td,
+  .table-striped tbody>tr:nth-child(odd)>th {
+    background-color: rgba(100, 100, 100, .1);
+    line-height: inherit;
+  }
+
+  .panel {
+    margin-bottom: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

@@ -210,7 +210,8 @@ export class LocationsPanel extends React.Component {
             <div>
               <div className="panel">
                 <div className="filter-locations-row">
-                  <input type="text" placeholder={intl.formatMessage({ id: 'filterLocations' })} className="filter-field" value={filter}
+                  <input type="text" placeholder={intl.formatMessage({ id: 'filterLocations' })}
+                    className="filter-field search-input-field" value={filter}
                     onChange={(e) => dispatch(actions.setLocationFilter(e.target.value))} />
                   {this.getClearLocationFilterIcon()}
                 </div>

@@ -44,8 +44,12 @@
   }
   #species-panel {
     top: 104px;
-    left: 50%;
-    width: 50%;
+    left: 0;
+    width: 100% !important;
+
+    .section-header {
+      margin-left: 50%;
+    }
   }
   header .nav-items {
     display: none;
@@ -62,6 +66,9 @@
     .range {
       margin-right: 10px;
     }
+  }
+  .num-species span {
+    margin-right: 10px;
   }
 }
 

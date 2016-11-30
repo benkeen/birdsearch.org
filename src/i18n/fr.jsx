@@ -22,7 +22,6 @@ export default {
   autoZoomSetting3: '{showFullSearch} pour afficher la limite de recherche complète.',
 	birds: 'oiseaux',
 	birdSightings: 'Obs. d\'oiseaux',
-	birdSpecies: 'Espèces d\'Oiseaux',
 	birdingLocations: 'Lieux Ornithologiques',
   confirmed: 'Confirmé',
 	contact: 'Contact',
