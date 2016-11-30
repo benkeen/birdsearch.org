@@ -76,10 +76,17 @@ class Header extends React.Component {
 
     return (
       <header className="flex-fill">
-        <div className="navbar" onClick={this.showIntroOverlay}>
+        <div className="navbar navbar-header" onClick={this.showIntroOverlay}>
           <h1 className="brand">birdsearch.org</h1>
           <span className="beta">BETA</span>
         </div>
+
+        <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#mobile-navbar">
+          <span className="sr-only">Toggle navigation</span>
+          <span className="icon-bar" />
+          <span className="icon-bar" />
+          <span className="icon-bar" />
+        </button>
 
         <HeaderSearch
           ref="headerSearch"
@@ -115,15 +122,14 @@ class Header extends React.Component {
               onChange={locale => dispatch(actions.setLocale(locale))} />
           </li>
         </ul>
+
+        <ul id="mobile-navbar" className="collapse navbar-collapse">
+          <li>Settings</li>
+          <li>About</li>
+        </ul>
+
       </header>
     );
-
-//    <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-//      <span className="sr-only">Toggle navigation</span>
-//      <span className="icon-bar"></span>
-//      <span className="icon-bar"></span>
-//      <span className="icon-bar"></span>
-//    </button>
 
   }
 }
@@ -265,7 +271,7 @@ class LocaleToggle extends React.Component {
 
   render () {
     return (
-      <select id="select-locale" value={this.props.locale} onChange={e => this.onChange(e)}>
+      <select id="select-locale" className="form-control" value={this.props.locale} onChange={e => this.onChange(e)}>
         {this.getLocales()}
       </select>
     );

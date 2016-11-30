@@ -115,7 +115,7 @@ module.exports = function(grunt) {
       },
       target: {
         files: {
-          'dist/css/bootstrap.min.css': ['src/css/bootstrap.css'],
+          'dist/css/bootstrap.min.css': ['src/css/bootstrap-3.3.7.css'],
           [`dist/css/styles-${version}.css`]: ['dist/css/styles.css']
         }
       }
@@ -124,6 +124,6 @@ module.exports = function(grunt) {
 
 	grunt.initConfig(config);
   grunt.registerTask('prod', ['env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin', 'template:prod']);
-  grunt.registerTask('dev', ['env', 'babel:jsx', 'browserify', 'sass', 'copy', 'template:dev']);
+  grunt.registerTask('dev', ['env', 'babel:jsx', 'browserify', 'sass', 'copy', 'cssmin', 'template:dev']);
   grunt.registerTask('start', ['dev', 'watch']);
 };

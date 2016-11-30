@@ -10,10 +10,11 @@ body .navbar {
 		cursor: pointer;
 		padding: 0 0 0 40px;
 		background: transparent url(../../images/bird-silhoette.png) left center no-repeat;
-		margin-left: 15px;
+		margin: 0 0 0 15px;
 		color: #ffffff;
 		font-family: $webFont;
 		font-size: 24px;
+		display: inline-block;
 	}
 	.beta {
 		background: rgba(34,111,136,1);
@@ -45,6 +46,7 @@ header {
 	#select-locale {
 		margin: 0;
 		width: 90px;
+		height: 30px;
 	}
 	.header-search {
 		position: relative;
@@ -52,10 +54,13 @@ header {
 		height: 60px;
 		input {
 			margin: 13px;
-			padding: 0 12px;
+			padding: 0 10px;
             height: 34px;
 			width: 100%;
 			background-color: white;
+			border: 1px solid #bbbbbb;
+			border-radius: 4px;
+			font-size: 15px;
 		}
 		button {
 			margin-left: 4px;
@@ -73,7 +78,7 @@ header {
 			font-size: 11pt;
 			a {
 				display: inline-block;
-				padding: 20px 16px;
+				padding: 21px 16px;
 			}
 			&.lang-toggle {
 				padding: 15px;
@@ -139,7 +144,7 @@ header {
 .report-sightings-icon {
   border-radius: 0;
   margin: 0;
-  padding: 18px 14px;
+  padding: 17px 14px 14px;
   font-size: 19px;
   &:focus {
     outline: none;
