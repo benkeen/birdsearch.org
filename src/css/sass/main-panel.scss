@@ -10,13 +10,14 @@
   right: 0;
   background-color: #000000;
   opacity: 0.35;
-  z-index: 2;
+  z-index: 3;
   &.editable-header {
 	  top: 60px;
   }
 }
 
 .section-header {
+  z-index: 2;
   height: 28px;
   cursor: pointer;
   @include flex(0 1 auto);

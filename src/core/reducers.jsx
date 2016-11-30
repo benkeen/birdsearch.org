@@ -10,13 +10,16 @@ import * as storage from './storage';
 
 function env (state = {
   windowWidth: $(window).width(),
-  windowHeight: $(window).height()
+  windowHeight: $(window).height(),
+  viewportMode: C.VIEWPORT_MODES.DESKTOP
 }, action) {
   switch (action.type) {
     case E.WINDOW_RESIZED:
+      const newViewportMode = (action.width <= C.MOBILE_BREAKPOINT_WIDTH) ? C.VIEWPORT_MODES.MOBILE : C.VIEWPORT_MODES.DESKTOP;
       return Object.assign({}, state, {
         windowWidth: action.width,
-        windowHeight: action.height
+        windowHeight: action.height,
+        viewportMode: newViewportMode
       });
 
     default:

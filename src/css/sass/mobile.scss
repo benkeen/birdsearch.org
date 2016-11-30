@@ -36,21 +36,30 @@
     top: 105px;
   }
   #locations-panel {
-    top: 104px;
+    top: 105px;
     width: 100%;
     .section-header {
       width: 50%;
     }
   }
   #species-panel {
-    top: 104px;
+    top: 105px;
     left: 0;
     width: 100% !important;
 
     .section-header {
       margin-left: 50%;
     }
+    .filter-field {
+      display: none;
+    }
+
+    header, footer {
+      border-left: 0;
+    }
   }
+
+
   header .nav-items {
     display: none;
   }
@@ -88,11 +97,12 @@
   width: 100%;
   background-color: #333333;
   overflow: hidden;
-  z-index: 1;
+  z-index: 3;
   list-style-type: none;
   margin: 0;
   padding: 0;
   box-shadow: none;
+  border-bottom: 1px solid #bbbbbb;
 
   li {
     padding: 14px 19px;

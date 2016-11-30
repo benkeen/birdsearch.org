@@ -15,6 +15,16 @@ React, Redux, react-intl, Node.
 
 ## Versions
 
+### v2.1.0 - In dev
+Adding mobile support. TODO:
+- general update
+- Need to track in the JS when you're on a small screen:
+    - reset species filter when reduced to small screen [listen to resize event + set...]
+    - on small screen mode, clicking on Locations/Birds should hide the other [state]
+- add "x" for main search field. Mobile + desktop
+- generally better styling for section headers. Clearer selected state.
+- replace wikipedia link with clickable species name, as per Anna's suggestion
+
 ### v2.0.0 - Oct 29th, 2016
 New everything! New UI, new code. Rewritten in React, Redux with a node backend.
 

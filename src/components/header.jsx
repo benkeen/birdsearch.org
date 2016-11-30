@@ -117,7 +117,8 @@ class Header extends React.Component {
             </OverlayTrigger>
           </li>
           <li className="lang-toggle">
-            <LocaleToggle
+            <LocaleSelector
+              type="dropdown"
               locale={locale}
               onChange={locale => dispatch(actions.setLocale(locale))} />
           </li>
@@ -126,6 +127,12 @@ class Header extends React.Component {
         <ul id="mobile-navbar" className="collapse navbar-collapse">
           <li>Settings</li>
           <li>About</li>
+          <li>
+            <LocaleSelector
+              type="pills"
+              locale={locale}
+              onChange={locale => dispatch(actions.setLocale(locale))} />
+          </li>
         </ul>
 
       </header>
@@ -253,15 +260,20 @@ HeaderSearch.PropTypes = {
 };
 
 
-class LocaleToggle extends React.Component {
+// displays the locale selector as either a dropdown or HTML unordered list
+class LocaleSelector extends React.Component {
   onChange (e) {
-    e.preventDefault();
-    const newLocale = e.target.value;
-    $('body').removeClass(this.props.locale).addClass(newLocale);
-    this.props.onChange(newLocale);
+    e.preventDefault(); // needed? We could drop this if not....
+    this.updateLocale(e.target.value);
   }
 
-  getLocales () {
+  updateLocale (newLocale) {
+    const { locale, onChange } = this.props;
+    $('body').removeClass(locale).addClass(newLocale);
+    onChange(newLocale);
+  }
+
+  getLocaleOptions () {
     return _.map(LOCALES, (locale) => {
       return (
         <option value={locale.key} key={locale.key}>{locale.name}</option>
@@ -269,16 +281,34 @@ class LocaleToggle extends React.Component {
     });
   }
 
+  getLocalePills () {
+    return _.map(LOCALES, (locale) => {
+      return (
+        <li value={locale.key} key={locale.key} onClick={() => this.updateLocale(locale.key)}>{locale.name}</li>
+      );
+    });
+  }
+
   render () {
+    const { type, locale } = this.props;
+    if (type === 'dropdown') {
+      return (
+        <select id="select-locale" className="form-control" value={locale} onChange={(e) => this.onChange(e)}>
+          {this.getLocaleOptions()}
+        </select>
+      );
+    }
+
     return (
-      <select id="select-locale" className="form-control" value={this.props.locale} onChange={e => this.onChange(e)}>
-        {this.getLocales()}
-      </select>
+      <ul className="nav-pills">
+        {this.getLocalePills()}
+      </ul>
     );
   }
 }
 
-LocaleToggle.propTypes = {
+LocaleSelector.propTypes = {
+  type: React.PropTypes.string.isRequired, // oneOf syntax?
   locale: React.PropTypes.string.isRequired,
   onChange: React.PropTypes.func.isRequired
 };
