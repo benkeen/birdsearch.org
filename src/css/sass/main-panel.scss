@@ -291,10 +291,12 @@ body .filter-field {
 	@include flex(1);
 	overflow: auto;
 	overflow-x: hidden;
-	color: #cccccc;
 
 	thead {
 		cursor: pointer;
+	}
+	tbody {
+		color: #cccccc;
 	}
 }
 
@@ -314,7 +316,7 @@ body .filter-field {
   .section-header {
     margin-left: -1px;
     h2 {
-		text-transform: uppercase;
+		text-transform: capitalize;
     }
   }
 

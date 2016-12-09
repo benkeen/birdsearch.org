@@ -8,13 +8,29 @@
 }
 
 body {
+  color: #cccccc;
   table {
     background-color: transparent;
   }
-  .table-striped tbody>tr:nth-child(odd)>td,
-  .table-striped tbody>tr:nth-child(odd)>th {
-    background-color: rgba(100, 100, 100, .1);
-    line-height: inherit;
+
+  .table-striped {
+    thead {
+      td, th {
+        color: #cccccc;
+        line-height: inherit;
+      }
+    }
+    tbody>tr {
+      td, th {
+        line-height: inherit;
+      }
+      &:nth-of-type(odd) {
+        background-color: inherit;
+      }
+      &:nth-child(odd)>td, :nth-child(odd)>th {
+        background-color: rgba(100, 100, 100, .1);
+      }
+    }
   }
 
   .panel {
