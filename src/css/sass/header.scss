@@ -8,13 +8,14 @@ body .navbar {
 
 	.brand {
 		cursor: pointer;
-		padding: 0 0 0 40px;
 		background: transparent url(../../images/bird-silhoette.png) left center no-repeat;
 		margin: 0 0 0 15px;
+		padding: 15px 0 15px 40px;
 		color: #ffffff;
 		font-family: $webFont;
 		font-size: 24px;
-		display: inline-block;
+		display: block;
+		float: left;
 	}
 	.beta {
 		background: rgba(34,111,136,1);

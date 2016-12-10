@@ -18,8 +18,10 @@ body {
       td, th {
         color: #cccccc;
         line-height: inherit;
+        border-bottom: none;
       }
     }
+
     tbody>tr {
       td, th {
         line-height: inherit;
