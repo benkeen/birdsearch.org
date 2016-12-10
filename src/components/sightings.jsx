@@ -299,7 +299,7 @@ class SpeciesTable extends React.Component {
 
     return (
       <div className="species-table">
-        <div className="species-table-header" style={{ width: 'calc(100% - 30px)' }}>
+        <div className="species-table-header" style={{ width: 'calc(100% - 25px)' }}>
           <table className="table table-striped">
             <thead>
               <tr>
@@ -400,7 +400,12 @@ class SpeciesRow extends React.Component {
       <tr>
         <td className="row-num">{rowNum}</td>
         <td className="species-col">
-          <div className="com-name" dangerouslySetInnerHTML={{ __html: comNameDisplay }}></div>
+          <div>
+            <a href={wikipediaLink} target="_blank" className="com-name">
+              <span dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
+              <span className="icon icon-wikipedia" />
+            </a>
+          </div>
           {this.getSciName()}
         </td>
         <td ref="cell" className="locations-seen species-num-locations-cell">
@@ -421,9 +426,6 @@ class SpeciesRow extends React.Component {
           <div>{species.mostRecentObservationTime}</div>
         </td>
         <td className="num-reported">{this.getNumReported(species)}</td>
-        <td>
-          <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />
-        </td>
       </tr>
     );
   }

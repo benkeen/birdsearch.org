@@ -211,7 +211,9 @@ body .clear-filter-icon {
 	h1 {
 		float: left;
 		font-size: 24px;
-		margin-bottom: 0;
+		margin: 10px 0 0;
+		line-height: 40px;
+		font-family: "helvetica neue", helvetica, Arial, sans-serif;
 		a {
 			color: #cccccc;
 		}
@@ -249,6 +251,8 @@ body .clear-filter-icon {
 		}
 		input {
 			float: right;
+			width: 192px;
+			font-weight: normal;
 		}
 	}
 	.last-seen {
@@ -401,10 +405,34 @@ body .filter-field {
 	color: #efefef;
 	width: 20px;
 }
-.com-name {
-	color: #ffffff;
-	text-shadow: 1px 2px 2px #222222;
+.table .species-col {
+	>div {
+		position: relative;
+
+		a.com-name {
+			color: #ffffff;
+			float: left;
+			text-decoration: none;
+			&:after {
+				display: none;
+			}
+			&:hover {
+				color: $blue;
+				span.icon {
+					color: $blue;
+				}
+			}
+			span.icon {
+				font-size: 14px;
+				margin-left: 5px;
+				&:hover {
+					color: inherit;
+				}
+			}
+		}
+	}
 }
+
 .sci-name {
 	font-size: 10px;
 	color: #999999;
