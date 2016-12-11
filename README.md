@@ -17,15 +17,16 @@ React, Redux, react-intl, Node.
 
 ### v2.1.0 - In dev
 Adding mobile support. TODO:
-- Need to track in the JS when you're on a small screen:
-    - reset species filter when reduced to small screen [listen to resize event + set...]
-- after search, shouldn't show locations by default. 
-- get it working on Safari. 
+- reset species filter when reduced to small screen [listen to resize event + set...]
+- after search, shouldn't show locations by default
+- get it working on Safari.
 - check over scenarios where search doesn't do anything.
 - location errors
-- non-english language style fixes
 - Notable results: clean up page 
 - check height of settings panel with button enabled. Different locales.
+- if "anywhere" tooltip open, clicking hamburger should close it.
+- resizing down to mobile size doesn't update the height of the open panel.
+
 
 ### v2.0.0 - Oct 29th, 2016
 New everything! New UI, new code. Rewritten in React, Redux with a node backend.

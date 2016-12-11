@@ -83,7 +83,7 @@ export default {
   searchAnywhere: 'Buscar en Cualquier <u>L</u>ugar',
   searchNearby: 'Búsqueda <u>C</u>ercana',
   searchResults: 'Resultados de la búsqueda',
-  searchSettings: 'Configuración de búsqueda',
+  searchSettings: 'Configuración',
   searchTip: 'Ingrese cualquier lugar para ver avistamientos de aves realizados en los últimos {days}.',
   searchTipDays: '{obsRecency} {obsRecency, plural, one {día} other {días}}',
   settings: 'Ajustes',

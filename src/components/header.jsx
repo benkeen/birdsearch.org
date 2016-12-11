@@ -140,7 +140,7 @@ class Header extends React.Component {
             <LocaleSelector
               type="pills"
               locale={locale}
-              onChange={(locale) => { this.maybeCloseMobileNav(); dispatch(actions.setLocale(locale)); }} />
+              onChange={(locale) => { this.maybeCloseMobileNav(); dispatch(actions.setLocale(locale)) }} />
           </li>
         </ul>
       </header>

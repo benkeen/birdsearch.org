@@ -66,6 +66,31 @@
         width: 100%;
       }
     }
+
+    #settings-overlay {
+      width: 100%;
+      height: 406px;
+      .zoom-tip {
+        top: 35px;
+      }
+    }
+
+    #zh2 {
+      position: absolute;
+      top: 38px;
+    }
+    #zoom-handling-setting {
+      width: 140px;
+      margin-left: 13px;
+    }
+    #scientific-name {
+      position: absolute;
+      top: 16px;
+    }
+    .scientific-name-field label {
+      width: 140px;
+      margin-left: 23px;
+    }
   }
 }
 
