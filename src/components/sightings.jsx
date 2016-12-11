@@ -37,12 +37,16 @@ export class SightingsPanel extends React.Component {
     var animation = {};
     var hasAnimation = false;
 
+    // the header on mobile is slightly taller than on desktop
+    const isMobile = env.viewportMode === C.VIEWPORT_MODES.MOBILE;
+    const heightOffset = 85 + ((isMobile) ? 48 : 0);
+
     if (visible !== nextProps.visible) {
       hasAnimation = true;
       animation = { opacity: nextProps.visible ? 1 : 0 };
 
       if (nextProps.visible) {
-        animation = { opacity: 1, height: (env.windowHeight - 85) + 'px' };
+        animation = { opacity: 1, height: (env.windowHeight - heightOffset) + 'px' };
       } else {
         animation = { opacity: 0.5, height: 0 };
       }
@@ -51,7 +55,7 @@ export class SightingsPanel extends React.Component {
     // this resizes the visible location panel whenever the browser height changes
     if (nextProps.env.windowHeight !== env.windowHeight && visible) {
       hasAnimation = true;
-      animation = { height: (nextProps.env.windowHeight - 85) + 'px' };
+      animation = { height: (nextProps.env.windowHeight - heightOffset) + 'px' };
     }
 
     if (hasAnimation) {
