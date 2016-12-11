@@ -178,7 +178,7 @@ export class LocationsPanel extends React.Component {
   }
 
   render () {
-    const { dispatch, locations, locationSightings, filter, visible, intl } = this.props;
+    const { dispatch, locations, locationSightings, filter, visible, env, intl } = this.props;
 
     if (!locations.length) {
       return null;
@@ -200,6 +200,7 @@ export class LocationsPanel extends React.Component {
 
     const headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
     const headerClasses = 'section-header' + ((visible) ? ' visible' : '');
+    const transitionSpeed = (env.viewportMode === C.VIEWPORT_MODES.MOBILE) ? 0 : C.TRANSITION_SPEED;
 
     return (
       <section id="locations-panel">
@@ -213,7 +214,7 @@ export class LocationsPanel extends React.Component {
           </div>
         </header>
 
-        <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
+        <VelocityComponent animation={this.state.nextAnimation} duration={transitionSpeed}
           complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
           <div id="locations-panel-content" ref="panel">
             <div>

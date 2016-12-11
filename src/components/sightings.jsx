@@ -180,6 +180,7 @@ export class SightingsPanel extends React.Component {
     const tabLangKey = searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL ? 'birds' : 'notableBirds';
     const headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
     const headerClasses = 'section-header' + ((visible) ? ' visible' : '');
+    const transitionSpeed = (env.viewportMode === C.VIEWPORT_MODES.MOBILE) ? 0 : C.TRANSITION_SPEED;
 
     return (
       <section id="species-panel" style={{ width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH }}>
@@ -193,7 +194,7 @@ export class SightingsPanel extends React.Component {
           </div>
         </header>
 
-        <VelocityComponent animation={this.state.nextAnimation} duration={C.TRANSITION_SPEED}
+        <VelocityComponent animation={this.state.nextAnimation} duration={transitionSpeed}
           complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
           <div id="species-panel-content" ref="panel">
             <div>
