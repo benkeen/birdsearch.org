@@ -169,6 +169,14 @@ export class LocationsPanel extends React.Component {
     );
   }
 
+  toggleVisibility () {
+    const { dispatch, env } = this.props;
+    dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))
+    if (env.viewportMode === C.VIEWPORT_MODES.MOBILE) {
+      dispatch(actions.hideSightingsPanel());
+    }
+  }
+
   render () {
     const { dispatch, locations, locationSightings, filter, visible, intl } = this.props;
 
@@ -190,11 +198,12 @@ export class LocationsPanel extends React.Component {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
 
-    let headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
+    const headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
+    const headerClasses = 'section-header' + ((visible) ? ' visible' : '');
 
     return (
       <section id="locations-panel">
-        <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.LOCATIONS))}>
+        <header className={headerClasses} onClick={() => this.toggleVisibility()}>
           <div>
             <h2>
               <FormattedMessage id="locations" />

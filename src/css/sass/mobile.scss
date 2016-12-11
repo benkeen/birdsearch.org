@@ -1,11 +1,12 @@
 @import "mixins";
+@import "variables";
+
 
 #mobile-search-row {
   display: none;
 }
 
 @media (max-width: 768px) {
-
   .overlay .tab-content {
     border-radius: 0;
   }
@@ -19,6 +20,9 @@
     height: 234px;
     span {
       display: block;
+    }
+    .loader {
+      top: 108px;
     }
     .tab-content {
       padding-bottom: 26px;
@@ -105,17 +109,18 @@
     width: 100%;
   }
   #map-overlay.editable-header {
-    top: 105px;
+    top: 104px;
   }
   #locations-panel {
-    top: 105px;
+    top: 104px;
     width: 100%;
     .section-header {
       width: 50%;
     }
   }
+
   #species-panel {
-    top: 105px;
+    top: 104px;
     left: 0;
     width: 100% !important;
 
@@ -131,6 +136,27 @@
     }
   }
 
+  #locations-panel, #species-panel {
+    .section-header {
+      .toggle-section {
+        color: #333333;
+      }
+      span.num-locations {
+        color: #333333;
+      }
+      &.visible {
+        background-color: #1c6178;
+      }
+    }
+  }
+
+  .species-table .species-col {
+    width: auto;
+  }
+
+  .species-table .row-num {
+    width: 26px;
+  }
 
   header .nav-items {
     display: none;

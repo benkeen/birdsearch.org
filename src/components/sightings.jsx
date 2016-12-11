@@ -12,6 +12,7 @@ export class SightingsPanel extends React.Component {
   constructor (props) {
     super(props);
     this.getTitle = this.getTitle.bind(this);
+    this.toggleVisibility = this.toggleVisibility.bind(this);
     this.state = {
       nextAnimation: { opacity: this.props.visibility ? 1 : 0 }
     };
@@ -122,7 +123,7 @@ export class SightingsPanel extends React.Component {
 
   getTable () {
     const { dispatch, visible, searchSettings, selectedLocation, locations, sightings, showScientificName,
-      speciesFilter, sort, sortDir, intl } = this.props;
+      speciesFilter, sort, sortDir, env, intl } = this.props;
 
     var selLocation = (selectedLocation) ? selectedLocation : null;
 
@@ -140,7 +141,8 @@ export class SightingsPanel extends React.Component {
           showScientificName={showScientificName}
           filter={speciesFilter}
           sort={sort}
-          sortDir={sortDir} />
+          sortDir={sortDir}
+          viewportMode={env.viewportMode} />
       );
     }
 
@@ -160,6 +162,14 @@ export class SightingsPanel extends React.Component {
     );
   }
 
+  toggleVisibility () {
+    const { dispatch, env } = this.props;
+    dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES));
+    if (env.viewportMode === C.VIEWPORT_MODES.MOBILE) {
+      dispatch(actions.hideLocationsPanel());
+    }
+  }
+
   render () {
     const { dispatch, locations, sightings, searchSettings, visible, env } = this.props;
     if (!locations.length) {
@@ -169,10 +179,11 @@ export class SightingsPanel extends React.Component {
     var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
     const tabLangKey = searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL ? 'birds' : 'notableBirds';
     const headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
+    const headerClasses = 'section-header' + ((visible) ? ' visible' : '');
 
     return (
       <section id="species-panel" style={{ width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH }}>
-        <header className="section-header" onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
+        <header className={headerClasses} onClick={() => this.toggleVisibility()}>
           <div>
             <h2>
               <FormattedMessage id={tabLangKey} />
@@ -251,7 +262,7 @@ class SpeciesTable extends React.Component {
   }
 
   getRows () {
-    const { dispatch, filter, showScientificName, intl } = this.props;
+    const { dispatch, filter, showScientificName, viewportMode, intl } = this.props;
 
     return _.map(this.sortedSpecies, function (speciesInfo, index) {
       var comNameData = helpers.highlightString(speciesInfo.comName, filter);
@@ -276,6 +287,7 @@ class SpeciesTable extends React.Component {
             comName={speciesInfo.comName}
             comNameDisplay={comNameData.string}
             sciNameDisplay={sciNameData.string}
+            viewportMode={viewportMode}
             key={index} />
         );
       }
@@ -291,6 +303,17 @@ class SpeciesTable extends React.Component {
     }
     return (
       <span className="clear-filter-icon glyphicon glyphicon-remove" onClick={() => dispatch(actions.setSpeciesFilter(''))} />
+    );
+  }
+
+  getLastSeenHeader () {
+    const { viewportMode, dispatch, sort, sortDir } = this.props;
+    if (viewportMode === C.VIEWPORT_MODES.MOBILE) {
+      return null;
+    }
+    return (
+      <SortableColHeader dispatch={dispatch} label="lastSeen" colClass="last-seen"
+         sortField={C.SIGHTINGS_SORT.FIELDS.LAST_SEEN} sort={sort} sortDir={sortDir} />
     );
   }
 
@@ -314,11 +337,10 @@ class SpeciesTable extends React.Component {
                     onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))} />
                   {this.getClearSpeciesFilterIcon()}
                 </th>
-                <SortableColHeader dispatch={dispatch} label="locationsSeen" colClass="locations-seen"
+                <SortableColHeader dispatch={dispatch} label="locations" colClass="locations-seen"
                   sortField={C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS} sort={sort} sortDir={sortDir} />
 
-                <SortableColHeader dispatch={dispatch} label="lastSeen" colClass="last-seen"
-                  sortField={C.SIGHTINGS_SORT.FIELDS.LAST_SEEN} sort={sort} sortDir={sortDir} />
+                {this.getLastSeenHeader()}
 
                 <SortableColHeader dispatch={dispatch} label="numReported" colClass="num-reported"
                   sortField={C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED} sort={sort} sortDir={sortDir} />
@@ -389,6 +411,19 @@ class SpeciesRow extends React.Component {
     return <span className="unknown-count">-</span>;
   }
 
+  getRecentObservationTime (time) {
+    const { viewportMode } = this.props;
+    if (viewportMode === C.VIEWPORT_MODES.MOBILE) {
+      return null;
+    }
+
+    return (
+      <td className="last-seen">
+        <div>{time}</div>
+      </td>
+    );
+  }
+
   render () {
     const { dispatch, species, comName, comNameDisplay, rowNum, intl } = this.props;
     const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
@@ -422,9 +457,7 @@ class SpeciesRow extends React.Component {
             </span>
           </OverlayTrigger>
         </td>
-        <td className="last-seen">
-          <div>{species.mostRecentObservationTime}</div>
-        </td>
+        {this.getRecentObservationTime(species.mostRecentObservationTime)}
         <td className="num-reported">{this.getNumReported(species)}</td>
       </tr>
     );
