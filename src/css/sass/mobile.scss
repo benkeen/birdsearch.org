@@ -109,18 +109,26 @@
     width: 100%;
   }
   #map-overlay.editable-header {
-    top: 104px;
+    top: 105px;
   }
   #locations-panel {
-    top: 104px;
+    top: 105px;
     width: 100%;
     .section-header {
       width: 50%;
     }
   }
 
+  #locations-popover {
+    width: 220px;
+    margin-left: 14px;
+    &.left>.arrow:after {
+      border-left-color: #070809;
+    }
+  }
+
   #species-panel {
-    top: 104px;
+    top: 105px;
     left: 0;
     width: 100% !important;
 

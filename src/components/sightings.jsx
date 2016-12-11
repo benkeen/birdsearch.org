@@ -445,7 +445,7 @@ class SpeciesRow extends React.Component {
           {this.getSciName()}
         </td>
         <td ref="cell" className="locations-seen species-num-locations-cell">
-          <OverlayTrigger trigger="click" placement="bottom" rootClose={true} container={this.refs.cell}
+          <OverlayTrigger trigger="click" placement="left" rootClose={true} container={this.refs.cell}
             overlay={
               <Popover title={title} id="locations-popover">
                 <ul className="bird-location-sightings" onClick={(e) => this.selectLocation(dispatch, e.target)}>
