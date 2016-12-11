@@ -192,7 +192,7 @@ class SearchSettings extends React.Component {
 
         <div className="settings-row">
           <span className="settings-row-label"><FormattedMessage id="speciesName" /></span>
-          <span className="search-type">
+          <span className="search-type scientific-name-field">
             <span>
               <input type="checkbox" id="scientific-name" checked={showScientificName} onChange={this.toggleScientificName} />
                 <label htmlFor="scientific-name"><FormattedMessage id="includeSciName" /></label>

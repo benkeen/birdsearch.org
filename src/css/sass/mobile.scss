@@ -144,10 +144,14 @@
     }
   }
 
+  .species-num-locations {
+    margin-left: 0;
+  }
+
   #locations-panel, #species-panel {
     .section-header {
       .toggle-section {
-        color: #333333;
+        color: #ffffff;
       }
       &.visible {
         background-color: #1c6178;
@@ -167,13 +171,17 @@
     display: none;
   }
 
-  /* locations panels */
-  #filter-locations-row {
+  .filter-locations-row {
     display: none;
   }
+
   #locations-panel .location {
     width: 100%;
+    div {
+      width: inherit;
+    }
   }
+
   .locations-table-wrapper {
     .range {
       margin-right: 10px;

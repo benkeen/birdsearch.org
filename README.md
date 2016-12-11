@@ -19,13 +19,13 @@ React, Redux, react-intl, Node.
 Adding mobile support. TODO:
 - Need to track in the JS when you're on a small screen:
     - reset species filter when reduced to small screen [listen to resize event + set...]
-    - on small screen mode, clicking on Locations/Birds should hide the other [state]
 - after search, shouldn't show locations by default. 
 - get it working on Safari. 
 - check over scenarios where search doesn't do anything.
 - location errors
-- non-english language has width all wonky on locations panel
-- Notable results: clean up page.
+- non-english language style fixes
+- Notable results: clean up page 
+- check height of settings panel with button enabled. Different locales.
 
 ### v2.0.0 - Oct 29th, 2016
 New everything! New UI, new code. Rewritten in React, Redux with a node backend.

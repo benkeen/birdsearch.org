@@ -49,3 +49,23 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .es {
+    #intro-overlay {
+      width: 100%;
+      button {
+        width: 100%;
+        float: none;
+      }
+    }
+
+    #locations-panel .location {
+      width: 100%;
+      div {
+        width: 100%;
+      }
+    }
+  }
+}
+
