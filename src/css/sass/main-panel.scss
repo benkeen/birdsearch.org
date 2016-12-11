@@ -425,6 +425,7 @@ body .filter-field {
 			span.icon {
 				font-size: 14px;
 				margin-left: 5px;
+				height: 12px;
 				&:hover {
 					color: inherit;
 				}
@@ -436,6 +437,7 @@ body .filter-field {
 .sci-name {
 	font-size: 10px;
 	color: #999999;
+	clear: both;
 }
 
 .species-num-locations {
@@ -496,6 +498,7 @@ body .filter-field {
 	ul {
 		list-style-type: none;
 		margin: 0;
+		padding: 0;
 	}
 }
 

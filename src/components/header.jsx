@@ -16,6 +16,7 @@ class Header extends React.Component {
     this.onSubmitNewSearch = this.onSubmitNewSearch.bind(this);
     this.setLocation = this.setLocation.bind(this);
     this.showSettingsOverlay = this.showSettingsOverlay.bind(this);
+    this.maybeCloseMobileNav = this.maybeCloseMobileNav.bind(this);
   }
 
   componentDidUpdate (prevProps) {
@@ -42,7 +43,6 @@ class Header extends React.Component {
 
     // now ensure the URL is the root
     browserHistory.push('/');
-
     dispatch(actions.search(searchType, location, lat, lng, bounds, observationRecency, zoomHandling));
   }
 
@@ -55,17 +55,26 @@ class Header extends React.Component {
     e.preventDefault();
     $(e.target).trigger('blur');
     browserHistory.push('/about');
+    this.maybeCloseMobileNav();
   }
 
   showSettingsOverlay (e) {
     e.preventDefault();
     $(e.target).trigger('blur');
     browserHistory.push('/settings');
+    this.maybeCloseMobileNav();
   }
 
   showReportSightingsOverlay (e) {
     e.preventDefault();
     browserHistory.push('/report');
+  }
+
+  maybeCloseMobileNav () {
+    const { viewportMode } = this.props;
+    if (viewportMode === C.VIEWPORT_MODES.MOBILE) {
+      $(ReactDOM.findDOMNode(this.refs.mobileNav)).trigger('click');
+    }
   }
 
   render () {
@@ -81,7 +90,7 @@ class Header extends React.Component {
           <span className="beta">BETA</span>
         </div>
 
-        <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#mobile-navbar">
+        <button type="button" className="navbar-toggle collapsed" ref="mobileNav" data-toggle="collapse" data-target="#mobile-navbar">
           <span className="sr-only">Toggle navigation</span>
           <span className="icon-bar" />
           <span className="icon-bar" />
@@ -125,16 +134,15 @@ class Header extends React.Component {
         </ul>
 
         <ul id="mobile-navbar" className="collapse navbar-collapse">
-          <li>Settings</li>
-          <li>About</li>
-          <li>
+          <li><a href="#" onClick={(e) => this.showSettingsOverlay(e)}><FormattedMessage id="settings" /></a></li>
+          <li><a href="#" onClick={(e) => this.showAboutOverlay(e)}><FormattedMessage id="about" /></a></li>
+          <li className="mobile-local-selector">
             <LocaleSelector
               type="pills"
               locale={locale}
-              onChange={locale => dispatch(actions.setLocale(locale))} />
+              onChange={(locale) => { this.maybeCloseMobileNav(); dispatch(actions.setLocale(locale)); }} />
           </li>
         </ul>
-
       </header>
     );
 
@@ -147,7 +155,8 @@ export default injectIntl(connect(state => ({
   settingsOverlay: state.settingsOverlay,
   searchSettings: state.searchSettings,
   nextAction: state.misc.nextAction,
-  searchError: state.results.searchError
+  searchError: state.results.searchError,
+  viewportMode: state.env.viewportMode
 }))(Header));
 
 
@@ -282,9 +291,12 @@ class LocaleSelector extends React.Component {
   }
 
   getLocalePills () {
-    return _.map(LOCALES, (locale) => {
+    const { locale } = this.props;
+    return _.map(LOCALES, (currLocale) => {
+      let className = (locale === currLocale.key) ? 'active' : '';
       return (
-        <li value={locale.key} key={locale.key} onClick={() => this.updateLocale(locale.key)}>{locale.name}</li>
+        <li value={currLocale.key} className={className} key={currLocale.key}
+          onClick={() => this.updateLocale(currLocale.key)}>{currLocale.name}</li>
       );
     });
   }

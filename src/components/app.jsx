@@ -19,6 +19,9 @@ class App extends React.Component {
     super(props);
     this.onResize = this.onResize.bind(this);
     this.getModal = this.getModal.bind(this);
+
+    // trigger the resize so everything's initialized on page load
+    this.onResize();
   }
 
   componentDidMount () {

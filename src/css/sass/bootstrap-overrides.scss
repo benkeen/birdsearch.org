@@ -42,3 +42,29 @@ body {
     box-shadow: none;
   }
 }
+
+
+body {
+  .popover.bottom > .arrow:after {
+    border-bottom-color: #070809;
+  }
+  .popover-title {
+    background-color: #070809;
+  }
+  .popover {
+    padding: 0;
+    background-color: #070809;
+  }
+  .nav-pills>li>a {
+    padding: 6px 12px;
+    &:hover {
+      color: white;
+    }
+  }
+  .tooltip {
+    ul {
+      margin-left: 0;
+      padding-left: 16px;
+    }
+  }
+}
