@@ -162,7 +162,8 @@ export class SightingsPanel extends React.Component {
         showScientificName={showScientificName}
         filter={speciesFilter}
         sort={sort}
-        sortDir={sortDir} />
+        sortDir={sortDir}
+        env={env} />
     );
   }
 
@@ -522,13 +523,31 @@ class NotableSightingsTable extends React.Component {
   }
 
   getRows () {
-    const { dispatch, selectedLocation, showScientificName, filter, intl } = this.props;
+    const { dispatch, selectedLocation, showScientificName, filter, env, intl } = this.props;
+    const isMobile = (env.viewportMode === C.VIEWPORT_MODES.MOBILE);
 
     return _.map(this.sortedSpecies, function (row, index) {
       var comNameData = helpers.highlightString(row.comName, filter);
       var sciNameData = helpers.highlightString(row.sciName, filter);
       if (!comNameData.match && !sciNameData.match) {
         return null;
+      }
+
+      if (isMobile) {
+        return (
+          <NotableSpeciesMobileRow
+            dispatch={dispatch}
+            selectedLocation={selectedLocation}
+            filter={filter}
+            row={row}
+            showScientificName={showScientificName}
+            rowNum={index+1}
+            comName={row.comName}
+            comNameDisplay={comNameData.string}
+            sciNameDisplay={sciNameData.string}
+            key={index}
+            intl={intl} />
+        );
       }
 
       return (
@@ -560,30 +579,36 @@ class NotableSightingsTable extends React.Component {
     );
   }
 
-  render () {
-    const { dispatch, sort, sortDir } = this.props;
+  getNotableSightingsHeader () {
+    const { env, dispatch, sort, sortDir } = this.props;
 
+    if (env.viewportMode === C.VIEWPORT_MODES.MOBILE) {
+      return null;
+    }
+
+    return (
+      <tr>
+        <th className="row-num" />
+        {this.getLocationColHeader()}
+        <SortableColHeader dispatch={dispatch} label="species" colClass="species-col"
+          sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.SPECIES} sort={sort} sortDir={sortDir} />
+        <SortableColHeader dispatch={dispatch} label="dateSeen" colClass="date-seen-col"
+          sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN} sort={sort} sortDir={sortDir} />
+        <SortableColHeader dispatch={dispatch} label="reportedBy" colClass="reporter-col"
+          sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER} sort={sort} sortDir={sortDir} />
+        <SortableColHeader dispatch={dispatch} label="status" colClass="status-col"
+          sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS} sort={sort} sortDir={sortDir} />
+      </tr>
+    );
+  }
+
+  render () {
     return (
       <div className="species-table notable-table">
         <div className="species-table-header">
           <table className="table table-striped">
             <thead>
-            <tr>
-              <th className="row-num" />
-              {this.getLocationColHeader()}
-
-              <SortableColHeader dispatch={dispatch} label="species" colClass="species-col"
-                sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.SPECIES} sort={sort} sortDir={sortDir} />
-
-              <SortableColHeader dispatch={dispatch} label="dateSeen" colClass="date-seen-col"
-                sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN} sort={sort} sortDir={sortDir} />
-
-              <SortableColHeader dispatch={dispatch} label="reportedBy" colClass="reporter-col"
-                sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER} sort={sort} sortDir={sortDir} />
-
-              <SortableColHeader dispatch={dispatch} label="status" colClass="status-col"
-                sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS} sort={sort} sortDir={sortDir} />
-            </tr>
+            {this.getNotableSightingsHeader()}
             </thead>
           </table>
         </div>
@@ -669,7 +694,10 @@ class NotableSpeciesRow extends React.Component {
         {this.getLocationField()}
         <td className="species-col">
           <div>
-            <span className="com-name" title={comName} dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
+            <a href={wikipediaLink} target="_blank" className="com-name">
+              <span dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
+              <span className="icon icon-wikipedia" />
+            </a>
             <span className="notable-count">{this.getCount(row)}</span>
           </div>
           {this.getSciName()}
@@ -681,8 +709,76 @@ class NotableSpeciesRow extends React.Component {
           <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list"
              title={intl.formatMessage({ id: 'viewChecklist' })} />
         </td>
-        <td className="wikipedia-col">
-          <a href={wikipediaLink} target="_blank" className="icon icon-wikipedia" />
+      </tr>
+    );
+  }
+}
+
+class NotableSpeciesMobileRow extends React.Component {
+  getLocationField () {
+    const { selectedLocation, row } = this.props;
+    if (selectedLocation) {
+      return null;
+    }
+    return (
+      <td className="location-col">{row.locName}</td>
+    );
+  }
+
+  getStatus (row) {
+    let status = null;
+    if (row.obsValid) {
+      status = <span className="confirmed"><FormattedMessage id="confirmed" /></span>;
+    } else if (row.obsReviewed) {
+      status = <span className="reviewed"><FormattedMessage id="reviewed" /></span>;
+    } else {
+      status = <span className="not-reviewed"><FormattedMessage id="notReviewed" /></span>;
+    }
+    return status;
+  }
+
+  getCount (row) {
+    if (row.howMany) {
+      return <span>(<FormattedNumber value={row.howMany}/>)</span>;
+    }
+    return null;
+  }
+
+  getSciName () {
+    const { showScientificName, sciNameDisplay } = this.props;
+    if (!showScientificName) {
+      return null;
+    }
+    return (
+      <div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+    );
+  }
+
+  render () {
+    const { row, comName, comNameDisplay, rowNum, intl } = this.props;
+    const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
+    const checklistLink = `http://ebird.org/ebird/view/checklist/${row.subID}`;
+
+    return (
+      <tr>
+        <td className="row-num">{rowNum}</td>
+        <td className="species-col">
+          <div>
+            <a href={wikipediaLink} target="_blank" className="com-name">
+              <span dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
+              <span className="icon icon-wikipedia" />
+            </a>
+            <span className="notable-count">{this.getCount(row)}</span>
+          </div>
+          {this.getSciName()}
+          {this.getLocationField()}
+          <div>{row.obsDtDisplay}</div>
+          <div>{row.reporter}</div>
+          <div>{this.getStatus(row)}</div>
+        </td>
+        <td className="checklist-col">
+          <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list"
+             title={intl.formatMessage({ id: 'viewChecklist' })} />
         </td>
       </tr>
     );

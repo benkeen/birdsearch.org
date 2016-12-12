@@ -7,8 +7,16 @@
 }
 
 @media (max-width: 768px) {
+  header.flex-fill {
+    //@include flex(0 0 108px);
+  }
+
   .overlay .tab-content {
     border-radius: 0;
+  }
+
+  #mobile-search-row {
+    @include display-flex();
   }
 
   #about-overlay {
@@ -113,6 +121,7 @@
   }
   header .header-search {
     position: absolute;
+    left: 0;
     top: 46px;
     width: 100%;
   }
@@ -212,6 +221,7 @@
 
 #mobile-navbar {
   position: absolute;
+  left: 0;
   top: 58px;
   width: 100%;
   background-color: #333333;
