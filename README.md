@@ -15,16 +15,8 @@ React, Redux, react-intl, Node.
 
 ## Versions
 
-### v2.1.0 - in development (Dec, 2016)
-Adding mobile support.
-
-Remaining TODO:
-- *** check over scenarios where search doesn't do anything.
-- Notable results: clean up page
-
-Resizing down:
-    - resizing down to mobile size doesn't update the height of the open panel.
-    - if both panels are open and you resize down to mobile, need to hide the locations panel.
+### v2.1.0 - Dec 11th, 2016
+Mobile support.
 
 ### v2.0.0 - Oct 29th, 2016
 New everything! New UI, new code. Rewritten in React, Redux with a node backend.

@@ -7,8 +7,9 @@
 }
 
 @media (max-width: 768px) {
-  header.flex-fill {
-    //@include flex(0 0 108px);
+  .notable-table .location-col {
+    width: inherit;
+    max-width: inherit;
   }
 
   .overlay .tab-content {
@@ -29,6 +30,7 @@
 
   #intro-overlay {
     width: 100%;
+    max-width: 416px;
     height: 234px;
     span {
       display: block;

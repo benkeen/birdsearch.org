@@ -557,16 +557,14 @@ body .filter-field {
 
 /** the notable sightings table just re-uses the bulk of the species-table rules, and overrides and adds a couple of things */
 .notable-table {
-	.status-col {
-		.confirmed {
-			color: green;
-		}
-		.not-reviewed {
-			color: #e4761e;
-		}
-		.reviewed {
-			color: brown;
-		}
+	.confirmed {
+		color: green;
+	}
+	.not-reviewed {
+		color: #e4761e;
+	}
+	.reviewed {
+		color: brown;
 	}
 
 	.species-table-header  {
