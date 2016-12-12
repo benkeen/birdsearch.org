@@ -18,11 +18,11 @@ class SettingsOverlay extends React.Component {
   }
 
   search () {
-    const { dispatch, searchSettings, settingsOverlay, mapSettings } = this.props;
+    const { dispatch, searchSettings, settingsOverlay, mapSettings, viewportMode } = this.props;
     const { lat, lng, location } = searchSettings;
     const { searchType, observationRecency, zoomHandling } = settingsOverlay;
-
-    dispatch(actions.search(searchType, location, lat, lng, mapSettings.bounds, observationRecency, zoomHandling));
+    const showLocationsPanel = (viewportMode === C.VIEWPORT_MODES.DESKTOP);
+    dispatch(actions.search(searchType, location, lat, lng, mapSettings.bounds, observationRecency, zoomHandling, showLocationsPanel));
     browserHistory.push('/');
   }
 
@@ -88,7 +88,8 @@ export default injectIntl(connect(state => ({
   userLocationFound: state.user.userLocationFound,
   searchSettings: state.searchSettings,
   settingsOverlay: state.settingsOverlay,
-  mapSettings: state.mapSettings
+  mapSettings: state.mapSettings,
+  viewportMode: state.env.viewportMode
 }))(SettingsOverlay));
 
 

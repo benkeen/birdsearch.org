@@ -62,7 +62,7 @@ const searchRequestComplete = () => {
 
 // our one and only search method. This fires off the initial requests for the data. Notable sightings are a single
 // request; bird sightings are much more complex.
-const search = (searchType, locationString, lat, lng, mapBounds, observationRecency, zoomHandling) => {
+const search = (searchType, locationString, lat, lng, mapBounds, observationRecency, zoomHandling, showLocationsPanel) => {
   return function (dispatch) {
     dispatch(startSearchRequest(searchType, locationString, lat, lng, mapBounds, observationRecency, zoomHandling));
 
@@ -79,7 +79,7 @@ const search = (searchType, locationString, lat, lng, mapBounds, observationRece
       return fetchLocations(searchParams)
         .then(res => res.json())
         .then(
-          json  => dispatch(searchLocationsFound(dispatch, json),
+          json  => dispatch(searchLocationsFound(dispatch, json, showLocationsPanel),
           error => dispatch(searchLocationRequestError(dispatch, error))
         )
       );
@@ -90,14 +90,15 @@ const search = (searchType, locationString, lat, lng, mapBounds, observationRece
     return fetchNotableSightings(searchParams)
       .then(res => res.json())
       .then(
-        json => dispatch(notableResultsReturned(dispatch, json))
+        json => dispatch(notableResultsReturned(dispatch, json, showLocationsPanel))
       );
   }
 };
 
-const searchLocationsFound = (dispatch, locations) => {
+const searchLocationsFound = (dispatch, locations, showLocationsPanel) => {
   return {
     type: E.SEARCH_LOCATIONS_RETURNED,
+    showLocationsPanel,
     success: true,
     locations
   };
@@ -112,7 +113,7 @@ const searchLocationRequestError = (dispatch, error) => {
   };
 };
 
-const notableResultsReturned = (dispatch, data) => {
+const notableResultsReturned = (dispatch, data, showLocationsPanel) => {
   var worker = new Worker('./worker-processNotableSightings.js');
   worker.postMessage({
     sightings: data,
@@ -120,9 +121,11 @@ const notableResultsReturned = (dispatch, data) => {
   });
 
   worker.onmessage = function (e) {
-    dispatch(storeNotableSightings(e.data.locations, e.data.sightings));
+    dispatch(storeNotableSightings(e.data.locations, e.data.sightings, showLocationsPanel));
   };
-  return { type: E.NOTABLE_SEARCH_RETURNED };
+  return {
+    type: E.NOTABLE_SEARCH_RETURNED
+  };
 };
 
 const fetchLocations = (searchParams) => {
@@ -142,9 +145,10 @@ const setIntroOverlayVisibility = (visible) => {
   };
 };
 
-const storeNotableSightings = (locations, sightings) => {
+const storeNotableSightings = (locations, sightings, showLocationsPanel) => {
   return {
     type: E.STORE_NOTABLE_SIGHTINGS,
+    showLocationsPanel,
     locations,
     sightings
   };

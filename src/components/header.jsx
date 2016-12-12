@@ -31,10 +31,11 @@ class Header extends React.Component {
     const { dispatch } = this.props;
     dispatch(actions.showModal());
     browserHistory.push('/intro');
+    this.maybeCloseMobileNav();
   }
 
   onSubmitNewSearch ({ location, lat, lng, bounds }) {
-    const { dispatch } = this.props;
+    const { dispatch, viewportMode } = this.props;
     const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
 
     // this is here for the scenario where a user STARTS on /search. In that case we want to prevent the intro modal
@@ -43,7 +44,8 @@ class Header extends React.Component {
 
     // now ensure the URL is the root
     browserHistory.push('/');
-    dispatch(actions.search(searchType, location, lat, lng, bounds, observationRecency, zoomHandling));
+    const showLocationsPanel = (viewportMode === C.VIEWPORT_MODES.DESKTOP);
+    dispatch(actions.search(searchType, location, lat, lng, bounds, observationRecency, zoomHandling, showLocationsPanel));
   }
 
   setLocation (location) {
@@ -70,10 +72,16 @@ class Header extends React.Component {
     browserHistory.push('/report');
   }
 
+  // closes the mobile navigation if the user is on mobile & the nav is open
   maybeCloseMobileNav () {
     const { viewportMode } = this.props;
-    if (viewportMode === C.VIEWPORT_MODES.MOBILE) {
-      $(ReactDOM.findDOMNode(this.refs.mobileNav)).trigger('click');
+    if (viewportMode !== C.VIEWPORT_MODES.MOBILE) {
+      return;
+    }
+    const $navButton = $(ReactDOM.findDOMNode(this.refs.mobileNavButton));
+    const $nav       = $(ReactDOM.findDOMNode(this.refs.mobileNav));
+    if ($nav.hasClass('in')) {
+      $navButton.trigger('click');
     }
   }
 
@@ -90,7 +98,8 @@ class Header extends React.Component {
           <span className="beta">BETA</span>
         </div>
 
-        <button type="button" className="navbar-toggle collapsed" ref="mobileNav" data-toggle="collapse" data-target="#mobile-navbar">
+        <button type="button" className="navbar-toggle collapsed" ref="mobileNavButton" data-toggle="collapse" data-target="#mobile-navbar"
+          onClick={() => dispatch(actions.hideSearchTooltip(false))}>
           <span className="sr-only">Toggle navigation</span>
           <span className="icon-bar" />
           <span className="icon-bar" />
@@ -133,7 +142,7 @@ class Header extends React.Component {
           </li>
         </ul>
 
-        <ul id="mobile-navbar" className="collapse navbar-collapse">
+        <ul id="mobile-navbar" className="collapse navbar-collapse" ref="mobileNav">
           <li><a href="#" onClick={(e) => this.showSettingsOverlay(e)}><FormattedMessage id="settings" /></a></li>
           <li><a href="#" onClick={(e) => this.showAboutOverlay(e)}><FormattedMessage id="about" /></a></li>
           <li className="mobile-local-selector">

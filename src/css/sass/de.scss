@@ -74,9 +74,9 @@
       .zoom-tip {
         top: 34px;
       }
-    }
-    .has-results #settings-overlay {
-      height: inherit;
+      &.with-search {
+        height: 470px;
+      }
     }
 
     #settings-overlay .settings-row label {

@@ -55,7 +55,11 @@
 
   #settings-overlay {
     width: 100%;
-    height: 416px;
+    height: 344px;
+
+    &.with-search {
+      height: 394px;
+    }
 
     .search-type, .search-results {
       position: relative;

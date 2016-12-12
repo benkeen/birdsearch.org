@@ -413,9 +413,8 @@ function locationsPanel (state = {
 
     case E.SEARCH_LOCATIONS_RETURNED:
     case E.STORE_NOTABLE_SIGHTINGS:
-      // TODO: only set to visible if 
       return Object.assign({}, state, {
-        visible: true,
+        visible: action.showLocationsPanel,
         updateCounter: state.updateCounter+1
       });
 
@@ -428,6 +427,14 @@ function locationsPanel (state = {
     case E.LOCATION_SELECTED:
       return Object.assign({}, state, {
         selectedLocation: action.location,
+        updateCounter: state.updateCounter+1
+      });
+
+    // if we resize the window down to mobile mode, the filter field isn't available so we clear it
+    case E.WINDOW_RESIZED:
+      const filter = (action.width <= C.MOBILE_BREAKPOINT_WIDTH) ? '' : state.filter;
+      return Object.assign({}, state, {
+        filter: filter,
         updateCounter: state.updateCounter+1
       });
 
@@ -458,7 +465,6 @@ function locationsPanel (state = {
     case E.SET_LOCALE:
     case E.SEARCH_REQUEST_ENDED:
     case E.HOTSPOT_SIGHTINGS_UPDATE:
-    case E.WINDOW_RESIZED:
       return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 
     default:
@@ -516,6 +522,14 @@ function sightingsPanel (state = {
     case E.SET_SPECIES_FILTER:
       return Object.assign({}, state, {
         filter: action.filter,
+        updateCounter: state.updateCounter+1
+      });
+
+    // if we resize the window down to mobile mode, the filter field isn't available so we clear it
+    case E.WINDOW_RESIZED:
+      const filter = (action.width <= C.MOBILE_BREAKPOINT_WIDTH) ? '' : state.filter;
+      return Object.assign({}, state, {
+        filter: filter,
         updateCounter: state.updateCounter+1
       });
 

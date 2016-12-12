@@ -15,18 +15,14 @@ React, Redux, react-intl, Node.
 
 ## Versions
 
-### v2.1.0 - In dev
+### v2.1.0 - in development (Dec, 2016)
 Adding mobile support. TODO:
 - reset species filter when reduced to small screen [listen to resize event + set...]
-- after search, shouldn't show locations by default
 - get it working on Safari.
 - check over scenarios where search doesn't do anything.
 - location errors
-- Notable results: clean up page 
-- check height of settings panel with button enabled. Different locales.
-- if "anywhere" tooltip open, clicking hamburger should close it.
+- Notable results: clean up page
 - resizing down to mobile size doesn't update the height of the open panel.
-
 
 ### v2.0.0 - Oct 29th, 2016
 New everything! New UI, new code. Rewritten in React, Redux with a node backend.

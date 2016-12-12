@@ -18,13 +18,14 @@ class IntroOverlay extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { dispatch, mapSettings, user } = this.props;
+    const { dispatch, mapSettings, user, viewportMode } = this.props;
     const { location, lat, lng } = this.props.searchSettings;
     const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
 
     // if the user's location was just found, automatically search
     if (prevProps.user.userLocationFound !== user.userLocationFound && user.userLocationFound) {
-      dispatch(actions.search(searchType, location, lat, lng, mapSettings.bounds, observationRecency, zoomHandling));
+      const showLocationsPanel = (viewportMode === C.VIEWPORT_MODES.DESKTOP);
+      dispatch(actions.search(searchType, location, lat, lng, mapSettings.bounds, observationRecency, zoomHandling, showLocationsPanel));
     }
   }
 
@@ -55,13 +56,14 @@ class IntroOverlay extends React.Component {
   }
 
   searchNearby () {
-    const { dispatch, user } = this.props;
+    const { dispatch, user, viewportMode } = this.props;
     const { searchType, observationRecency, zoomHandling } = this.props.settingsOverlay;
 
     if (!user.userLocationFound) {
       dispatch(actions.getGeoLocation(this.onUserLocationFound));
     } else {
-      dispatch(actions.search(searchType, user.address, user.lat, user.lng, user.bounds, observationRecency, zoomHandling));
+      const showLocationsPanel = (viewportMode === C.VIEWPORT_MODES.DESKTOP);
+      dispatch(actions.search(searchType, user.address, user.lat, user.lng, user.bounds, observationRecency, zoomHandling, showLocationsPanel));
       browserHistory.push('/');
     }
   }
@@ -136,6 +138,7 @@ export default injectIntl(connect(state => ({
   errorRetrievingUserLocation: state.user.errorRetrievingUserLocation,
   searchSettings: state.searchSettings,
   settingsOverlay: state.settingsOverlay,
-  mapSettings: state.mapSettings
+  mapSettings: state.mapSettings,
+  viewportMode: state.env.viewportMode
 }))(IntroOverlay));
 
