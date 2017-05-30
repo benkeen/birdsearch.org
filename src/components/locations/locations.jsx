@@ -33,8 +33,8 @@ export class LocationsPanel extends React.Component {
   componentWillReceiveProps (nextProps) {
     const { visible, env } = this.props;
 
-    var animation = {};
-    var hasAnimation = false;
+    let animation = {};
+    let hasAnimation = false;
 
     // the header on mobile is slightly taller than on desktop
     const isMobile = env.viewportMode === C.VIEWPORT_MODES.MOBILE;
@@ -258,6 +258,23 @@ LocationsPanel.PropTypes = {
   env: React.PropTypes.object.isRequired,
   intl: intlShape.isRequired
 };
+
+/*
+<LocationsPanel
+  dispatch={dispatch}
+  visible={locationsPanel.visible}
+  updateCounter={locationsPanel.updateCounter}
+  sort={locationsPanel.sort}
+  sortDir={locationsPanel.sortDir}
+  filter={locationsPanel.filter}
+  locations={results.visibleLocations}
+  locationSightings={results.locationSightings}
+  locationDataRefreshCounter={results.locationDataRefreshCounter}
+  selectedLocation={locationsPanel.selectedLocation}
+  searchSettings={searchSettings}
+  intl={intl}
+  env={env} />
+*/
 
 
 class LocationRow extends React.Component {

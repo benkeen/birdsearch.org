@@ -117,7 +117,7 @@ class ClosePanel extends React.Component {
 
   render () {
     return (
-      <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.onClose}></span>
+      <span className="close-panel glyphicon glyphicon-remove-circle" onClick={this.onClose} />
     );
   }
 }
@@ -135,7 +135,7 @@ class LineLoader extends React.Component {
   }
 
   render () {
-    var classes = 'line-loader';
+    let classes = 'line-loader';
     if (this.props.className) {
       classes += ' ' + this.props.className;
     }
@@ -188,7 +188,7 @@ class LocationCount extends React.Component {
       return (<span>...</span>);
     }
 
-    var className = 'range ';
+    let className = 'range ';
 
     if (classNameOverride) {
       className += ' ' + classNameOverride;

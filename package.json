@@ -12,7 +12,7 @@
     "url": "https://github.com/benkeen/birdsearch.org.git"
   },
   "author": "Ben Keen",
-  "license": "GPL",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/benkeen/birdsearch.org/issues"
   },
@@ -60,6 +60,7 @@
     "react-redux": "^4.4.5",
     "redux": "^3.0.4",
     "request": "^2.73.0",
+    "reselect": "^3.0.1",
     "underscore": "^1.8.3",
     "velocity-react": "^1.1.8",
     "xml2js": "^0.4.17"

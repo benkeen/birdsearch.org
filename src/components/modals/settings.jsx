@@ -225,7 +225,7 @@ SearchSettings.propTypes = {
 
 class MapStyles extends React.Component {
   render () {
-    const { dispatch, intl, selected } = this.props;
+    const { dispatch, selected } = this.props;
     const defaultStyleClasses = (selected === C.MAP_STYLES.DEFAULT) ? 'selected' : '';
     const greyStyleClasses = (selected === C.MAP_STYLES.GREY) ? 'selected' : '';
     const darkGreyStyleClasses = 'row-end' + ((selected === C.MAP_STYLES.DARK_GREY) ? ' selected' : '');

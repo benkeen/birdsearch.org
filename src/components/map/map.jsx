@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
-import { FormattedMessage } from 'react-intl';
+import { intlShape, injectIntl, FormattedMessage } from 'react-intl';
 import { C, _, actions, helpers } from '../core/core';
 import moment from 'moment';
 
 
-var _icons = {
+const _icons = {
   range1: { url: 'images/markers/white.png', scaledSize: new google.maps.Size(21, 26) },
   range2: { url: 'images/markers/grey.png', scaledSize: new google.maps.Size(21, 26) },
   range3: { url: 'images/markers/sea-blue.png', scaledSize: new google.maps.Size(21, 26) },
@@ -17,13 +17,13 @@ var _icons = {
   range8: { url: 'images/markers/red.png', scaledSize: new google.maps.Size(21, 26) },
   notable: { url: 'images/markers/notable.png', scaledSize: new google.maps.Size(21, 26) }
 };
-var _circleOverlays = {};
-var _circleOverlayIndex = 0;
-var _infoWindow; // as of 2.0.5 we only store a single infowindow at once. Feels cluttered otherwise
+const _circleOverlays = {};
+let _circleOverlayIndex = 0;
+let _infoWindow; // as of 2.0.5 we only store a single infowindow at once. Feels cluttered otherwise
 
 // stores all map-related data, grouped by search type
-var _map;
-var _data = {
+let _map;
+const  _data = {
   [C.SEARCH_SETTINGS.SEARCH_TYPES.ALL]: {
     defaultZoomLevel: 9,
     circleRadius: 60000,
@@ -38,12 +38,12 @@ var _data = {
 
 // any time the map boundary changes, the list of hotspots may change. This keeps a list of the hotspots within the
 // boundary, ignoring what is visible on the map (i.e. via a location filter)
-var _currentHotspotIDsInMapBoundaries = [];
-var _currentSearchType;
-var _suppressBoundaryChangeUpdate = false;
+const _currentHotspotIDsInMapBoundaries = [];
+let _currentSearchType;
+let _suppressBoundaryChangeUpdate = false;
 
 
-var styles = {
+const styles = {
   [C.MAP_STYLES.DEFAULT]: [{"featureType":"road","elementType":"geometry","stylers":[{"lightness":100},{"visibility":"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}],
   [C.MAP_STYLES.GREY]: [{"featureType":"all","elementType":"all","stylers":[{"hue":"#ff0000"},{"saturation":-100},{"lightness":-30}]},{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#353535"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#656565"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#505050"}]},{"featureType":"poi","elementType":"geometry.stroke","stylers":[{"color":"#808080"}]},{"featureType":"road","elementType":"geometry","stylers":[{"color":"#454545"}]}],
   [C.MAP_STYLES.DARK_GREY]: [{"featureType":"all","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"all","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":"35"},{"gamma":"1"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"off"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"administrative.locality","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"administrative.locality","elementType":"geometry.fill","stylers":[{"lightness":"-11"}]},{"featureType":"administrative.locality","elementType":"labels.text","stylers":[{"color":"#e37f00"}]},{"featureType":"administrative.land_parcel","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"poi.park","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.park","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"poi.park","elementType":"labels.text.stroke","stylers":[{"visibility":"simplified"}]},{"featureType":"poi.park","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#475058"},{"lightness":"-48"},{"saturation":"-73"},{"weight":"3.98"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"lightness":"7"}]},{"featureType":"road.arterial","elementType":"labels.text.fill","stylers":[{"lightness":"63"}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16},{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"lightness":"-8"},{"gamma":"1.73"}]},{"featureType":"road.local","elementType":"geometry.stroke","stylers":[{"lightness":"-1"}]},{"featureType":"road.local","elementType":"labels.text.fill","stylers":[{"lightness":"24"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#475058"},{"lightness":17}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"color":"#d1e0e9"},{"lightness":"-70"},{"saturation":"-75"}]},{"featureType":"water","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"lightness":"-54"},{"hue":"#ff0000"}]}], //[{"featureType":"all","elementType":"all","stylers":[{"hue":"#ff0000"},{"saturation":-100},{"lightness":"-34"}]},{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ece204"},{"saturation":"100"},{"weight":"10.00"},{"gamma":"4.40"},{"lightness":"22"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#353535"},{"weight":"2.21"}]},{"featureType":"administrative.locality","elementType":"all","stylers":[{"visibility":"on"},{"color":"#ef950a"},{"weight":"0.32"},{"saturation":"36"},{"lightness":"11"},{"gamma":"1.01"}]},{"featureType":"administrative.neighborhood","elementType":"all","stylers":[{"visibility":"on"},{"hue":"#ffcd00"},{"saturation":"100"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#656565"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#505050"}]},{"featureType":"poi","elementType":"geometry.stroke","stylers":[{"color":"#808080"}]},{"featureType":"road","elementType":"geometry","stylers":[{"color":"#454545"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"off"},{"color":"#b4b87a"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#9d9a65"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#68624b"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#403f3b"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#5f5e5a"}]}],
@@ -53,7 +53,7 @@ var styles = {
 };
 
 
-export class Map extends React.Component {
+class Map extends React.Component {
   constructor (props) {
     super(props);
     this.onMapBoundsChange = this.onMapBoundsChange.bind(this);
@@ -65,7 +65,7 @@ export class Map extends React.Component {
     const { mapTypeId, mapStyle, intl, dispatch } = this.props;
 
     google.maps.visualRefresh = true;
-    var defaultMapOptions = {
+    let defaultMapOptions = {
       mapTypeId: mapTypeId,
       center: new google.maps.LatLng(this.props.lat, this.props.lng),
       disableDefaultUI: true,
@@ -86,7 +86,7 @@ export class Map extends React.Component {
 
     // precache all marker images
     _.each(_icons, function (key) {
-      var img = new Image();
+      let img = new Image();
       img.src = key.url;
     });
   }
@@ -97,7 +97,6 @@ export class Map extends React.Component {
     if (this.props.locale !== nextProps.locale) {
       return true;
     }
-
 
     if (this.props.resetSearchCounter !== nextProps.resetSearchCounter) {
       isNewSearch = true;
@@ -142,8 +141,8 @@ export class Map extends React.Component {
       }
     }
 
-    var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
-    var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
+    let numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
+    let windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
     if (numLocationsChanged || windowResized) {
       this.updateMapMarkers(nextProps.searchSettings.searchType, nextProps.results.allLocations, nextProps.results.locationSightings, true);
     }
@@ -168,10 +167,10 @@ export class Map extends React.Component {
 
   setMarkerColours (nextProps) {
     _.each(nextProps.results.visibleLocations, function (locInfo) {
-      var locId = locInfo.i;
-      var locationSightings = nextProps.results.locationSightings[locId].data;
+      let locId = locInfo.i;
+      let locationSightings = nextProps.results.locationSightings[locId].data;
 
-      var numSpecies = 0;
+      let numSpecies = 0;
       if (nextProps.results.locationSightings[locId].fetched) {
         numSpecies = locationSightings[nextProps.searchSettings.observationRecency - 1].runningTotal;
       }
@@ -204,9 +203,9 @@ export class Map extends React.Component {
 
   // called any time the map bounds change: onload, zoom, drag. This ensures the appropriate markers are shown.
   updateMapMarkers (searchType, locations, locationSightings, zoomOutToShowResults = false) {
-    var mapBoundary = _map.getBounds();
-    var boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
-    var locationsInBounds = [];
+    let mapBoundary = _map.getBounds();
+    let boundsObj = new google.maps.LatLngBounds(mapBoundary.getSouthWest(), mapBoundary.getNorthEast());
+    let locationsInBounds = [];
     let locationIDsInBounds = [];
     let latLngList = [];
 
@@ -215,8 +214,8 @@ export class Map extends React.Component {
       let lng = locInfo.lg;
       latLngList.push([lat, lng]);
 
-      var latlng = new google.maps.LatLng(lat, lng);
-      var locID = locInfo.i;
+      let latlng = new google.maps.LatLng(lat, lng);
+      let locID = locInfo.i;
 
       // filter out-of-bounds markers
       if (!boundsObj.contains(latlng)) {
@@ -247,7 +246,7 @@ export class Map extends React.Component {
       const closestResult = helpers.findClosestLatLng(center.lat(), center.lng(), latLngList);
       const closestLatLng = new google.maps.LatLng(parseFloat(closestResult.lat), parseFloat(closestResult.lng));
 
-      var bounds = new google.maps.LatLngBounds();
+      let bounds = new google.maps.LatLngBounds();
       bounds.extend(center);
       bounds.extend(closestLatLng);
       _map.fitBounds(bounds);
@@ -310,7 +309,7 @@ export class Map extends React.Component {
 
     // if the location filter just changed, update the list of hidden/visible markers
     if (locationFilter !== nextProps.locationFilter) {
-      var regexp = new RegExp(nextProps.locationFilter, 'i');
+      let regexp = new RegExp(nextProps.locationFilter, 'i');
       _.each(nextProps.results.visibleLocations, (locInfo) => {
         if (regexp.test(locInfo.n)) {
           if (!_data[_currentSearchType].markers[locInfo.i].visible) {
@@ -330,7 +329,7 @@ export class Map extends React.Component {
     const { locationFilter } = this.props;
     let show = true;
     if (locationFilter !== '') {
-      var regexp = new RegExp(locationFilter, 'i'); // hmm... this runs for EVERY marker
+      let regexp = new RegExp(locationFilter, 'i'); // hmm... this runs for EVERY marker
       show = regexp.test(locInfo.n);
     }
     if (show) {
@@ -406,9 +405,9 @@ export class Map extends React.Component {
 
   getBirdSightingsInfoWindow (locInfo, intl) {
     const { results, searchSettings } = this.props;
-    var locationSightings = results.locationSightings[locInfo.i].data;
+    let locationSightings = results.locationSightings[locInfo.i].data;
     const obsRecency = searchSettings.observationRecency;
-    var numSpecies = 0;
+    let numSpecies = 0;
     if (results.locationSightings[locInfo.i].fetched) {
       numSpecies = locationSightings[obsRecency - 1].runningTotal;
     }
@@ -431,12 +430,12 @@ export class Map extends React.Component {
 
   getNotableSightingsInfoWindow (locInfo, l10n) {
     const { results, searchSettings } = this.props;
-    var locationSightings = results.locationSightings[locInfo.i].data;
+    let locationSightings = results.locationSightings[locInfo.i].data;
     const obsRecency = searchSettings.observationRecency;
 
     const sightings = [];
-    for (var i=0; i<obsRecency; i++) {
-      for (var j=0; j<locationSightings[i].obs.length; j++) {
+    for (let i=0; i<obsRecency; i++) {
+      for (let j=0; j<locationSightings[i].obs.length; j++) {
         sightings.push(locationSightings[i].obs[j]);
       }
     }
@@ -485,7 +484,23 @@ Map.PropTypes = {
 };
 
 
-var _addSearchRangeIndicator = () => {
+// connect our map component to the store.
+export default injectIntl(connect(state => ({
+  env: state.env,
+  lat: state.mapSettings.lat,
+  lng: state.mapSettings.lng,
+  mapTypeId: state.mapSettings.mapTypeId,
+  bounds: state.mapSettings.bounds,
+  searchSettings: state.searchSettings,
+  results: state.results,
+  locationFilter: state.locationsPanel.filter,
+  mapStyle: state.mapStyle,
+  locale: state.user.locale
+}))(Map));
+
+
+
+const _addSearchRangeIndicator = () => {
   // lame, but setting the map to null doesn't work, so keep adding more & hiding the previous
   if (_circleOverlayIndex > 0) {
     _circleOverlays[_circleOverlayIndex-1].set("visible", false);
@@ -503,7 +518,7 @@ var _addSearchRangeIndicator = () => {
 };
 
 
-var addCustomControls = function(mapTypeId, isVisible, intl, dispatch) {
+const addCustomControls = function(mapTypeId, isVisible, intl, dispatch) {
   const selectedBtnClass = 'map-btn-selected';
 
   let btn1Classes = 'map-btn map-btn-first' + ((isVisible) ? '': ' omit');

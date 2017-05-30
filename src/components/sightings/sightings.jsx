@@ -230,6 +230,23 @@ SightingsPanel.PropTypes = {
   intl: intlShape.isRequired
 };
 
+/*
+<SightingsPanel
+  dispatch={dispatch}
+  visible={sightingsPanel.visible}
+  updateCounter={sightingsPanel.updateCounter}
+  locations={results.visibleLocations}
+  sightings={results.locationSightings}
+  selectedLocation={locationsPanel.selectedLocation}
+  searchSettings={searchSettings}
+  speciesFilter={sightingsPanel.filter}
+  showScientificName={showScientificName}
+  env={env}
+  intl={intl}
+  results={results}
+  sort={sightingsPanel.sort}
+  sortDir={sightingsPanel.sortDir} />
+*/
 
 class SpeciesTable extends React.Component {
 
@@ -622,20 +639,13 @@ class NotableSightingsTable extends React.Component {
   }
 }
 
-class SortableColHeader extends React.Component {
-  render () {
-    const { dispatch, label, sortField, colClass, sort, sortDir, width } = this.props;
-    const className = 'sortable ' + colClass;
-
-    const style = (width) ? { width: width + 'px' } : {};
-    return (
-      <th className={className} onClick={() => dispatch(actions.sortSightings(sortField))} style={style}>
-        <FormattedMessage id={label} />
-        {helpers.getColSort(sortField, sort, sortDir)}
-      </th>
-    )
-  }
-}
+const SortableColHeader = ({ dispatch, label, sortField, colClass, sort, sortDir, width }) = (
+  <th className={'sortable ' + colClass} onClick={() => dispatch(actions.sortSightings(sortField))}
+    style={(width) ? { width: width + 'px' } : {}}>
+    <FormattedMessage id={label} />
+    {helpers.getColSort(sortField, sort, sortDir)}
+  </th>
+);
 SortableColHeader.propTypes = {
   label: React.PropTypes.string.isRequired,
   sortField: React.PropTypes.string.isRequired,

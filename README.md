@@ -1,19 +1,24 @@
 # birdsearch.org
 
 Like many birders I know, discovering [eBird.org](http://ebird.org) was a cause for celebration. It brought birding 
-out of the dark ages of pen and pencil and into the digital age. Now we have a simple, centralized place to track 
-observations, share knowledge and open up the data for everyone.
+out of the dark ages of pen and pencil and into the digital age. Now we have a simple, centralized place for openly 
+tracking observations.
 
 But as a birder, I wanted a no-fuss high-level overview of a region; I wanted to see all observations being made in 
-an area <i>right now</i>. The search options available on eBird are excellent, but don't quite fit the bill. This 
-site was written to plug the gap. 
+an area <i>right now</i>. I wanted to be able to see at a glance a full list of species being sighted - not have to 
+hunt around to construct a list manually. The search options available on eBird are great, but don't quite fit my 
+needs. This site was written to plug the gap.
 
-This is now the third incarnation of this script. The first was a quick hack to test out their API and get a feel 
+This is now the third incarnation of this site. The first was a quick hack to test out their API and get a feel 
 for what I could do with the data. The second (1.1.0) was a re-write to add in some new functionality and to use 
-requireJS and other technologies. The latest version (Oct, 2016) was another complete rewrite, this time using 
-React, Redux, react-intl, Node.
+requireJS and other technologies. The latest version (Oct, 2016) was a second rewrite and redesign, this time using 
+React, Redux and Node.
 
 ## Versions
+
+### v2.2.0 - Ongoing, May 2017
+- speed improvements
+- bug fixes
 
 ### v2.1.0 - Dec 11th, 2016
 Mobile support.
