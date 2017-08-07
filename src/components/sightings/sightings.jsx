@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Link, browserHistory } from 'react-router';
-import { FormattedMessage, FormattedNumber, intlShape, injectIntl } from 'react-intl';
-import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { FormattedMessage, FormattedNumber, intlShape } from 'react-intl';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
-import { C, helpers, _, actions } from '../core/core';
-import { LineLoader, LocationCount } from './general';
+import { C, helpers, _, actions } from '../../core/core';
+import { LineLoader, LocationCount } from '../general/general';
 
 
 export class SightingsPanel extends React.Component {
@@ -219,14 +219,14 @@ export class SightingsPanel extends React.Component {
   }
 }
 SightingsPanel.PropTypes = {
-  visible: React.PropTypes.bool.isRequired,
-  updateCounter: React.PropTypes.number.isRequired,
-  locations: React.PropTypes.array.isRequired,
-  sightings: React.PropTypes.object.isRequired,
-  searchSettings: React.PropTypes.object.isRequired,
-  speciesFilter: React.PropTypes.string.isRequired,
-  showScientificName: React.PropTypes.bool.isRequired,
-  env: React.PropTypes.object.isRequired,
+  visible: PropTypes.bool.isRequired,
+  updateCounter: PropTypes.number.isRequired,
+  locations: PropTypes.array.isRequired,
+  sightings: PropTypes.object.isRequired,
+  searchSettings: PropTypes.object.isRequired,
+  speciesFilter: PropTypes.string.isRequired,
+  showScientificName: PropTypes.bool.isRequired,
+  env: PropTypes.object.isRequired,
   intl: intlShape.isRequired
 };
 
@@ -381,10 +381,10 @@ class SpeciesTable extends React.Component {
   }
 }
 SpeciesTable.PropTypes = {
-  species: React.PropTypes.array.isRequired,
-  filter: React.PropTypes.string.isRequired,
-  sort: React.PropTypes.string.isRequired,
-  sortDir: React.PropTypes.string.isRequired
+  species: PropTypes.array.isRequired,
+  filter: PropTypes.string.isRequired,
+  sort: PropTypes.string.isRequired,
+  sortDir: PropTypes.string.isRequired
 };
 
 
@@ -639,7 +639,7 @@ class NotableSightingsTable extends React.Component {
   }
 }
 
-const SortableColHeader = ({ dispatch, label, sortField, colClass, sort, sortDir, width }) = (
+const SortableColHeader = ({ dispatch, label, sortField, colClass, sort, sortDir, width }) => (
   <th className={'sortable ' + colClass} onClick={() => dispatch(actions.sortSightings(sortField))}
     style={(width) ? { width: width + 'px' } : {}}>
     <FormattedMessage id={label} />
@@ -647,9 +647,9 @@ const SortableColHeader = ({ dispatch, label, sortField, colClass, sort, sortDir
   </th>
 );
 SortableColHeader.propTypes = {
-  label: React.PropTypes.string.isRequired,
-  sortField: React.PropTypes.string.isRequired,
-  colClass: React.PropTypes.string.isRequired
+  label: PropTypes.string.isRequired,
+  sortField: PropTypes.string.isRequired,
+  colClass: PropTypes.string.isRequired
 };
 
 

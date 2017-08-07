@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, FormattedHTMLMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
-import { Loader, Overlay } from './general';
-import { C, _, actions } from '../core/core';
+import { Loader, Overlay } from '../general/general';
+import { C, _, actions } from '../../core/core';
 
 
 class IntroOverlay extends React.Component {
@@ -128,7 +129,7 @@ class IntroOverlay extends React.Component {
   }
 }
 IntroOverlay.PropTypes = {
-  loading: React.PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
   intl: intlShape.isRequired
 };
 

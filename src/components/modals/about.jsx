@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { browserHistory, Link } from 'react-router';
-import { Overlay } from './general';
-import { C, actions } from '../core/core';
+import { Overlay } from '../general/general';
+import { C, actions } from '../../core/core';
 
 
 class AboutOverlay extends React.Component {

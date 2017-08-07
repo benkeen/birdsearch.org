@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
-import { Overlay } from './general';
+import { Overlay } from '../general/general';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { C, _, actions } from '../core/core';
+import { C, _, actions } from '../../core/core';
 
 
 class SettingsOverlay extends React.Component {
@@ -216,10 +217,10 @@ class SearchSettings extends React.Component {
   }
 }
 SearchSettings.propTypes = {
-  searchType: React.PropTypes.string.isRequired,
-  zoomHandling: React.PropTypes.string.isRequired,
-  observationRecency: React.PropTypes.string.isRequired,
-  location: React.PropTypes.string.isRequired
+  searchType: PropTypes.string.isRequired,
+  zoomHandling: PropTypes.string.isRequired,
+  observationRecency: PropTypes.string.isRequired,
+  location: PropTypes.string.isRequired
 };
 
 
@@ -299,7 +300,7 @@ class DaysDropdown extends React.Component {
   }
 }
 DaysDropdown.propTypes = {
-  onChange: React.PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired
 };
 
 

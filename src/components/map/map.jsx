@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
-import { intlShape, injectIntl, FormattedMessage } from 'react-intl';
-import { C, _, actions, helpers } from '../core/core';
+import { injectIntl, FormattedMessage, intlShape } from 'react-intl';
+import { C, _, actions, helpers } from '../../core/core';
 import moment from 'moment';
+
 
 
 const _icons = {
@@ -38,7 +41,7 @@ const  _data = {
 
 // any time the map boundary changes, the list of hotspots may change. This keeps a list of the hotspots within the
 // boundary, ignoring what is visible on the map (i.e. via a location filter)
-const _currentHotspotIDsInMapBoundaries = [];
+let _currentHotspotIDsInMapBoundaries = [];
 let _currentSearchType;
 let _suppressBoundaryChangeUpdate = false;
 
@@ -53,7 +56,7 @@ const styles = {
 };
 
 
-class Map extends React.Component {
+class Map extends Component {
   constructor (props) {
     super(props);
     this.onMapBoundsChange = this.onMapBoundsChange.bind(this);
@@ -479,8 +482,8 @@ class Map extends React.Component {
   }
 }
 Map.PropTypes = {
-  results: React.PropTypes.array.isRequired,
-  locationFilter: React.PropTypes.string.isRequired
+  results: PropTypes.array.isRequired,
+  locationFilter: PropTypes.string.isRequired
 };
 
 

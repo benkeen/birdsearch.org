@@ -69,17 +69,17 @@ class App extends React.Component {
       <div id="page-wrapper">
         <Header />
         <div id="mobile-search-row"></div>
-
         <section id="main-panel" className={classes}>
-          <Map />
-          {this.getModal()}
-          <LocationsPanel />
-          <SightingsPanel />
         </section>
       </div>
     );
   }
 }
+
+//<Map />
+//{this.getModal()}
+//<LocationsPanel />
+//<SightingsPanel />
 
 export default connect(state => ({
   introOverlay: state.introOverlay,

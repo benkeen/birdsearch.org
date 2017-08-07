@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import thunk from 'redux-thunk';
 import { addLocaleData, IntlProvider } from 'react-intl';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { Router, Route, browserHistory } from 'react-router';
 import { Provider, connect } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import * as reducers from './reducers';
@@ -20,11 +20,11 @@ addLocaleData(de);
 
 // application components
 import App from '../components/app';
-import Intro from '../components/intro';
-import About from '../components/about';
-import Report from '../components/report';
-import Settings from '../components/settings';
-import SearchTip from '../components/search-tip';
+import Intro from '../components/modals/intro';
+import About from '../components/modals/about';
+import Report from '../components/modals/report';
+import Settings from '../components/modals/settings';
+import SearchTip from '../components/general/search-tip';
 
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
