@@ -3,13 +3,6 @@
   transition: all $speed;
 }
 
-@mixin display-flex () {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-
 @mixin flex ($val) {
   -webkit-flex: $val;
   -ms-flex: $val;

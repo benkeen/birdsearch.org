@@ -5,26 +5,28 @@ import { addLocaleData, IntlProvider } from 'react-intl';
 import { Router, Route, browserHistory } from 'react-router';
 import { Provider, connect } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import * as reducers from './reducers';
-import { C, storage, i18n } from './core';
+import * as reducers from './core/reducers';
+import { C, storage, i18n } from './core/core';
+import registerServiceWorker from './registerServiceWorker';
 
 // locale information for react-intl
 import en from 'react-intl/locale-data/en'
 import es from 'react-intl/locale-data/es';
 import fr from 'react-intl/locale-data/fr';
 import de from 'react-intl/locale-data/de';
+
+// application components
+import App from './components/app';
+import Intro from './components/modals/intro';
+import About from './components/modals/about';
+import Report from './components/modals/report';
+import Settings from './components/modals/settings';
+import SearchTip from './components/general/search-tip';
+
 addLocaleData(en);
 addLocaleData(es);
 addLocaleData(fr);
 addLocaleData(de);
-
-// application components
-import App from '../components/app';
-import Intro from '../components/modals/intro';
-import About from '../components/modals/about';
-import Report from '../components/modals/report';
-import Settings from '../components/modals/settings';
-import SearchTip from '../components/general/search-tip';
 
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
@@ -84,25 +86,19 @@ const store = initStore({
 $('body').addClass(locale);
 
 
-class I18NWrapper extends React.Component {
-  render () {
-    const { locale } = this.props;
-
-    return (
-      <IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
-        <Router history={browserHistory}>
-          <Route path="/" component={App}>
-            <Route path="/about" component={About} />
-            <Route path="/intro" component={Intro} />
-            <Route path="/search" component={SearchTip} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/report" component={Report} />
-          </Route>
-        </Router>
-      </IntlProvider>
-    );
-  }
-}
+const I18NWrapper = ({ locale }) => (
+  <IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
+    <Router history={browserHistory}>
+      <Route path="/" component={App}>
+        <Route path="/about" component={About} />
+        <Route path="/intro" component={Intro} />
+        <Route path="/search" component={SearchTip} />
+        <Route path="/settings" component={Settings} />
+        <Route path="/report" component={Report} />
+      </Route>
+    </Router>
+  </IntlProvider>
+);
 
 function initStore (initialState) {
   const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -116,3 +112,5 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('app')
 );
+
+registerServiceWorker();

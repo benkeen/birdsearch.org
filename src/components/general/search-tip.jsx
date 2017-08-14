@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from 'react-router';
-import { C, _, actions } from '../../core/core';
+import { actions } from '../../core/core';
 import { Tooltip } from 'react-bootstrap';
 import { ClosePanel } from './general';
 

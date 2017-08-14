@@ -3,9 +3,8 @@ I found that for an app of this size, grouping all reducers into a single locati
 is the clearest way to organize the code.
 */
 
-import { C, E, _, helpers, actions } from './core';
+import { C, E, _ } from './core';
 import * as storage from './storage';
-
 
 
 function env (state = {
@@ -315,14 +314,14 @@ function results (state = {
       });
 
     case E.SEARCH_LOCATIONS_RETURNED:
-      var locationSightings = Object.assign({}, state.locationSightings);
+      let ls1 = Object.assign({}, state.locationSightings);
 
       let searchError = '';
       if (action.locations.length === 0) {
         searchError = 'noResultsFound';
       }
       action.locations.forEach(function (locInfo) {
-        locationSightings[locInfo.i] = {
+        ls1[locInfo.i] = {
           fetched: false,
           data: []
         }
@@ -331,22 +330,22 @@ function results (state = {
       return Object.assign({}, state, {
         isFetching: (action.locations.length === 0 || !action.success) ? false : state.isFetching,
         allLocations: action.locations,
-        locationSightings: locationSightings,
+        locationSightings: ls1,
         searchError: searchError
       });
 
     case E.HOTSPOT_SIGHTINGS_RETURNED:
-      var locationSightings = Object.assign({}, state.locationSightings);
-      locationSightings[action.locationID] = {
+      let ls2 = Object.assign({}, state.locationSightings);
+      ls2[action.locationID] = {
         fetched: true,
         data: action.sightings
       };
       return Object.assign({}, state, {
-        locationSightings: locationSightings
+        locationSightings: ls2
       });
 
     case E.STORE_NOTABLE_SIGHTINGS:
-      var locationSightings = {};
+      let locationSightings = {};
       _.each(action.sightings, (sightings, locationID) => {
         locationSightings[locationID] = {
           fetched: true,
@@ -539,7 +538,6 @@ function sightingsPanel (state = {
     case E.SET_LOCALE:
     case E.LOCATION_SELECTED:
     case E.SEARCH_REQUEST_ENDED:
-    case E.WINDOW_RESIZED:
     case E.SET_SCIENTIFIC_NAME_VISIBILITY:
       return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 

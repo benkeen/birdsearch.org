@@ -16,7 +16,8 @@ React, Redux and Node.
 
 ## Versions
 
-### v2.2.0 - Ongoing, May 2017
+### v2.2.0 - Ongoing, Aug 2017
+- Dependency updates
 - speed improvements
 - bug fixes
 

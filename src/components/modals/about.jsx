@@ -7,10 +7,6 @@ import { C, actions } from '../../core/core';
 
 
 class AboutOverlay extends React.Component {
-  constructor (props) {
-    super(props);
-  }
-
   close () {
     browserHistory.push('/');
   }
@@ -49,10 +45,10 @@ class AboutOverlay extends React.Component {
       <Overlay id="about-overlay" showCloseIcon={true} onClose={this.close}>
         <div>
           <ul className="nav nav-pills">
-            <li className={aboutClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.ABOUT)}><FormattedMessage id="about" /></a></li>
-            <li className={historyClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.HISTORY)}><FormattedMessage id="history" /></a></li>
-            <li className={translateClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.TRANSLATE)}><FormattedMessage id="translate" /></a></li>
-            <li className={contactClasses}><a href="#" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.CONTACT)}><FormattedMessage id="contact" /></a></li>
+            <li className={aboutClasses}><a href="about" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.ABOUT)}><FormattedMessage id="about" /></a></li>
+            <li className={historyClasses}><a href="about" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.HISTORY)}><FormattedMessage id="history" /></a></li>
+            <li className={translateClasses}><a href="about" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.TRANSLATE)}><FormattedMessage id="translate" /></a></li>
+            <li className={contactClasses}><a href="about/" onClick={(e) => this.selectTab(e, C.ABOUT_TABS.CONTACT)}><FormattedMessage id="contact" /></a></li>
           </ul>
           {this.getTabContent()}
         </div>
@@ -68,7 +64,8 @@ export default injectIntl(connect(state => ({
 
 const AboutTab = ({ intl }) => (
   <div>
-    <img src="/images/photos/sandhill.png" width="200" height="149" className="photo" title="Sandhill crane, BC, Canada" />
+    <img src="/images/photos/sandhill.png" width="200" height="149" className="photo" title="Sandhill crane, BC, Canada"
+      alt="Sandhill crane, BC, Canada" />
     <p>
       <FormattedMessage id="aboutPara1"
         values={{
@@ -80,7 +77,7 @@ const AboutTab = ({ intl }) => (
     </p>
     <p>
       <FormattedMessage id="aboutPara2"
-        values={{ eBirdSiteLink: <a href="http://ebird.org" target="_blank">eBird.org</a> }} />
+        values={{ eBirdSiteLink: <a href="http://ebird.org" target="_blank" rel="noopener noreferrer">eBird.org</a> }} />
     </p>
   </div>
 );
@@ -90,7 +87,7 @@ const HistoryTab = ({ intl }) => (
   <div>
     <p>
       <FormattedMessage id="historyPara1"
-        values={{ eBirdSiteLink: <a href="http://ebird.org" target="_blank">eBird.org</a> }} />
+        values={{ eBirdSiteLink: <a href="http://ebird.org" target="_blank" rel="noopener noreferrer">eBird.org</a> }} />
     </p>
     <p>
       <FormattedMessage id="historyPara2" values={{ rightNow: <i>{intl.formatMessage({ id: 'rightNow' })}</i> }} />
@@ -106,7 +103,7 @@ const TranslateTab = ({ intl }) => (
     <p>
       <FormattedMessage id="translatePara1"
         values={{
-          githubLink: <a href="https://github.com/benkeen/birdsearch.org/tree/master/src/i18n" target="_blank">{intl.formatMessage({ id: 'foundHere' })}</a>
+          githubLink: <a href="https://github.com/benkeen/birdsearch.org/tree/master/src/i18n" target="_blank" rel="noopener noreferrer">{intl.formatMessage({ id: 'foundHere' })}</a>
         }} />
     </p>
   </div>
@@ -119,14 +116,14 @@ const ContactTab = ({ intl }) => (
     <p>
       <FormattedMessage id="contactPara1"
         values={{
-          postLink: <a href="https://github.com/benkeen/birdsearch.org/issues" target="_blank">github</a>,
+          postLink: <a href="https://github.com/benkeen/birdsearch.org/issues" target="_blank" rel="noopener noreferrer">github</a>,
           email: <a href="mailto:ben.keen@gmail.com">ben.keen@gmail.com</a>
         }} />
     </p>
     <p>
       <FormattedMessage id="contactPara2"
         values={{
-          openSourceLink: <a href="http://github.com/benkeen/birdsearch.org" target="_blank">{intl.formatMessage({ id: 'openSource' })}</a>
+          openSourceLink: <a href="http://github.com/benkeen/birdsearch.org" target="_blank" rel="noopener noreferrer">{intl.formatMessage({ id: 'openSource' })}</a>
         }} />
     </p>
   </div>

@@ -65,13 +65,13 @@ const getLocationSpeciesList = (locationID, sightings, obsRecency) => {
 		return false;
 	}
 
-	var species = {};
-	var numSpecies = 0;
+	const species = {};
+	let numSpecies = 0;
 	_.times(obsRecency, function (index) {
 		if (!sightings[locationID].fetched) {
 			return;
 		}
-		var observations = sightings[locationID].data[index].obs;
+		let observations = sightings[locationID].data[index].obs;
 		_.each(observations, function (obsInfo) {
 			if (!species.hasOwnProperty(obsInfo.sciName)) {
 				species[obsInfo.sciName] = obsInfo;
@@ -112,7 +112,6 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 	let locationIDs = getLocationIDs(locations);
 	let dataBySpecies = {};
   let allDataBySpecies = {}; // needed to figure out how many locations each species is at
-	let numSpecies = 0;
 
   // gah! Super complicated.
 	_.each(locationIDs, (locationID) => {
@@ -131,7 +130,6 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
             mostRecentObservationTime: null,
             howManyCount: 0
           };
-          numSpecies++;
         }
         dataBySpecies[sciName].obs.push({
           howMany: info.howMany,
@@ -168,13 +166,13 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
   });
 
   // now convert the sightings into an array
-	var sightingsData = _.values(dataBySpecies);
+	let sightingsData = _.values(dataBySpecies);
 	sightingsData.sort(function(a, b) { return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1; });
 
-	var results = _.map(sightingsData, function (sighting) {
-		var lastObservation = 0;
-		var howManyArray = [];
-		var lastSeenArray = [];
+	let results = _.map(sightingsData, function (sighting) {
+		let lastObservation = 0;
+		let howManyArray = [];
+		let lastSeenArray = [];
 
 		_.each(sighting.obs, function (observation) {
 			var observationTimeUnix = parseInt(moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format("X"), 10);

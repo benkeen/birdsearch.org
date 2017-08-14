@@ -111,7 +111,28 @@ const C = {
 		NEON: 'MAP_STYLE_NEON',
 		OLD_STYLE: 'MAP_STYLE_OLD_STYLE',
 		AQUA: 'MAP_STYLE_AQUA'
-	}
+	},
+
+  STYLES: {
+    BLUE: '#0099cc',
+    LINK_HOVER: '#990000',
+    WEBFONT: '"Source Sans Pro", Calibri, Candara, Arial, sans-serif',
+
+    TEXT_COLOR: '#111111',
+    TEXT_HIGHLIGHT_COLOR: '#54c8ff',
+
+    // colours for the different species counts. Used in the markers and the UI
+    RANGE1: '#ffffff',
+    RANGE2: '#c7c7c7',
+    RANGE3: '#00B3BA',
+    RANGE4: '#00B96D',
+    RANGE5: '#55960D',
+    RANGE6: '#E6BD00',
+    RANGE7: '#E47000',
+    RANGE8: '#E80909',
+
+    TRANSITION_SPEED: '.2s'
+  }
 
 };
 

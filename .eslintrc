@@ -1,0 +1,10 @@
+{
+  "extends": ["react-app"],
+  "env": {
+    "jquery": true
+  },
+  "globals": {
+    "google": true,
+    "InvertedCircle": true
+  }
+}

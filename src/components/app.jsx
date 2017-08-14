@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { VelocityTransitionGroup } from 'velocity-react';
-import { C, _, actions } from '../core/core';
-import Header from './general/header';
-import { Map } from './map/map';
+import { C, actions } from '../core/core';
+import './global-styles';
+import Header from './header';
+import Map from './map/map';
 import { Loader } from './general/general';
 import { LocationsPanel } from './locations/locations';
 import { SightingsPanel } from './sightings/sightings';
@@ -70,16 +71,15 @@ class App extends React.Component {
         <Header />
         <div id="mobile-search-row"></div>
         <section id="main-panel" className={classes}>
+          <Map />
+          {this.getModal()}
+          <LocationsPanel />
+          <SightingsPanel />
         </section>
       </div>
     );
   }
 }
-
-//<Map />
-//{this.getModal()}
-//<LocationsPanel />
-//<SightingsPanel />
 
 export default connect(state => ({
   introOverlay: state.introOverlay,

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage, FormattedHTMLMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
 import { Loader, Overlay } from '../general/general';
-import { C, _, actions } from '../../core/core';
+import { C, actions } from '../../core/core';
 
 
 class IntroOverlay extends React.Component {

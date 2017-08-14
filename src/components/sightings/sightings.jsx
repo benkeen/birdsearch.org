@@ -82,7 +82,7 @@ export class SightingsPanel extends React.Component {
     const link = `http://ebird.org/ebird/hotspot/${selectedLocation}`;
     return (
       <span className="eBirdLink">
-        <a href={link} target="_blank">
+        <a href={link} target="_blank" rel="noopener noreferrer">
           <span className="eBird">e</span>Bird hotspot
           <span className="eBirdOffsiteIcon glyphicon glyphicon-new-window" />
         </a>
@@ -177,11 +177,11 @@ export class SightingsPanel extends React.Component {
 
   render () {
     const { dispatch, locations, sightings, searchSettings, visible, env } = this.props;
-    if (!locations.length) {
+    if (!locations || locations.length) {
       return null;
     }
 
-    var results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
+    let results = helpers.getUniqueSpeciesInLocationList(locations, sightings, searchSettings.observationRecency);
     const tabLangKey = searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL ? 'birds' : 'notableBirds';
     const headerIconClasses = 'toggle-section glyphicon ' + (visible ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom');
     const headerClasses = 'section-header' + ((visible) ? ' visible' : '');
@@ -411,7 +411,7 @@ class SpeciesRow extends React.Component {
       return (
         <li key={locInfo.locID}>
           <span data-id={locInfo.locID}>{locInfo.locName}</span>
-          <a href={checklistLink} target="_blank" className="glyphicon glyphicon-list" title={viewChecklistLabel} />
+          <a href={checklistLink} target="_blank" className="glyphicon glyphicon-list" title={viewChecklistLabel} rel="noopener noreferrer" />
         </li>
       );
     });
@@ -459,7 +459,7 @@ class SpeciesRow extends React.Component {
         <td className="row-num">{rowNum}</td>
         <td className="species-col">
           <div>
-            <a href={wikipediaLink} target="_blank" className="com-name">
+            <a href={wikipediaLink} target="_blank" className="com-name" rel="noopener noreferrer">
               <span dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
               <span className="icon icon-wikipedia" />
             </a>
@@ -489,10 +489,6 @@ class SpeciesRow extends React.Component {
 
 
 class NotableSightingsTable extends React.Component {
-  constructor (props) {
-    super(props);
-  }
-
   componentDidMount () {
     this.sortedSpecies = this.props.species;
   }
@@ -704,7 +700,7 @@ class NotableSpeciesRow extends React.Component {
         {this.getLocationField()}
         <td className="species-col">
           <div>
-            <a href={wikipediaLink} target="_blank" className="com-name">
+            <a href={wikipediaLink} target="_blank" className="com-name" rel="noopener noreferrer">
               <span dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
               <span className="icon icon-wikipedia" />
             </a>
@@ -774,7 +770,7 @@ class NotableSpeciesMobileRow extends React.Component {
         <td className="row-num">{rowNum}</td>
         <td className="species-col">
           <div>
-            <a href={wikipediaLink} target="_blank" className="com-name">
+            <a href={wikipediaLink} target="_blank" className="com-name" rel="noopener noreferrer">
               <span dangerouslySetInnerHTML={{ __html: comNameDisplay }} />
               <span className="icon icon-wikipedia" />
             </a>
@@ -787,7 +783,7 @@ class NotableSpeciesMobileRow extends React.Component {
           <div>{this.getStatus(row)}</div>
         </td>
         <td className="checklist-col">
-          <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list"
+          <a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list" rel="noopener noreferrer"
              title={intl.formatMessage({ id: 'viewChecklist' })} />
         </td>
       </tr>

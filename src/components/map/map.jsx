@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
-import { injectIntl, FormattedMessage, intlShape } from 'react-intl';
+import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
 import { C, _, actions, helpers } from '../../core/core';
 import moment from 'moment';
-
 
 
 const _icons = {
@@ -120,8 +119,8 @@ class Map extends Component {
     _currentSearchType = nextProps.searchSettings.searchType;
     this.applyLocationFilter(nextProps);
 
-    if (isNewSearch || (this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) &&
-        (_.isNumber(nextProps.lat) && _.isNumber(nextProps.lng))) {
+    if (isNewSearch ||
+      (this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) && (_.isNumber(nextProps.lat) && _.isNumber(nextProps.lng))) {
       _map.setCenter({
         lat: nextProps.lat,
         lng: nextProps.lng
@@ -468,7 +467,7 @@ class Map extends Component {
           <td className="species-name">{sighting.comName}</td>
           <td className="obs-date">{sightingDate}</td>
           <td>
-            <a href={checklistLink} target="_blank" className="checklist-link glyphicon glyphicon-list" title={l10n.viewChecklist} />
+            <a href={checklistLink} target="_blank" className="checklist-link glyphicon glyphicon-list" title={l10n.viewChecklist} rel="noopener noreferrer" />
           </td>
         </tr>
       );

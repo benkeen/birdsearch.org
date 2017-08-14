@@ -191,7 +191,7 @@ export class LocationsPanel extends React.Component {
   render () {
     const { dispatch, locations, locationSightings, filter, visible, env, intl } = this.props;
 
-    if (!locations.length) {
+    if (!locations || locations.length) {
       return null;
     }
 

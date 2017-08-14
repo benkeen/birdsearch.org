@@ -1,4 +1,4 @@
-import React from 'react';
+/* global google*/
 import { C, E, helpers, _ } from './core';
 import fetch from 'isomorphic-fetch';
 
