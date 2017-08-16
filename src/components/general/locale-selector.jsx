@@ -20,7 +20,7 @@ class LocaleSelector extends Component {
   getLocaleOptions () {
     return _.map(LOCALES, (locale) => {
       return (
-      <option value={locale.key} key={locale.key}>{locale.name}</option>
+        <option value={locale.key} key={locale.key}>{locale.name}</option>
       );
     });
   }
@@ -30,7 +30,7 @@ class LocaleSelector extends Component {
     return _.map(LOCALES, (currLocale) => {
       let className = (locale === currLocale.key) ? 'active' : '';
       return (
-      <li value={currLocale.key} className={className} key={currLocale.key}
+        <li value={currLocale.key} className={className} key={currLocale.key}
           onClick={() => this.updateLocale(currLocale.key)}>{currLocale.name}</li>
       );
     });
@@ -55,7 +55,7 @@ class LocaleSelector extends Component {
 }
 
 LocaleSelector.propTypes = {
-  type: PropTypes.string.isRequired, // oneOf syntax?
+  type: PropTypes.string.isRequired,
   locale: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired
 };

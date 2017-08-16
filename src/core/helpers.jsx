@@ -12,9 +12,9 @@ import moment from 'moment';
  * @param bounds
  */
 const getBestBounds = (viewport, bounds) => {
-	var locationObj = (viewport) ? viewport : bounds;
-	var topRight = locationObj.getNorthEast();
-	var bottomLeft = locationObj.getSouthWest();
+	const locationObj = (viewport) ? viewport : bounds;
+  const topRight = locationObj.getNorthEast();
+  const bottomLeft = locationObj.getSouthWest();
 
 	return {
 		north: topRight.lat(),

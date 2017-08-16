@@ -1,4 +1,3 @@
-/* global google*/
 import { C, E, helpers, _ } from './core';
 import fetch from 'isomorphic-fetch';
 
@@ -66,7 +65,7 @@ const search = (searchType, locationString, lat, lng, mapBounds, observationRece
   return function (dispatch) {
     dispatch(startSearchRequest(searchType, locationString, lat, lng, mapBounds, observationRecency, zoomHandling));
 
-    var searchParams = {
+    const searchParams = {
       lat: lat,
       lng: lng,
       observationRecency: observationRecency

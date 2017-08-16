@@ -64,8 +64,7 @@ export default injectIntl(connect(state => ({
 
 const AboutTab = ({ intl }) => (
   <div>
-    <img src="/images/photos/sandhill.png" width="200" height="149" className="photo" title="Sandhill crane, BC, Canada"
-      alt="Sandhill crane, BC, Canada" />
+    <img src="/images/photos/sandhill.png" width="200" height="149" className="photo" title="Sandhill crane, BC, Canada" alt="" />
     <p>
       <FormattedMessage id="aboutPara1"
         values={{
@@ -99,7 +98,7 @@ const HistoryTab = ({ intl }) => (
 const TranslateTab = ({ intl }) => (
   <div>
     <img src="/images/photos/magenta-throated-woodstar.png" width="200" height="150" className="photo"
-      title="Magenta-throated woodstar, Costa Rica" />
+      title="Magenta-throated woodstar, Costa Rica" alt="" />
     <p>
       <FormattedMessage id="translatePara1"
         values={{
@@ -112,7 +111,7 @@ const TranslateTab = ({ intl }) => (
 
 const ContactTab = ({ intl }) => (
   <div>
-    <img src="/images/photos/snowy.png" width="200" height="147" className="photo" title="Snowy egret, Mexico" />
+    <img src="/images/photos/snowy.png" width="200" height="147" className="photo" title="Snowy egret, Mexico" alt="" />
     <p>
       <FormattedMessage id="contactPara1"
         values={{

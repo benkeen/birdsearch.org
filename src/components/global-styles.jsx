@@ -126,11 +126,11 @@ header {
   display: flex;
   flex-direction: row;
   .navbar {
-    @include flex(0 0 300px);
+    flex: 0 0 300px;
     margin: 0;
   }
   .header-search {
-    @include flex(1);
+    flex: 1;
   }
 }
 
@@ -381,7 +381,7 @@ injectGlobal`
   }
 
   .settings-row-label {
-    @include flex(0 1 120px);
+    flex: 0 1 120px;
     padding-left: 0;
     span {
       color: #111111;
@@ -389,7 +389,7 @@ injectGlobal`
   }
 
   &>span {
-    @include flex(1);
+    flex: 1;
     padding: 10px;
     input {
       float: left;
@@ -738,7 +738,7 @@ injectGlobal`
       flex-direction: row;
 
       li {
-        @include flex(1);
+        flex: 1;
         cursor: pointer;
         margin: 5px;
         padding: 6px;
@@ -761,5 +761,692 @@ injectGlobal`
   #mobile-navbar {
     display: none !important;
   }
+}
+`;
+
+
+// icons
+injectGlobal`
+// Generated through: https://icomoon.io/app/
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../fonts/icomoon.eot?ixgtpz');
+  src:  url('../fonts/icomoon.eot?ixgtpz#iefix') format('embedded-opentype'),
+  url('../fonts/icomoon.ttf?ixgtpz') format('truetype'),
+  url('../fonts/icomoon.woff?ixgtpz') format('woff'),
+  url('../fonts/icomoon.svg?ixgtpz#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  width: inherit;
+  height: inherit;
+  margin-top: 0;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-user:before {
+  content: "\e971";
+}
+.icon-cog:before {
+  content: "\e994";
+}
+.icon-pie-chart:before {
+  content: "\e99a";
+}
+.icon-info:before {
+  content: "\ea0c";
+}
+.icon-wikipedia:before {
+  content: "\eac8";
+}
+
+header .icon {
+  font-size: 14pt;
+  @include transition-all(${C.STYLES.TRANSITION_SPEED});
+  background: none;
+  &:hover {
+    color: $blue;
+  }
+}
+`;
+
+
+injectGlobal`
+#map-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000;
+  opacity: 0.35;
+  z-index: 3;
+  &.editable-header {
+	  top: 60px;
+  }
+}
+
+.section-header {
+  z-index: 2;
+  height: 28px;
+  cursor: pointer;
+  flex: 0 1 auto;
+  &>div {
+    position: relative;
+    width: 100%;
+  }
+  h2 {
+    display: inline-block;
+    color: white;
+    font-family: ${C.STYLES.WEBFONT};
+    font-size: 16px;
+    margin: 0 0 0 10px;
+    line-height: 23px;
+    > span, > div {
+      display: inline-block;
+      vertical-align: middle;
+	}
+    .line-loader {
+      margin-top: -4px;
+    }
+  }
+  .toggle-section {
+    float: right;
+    margin: 6px 9px;
+    color: #999999;
+    font-size: 13px;
+    @include transition-all(${C.STYLES.TRANSITION_SPEED});
+  }
+  &:hover {
+    .toggle-section {
+      color: #0099cc;
+    }
+  }
+  .total-count {
+    padding: 0 4px;
+    border-radius: 4px;
+    margin-left: 4px;
+    display: inline;
+    font-size: 12px;
+  }
+}
+
+#locations-panel {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+
+  header, footer {
+    background-color: rgba(26, 29, 34, 0.71);
+    &:hover {
+      background-color: rgba(26, 29, 34, 0.75);
+    }
+  }
+  .panel {
+    background-color: rgba(0, 0, 5, 0.78);
+	flex: 1;
+  }
+  table {
+    width: inherit;
+    margin-bottom: 0;
+  }
+  .section-header {
+    left: 0;
+  }
+  span.num-locations {
+    background-color: #0099cc;
+  }
+  table, td, th {
+    padding: 0;
+    font-size: 9pt;
+    text-align: left;
+  }
+  tr {
+    height: 23px;
+    &.loading {
+      color: #777777;
+    }
+  }
+  .location {
+    padding-left: 10px;
+    width: 260px;
+    div {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 230px;
+    }
+  }
+  .num-species {
+    text-align: center;
+  }
+  .all-locations-row {
+    color: white;
+    font-weight: bold;
+  }
+  tbody {
+    overflow-x: auto;
+    tr {
+      &:not(.loading):hover .location {
+        color: #0099cc;
+      }
+      &:not(.loading):hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+#locations-panel-content > div, #species-panel-content > div {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	.panel {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		overflow-x: hidden;
+	}
+	footer {
+		flex: 0 0 auto;
+		text-align: center;
+		cursor: pointer;
+		span {
+			font-size: 15px;
+			@include transition-all(${C.STYLES.TRANSITION_SPEED});
+		}
+		&:hover {
+			span {
+				color: #0099cc;
+			}
+		}
+	}
+}
+#species-panel-content {
+  margin-left: -1px;
+  & > div .panel table {
+    flex: 1;
+  }
+  .eBirdLink {
+    float: right;
+    font-size: 9pt;
+    margin: 20px 0 0;
+    a {
+      color: #cccccc;
+      span.eBird {
+        color: green;
+      }
+      &:hover {
+        color: white;
+      }
+      span.eBirdOffsiteIcon {
+        margin-left: 5px;
+        font-size: 10px;
+      }
+    }
+  }
+}
+
+.filter-locations-row {
+	flex: 0 0 auto;
+	padding: 8px 10px 0;
+	position: relative;
+	margin-bottom: 8px;
+	input {
+		width: 100%;
+	}
+}
+
+body .clear-filter-icon {
+	position: absolute;
+	top: 15px;
+	right: 16px;
+	font-size: 15px;
+	cursor: pointer;
+	&:hover {
+		color: #555555;
+	}
+}
+
+.species-heading-row {
+	position: relative;
+	padding: 8px 0 4px;
+	flex: 0 0 auto;
+	margin: 0 4px;
+	border-bottom: 1px solid #666666;
+
+	h1 {
+		float: left;
+		font-size: 24px;
+		margin: 10px 0 0;
+		line-height: 40px;
+		font-family: "helvetica neue", helvetica, Arial, sans-serif;
+		a {
+			color: #cccccc;
+		}
+	}
+	.counter {
+		margin: 18px 10px 0;
+		float: left;
+	}
+	.delimiter {
+		font-size: 8pt;
+		color: #666666;
+		margin: 6px;
+	}
+	.range {
+		text-align: center;
+		margin-left: 6px;
+	}
+}
+
+.species-table {
+	flex: 1;
+	overflow: hidden;
+
+	.filter-field {
+		margin: 0;
+	}
+	.row-num {
+		width: 4%;
+	}
+	.species-col {
+		width: 45%;
+		position: relative;
+		span {
+			display: inline-block;
+		}
+		input {
+			float: right;
+			width: 192px;
+			font-weight: normal;
+		}
+	}
+	.last-seen {
+		width: 20%;
+		div {
+			margin-left: -10px;
+		}
+	}
+	.locations-seen {
+		width: 20%;
+	}
+	.num-reported {
+		width: 60px;
+	}
+	.unknown-count {
+		color: #555555;
+	}
+	.icon {
+		width: 22px;
+		height: 20px;
+		color: #cccccc;
+		display: inline-block;
+		font-size: 14pt;
+		&:hover {
+			color: ${C.STYLES.BLUE};
+		}
+	}
+}
+
+.highlight {
+	color: ${C.STYLES.TEXT_HIGHLIGHT_COLOR};
+}
+
+body .filter-field {
+	padding: 13px 6px;
+	height: 30px;
+}
+
+#locations-table-wrapper {
+	flex: 1;
+	overflow: auto;
+	overflow-x: hidden;
+
+	thead {
+		cursor: pointer;
+	}
+	tbody {
+		color: #cccccc;
+	}
+}
+
+.col-sort {
+	font-size: 10px;
+	color: #0099cc;
+	margin-left: 3px;
+}
+
+#species-panel {
+  position: absolute;
+  top: 60px;
+  left: 300px;
+  display: flex;
+  flex-direction: column;
+
+  .section-header {
+    margin-left: -1px;
+    h2 {
+		text-transform: capitalize;
+    }
+  }
+
+  span.num-species {
+      background-color: #0099cc;
+  }
+  .panel {
+      background-color: rgba(0, 0, 5, 0.78);
+      border-left: 1px solid #666666;
+	  flex: 1;
+      padding: 0 10px;
+      overflow: hidden;
+  }
+  header, footer {
+      background-color: rgba(26, 29, 34, 0.71);
+      border-left: 1px solid #222222;
+      &:hover {
+          background-color: rgba(26, 29, 34, 0.75);
+      }
+  }
+  table {
+      color: #cccccc;
+      font-size: 14px;
+      margin-bottom: 0;
+      td {
+          line-height: 15px;
+          vertical-align: middle;
+      }
+  }
+}
+
+.range {
+	border-radius: 2px;
+	padding: 1px 4px;
+	font-size: 10px;
+	display: inline-block;
+	width: 32px;
+	font-weight: bold;
+}
+.range1 {
+	background-color: ${C.STYLES.RANGE1};
+	color: #333333;
+}
+.range2 {
+	background-color: ${C.STYLES.RANGE2};
+	color: #333333;
+}
+.range3 {
+	background-color: ${C.STYLES.RANGE3};
+	color: #ffffff;
+}
+.range4 {
+	background-color: ${C.STYLES.RANGE4};
+	color: #ffffff;
+}
+.range5 {
+	background-color: ${C.STYLES.RANGE5};
+	color: #ffffff;
+}
+.range6 {
+	background-color: ${C.STYLES.RANGE6};
+	color: #333333;
+}
+.range7 {
+	background-color: ${C.STYLES.RANGE7};
+	color: white;
+}
+.range8 {
+	background-color: ${C.STYLES.RANGE8};
+	color: white;
+}
+.notableSightingsTotal {
+	background-color: #0099cc;
+	color: white;
+}
+.notableSighting {
+	background-color: #85bfe9;
+	color: white;
+}
+.row-num {
+	font-size: 9px;
+	color: #efefef;
+	width: 20px;
+}
+.table .species-col {
+	>div {
+		position: relative;
+
+		a.com-name {
+			color: #ffffff;
+			float: left;
+			text-decoration: none;
+			&:after {
+				display: none;
+			}
+			&:hover {
+				color: ${C.STYLES.BLUE};
+				span.icon {
+					color: ${C.STYLES.BLUE};
+				}
+			}
+			span.icon {
+				font-size: 14px;
+				margin-left: 5px;
+				height: 12px;
+				&:hover {
+					color: inherit;
+				}
+			}
+		}
+	}
+}
+
+.sci-name {
+	font-size: 10px;
+	color: #999999;
+	clear: both;
+}
+
+.species-num-locations {
+	position: relative;
+	width: 40px;
+	background-color: rgba(26, 29, 34, 0.91);
+	color: white;
+	border-radius: 3px;
+	text-align: center;
+	display: inline-block;
+	cursor: pointer;
+	padding: 2px;
+	font-size: 12px;
+	margin-left: 23px;
+}
+
+.species-num-locations-cell {
+	position: relative;
+}
+
+#locations-popover {
+	width: 300px;
+	margin-left: 22px;
+
+	.popover-content {
+		font-size: 12px;
+		max-height: 200px;
+		overflow: auto;
+		padding: 6px 14px 9px;
+
+		li {
+			cursor: pointer;
+			line-height: inherit;
+			display: flex;
+			flex-direction: row;
+			padding: 2px 0;
+			span, a {
+				padding: 1px 0;
+				&:hover {
+					color: ${C.STYLES.BLUE};
+				}
+			}
+			span {
+				flex: 1;
+			}
+			a {
+				flex-grow: 0;
+				&:after {
+					content: ''
+				}
+			}
+			border-bottom: 1px solid #222222;
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+	}
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+.species-table {
+	display: flex;
+	flex-direction: column;
+}
+.species-table-header {
+	flex: 0 0 auto;
+	border-bottom: 2px solid black;
+	.last-seen {
+		width: 21%;
+	}
+}
+.species-header {
+	margin-top: 8px;
+}
+.species-table-content-wrapper {
+	flex: 1;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+.species-loading {
+	display: inline-block;
+	margin-left: 4px;
+	> div {
+		background-color: white;
+	}
+}
+.sortable {
+  cursor: pointer;
+  span {
+    @include transition-all(${C.STYLES.TRANSITION_SPEED});
+    &:hover {
+      color: #d3e4f9;
+    }
+  }
+}
+
+.bird-location-sightings {
+  a {
+	color: white;
+    &:hover {
+        color: ${C.STYLES.BLUE};
+    }
+  }
+}
+
+.nav-pills > .active > a {
+	background-color: ${C.STYLES.BLUE};
+}
+
+.nav-pills li > a:hover {
+	background-color: ${C.STYLES.BLUE};
+}
+
+/** the notable sightings table just re-uses the bulk of the species-table rules, and overrides and adds a couple of things */
+.notable-table {
+	.confirmed {
+		color: green;
+	}
+	.not-reviewed {
+		color: #e4761e;
+	}
+	.reviewed {
+		color: brown;
+	}
+
+	.species-table-header  {
+		.status-col {
+			width: 210px;
+		}
+		.species-col {
+			width: 225px;
+		}
+		.location-col {
+			width: 220px;
+			max-width: 220px;
+		}
+	}
+	.notable-count {
+		margin-left: 6px;
+		color: #85bfe9;
+	}
+	.checklist {
+		margin-left: 10px;
+		color: #cccccc;
+		&:after {
+			margin: 0;
+		}
+		&:hover {
+			color: ${C.STYLES.BLUE};
+		}
+	}
+
+	.location-col {
+		max-width: 200px;
+		width: 200px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+	.species-col {
+		width: 245px;
+	}
+	.icon-col {
+		width: 60px;
+	}
+	.date-seen-col {
+		width: 200px;
+		white-space: nowrap;
+	}
+	.reporter-col {
+		width: 160px;
+	}
+	.status-col {
+		width: 110px;
+	}
+}
+
+#header-settings-link {
+	display: inline-block;
+	position: absolute;
+	top: 4px;
+	font-size: 13px;
+	margin-left: 20px;
 }
 `;

@@ -1,3 +1,7 @@
+import { injectGlobal } from 'styled-components';
+
+
+injectGlobal`
 .gm-style * {
   width: auto;
   height: auto;
@@ -57,23 +61,24 @@
 .notable-sightings-list {
   margin-bottom: 8px;
   color: #333333;
-  .species-name {
+.species-name {
     padding-right: 30px;
   }
-  .obs-date {
+.obs-date {
     padding-right: 30px;
   }
   a {
     color: #bbbbbb;
-    &:hover {
+  &:hover {
       color: #0099cc;
     }
   }
-  .has-rich-media {
+.has-rich-media {
 
   }
-  .checklist-link {
+.checklist-link {
     margin-right: 20px;
-    &:after { display: none; }
+  &:after { display: none; }
   }
 }
+`;
