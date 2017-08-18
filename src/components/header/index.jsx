@@ -6,7 +6,7 @@ import { browserHistory } from 'react-router';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import StyledHeader from './header-styles';
 import HeaderSearch from './header-search';
-import { C, _, actions } from '../../core/core';
+import { C, actions } from '../../core/core';
 import LocaleSelector from '../general/locale-selector';
 
 

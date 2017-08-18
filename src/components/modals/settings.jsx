@@ -73,10 +73,10 @@ class SettingsOverlay extends React.Component {
       <Overlay id="settings-overlay" onClose={this.close} showCloseIcon={true} className={classes}>
         <ul className="nav nav-pills">
           <li className={searchSettingsClasses}>
-            <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS)}><FormattedMessage id="searchSettings" /></a>
+            <a href="" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS)}><FormattedMessage id="searchSettings" /></a>
           </li>
           <li className={mapStyleClasses}>
-            <a href="#" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.MAP_STYLES)}><FormattedMessage id="mapStyles" /></a>
+            <a href="" onClick={(e) => this.selectTab(e, C.SEARCH_OVERLAY_TABS.MAP_STYLES)}><FormattedMessage id="mapStyles" /></a>
           </li>
         </ul>
         {this.getContent()}
@@ -240,31 +240,31 @@ class MapStyles extends React.Component {
           <ul id="map-styles">
             <li className={defaultStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.DEFAULT)); }}>
               <div>
-                <img src="images/map-styles/default.png" />
+                <img src="images/map-styles/default.png" alt="Map style: default" />
                 <FormattedMessage id="default" tagName="div" />
               </div>
             </li>
             <li className={greyStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.GREY))}}>
               <div>
-                <img src="images/map-styles/grey.png" />
+                <img src="images/map-styles/grey.png" alt="Map style: grey"/>
                 <FormattedMessage id="grey" tagName="div" />
               </div>
             </li>
             <li className={darkGreyStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.DARK_GREY))}}>
               <div>
-                <img src="images/map-styles/dark.png" />
+                <img src="images/map-styles/dark.png" alt="Map style: dark" />
                 <FormattedMessage id="darkGrey" tagName="div" />
               </div>
             </li>
             <li className={neonStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.NEON))}}>
               <div>
-                <img src="images/map-styles/neon.png" />
+                <img src="images/map-styles/neon.png" alt="Map style: neon" />
                 <FormattedMessage id="neon" tagName="div" />
               </div>
             </li>
             <li className={oldStyleClasses} onClick={() => { dispatch(actions.selectMapStyle(C.MAP_STYLES.OLD_STYLE))}}>
               <div>
-                <img src="images/map-styles/old-style.png" />
+                <img src="images/map-styles/old-style.png" alt="Map style: old" />
                 <FormattedMessage id="oldStyle" tagName="div" />
               </div>
             </li>

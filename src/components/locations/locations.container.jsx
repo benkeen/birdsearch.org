@@ -1,7 +1,7 @@
 // the container components for the locations panel.
 import { connect } from 'react-redux';
 import { LocationsPanel } from './locations';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 
 // all of this will be derived
