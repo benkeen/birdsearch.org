@@ -5,7 +5,7 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../../core/core';
 import { LineLoader, LocationCount } from '../general/general';
-
+import LocationRow from './location-row';
 
 export class LocationsPanel extends React.Component {
   constructor (props) {
@@ -259,55 +259,3 @@ LocationsPanel.PropTypes = {
   env: PropTypes.object.isRequired,
   intl: intlShape.isRequired
 };
-
-/*
-<LocationsPanel
-  dispatch={dispatch}
-  visible={locationsPanel.visible}
-  updateCounter={locationsPanel.updateCounter}
-  sort={locationsPanel.sort}
-  sortDir={locationsPanel.sortDir}
-  filter={locationsPanel.filter}
-  locations={results.visibleLocations}
-  locationSightings={results.locationSightings}
-  locationDataRefreshCounter={results.locationDataRefreshCounter}
-  selectedLocation={locationsPanel.selectedLocation}
-  searchSettings={searchSettings}
-  intl={intl}
-  env={env} />
-*/
-
-
-class LocationRow extends React.Component {
-  render () {
-    const { searchType, sightings, observationRecency, filter, location } = this.props;
-
-    var count = null;
-    var rowClass = 'loading';
-    if (sightings.fetched) {
-      count = sightings.data[observationRecency - 1].runningTotal;
-      rowClass = '';
-    }
-
-    const classNameOverride = (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSighting';
-    const locationNameData = helpers.highlightString(location.n, filter);
-    return (
-      <tr className={rowClass} data-location-id={location.i}>
-        <td className="location">
-          <div title={location.n} dangerouslySetInnerHTML={{ __html: locationNameData.string }}></div>
-        </td>
-        <td className="num-species">
-          <LocationCount count={count} classNameOverride={classNameOverride} />
-        </td>
-      </tr>
-    );
-  }
-}
-LocationRow.PropTypes = {
-  searchType: PropTypes.string.isRequired,
-  location: PropTypes.object.isRequired,
-  sightings: PropTypes.object.isRequired,
-  observationRecency: PropTypes.number.isRequired,
-  filter: PropTypes.string.isRequired
-};
-

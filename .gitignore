@@ -1,5 +1,5 @@
 .idea*
-#.sass-cache/
+.sass-cache/
 
 # dependencies
 /node_modules

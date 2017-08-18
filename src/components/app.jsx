@@ -4,11 +4,12 @@ import { VelocityTransitionGroup } from 'velocity-react';
 import { C, actions } from '../core/core';
 import './global-styles';
 import Header from './header';
-import Map from './map/map';
 import { Loader } from './general/general';
-import { LocationsPanel } from './locations/locations';
-import { SightingsPanel } from './sightings/sightings';
 import IntroOverlay from './modals/intro';
+import Map from './map/map';
+import LocationsPanel from './locations/locations.container';
+import SightingsPanel from './sightings/sightings.container';
+
 
 
 // this is our top-level component. It contains the header, map and controls. The router passes in other components as
