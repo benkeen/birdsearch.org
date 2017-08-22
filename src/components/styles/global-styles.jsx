@@ -1,9 +1,11 @@
-import { C } from '../core/core';
+import { C } from '../../core/core';
 import { injectGlobal } from 'styled-components';
+
+
+// originally 1500 lines. The bulk of this can be moved somewhere appropriate
 
 // general
 injectGlobal`
-
 * {
 	box-sizing: border-box;
 }
@@ -21,20 +23,7 @@ body {
 	h1 {
 		font-weight: normal;
 	}
-}
-div {
-	box-sizing: border-box;
-}
-section {
-	padding: 0;
-}
-.hidden {
-	display: none;
-}
-.clear {
-	clear: both;
-}
-body {
+	
 	a {
 		color: ${C.STYLES.BLUE};
 		&:hover, &:focus {
@@ -54,6 +43,20 @@ body {
 		margin: 0;
 	}
 }
+
+div {
+	box-sizing: border-box;
+}
+section {
+	padding: 0;
+}
+.hidden {
+	display: none;
+}
+.clear {
+	clear: both;
+}
+
 a:focus {
 	text-decoration: none;
 }
@@ -99,6 +102,7 @@ button.btn {
 	font-size: 14px;
 }
 `;
+
 
 // layout
 injectGlobal`
@@ -791,31 +795,29 @@ injectGlobal`
   width: inherit;
   height: inherit;
   margin-top: 0;
-
-  /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .icon-user:before {
-  content: "\e971";
+  content: "\\e971";
 }
 .icon-cog:before {
-  content: "\e994";
+  content: "\\e994";
 }
 .icon-pie-chart:before {
-  content: "\e99a";
+  content: "\\e99a";
 }
 .icon-info:before {
-  content: "\ea0c";
+  content: "\\ea0c";
 }
 .icon-wikipedia:before {
-  content: "\eac8";
+  content: "\\eac8";
 }
 
 header .icon {
   font-size: 14pt;
-  @include transition-all(${C.STYLES.TRANSITION_SPEED});
+  transition: all ${C.STYLES.TRANSITION_SPEED};
   background: none;
   &:hover {
     color: $blue;
@@ -868,7 +870,7 @@ injectGlobal`
     margin: 6px 9px;
     color: #999999;
     font-size: 13px;
-    @include transition-all(${C.STYLES.TRANSITION_SPEED});
+    transition: all ${C.STYLES.TRANSITION_SPEED};
   }
   &:hover {
     .toggle-section {
@@ -969,7 +971,7 @@ injectGlobal`
 		cursor: pointer;
 		span {
 			font-size: 15px;
-			@include transition-all(${C.STYLES.TRANSITION_SPEED});
+			transition: all ${C.STYLES.TRANSITION_SPEED};
 		}
 		&:hover {
 			span {
@@ -1355,7 +1357,7 @@ body .filter-field {
 .sortable {
   cursor: pointer;
   span {
-    @include transition-all(${C.STYLES.TRANSITION_SPEED});
+    transition: all ${C.STYLES.TRANSITION_SPEED};
     &:hover {
       color: #d3e4f9;
     }

@@ -68,7 +68,7 @@ const StyledLoader = styled.div`
     display: block;
     width: 6px;
     height: 19px;
-    background-color: #990000; // rgba(33,117,181,0.97); // 2175B5
+    background-color: rgba(33,117,181,0.97); // 2175B5
     margin: 2px;
     position: absolute;
     border-radius: 50%;
@@ -155,7 +155,7 @@ const StyledLoader = styled.div`
 `;
 
 
-export default class Loader extends Component {
+export default class CircleLoader extends Component {
   render () {
     return (
       <StyledLoader>
@@ -175,6 +175,6 @@ export default class Loader extends Component {
   }
 }
 
-Loader.PropTypes = {
+CircleLoader.PropTypes = {
   label: PropTypes.string.isRequired
 };

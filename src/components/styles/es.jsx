@@ -1,4 +1,7 @@
+import { injectGlobal } from 'styled-components';
+
 // Spanish overrides
+injectGlobal`
 .es {
   #intro-overlay {
     height: 200px;
@@ -97,4 +100,4 @@
     }
   }
 }
-
+`;

@@ -1,4 +1,7 @@
+import { injectGlobal } from 'styled-components';
+
 // French overrides
+injectGlobal`
 .fr {
   #intro-overlay button {
     width: 200px;
@@ -28,3 +31,4 @@
     }
   }
 }
+`;

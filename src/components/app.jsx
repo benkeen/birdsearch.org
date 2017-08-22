@@ -3,9 +3,12 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { VelocityTransitionGroup } from 'velocity-react';
 import { C, actions } from '../core/core';
-import './global-styles';
+
+// global styles
+import './styles';
+
 import Header from './header';
-import { Loader } from './general/';
+import { CircleLoader } from './general/';
 import IntroOverlay from './modals/intro';
 
 // our smart components
@@ -24,7 +27,7 @@ const LoaderWrapper = styled.div`
 `;
 const DataLoader = () => (
   <LoaderWrapper className="overlay">
-    <Loader label="" />
+    <CircleLoader label="" />
   </LoaderWrapper>
 );
 

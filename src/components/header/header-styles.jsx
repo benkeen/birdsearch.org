@@ -3,7 +3,6 @@ import { C } from '../../core/core';
 
 
 const StyledHeader = styled.header`
-@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700");
 .navbar {
   line-height: 56px;
 

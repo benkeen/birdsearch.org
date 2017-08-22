@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, FormattedHTMLMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
-import { Loader, Overlay } from '../general';
+import { CircleLoader, Overlay } from '../general';
 import { C, actions } from '../../core/core';
 
 
@@ -53,7 +53,7 @@ class IntroOverlay extends React.Component {
 
   getLoader () {
     const { intl, loading } = this.props;
-    return (loading) ? (<Loader label={intl.formatMessage({ id: 'findingYourLocation' }).toUpperCase()} />) : null;
+    return (loading) ? (<CircleLoader label={intl.formatMessage({ id: 'findingYourLocation' }).toUpperCase()} />) : null;
   }
 
   searchNearby () {

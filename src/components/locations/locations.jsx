@@ -7,9 +7,11 @@ import { C, helpers, _, actions } from '../../core/core';
 import { LineLoader, LocationCount } from '../general';
 import LocationRow from './location-row';
 
+
 export class LocationsPanel extends React.Component {
   constructor (props) {
     super(props);
+
     this.state = {
       nextAnimation: { opacity: this.props.visibility ? 1 : 0 },
       sortedFilteredLocations: []
@@ -21,9 +23,9 @@ export class LocationsPanel extends React.Component {
   }
 
   shouldComponentUpdate ({ updateCounter, searchSettings, locations, locationSightings, sort, sortDir, filter }) {
-//    if (this.props.updateCounter === updateCounter) {
-//      return false;
-//    }
+    if (this.props.updateCounter === updateCounter) {
+      return false;
+    }
 
     this.sortedFilteredLocations = helpers.sortLocations(locations, locationSightings, searchSettings.observationRecency,
       sort, sortDir, filter);
@@ -97,7 +99,7 @@ export class LocationsPanel extends React.Component {
       return null;
     }
 
-    var className = 'col-sort glyphicon ';
+    let className = 'col-sort glyphicon ';
     className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
 
     return (
@@ -111,7 +113,7 @@ export class LocationsPanel extends React.Component {
       return null;
     }
 
-    var className = 'col-sort glyphicon ';
+    let className = 'col-sort glyphicon ';
     className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
 
     return (
@@ -195,9 +197,9 @@ export class LocationsPanel extends React.Component {
       return null;
     }
 
-    var numLoadedLocations = helpers.getNumLoadedLocations(locations, locationSightings);
+    let numLoadedLocations = helpers.getNumLoadedLocations(locations, locationSightings);
 
-    var loader = null;
+    let loader = null;
     if (numLoadedLocations !== locations.length) {
       loader = <LineLoader className="species-loading" />;
     } else {
@@ -205,7 +207,7 @@ export class LocationsPanel extends React.Component {
     }
 
     // height stored in constants so we can compute the various heights dynamically for Velocity
-    var footerStyle = {
+    let footerStyle = {
       height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px'
     };
 

@@ -1,4 +1,7 @@
+import { injectGlobal } from 'styled-components';
+
 // German overrides
+injectGlobal`
 .de {
   #intro-overlay {
     height: 200px;
@@ -111,3 +114,4 @@
     padding: 6px;
   }
 }
+`;

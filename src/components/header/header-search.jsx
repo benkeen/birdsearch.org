@@ -91,16 +91,15 @@ class HeaderSearch extends React.Component {
     const { intl } = this.props;
 
     return (
-    <div className="header-search">
-      <input type="text" className="search-input-field" placeholder={intl.formatMessage({ id: 'enterLocation' })}
-             ref="searchField" value={this.props.location} onChange={this.onChangeLocation.bind(this)} />
-
-      <div className="location-error">
-        <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }} component="div">
-          {this.state.showError ? <div>{this.state.error}</div> : undefined}
-        </VelocityTransitionGroup>
+      <div className="header-search">
+        <input type="text" className="search-input-field" placeholder={intl.formatMessage({ id: 'enterLocation' })}
+           ref="searchField" value={this.props.location} onChange={this.onChangeLocation.bind(this)} />
+        <div className="location-error">
+          <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }} component="div">
+            {this.state.showError ? <div>{this.state.error}</div> : undefined}
+          </VelocityTransitionGroup>
+        </div>
       </div>
-    </div>
     );
   }
 }

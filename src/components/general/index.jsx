@@ -1,4 +1,4 @@
-import Loader from './loader';
+import CircleLoader from './circle-loader';
 import Overlay from './overlay';
 import ClosePanel from './close-panel';
 import LineLoader from './line-loader';
@@ -7,7 +7,7 @@ import LocationCount from './location-count';
 import SearchTip from './search-tip';
 
 export {
-  Loader,
+  CircleLoader,
   Overlay,
   ClosePanel,
   LineLoader,

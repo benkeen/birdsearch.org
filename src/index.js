@@ -39,6 +39,7 @@ const zoomHandling = storage.get('zoomHandling') || C.SEARCH_SETTINGS.DEFAULT_ZO
 const sciName = storage.get('showScientificName');
 const showScientificName = (sciName && sciName === '1');
 
+
 // bah, this sucks. You can't init a store with redux by passing in only specific nested values to be overridden
 // (i.e. our settings just pulled from local storage). Redux strongly urges you to keep a flat object of all settings,
 // but I found it much clearer to group the state info in the store (in my case user, searchSettings, etc). The
