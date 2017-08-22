@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, FormattedHTMLMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
-import { Loader, Overlay } from '../general/general';
+import { Loader, Overlay } from '../general';
 import { C, actions } from '../../core/core';
 
 

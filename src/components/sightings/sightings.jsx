@@ -5,7 +5,7 @@ import { FormattedMessage, FormattedNumber, intlShape } from 'react-intl';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../../core/core';
-import { LineLoader, LocationCount } from '../general/general';
+import { LineLoader, LocationCount } from '../general';
 
 
 export class SightingsPanel extends React.Component {

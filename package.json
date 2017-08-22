@@ -59,7 +59,8 @@
     "webpack": "3.5.1",
     "webpack-dev-server": "2.7.1",
     "webpack-manifest-plugin": "1.2.1",
-    "whatwg-fetch": "2.0.3"
+    "whatwg-fetch": "2.0.3",
+    "xml2js": "^0.4.18"
   },
   "scripts": {
     "start": "node scripts/start.js",

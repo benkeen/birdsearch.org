@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../../core/core';
-import { LineLoader, LocationCount } from '../general/general';
+import { LineLoader, LocationCount } from '../general';
 import LocationRow from './location-row';
 
 export class LocationsPanel extends React.Component {
@@ -21,9 +21,9 @@ export class LocationsPanel extends React.Component {
   }
 
   shouldComponentUpdate ({ updateCounter, searchSettings, locations, locationSightings, sort, sortDir, filter }) {
-    if (this.props.updateCounter === updateCounter) {
-      return false;
-    }
+//    if (this.props.updateCounter === updateCounter) {
+//      return false;
+//    }
 
     this.sortedFilteredLocations = helpers.sortLocations(locations, locationSightings, searchSettings.observationRecency,
       sort, sortDir, filter);

@@ -1,22 +1,26 @@
-// the container components for the locations panel.
 import { connect } from 'react-redux';
-import { Map } from './map';
+import Map from './map';
 import { injectIntl } from 'react-intl';
 
 
 const mapStateToProps = (state) => ({
-  visible: state.sightingsPanel.visible,
-  updateCounter: state.sightingsPanel.updateCounter,
-  locations: state.results.visibleLocations,
-  sightings: state.results.locationSightings,
-  selectedLocation: state.locationsPanel.selectedLocation,
-  searchSettings: state.searchSettings,
-  speciesFilter: state.sightingsPanel.filter,
-  showScientificName: state.showScientificName,
   env: state.env,
+
+  // combine
+  lat: state.mapSettings.lat,
+  lng: state.mapSettings.lng,
+
+//  searchUpdateCounter: state.mapSettings.searchUpdateCounter,
+//  resetSearchCounter: state.mapSettings.resetSearchCounter,
+
+  mapTypeId: state.mapSettings.mapTypeId,
+  bounds: state.mapSettings.bounds,
+
+  searchSettings: state.searchSettings,
   results: state.results,
-  sort: state.sightingsPanel.sort,
-  sortDir: state.sightingsPanel.sortDir
+  locationFilter: state.locationsPanel.filter,
+  mapStyle: state.mapStyle,
+  locale: state.user.locale
 });
 
 const mapDispatchToProps = {
@@ -24,20 +28,3 @@ const mapDispatchToProps = {
 };
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Map));
-
-
-
-//dispatch={dispatch}
-//env={env}
-//lat={mapSettings.lat}
-//lng={mapSettings.lng}
-//searchUpdateCounter={mapSettings.searchUpdateCounter}
-//resetSearchCounter={mapSettings.resetSearchCounter}
-//mapTypeId={mapSettings.mapTypeId}
-//bounds={mapSettings.bounds}
-//searchSettings={searchSettings}
-//results={results}
-//intl={intl}
-//locationFilter={locationsPanel.filter}
-//mapStyle={mapStyle}
-//locale={user.locale}

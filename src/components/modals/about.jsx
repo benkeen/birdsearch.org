@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { browserHistory, Link } from 'react-router';
-import { Overlay } from '../general/general';
+import { Overlay } from '../general';
 import { C, actions } from '../../core/core';
 
 

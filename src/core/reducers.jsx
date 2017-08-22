@@ -1,8 +1,3 @@
-/*
-I found that for an app of this size, grouping all reducers into a single location here
-is the clearest way to organize the code.
-*/
-
 import { C, E, _ } from './core';
 import * as storage from './storage';
 
@@ -61,7 +56,7 @@ function searchSettings (state = {
     case E.RECEIVED_USER_LOCATION:
       // if an address was included, it means Google was able to reverse geocode the lat/lng into an intelligible
       // address. Favour that over the raw lat/lng, which is kinda klutzy to see in the UI
-      var location = (action.address) ? action.address : action.lat + ',' + action.lng;
+      let location = (action.address) ? action.address : action.lat + ',' + action.lng;
 
       return Object.assign({}, state, {
         location: location,
@@ -380,7 +375,7 @@ function locationsPanel (state = {
 
   switch (action.type) {
     case E.LOCATIONS_SORTED:
-      var newSort = C.SORT_DIR.DEFAULT;
+      let newSort = C.SORT_DIR.DEFAULT;
       if (state.sort === action.sort) {
         if (state.sortDir === C.SORT_DIR.DEFAULT) {
           newSort = C.SORT_DIR.REVERSE;
@@ -393,8 +388,8 @@ function locationsPanel (state = {
       });
 
     case E.TOGGLE_PANEL_VISIBILITY:
-      var newVisibility = state.visible;
-      var updateCounter = state.updateCounter;
+      let newVisibility = state.visible;
+      let updateCounter = state.updateCounter;
       if (action.panel === C.PANELS.LOCATIONS) {
         newVisibility = !newVisibility;
         updateCounter = updateCounter+1;
@@ -482,8 +477,8 @@ function sightingsPanel (state = {
 
   switch (action.type) {
     case E.TOGGLE_PANEL_VISIBILITY:
-      var newVisibility = state.visible;
-      var updateCounter = state.updateCounter;
+      let newVisibility = state.visible;
+      let updateCounter = state.updateCounter;
       if (action.panel === C.PANELS.SPECIES) {
         newVisibility = !newVisibility;
         updateCounter = updateCounter+1;
@@ -500,7 +495,7 @@ function sightingsPanel (state = {
       });
 
     case E.SIGHTINGS_SORTED:
-      var newSort = C.SORT_DIR.DEFAULT;
+      let newSort = C.SORT_DIR.DEFAULT;
       if (state.sort === action.sort) {
         if (state.sortDir === C.SORT_DIR.DEFAULT) {
           newSort = C.SORT_DIR.REVERSE;

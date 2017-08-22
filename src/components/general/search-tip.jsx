@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from 'react-router';
 import { actions } from '../../core/core';
 import { Tooltip } from 'react-bootstrap';
-import { ClosePanel } from './general';
+import { ClosePanel } from './';
 
 
 class SearchTip extends React.Component {

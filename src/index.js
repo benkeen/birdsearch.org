@@ -60,8 +60,8 @@ const store = initStore({
     lat: 30,
     lng: 0,
     bounds: null,
-    searchUpdateCounter: 0,
-    resetSearchCounter: 0
+//    searchUpdateCounter: 0,
+//    resetSearchCounter: 0
   },
   searchSettings: {
     searchType: searchType,

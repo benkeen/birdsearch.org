@@ -1228,6 +1228,7 @@ body .filter-field {
 	color: #efefef;
 	width: 20px;
 }
+
 .table .species-col {
 	>div {
 		position: relative;

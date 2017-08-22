@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 
 
 // all of this will be derived
-
 const mapStateToProps = (state) => ({
   visible: state.locationsPanel.visible,
   updateCounter: state.locationsPanel.updateCounter,

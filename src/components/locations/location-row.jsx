@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { C, helpers } from '../../core/core';
-import { LocationCount } from '../general/general';
+import { LocationCount } from '../general';
 
 
 export default class LocationRow extends Component {

@@ -1,15 +1,32 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { VelocityTransitionGroup } from 'velocity-react';
 import { C, actions } from '../core/core';
 import './global-styles';
 import Header from './header';
-import { Loader } from './general/general';
+import { Loader } from './general/';
 import IntroOverlay from './modals/intro';
-import Map from './map/map';
+
+// our smart components
+import Map from './map/map.container';
 import LocationsPanel from './locations/locations.container';
 import SightingsPanel from './sightings/sightings.container';
 
+
+const LoaderWrapper = styled.div`
+  top: 60px;
+  height: 80px;
+  width: 80px;
+  background-color: white;
+  border-radius: 6px;
+  padding-top: 40px;
+`;
+const DataLoader = () => (
+  <LoaderWrapper className="overlay">
+    <Loader label="" />
+  </LoaderWrapper>
+);
 
 
 // this is our top-level component. It contains the header, map and controls. The router passes in other components as
@@ -86,10 +103,3 @@ export default connect(state => ({
   introOverlay: state.introOverlay,
   results: state.results
 }))(App);
-
-
-const DataLoader = () => (
-  <div id="data-loader" className="overlay">
-    <Loader label="" />
-  </div>
-);
