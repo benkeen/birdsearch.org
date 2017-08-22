@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { VelocityTransitionGroup } from 'velocity-react';
-import { C, actions } from '../core/core';
+import { C, actions } from '../core';
 
 // global styles
 import './styles';

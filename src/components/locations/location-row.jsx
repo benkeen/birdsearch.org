@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { C, helpers } from '../../core/core';
+import { C, helpers } from '../../core';
 import { LocationCount } from '../general';
 
 

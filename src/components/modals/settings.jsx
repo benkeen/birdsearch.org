@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
 import { Overlay } from '../general';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { C, _, actions } from '../../core/core';
+import { C, _, actions } from '../../core';
 
 
 class SettingsOverlay extends React.Component {

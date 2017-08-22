@@ -1,4 +1,4 @@
-import { C, E, helpers, _ } from './core';
+import { C, E, helpers, _ } from './';
 import fetch from 'isomorphic-fetch';
 
 

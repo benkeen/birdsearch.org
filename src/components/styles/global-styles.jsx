@@ -1,4 +1,4 @@
-import { C } from '../../core/core';
+import { C } from '../../core';
 import { injectGlobal } from 'styled-components';
 
 

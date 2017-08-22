@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { C, _, actions, helpers } from '../../core/core';
+import { C, _, actions, helpers } from '../../core';
 import moment from 'moment';
 
 

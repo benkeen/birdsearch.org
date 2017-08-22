@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { VelocityTransitionGroup } from 'velocity-react';
 import { intlShape } from 'react-intl';
-import { C, helpers } from '../../core/core';
+import { C, helpers } from '../../core';
 
 
 class HeaderSearch extends React.Component {

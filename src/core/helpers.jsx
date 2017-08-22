@@ -1,5 +1,5 @@
 import React from 'react';
-import { C, _ } from './core';
+import { C, _ } from './';
 import moment from 'moment';
 
 

@@ -1,4 +1,4 @@
-import { C, E, _ } from './core';
+import { C, E, _ } from './';
 import * as storage from './storage';
 
 

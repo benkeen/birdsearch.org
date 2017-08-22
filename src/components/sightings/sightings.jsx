@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber, intlShape } from 'react-intl';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
-import { C, helpers, _, actions } from '../../core/core';
+import { C, helpers, _, actions } from '../../core';
 import { LineLoader, LocationCount } from '../general';
 
 

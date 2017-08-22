@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { C } from '../../core/core';
+import { C } from '../../core';
 
 
 const StyledHeader = styled.header`

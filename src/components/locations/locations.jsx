@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
-import { C, helpers, _, actions } from '../../core/core';
+import { C, helpers, _, actions } from '../../core';
 import { LineLoader, LocationCount } from '../general';
 import LocationRow from './location-row';
 

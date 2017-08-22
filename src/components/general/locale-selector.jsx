@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { LOCALES } from '../../i18n/index';
-import { _ } from '../../core/core';
+import { _ } from '../../core';
 
 
 // displays the locale selector as either a dropdown or HTML unordered list

@@ -6,7 +6,7 @@ import { Router, Route, browserHistory } from 'react-router';
 import { Provider, connect } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import * as reducers from './core/reducers';
-import { C, storage, i18n } from './core/core';
+import { C, storage, i18n } from './core';
 import registerServiceWorker from './registerServiceWorker';
 
 // locale information for react-intl
