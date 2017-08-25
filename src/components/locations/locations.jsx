@@ -22,16 +22,16 @@ export class LocationsPanel extends React.Component {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
   }
 
-  shouldComponentUpdate ({ updateCounter, searchSettings, locations, locationSightings, sort, sortDir, filter }) {
-    if (this.props.updateCounter === updateCounter) {
-      return false;
-    }
-
-    this.sortedFilteredLocations = helpers.sortLocations(locations, locationSightings, searchSettings.observationRecency,
-      sort, sortDir, filter);
-
-    return true;
-  }
+//  shouldComponentUpdate ({ updateCounter, searchSettings, locations, locationSightings, sort, sortDir, filter }) {
+////    if (this.props.updateCounter === updateCounter) {
+////      return false;
+////    }
+//
+//    this.sortedFilteredLocations = helpers.sortLocations(locations, locationSightings, searchSettings.observationRecency,
+//      sort, sortDir, filter);
+//
+//    return true;
+//  }
 
   componentWillReceiveProps (nextProps) {
     const { visible, env } = this.props;
