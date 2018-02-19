@@ -14,6 +14,19 @@ for what I could do with the data. The second (1.1.0) was a re-write to add in s
 requireJS and other technologies. The latest version (Oct, 2016) was a second rewrite and redesign, this time using 
 React, Redux and Node.
 
+
+## How to run locally 
+
+Master is not currently stable, so you'll need to checkout the last commit of the last stable release.
+
+1. Checkout the last tag: 
+`git checkout 5db377bfafb5ceb8ece14641e3cc864d67dc5e4a`
+2. npm install
+3. grunt dev
+4. node app.js (make sure you’re using node 6 or later)
+5. Load up http://localhost:8080 in your browser 
+
+
 ## Versions
 
 ### v2.2.0 - Ongoing, Aug 2017
