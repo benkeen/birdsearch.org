@@ -23,9 +23,9 @@ export class LocationsPanel extends React.Component {
   }
 
 //  shouldComponentUpdate ({ updateCounter, searchSettings, locations, locationSightings, sort, sortDir, filter }) {
-////    if (this.props.updateCounter === updateCounter) {
-////      return false;
-////    }
+//    if (this.props.updateCounter === updateCounter) {
+//      return false;
+//    }
 //
 //    this.sortedFilteredLocations = helpers.sortLocations(locations, locationSightings, searchSettings.observationRecency,
 //      sort, sortDir, filter);

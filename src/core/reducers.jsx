@@ -85,8 +85,8 @@ function mapSettings (state = {
         lat: action.lat,
         lng: action.lng,
         bounds: action.bounds,
-        searchUpdateCounter: state.searchUpdateCounter + 1,
-        resetSearchCounter: state.resetSearchCounter + 1
+//        searchUpdateCounter: state.searchUpdateCounter + 1,
+//        resetSearchCounter: state.resetSearchCounter + 1
       });
 
     case E.RECEIVED_USER_LOCATION:
@@ -94,8 +94,8 @@ function mapSettings (state = {
         lat: action.lat,
         lng: action.lng,
         bounds: action.bounds,
-        searchUpdateCounter: state.searchUpdateCounter + 1,
-        resetSearchCounter: state.resetSearchCounter + 1
+//        searchUpdateCounter: state.searchUpdateCounter + 1,
+//        resetSearchCounter: state.resetSearchCounter + 1
       });
 
     case E.SELECT_MAP_TYPE_ID:
@@ -116,14 +116,14 @@ function mapSettings (state = {
         mapTypeId
       });
 
-    case E.WINDOW_RESIZED:
-    case E.HOTSPOT_SIGHTINGS_UPDATE:
-    case E.SET_LOCATION_FILTER:
-    case E.STORE_NOTABLE_SIGHTINGS:
-    case E.SEARCH_LOCATIONS_RETURNED:
-      return Object.assign({}, state, {
-        searchUpdateCounter: state.searchUpdateCounter + 1
-      });
+//    case E.WINDOW_RESIZED:
+//    case E.HOTSPOT_SIGHTINGS_UPDATE:
+//    case E.SET_LOCATION_FILTER:
+//    case E.STORE_NOTABLE_SIGHTINGS:
+//    case E.SEARCH_LOCATIONS_RETURNED:
+//      return Object.assign({}, state, {
+//        searchUpdateCounter: state.searchUpdateCounter + 1
+//      });
 
     default:
       return state;
@@ -366,7 +366,7 @@ function results (state = {
 
 function locationsPanel (state = {
   visible: false,
-  updateCounter: 0,
+//  updateCounter: 0,
   sort: C.LOCATION_SORT.FIELDS.LOCATION,
   sortDir: C.SORT_DIR.DEFAULT,
   filter: '',
@@ -384,7 +384,7 @@ function locationsPanel (state = {
       return Object.assign({}, state, {
         sort: action.sort,
         sortDir: newSort,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     case E.TOGGLE_PANEL_VISIBILITY:
@@ -392,36 +392,36 @@ function locationsPanel (state = {
       let updateCounter = state.updateCounter;
       if (action.panel === C.PANELS.LOCATIONS) {
         newVisibility = !newVisibility;
-        updateCounter = updateCounter+1;
+        //updateCounter = updateCounter+1;
       }
       return Object.assign({}, state, {
         visible: newVisibility,
-        updateCounter: updateCounter
+        //updateCounter: updateCounter
       });
 
     case E.HIDE_LOCATIONS_PANEL:
       return Object.assign({}, state, {
         visible: false,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     case E.SEARCH_LOCATIONS_RETURNED:
     case E.STORE_NOTABLE_SIGHTINGS:
       return Object.assign({}, state, {
         visible: action.showLocationsPanel,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     case E.SET_LOCATION_FILTER:
       return Object.assign({}, state, {
         filter: action.filter,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     case E.LOCATION_SELECTED:
       return Object.assign({}, state, {
         selectedLocation: action.location,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     // if we resize the window down to mobile mode, the filter field isn't available so we clear it
@@ -429,14 +429,14 @@ function locationsPanel (state = {
       const filter = (action.width <= C.MOBILE_BREAKPOINT_WIDTH) ? '' : state.filter;
       return Object.assign({}, state, {
         filter: filter,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     // when the visible locations change (e.g. a fresh search or a map zoom/pan), check that the selected location
     // is still in the list of available locations. If not, reset the sucker
     case E.VISIBLE_LOCATIONS_UPDATED:
       const updatedState = {
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       };
       if (state.selectedLocation) {
         let found = _.findWhere(action.locations, { i: state.selectedLocation });
@@ -453,13 +453,13 @@ function locationsPanel (state = {
       return Object.assign({}, state, {
         filter: '',
         selectedLocation: '',
-        updateCounter: state.updateCounter+1
+//        updateCounter: state.updateCounter+1
       });
 
-    case E.SET_LOCALE:
-    case E.SEARCH_REQUEST_ENDED:
-    case E.HOTSPOT_SIGHTINGS_UPDATE:
-      return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
+//    case E.SET_LOCALE:
+//    case E.SEARCH_REQUEST_ENDED:
+//    case E.HOTSPOT_SIGHTINGS_UPDATE:
+//      return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 
     default:
       return state;
@@ -470,7 +470,7 @@ function locationsPanel (state = {
 function sightingsPanel (state = {
   visible: false,
   filter: '',
-  updateCounter: 0,
+  //updateCounter: 0,
   sort: C.SIGHTINGS_SORT.FIELDS.SPECIES,
   sortDir: C.SORT_DIR.DEFAULT
 }, action) {
@@ -481,17 +481,17 @@ function sightingsPanel (state = {
       let updateCounter = state.updateCounter;
       if (action.panel === C.PANELS.SPECIES) {
         newVisibility = !newVisibility;
-        updateCounter = updateCounter+1;
+        //updateCounter = updateCounter+1;
       }
       return Object.assign({}, state, {
         visible: newVisibility,
-        updateCounter: updateCounter
+        //updateCounter: updateCounter
       });
 
     case E.SEARCH_REQUEST_STARTED:
       return Object.assign({}, state, {
         visible: false,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     case E.SIGHTINGS_SORTED:
@@ -504,19 +504,21 @@ function sightingsPanel (state = {
       return Object.assign({}, state, {
         sort: action.sort,
         sortDir: newSort,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     case E.SHOW_SIGHTINGS_PANEL:
-      return Object.assign({}, state, { visible: true, updateCounter: state.updateCounter+1 });
+      //return Object.assign({}, state, { visible: true, updateCounter: state.updateCounter+1 });
+      return Object.assign({}, state, { visible: true });
 
     case E.HIDE_SIGHTINGS_PANEL:
-      return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
+      //return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
+      return Object.assign({}, state, { visible: false });
 
     case E.SET_SPECIES_FILTER:
       return Object.assign({}, state, {
         filter: action.filter,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     // if we resize the window down to mobile mode, the filter field isn't available so we clear it
@@ -524,17 +526,18 @@ function sightingsPanel (state = {
       const filter = (action.width <= C.MOBILE_BREAKPOINT_WIDTH) ? '' : state.filter;
       return Object.assign({}, state, {
         filter: filter,
-        updateCounter: state.updateCounter+1
+        //updateCounter: state.updateCounter+1
       });
 
     case E.SHOW_MODAL:
-      return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
+      //return Object.assign({}, state, { visible: false, updateCounter: state.updateCounter+1 });
+      return Object.assign({}, state, { visible: false });
 
-    case E.SET_LOCALE:
-    case E.LOCATION_SELECTED:
-    case E.SEARCH_REQUEST_ENDED:
-    case E.SET_SCIENTIFIC_NAME_VISIBILITY:
-      return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
+//    case E.SET_LOCALE:
+//    case E.LOCATION_SELECTED:
+//    case E.SEARCH_REQUEST_ENDED:
+//    case E.SET_SCIENTIFIC_NAME_VISIBILITY:
+//      return Object.assign({}, state, { updateCounter: state.updateCounter+1 });
 
     default:
       return state;

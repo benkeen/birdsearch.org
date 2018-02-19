@@ -99,21 +99,23 @@ class Map extends Component {
       return true;
     }
 
-    if (this.props.resetSearchCounter !== nextProps.resetSearchCounter) {
-      isNewSearch = true;
-      this.clearMarkers();
-      _suppressBoundaryChangeUpdate = true;
-    }
+    // TODO!
+//    if (this.props.resetSearchCounter !== nextProps.resetSearchCounter) {
+//      isNewSearch = true;
+//      this.clearMarkers();
+//      _suppressBoundaryChangeUpdate = true;
+//    }
 
     if (this.props.mapStyle !== nextProps.mapStyle) {
       updateCustomControlVisibility(nextProps.mapStyle);
       _map.setOptions({ styles: styles[nextProps.mapStyle] });
     }
 
+    // TODO
     // map updates are explicitly throttled by incrementing mapSettings.searchUpdateCounter
-    if (this.props.searchUpdateCounter === nextProps.searchUpdateCounter) {
-      return false;
-    }
+//    if (this.props.searchUpdateCounter === nextProps.searchUpdateCounter) {
+//      return false;
+//    }
 
     _currentSearchType = nextProps.searchSettings.searchType;
     this.applyLocationFilter(nextProps);

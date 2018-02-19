@@ -22,14 +22,14 @@ export class SightingsPanel extends React.Component {
     $(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
   }
 
-  shouldComponentUpdate (nextProps) {
-    const locationsJustAdded = this.props.locations.length === 0 && nextProps.locations.length > 0;
-    if (locationsJustAdded) {
-      return true;
-    }
-
-    return this.props.updateCounter !== nextProps.updateCounter;
-  }
+//  shouldComponentUpdate (nextProps) {
+//    const locationsJustAdded = this.props.locations.length === 0 && nextProps.locations.length > 0;
+//    if (locationsJustAdded) {
+//      return true;
+//    }
+//
+//    return this.props.updateCounter !== nextProps.updateCounter;
+//  }
 
   componentWillReceiveProps (nextProps) {
     const { visible, env } = this.props;
@@ -220,7 +220,7 @@ export class SightingsPanel extends React.Component {
 }
 SightingsPanel.PropTypes = {
   visible: PropTypes.bool.isRequired,
-  updateCounter: PropTypes.number.isRequired,
+  //updateCounter: PropTypes.number.isRequired,
   locations: PropTypes.array.isRequired,
   sightings: PropTypes.object.isRequired,
   searchSettings: PropTypes.object.isRequired,
