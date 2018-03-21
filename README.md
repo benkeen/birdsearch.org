@@ -1,5 +1,7 @@
 # birdsearch.org
 
+### INCOMPLETE 2017 rewrite.
+
 Like many birders I know, discovering [eBird.org](http://ebird.org) was a cause for celebration. It brought birding 
 out of the dark ages of pen and pencil and into the digital age. Now we have a simple, centralized place for openly 
 tracking observations.
