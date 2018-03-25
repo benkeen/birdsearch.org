@@ -1,47 +1,48 @@
 @import "mixins";
 
 html, body {
-  height: 100%;
+	height: 100%;
 }
+
 body {
-  @include display-flex();
-  @include flex-direction(column);
+	@include display-flex();
+	@include flex-direction(column);
 }
 
 #app {
-  @include display-flex();
-  @include flex-direction(column);
-  @include flex(1);
+	@include display-flex();
+	@include flex-direction(column);
+	@include flex(1);
 }
 
 #page-wrapper {
-  @include display-flex();
-  @include flex-direction(column);
-  @include flex(1);
+	@include display-flex();
+	@include flex-direction(column);
+	@include flex(1);
 }
 
 header {
-  @include display-flex();
-  @include flex-direction(row);
-  .navbar {
-    @include flex(0 0 300px);
-    margin: 0;
-  }
-  .header-search {
-    @include flex(1);
-  }
+	@include display-flex();
+	@include flex-direction(row);
+	.navbar {
+		@include flex(0 0 300px);
+		margin: 0;
+	}
+	.header-search {
+		@include flex(1);
+	}
 }
 
 #main-panel {
-  @include display-flex();
-  @include flex-direction(row);
-  @include flex(1);
+	@include display-flex();
+	@include flex-direction(row);
+	@include flex(1);
 }
 
 .flex-body {
-  @include flex(1);
+	@include flex(1);
 }
 
 .flex-fill {
-  @include flex(0 0 auto);
+	@include flex(0 0 auto);
 }

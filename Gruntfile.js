@@ -1,23 +1,23 @@
-module.exports = function(grunt) {
-  require('load-grunt-tasks')(grunt);
+module.exports = function (grunt) {
+	require('load-grunt-tasks')(grunt);
 
-  var appFiles = [
-    './core/*.js',
-    './core/*.jsx',
+	var appFiles = [
+		'./core/*.js',
+		'./core/*.jsx',
 		'./i18n/*.jsx',
-    './components/**/*.js',
-    './components/**/*.jsx'
-  ];
+		'./components/**/*.js',
+		'./components/**/*.jsx'
+	];
 
-  const package = grunt.file.readJSON('package.json');
-  const version = package.version;
-  var config = {
+	const package = grunt.file.readJSON('package.json');
+	const version = package.version;
+	var config = {
 		pkg: package,
 
-    // this task converts javascript/JSX files and stashes an es5-friendly version of them in /dist
+		// this task converts javascript/JSX files and stashes an es5-friendly version of them in /dist
 		babel: {
 			options: {
-        plugins: ['transform-react-jsx', 'transform-object-assign'],
+				plugins: ['transform-react-jsx', 'transform-object-assign'],
 				sourceMap: true,
 				presets: ['es2015', 'react']
 			},
@@ -32,98 +32,105 @@ module.exports = function(grunt) {
 			}
 		},
 
-    uglify: {
-      js: {
-        files: {
-          [`dist/bundle-${version}.min.js`]: [`dist/bundle-${version}.js`]
-        },
-        options: {
-          report: "min",
-          compress: {}
-        }
-      }
-    },
+		uglify: {
+			js: {
+				files: {
+					[`dist/bundle-${version}.min.js`]: [`dist/bundle-${version}.js`]
+				},
+				options: {
+					report: "min",
+					compress: {}
+				}
+			}
+		},
 
-    // bundles up the whole shebang
-    browserify: {
-      dist: {
-        cwd: './',
-        files: {
-          [`dist/bundle-${version}.js`]: 'dist/core/init.js'
-        }
-      }
-    },
+		// bundles up the whole shebang
+		browserify: {
+			dist: {
+				cwd: './',
+				files: {
+					[`dist/bundle-${version}.js`]: 'dist/core/init.js'
+				}
+			}
+		},
 
-    env: {
-      build : {
-        NODE_ENV: 'production'
-      }
-    },
+		env: {
+			build: {
+				NODE_ENV: 'production'
+			}
+		},
 
-    watch: {
-      scripts: {
-        cwd: './src',
-        files: ['**/*.jsx'],
-        tasks: ['babel:jsx', 'browserify']
-      },
-      sass: {
-        files: ['**/*.scss'],
-        tasks: ['sass', 'copy', 'cssmin']
-      }
-    },
+		watch: {
+			scripts: {
+				cwd: './src',
+				files: ['**/*.jsx'],
+				tasks: ['babel:jsx', 'browserify']
+			},
+			sass: {
+				files: ['**/*.scss'],
+				tasks: ['sass', 'copy', 'cssmin']
+			}
+		},
 
-    template: {
-      dev: {
-        options: {
-          data: { version: package.version }
-        },
-        files: {
-          'dist/index.html': ['src/template-dev.html']
-        }
-      },
-      prod: {
-        options: {
-          data: { version: package.version }
-        },
-        files: {
-          'dist/index.html': ['src/template-prod.html']
-        }
-      }
-    },
+		template: {
+			dev: {
+				options: {
+					data: {version: package.version}
+				},
+				files: {
+					'dist/index.html': ['src/template-dev.html']
+				}
+			},
+			prod: {
+				options: {
+					data: {version: package.version}
+				},
+				files: {
+					'dist/index.html': ['src/template-prod.html']
+				}
+			}
+		},
 
-    sass: {
-      dist: {
-        options: {
-          style: 'expanded'
-        },
-        files: {
-          'dist/css/styles.css': 'src/css/sass/styles.scss'
-        }
-      }
-    },
+		sass: {
+			dist: {
+				options: {
+					style: 'expanded'
+				},
+				files: {
+					'dist/css/styles.css': 'src/css/sass/styles.scss'
+				}
+			}
+		},
 
-    copy: {
-      fonts: { src: './src/css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile' },
-      libs: { src: './src/libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile' },
-      images: { src: '**/*', dest: 'dist/images/', cwd: 'src/images/', flatten: false, expand: true, filter: 'isFile' }
-    },
+		copy: {
+			fonts: {src: './src/css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile'},
+			libs: {src: './src/libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile'},
+			images: {
+				src: '**/*',
+				dest: 'dist/images/',
+				cwd: 'src/images/',
+				flatten: false,
+				expand: true,
+				filter: 'isFile'
+			}
+		},
 
-    cssmin: {
-      options: {
-        shorthandCompacting: false,
-        roundingPrecision: -1
-      },
-      target: {
-        files: {
-          'dist/css/bootstrap.min.css': ['src/css/bootstrap-3.3.7.css'],
-          [`dist/css/styles-${version}.css`]: ['dist/css/styles.css']
-        }
-      }
-    }
+		cssmin: {
+			options: {
+				shorthandCompacting: false,
+				roundingPrecision: -1
+			},
+			target: {
+				files: {
+					'dist/css/bootstrap.min.css': ['src/css/bootstrap-3.3.7.css'],
+					[`dist/css/styles-${version}.css`]: ['dist/css/styles.css']
+				}
+			}
+		}
 	};
 
 	grunt.initConfig(config);
-  grunt.registerTask('prod', ['env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin', 'template:prod']);
-  grunt.registerTask('dev', ['env', 'babel:jsx', 'browserify', 'sass', 'copy', 'cssmin', 'template:dev']);
-  grunt.registerTask('start', ['dev', 'watch']);
+	grunt.registerTask('prod', ['env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin', 'template:prod']);
+	grunt.registerTask('dev', ['env', 'babel:jsx', 'browserify', 'sass', 'copy', 'cssmin', 'template:dev']);
+	grunt.registerTask('start', ['dev', 'watch']);
 };

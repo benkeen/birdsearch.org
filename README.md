@@ -15,6 +15,11 @@ React, Redux, react-intl, Node.
 
 ## Versions
 
+
+### v2.2.0 - Mar, 2018 
+- *Ongoing*.
+- Updates for mobile.
+
 ### v2.1.0 - Dec 11th, 2016
 Mobile support.
 

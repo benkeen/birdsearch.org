@@ -58,7 +58,6 @@ const getUniqueSpeciesInLocationList = (locations, sightings, obsRecency) => {
 };
 
 
-
 // return the species seen for a particular location and observation recency
 const getLocationSpeciesList = (locationID, sightings, obsRecency) => {
 	if (!_.has(sightings, locationID)) {
@@ -111,65 +110,67 @@ const getLocationById = (locations, locationId) => {
 const getSightings = (locations, sightings, obsRecency, targetLocationID = null) => {
 	let locationIDs = getLocationIDs(locations);
 	let dataBySpecies = {};
-  let allDataBySpecies = {}; // needed to figure out how many locations each species is at
+	let allDataBySpecies = {}; // needed to figure out how many locations each species is at
 	let numSpecies = 0;
 
-  // gah! Super complicated.
+	// gah! Super complicated.
 	_.each(locationIDs, (locationID) => {
 		let currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
 
-    // only include the species info if the users's looking as "All Locations", or if this current location
-    // is the specific one
-    _.each(currLocationSpeciesInfo.species, function (info, sciName) {
-      if (targetLocationID === null || locationID === targetLocationID) {
-        if (!_.has(dataBySpecies, sciName)) {
-          dataBySpecies[sciName] = {
-            comName: info.comName,
-            sciName: sciName,
-            obs: [],
-            locations: [],
-            mostRecentObservationTime: null,
-            howManyCount: 0
-          };
-          numSpecies++;
-        }
-        dataBySpecies[sciName].obs.push({
-          howMany: info.howMany,
-          lat: info.lat,
-          lng: info.lng,
-          locID: info.locID,
-          locName: info.locName,
-          obsDt: info.obsDt,
-          obsReviewed: info.obsReviewed,
-          obsValid: info.obsValid
-        });
-      }
+		// only include the species info if the users's looking as "All Locations", or if this current location
+		// is the specific one
+		_.each(currLocationSpeciesInfo.species, function (info, sciName) {
+			if (targetLocationID === null || locationID === targetLocationID) {
+				if (!_.has(dataBySpecies, sciName)) {
+					dataBySpecies[sciName] = {
+						comName: info.comName,
+						sciName: sciName,
+						obs: [],
+						locations: [],
+						mostRecentObservationTime: null,
+						howManyCount: 0
+					};
+					numSpecies++;
+				}
+				dataBySpecies[sciName].obs.push({
+					howMany: info.howMany,
+					lat: info.lat,
+					lng: info.lng,
+					locID: info.locID,
+					locName: info.locName,
+					obsDt: info.obsDt,
+					obsReviewed: info.obsReviewed,
+					obsValid: info.obsValid
+				});
+			}
 
-      // allDataBySpecies is a temp var in this method used to contain ALL observation details for each species,
-      // regardless of whether the user is viewing a specific location. This is used to show the full list of locations
-      // where a species has been seen
-      if (!_.has(allDataBySpecies, sciName)) {
-        allDataBySpecies[sciName] = [];
-      }
-      allDataBySpecies[sciName].push({ locID: info.locID, locName: info.locName, subID: info.subID });
+			// allDataBySpecies is a temp var in this method used to contain ALL observation details for each species,
+			// regardless of whether the user is viewing a specific location. This is used to show the full list of locations
+			// where a species has been seen
+			if (!_.has(allDataBySpecies, sciName)) {
+				allDataBySpecies[sciName] = [];
+			}
+			allDataBySpecies[sciName].push({ locID: info.locID, locName: info.locName, subID: info.subID });
 		});
 	});
 
-  // now append ALL locations for the found species. TODO this only needs to change when the search does. It shouldn't be here.
-  _.each(dataBySpecies, (speciesData, sciName) => {
-    const uniqueLocations = [];
+	// now append ALL locations for the found species. TODO this only needs to change when the search does. It shouldn't be here.
+	_.each(dataBySpecies, (speciesData, sciName) => {
+		const uniqueLocations = [];
 
-    _.each(allDataBySpecies[sciName], (obsInfo) => {
-      if (uniqueLocations.indexOf(obsInfo.locID) === -1) {
-        uniqueLocations.push(obsInfo.locID);
-        dataBySpecies[sciName].locations.push(obsInfo);
-      }
-    });
-  });
+		_.each(allDataBySpecies[sciName], (obsInfo) => {
+			if (uniqueLocations.indexOf(obsInfo.locID) === -1) {
+				uniqueLocations.push(obsInfo.locID);
+				dataBySpecies[sciName].locations.push(obsInfo);
+			}
+		});
+	});
 
-  // now convert the sightings into an array
+	// now convert the sightings into an array
 	var sightingsData = _.values(dataBySpecies);
-	sightingsData.sort(function(a, b) { return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1; });
+	sightingsData.sort(function (a, b) {
+		return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1;
+	});
 
 	var results = _.map(sightingsData, function (sighting) {
 		var lastObservation = 0;
@@ -218,24 +219,24 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 			return;
 		}
 
-    if (targetLocationID && locationID !== targetLocationID) {
-      return;
-    }
+		if (targetLocationID && locationID !== targetLocationID) {
+			return;
+		}
 
-		for (let i=0; i<obsRecency; i++) {
+		for (let i = 0; i < obsRecency; i++) {
 			let daySightings = sightingData.data[i].obs;
-			for (let j=0; j<daySightings.length; j++) {
+			for (let j = 0; j < daySightings.length; j++) {
 				const info = daySightings[j];
-        const time = moment(info.obsDt, 'YYYY-MM-DD HH:mm');
+				const time = moment(info.obsDt, 'YYYY-MM-DD HH:mm');
 
-        let status;
-        if (info.obsValid) {
-          status = 'confirmed';
-        } else if (info.obsReviewed) {
-          status = 'reviewed';
-        } else {
-          status = 'not-reviewed';
-        }
+				let status;
+				if (info.obsValid) {
+					status = 'confirmed';
+				} else if (info.obsReviewed) {
+					status = 'reviewed';
+				} else {
+					status = 'not-reviewed';
+				}
 
 				data.push({
 					comName: info.comName,
@@ -243,12 +244,12 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 					howMany: info.howMany,
 					lat: info.lat,
 					lng: info.lng,
-          subID: info.subID,
+					subID: info.subID,
 					locID: info.locID,
 					locName: info.locName,
-          reporter: `${info.firstName} ${info.lastName}`,
-          obsDt: time,
-          status: status,
+					reporter: `${info.firstName} ${info.lastName}`,
+					obsDt: time,
+					status: status,
 					obsDtDisplay: time.format('MMM Do, H:mm a'),
 					obsReviewed: info.obsReviewed,
 					obsValid: info.obsValid
@@ -261,23 +262,23 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 };
 
 const getNumNotableSightings = (locations, sightings, obsRecency) => {
-  const locationIDs = _.pluck(locations, 'i');
+	const locationIDs = _.pluck(locations, 'i');
 
-  let count = 0;
-  _.each(sightings, (sightingData, locationID) => {
-    if (!sightingData.fetched) {
-      return;
-    }
-    if (locationIDs.indexOf(locationID) === -1) {
-      return;
-    }
+	let count = 0;
+	_.each(sightings, (sightingData, locationID) => {
+		if (!sightingData.fetched) {
+			return;
+		}
+		if (locationIDs.indexOf(locationID) === -1) {
+			return;
+		}
 
-    for (let i=0; i<obsRecency; i++) {
-      count += sightingData.data[i].obs.length;
-    }
-  });
+		for (let i = 0; i < obsRecency; i++) {
+			count += sightingData.data[i].obs.length;
+		}
+	});
 
-  return count;
+	return count;
 };
 
 const highlightString = (string, filter) => {
@@ -305,7 +306,9 @@ const sortLocations = (locations, locationSightings, observationRecency, sort, s
 
 	// apply the appropriate sort
 	if (sort === C.LOCATION_SORT.FIELDS.LOCATION) {
-		sortedLocations = _.sortBy(locations, function (locInfo) { return locInfo.n; });
+		sortedLocations = _.sortBy(locations, function (locInfo) {
+			return locInfo.n;
+		});
 	} else {
 		// the 10000 thing is a bit weird, but basically we just need to sort the species count from largest to smallest
 		// when the user first clicks the column. That does it.
@@ -364,8 +367,8 @@ const getPacketSize = (numLocations) => {
 
 const chunkArray = (arr, chunkSize) => {
 	const chunkedArray = [];
-	for (let i=0; i<arr.length; i+=chunkSize) {
-		chunkedArray.push(arr.slice(i, i+chunkSize));
+	for (let i = 0; i < arr.length; i += chunkSize) {
+		chunkedArray.push(arr.slice(i, i + chunkSize));
 	}
 	return chunkedArray;
 };
@@ -380,118 +383,134 @@ const getColSort = (field, sort, sortDir) => {
 	className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
 
 	return (
-		<span className={className} />
+	<span className={className}/>
 	);
 };
 
 const sortSightings = (sightings, sort, sortDir) => {
-  let sorted = [];
+	let sorted = [];
 
-  switch (sort) {
-    case C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS:
-      if (sortDir === C.SORT_DIR.DEFAULT) {
-        sorted = _.sortBy(sightings, function (i) { return i.locations.length; });
-      } else {
-        sorted = _.sortBy(sightings, function (i) { return -i.locations.length; });
-      }
-      break;
+	switch (sort) {
+		case C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS:
+			if (sortDir === C.SORT_DIR.DEFAULT) {
+				sorted = _.sortBy(sightings, function (i) {
+					return i.locations.length;
+				});
+			} else {
+				sorted = _.sortBy(sightings, function (i) {
+					return -i.locations.length;
+				});
+			}
+			break;
 
-    case C.SIGHTINGS_SORT.FIELDS.LAST_SEEN:
-      if (sortDir === C.SORT_DIR.DEFAULT) {
-        sorted = _.sortBy(sightings, function (i) { return i.mostRecentObservation.format('X'); });
-      } else {
-        sorted = _.sortBy(sightings, function (i) { return -i.mostRecentObservation.format('X'); });
-      }
-      break;
+		case C.SIGHTINGS_SORT.FIELDS.LAST_SEEN:
+			if (sortDir === C.SORT_DIR.DEFAULT) {
+				sorted = _.sortBy(sightings, function (i) {
+					return i.mostRecentObservation.format('X');
+				});
+			} else {
+				sorted = _.sortBy(sightings, function (i) {
+					return -i.mostRecentObservation.format('X');
+				});
+			}
+			break;
 
-    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
-    case C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
-      if (sortDir === C.SORT_DIR.DEFAULT) {
-        sorted = _.sortBy(sightings, function (i) { return i.howManyCount; });
-      } else {
-        sorted = _.sortBy(sightings, function (i) { return -i.howManyCount; });
-      }
-      break;
+		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
+		case C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
+			if (sortDir === C.SORT_DIR.DEFAULT) {
+				sorted = _.sortBy(sightings, function (i) {
+					return i.howManyCount;
+				});
+			} else {
+				sorted = _.sortBy(sightings, function (i) {
+					return -i.howManyCount;
+				});
+			}
+			break;
 
-    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION:
-      if (sortDir === C.SORT_DIR.DEFAULT) {
-        sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase());
-      } else {
-        sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase().charCodeAt() * -1);
-      }
-      break;
+		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION:
+			if (sortDir === C.SORT_DIR.DEFAULT) {
+				sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase());
+			} else {
+				sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase().charCodeAt() * -1);
+			}
+			break;
 
-    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN:
-      if (sortDir === C.SORT_DIR.DEFAULT) {
-        sorted = _.sortBy(sightings, function (i) { return i.obsDt.format('X'); });
-      } else {
-        sorted = _.sortBy(sightings, function (i) { return -i.obsDt.format('X'); });
-      }
-      break;
+		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN:
+			if (sortDir === C.SORT_DIR.DEFAULT) {
+				sorted = _.sortBy(sightings, function (i) {
+					return i.obsDt.format('X');
+				});
+			} else {
+				sorted = _.sortBy(sightings, function (i) {
+					return -i.obsDt.format('X');
+				});
+			}
+			break;
 
-    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER:
-      if (sortDir === C.SORT_DIR.DEFAULT) {
-        sorted = _.sortBy(sightings, (i) => i.reporter.toLowerCase());
-      } else {
-        sorted = _.sortBy(sightings, (i) => i.reporter.toLowerCase().charCodeAt() * -1);
-      }
-      break;
+		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER:
+			if (sortDir === C.SORT_DIR.DEFAULT) {
+				sorted = _.sortBy(sightings, (i) => i.reporter.toLowerCase());
+			} else {
+				sorted = _.sortBy(sightings, (i) => i.reporter.toLowerCase().charCodeAt() * -1);
+			}
+			break;
 
-    case C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS:
-      if (sortDir === C.SORT_DIR.DEFAULT) {
-        sorted = _.sortBy(sightings, (i) => i.status);
-      } else {
-        sorted = _.sortBy(sightings, (i) => i.status.charCodeAt() * -1);
-      }
-      break;
+		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS:
+			if (sortDir === C.SORT_DIR.DEFAULT) {
+				sorted = _.sortBy(sightings, (i) => i.status);
+			} else {
+				sorted = _.sortBy(sightings, (i) => i.status.charCodeAt() * -1);
+			}
+			break;
 
-    // species name
-    default:
-      if (sortDir === C.SORT_DIR.DEFAULT) {
-        sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase() );
-      } else {
-        sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase().charCodeAt() * -1);
-      }
-      break;
-  }
+	// species name
+		default:
+			if (sortDir === C.SORT_DIR.DEFAULT) {
+				sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase());
+			} else {
+				sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase().charCodeAt() * -1);
+			}
+			break;
+	}
 
-  return sorted;
+	return sorted;
 };
 
 
 const rad = (x) => {
-  return x * Math.PI/180;
+	return x * Math.PI / 180;
 };
 
 
 const findClosestLatLng = (sourceLat, sourceLng, list) => {
-  const R = 6371; // radius of earth in km
+	const R = 6371; // radius of earth in km
 
-  var distances = [];
-  var closest = null;
+	var distances = [];
+	var closest = null;
 
-  for (let i=0; i<list.length; i++) {
-    let lat = list[i][0];
-    let lng = list[i][1];
+	for (let i = 0; i < list.length; i++) {
+		let lat = list[i][0];
+		let lng = list[i][1];
 
-    var deltaLat = rad(lat - sourceLat);
-    var deltaLng = rad(lng - sourceLng);
-    var a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) + Math.cos(rad(lat)) *
-      Math.cos(rad(lat)) * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+		var deltaLat = rad(lat - sourceLat);
+		var deltaLng = rad(lng - sourceLng);
+		var a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) + Math.cos(rad(lat)) *
+		Math.cos(rad(lat)) * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		var d = R * c;
 
-    distances[i] = d;
+		distances[i] = d;
 
-    if (closest === null || d < distances[closest]) {
-      closest = i;
-    }
-  }
-  return {
-    lat: list[closest][0],
-    lng: list[closest][1]
-  };
+		if (closest === null || d < distances[closest]) {
+			closest = i;
+		}
+	}
+	return {
+		lat: list[closest][0],
+		lng: list[closest][1]
+	};
 };
 
 
@@ -516,7 +535,7 @@ export {
 	getLocationById,
 	getSightings,
 	getNotableSightings,
-  getNumNotableSightings,
+	getNumNotableSightings,
 	highlightString,
 	sortLocations,
 	getNumLoadedLocations,
@@ -524,8 +543,8 @@ export {
 	getPacketSize,
 	chunkArray,
 	getColSort,
-  sortSightings,
-  rad,
-  findClosestLatLng,
+	sortSightings,
+	rad,
+	findClosestLatLng,
 	getAllLocationsCount
 };

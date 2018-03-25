@@ -1,79 +1,89 @@
 .gm-style * {
-  width: auto;
-  height: auto;
+	width: auto;
+	height: auto;
 }
-.gm-style .gm-style-mtc>div {
-  padding: 4px 10px !important;
-}
-.has-results .gm-style .gm-style-mtc>div {
-  &:first-child {
-    margin-top: 26px;
-  }
-  &:nth-child(2) {
-    font-size: 8px;
-  }
-}
-.has-results .map-btn {
-  top: 27px !important;
-}
-.map-btn {
-  margin-top: 6px;
-  background-color: white;
-  cursor: pointer;
-  text-align: center;
-  font-family: Roboto, Arial, sans-serif;
-  font-size: 12px;
-  line-height: 26px;
-  padding: 0 8px;
-  color: #999999;
 
-  &.omit {
-    display: inherit;
-    opacity: 0.01;
-    cursor: inherit;
-  }
+.gm-style .gm-style-mtc > div {
+	padding: 4px 10px !important;
 }
+
+.has-results .gm-style .gm-style-mtc > div {
+	&:first-child {
+		margin-top: 26px;
+	}
+	&:nth-child(2) {
+		font-size: 8px;
+	}
+}
+
+.has-results .map-btn {
+	top: 27px !important;
+}
+
+.map-btn {
+	margin-top: 6px;
+	background-color: white;
+	cursor: pointer;
+	text-align: center;
+	font-family: Roboto, Arial, sans-serif;
+	font-size: 12px;
+	line-height: 26px;
+	padding: 0 8px;
+	color: #999999;
+
+	&.omit {
+		display: inherit;
+		opacity: 0.01;
+		cursor: inherit;
+	}
+}
+
 .map-btn-selected {
-  color: #111111;
+	color: #111111;
 }
+
 .map-btn-first {
-  border-radius: 3px 0 0 3px;
+	border-radius: 3px 0 0 3px;
 }
+
 .map-btn-last {
-  margin-right: 6px;
-  border-radius: 0 3px 3px 0;
+	margin-right: 6px;
+	border-radius: 0 3px 3px 0;
 }
 
 .marker-popup {
-  h4 {
-    color: #111111;
-  }
+	h4 {
+		color: #111111;
+	}
 }
 
 .notable-sightings-list-wrapper {
-  max-height: 200px;
-  overflow-y: auto;
+	max-height: 200px;
+	overflow-y: auto;
 }
-.notable-sightings-list {
-  margin-bottom: 8px;
-  color: #333333;
-  .species-name {
-    padding-right: 30px;
-  }
-  .obs-date {
-    padding-right: 30px;
-  }
-  a {
-    color: #bbbbbb;
-    &:hover {
-      color: #0099cc;
-    }
-  }
-  .has-rich-media {
 
-  }
-  .checklist-link {
-    margin-right: 20px;
-    &:after { display: none; }
-  }
+.notable-sightings-list {
+	margin-bottom: 8px;
+	color: #333333;
+	.species-name {
+		padding-right: 30px;
+	}
+	.obs-date {
+		padding-right: 30px;
+	}
+	a {
+		color: #bbbbbb;
+		&:hover {
+			color: #0099cc;
+		}
+	}
+	.has-rich-media {
+
+	}
+	.checklist-link {
+		margin-right: 20px;
+		&:after {
+			display: none;
+		}
+	}
 }

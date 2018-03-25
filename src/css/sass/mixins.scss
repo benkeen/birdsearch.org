@@ -1,29 +1,29 @@
-@mixin transition-all ($speed) {
-  -webkit-transition: all $speed;
-  transition: all $speed;
+@mixin transition-all($speed) {
+	-webkit-transition: all $speed;
+	transition: all $speed;
 }
 
-@mixin display-flex () {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+@mixin display-flex() {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
 }
 
-@mixin flex ($val) {
-  -webkit-flex: $val;
-  -ms-flex: $val;
-  flex: $val;
+@mixin flex($val) {
+	-webkit-flex: $val;
+	-ms-flex: $val;
+	flex: $val;
 }
 
-@mixin flex-direction ($direction) {
-  -webkit-flex-direction: $direction;
-  -ms-flex-direction: $direction;
-  flex-direction: $direction;
+@mixin flex-direction($direction) {
+	-webkit-flex-direction: $direction;
+	-ms-flex-direction: $direction;
+	flex-direction: $direction;
 }
 
-@mixin flex-grow ($val) {
-  -webkit-flex-grow: $val;
-  -ms-flex-grow: $val;
-  flex-grow: $val;
+@mixin flex-grow($val) {
+	-webkit-flex-grow: $val;
+	-ms-flex-grow: $val;
+	flex-grow: $val;
 }

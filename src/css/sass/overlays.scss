@@ -1,257 +1,255 @@
 @import "variables";
 @import "mixins";
 
-
 .overlay {
-  position: absolute;
-  margin: auto;
-  z-index: 3;
-  left: 0;
-  right: 0;
-  top: 60px;
-  bottom: 0;
-  font-size: 14px;
+	position: absolute;
+	margin: auto;
+	z-index: 3;
+	left: 0;
+	right: 0;
+	top: 60px;
+	bottom: 0;
+	font-size: 14px;
 
-  .close-panel {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #b9b9b9;
-    font-size: 18px;
-    &:hover {
-      color: #333333;
-    }
-  }
-  &.loading .close-panel {
-    cursor: default;
-    &:hover {
-      color: #b9b9b9;
-    }
-  }
+	.close-panel {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		color: #b9b9b9;
+		font-size: 18px;
+		&:hover {
+			color: #333333;
+		}
+	}
+	&.loading .close-panel {
+		cursor: default;
+		&:hover {
+			color: #b9b9b9;
+		}
+	}
 
-  .tab-wrapper {
-    position: relative;
-    color: black;
-  }
-  .tab-content {
-    background-color: white;
-    border-radius: 6px;
-    padding: 40px;
-    color: $textColor;
-  }
+	.tab-wrapper {
+		position: relative;
+		color: black;
+	}
+	.tab-content {
+		background-color: white;
+		border-radius: 6px;
+		padding: 40px;
+		color: $textColor;
+	}
 
-  .nav-pills {
-    margin-top: -10px;
-    margin-left: 0;
-  }
+	.nav-pills {
+		margin-top: -10px;
+		margin-left: 0;
+	}
 }
 
 #intro-overlay {
-  height: 184px;
-  width: 488px;
+	height: 184px;
+	width: 488px;
 
-  .loader {
-    position: absolute;
-    width: 100%;
-    top: 85px;
-  }
-  .css-loader {
-    position: absolute;
-    top: 92px;
-  }
+	.loader {
+		position: absolute;
+		width: 100%;
+		top: 85px;
+	}
+	.css-loader {
+		position: absolute;
+		top: 92px;
+	}
 
-  .loader-label {
-    text-align: center;
-    letter-spacing: 2px;
-    color: #2175B5;
-    margin-top: 40px;
-  }
+	.loader-label {
+		text-align: center;
+		letter-spacing: 2px;
+		color: #2175B5;
+		margin-top: 40px;
+	}
 
-  &.loading {
-    .close-panel, .tab-content > * {
-      opacity: 0.1;
-    }
-  }
-  input {
-    padding: 8px;
-    width: 300px;
-  }
-  button {
-    margin-top: -4px;
-    width: 180px;
-    margin-right: 15px;
-    padding: 7px 16px;
+	&.loading {
+		.close-panel, .tab-content > * {
+			opacity: 0.1;
+		}
+	}
+	input {
+		padding: 8px;
+		width: 300px;
+	}
+	button {
+		margin-top: -4px;
+		width: 180px;
+		margin-right: 15px;
+		padding: 7px 16px;
 
-    &.btn-primary {
-      border-color: #45b6d8;
-      background-image: linear-gradient(#6dc4dd, #53b9d7 60%, #45b6d8);
-      &:hover,&:focus {
-        background-color: #31b0d5;
-      }
-    }
+		&.btn-primary {
+			border-color: #45b6d8;
+			background-image: linear-gradient(#6dc4dd, #53b9d7 60%, #45b6d8);
+			&:hover, &:focus {
+				background-color: #31b0d5;
+			}
+		}
 
-    i {
-      margin-right: 6px;
-    }
-  }
-  .or {
-    font-weight: bold;
-    text-align: center;
-    margin: 10px;
-  }
+		i {
+			margin-right: 6px;
+		}
+	}
+	.or {
+		font-weight: bold;
+		text-align: center;
+		margin: 10px;
+	}
 }
 
 #settings-overlay {
-  height: 281px;
-  width: 520px;
-  &.with-search {
-    height: 331px;
-  }
-  select.num-days {
-    width: 60px;
-  }
-  footer {
-    margin: 10px 0 -10px;
-    padding-top: 15px;
-    border-top: 1px solid #cccccc;
-  }
+	height: 281px;
+	width: 520px;
+	&.with-search {
+		height: 331px;
+	}
+	select.num-days {
+		width: 60px;
+	}
+	footer {
+		margin: 10px 0 -10px;
+		padding-top: 15px;
+		border-top: 1px solid #cccccc;
+	}
 }
 
 #about-overlay {
-  height: 304px;
-  width: 600px;
+	height: 304px;
+	width: 600px;
 }
 
 #report-sightings-overlay {
-  height: 190px;
-  width: 500px;
-  p {
-    margin-bottom: 15px;
-  }
+	height: 190px;
+	width: 500px;
+	p {
+		margin-bottom: 15px;
+	}
 }
 
 #report-sightings-btn {
-  padding: 6px 19px 7px 14px;
-  margin: 0;
-  span {
-    margin-right: 4px;
-  }
+	padding: 6px 19px 7px 14px;
+	margin: 0;
+	span {
+		margin-right: 4px;
+	}
 }
 
 .photo {
-  float: right;
-  margin-left: 15px;
-  border-radius: 3px;
+	float: right;
+	margin-left: 15px;
+	border-radius: 3px;
 }
 
 .settings-row {
-  @include display-flex();
-  @include flex-direction(row);
+	@include display-flex();
+	@include flex-direction(row);
 
-  span {
-    color: #888888;
-    font-weight: normal;
-  }
+	span {
+		color: #888888;
+		font-weight: normal;
+	}
 
-  .settings-row-label {
-    @include flex(0 1 120px);
-    padding-left: 0;
-    span {
-      color: #111111;
-    }
-  }
+	.settings-row-label {
+		@include flex(0 1 120px);
+		padding-left: 0;
+		span {
+			color: #111111;
+		}
+	}
 
-  &>span {
-    @include flex(1);
-    padding: 10px;
-    input {
-      float: left;
-      margin-right: 10px;
-    }
-  }
-  label {
-    margin-bottom: 0;
-    display: inline-block;
-    float: left;
-  }
-  span.zoom-tip {
-    float: right;
-    cursor: pointer;
-    color: $blue;
-    &:hover {
-      color: $linkHover;
-    }
-  }
-  .margin-left {
-    margin-left: 15px;
-  }
+	& > span {
+		@include flex(1);
+		padding: 10px;
+		input {
+			float: left;
+			margin-right: 10px;
+		}
+	}
+	label {
+		margin-bottom: 0;
+		display: inline-block;
+		float: left;
+	}
+	span.zoom-tip {
+		float: right;
+		cursor: pointer;
+		color: $blue;
+		&:hover {
+			color: $linkHover;
+		}
+	}
+	.margin-left {
+		margin-left: 15px;
+	}
 }
 
 .observation-recency-setting {
-  margin-top: 7px;
-  margin-bottom: 4px;
+	margin-top: 7px;
+	margin-bottom: 4px;
 }
 
 .num-days {
-  margin: 0 5px;
-  vertical-align: middle;
+	margin: 0 5px;
+	vertical-align: middle;
 }
 
 #search-type-tooltip, #search-results-tooltip {
-  width: 350px;
-  .tooltip-inner {
-    text-align: left;
-    font-size: 13.5px;
-    padding: 15px;
-    max-width: 350px;
-    b {
-      color: #85bfe9;
-    }
-    ul {
-      margin-top: 8px;
-    }
-  }
-  &.in {
-    opacity: 0.85;
-  }
+	width: 350px;
+	.tooltip-inner {
+		text-align: left;
+		font-size: 13.5px;
+		padding: 15px;
+		max-width: 350px;
+		b {
+			color: #85bfe9;
+		}
+		ul {
+			margin-top: 8px;
+		}
+	}
+	&.in {
+		opacity: 0.85;
+	}
 }
 
-
 #map-styles {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  li {
-    display: inline-block;
-    margin: 0 10px 10px 0;
-    cursor: pointer;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	li {
+		display: inline-block;
+		margin: 0 10px 10px 0;
+		cursor: pointer;
 
-    &.row-end {
-      margin-right: 0;
-    }
-    &.selected {
-      background-color: $blue;
-      color: white;
-      div div {
-        color: white;
-      }
-    }
-    &:hover {
-      background-color: $blue;
-      div div {
-        color: white;
-      }
-    }
+		&.row-end {
+			margin-right: 0;
+		}
+		&.selected {
+			background-color: $blue;
+			color: white;
+			div div {
+				color: white;
+			}
+		}
+		&:hover {
+			background-color: $blue;
+			div div {
+				color: white;
+			}
+		}
 
-    div div {
-      text-align: center;
-      font-size: 12px;
-      color: #666666;
-      padding: 2px 0;
-    }
-  }
+		div div {
+			text-align: center;
+			font-size: 12px;
+			color: #666666;
+			padding: 2px 0;
+		}
+	}
 }
 
 .map-styles-tab {
-  margin-bottom: -20px;
+	margin-bottom: -20px;
 }

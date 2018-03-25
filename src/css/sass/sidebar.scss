@@ -1,23 +1,23 @@
 @import "variables";
 
 #search-panel {
-  border-radius: 4px;
-  padding: 20px;
-  color: white;
+	border-radius: 4px;
+	padding: 20px;
+	color: white;
 
-  #location {
-    width: 100%;
-    padding: 6px;
-  }
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
+	#location {
+		width: 100%;
+		padding: 6px;
+	}
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
 
-    label {
-      display: inline-block;
-      color: white;
-      margin-left: 8px;
-    }
-  }
+		label {
+			display: inline-block;
+			color: white;
+			margin-left: 8px;
+		}
+	}
 }

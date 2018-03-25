@@ -3,6 +3,7 @@
 * {
 	box-sizing: border-box;
 }
+
 body {
 	box-sizing: border-box;
 	padding: 0;
@@ -18,18 +19,23 @@ body {
 		font-weight: normal;
 	}
 }
+
 div {
 	box-sizing: border-box;
 }
+
 section {
 	padding: 0;
 }
+
 .hidden {
 	display: none;
 }
+
 .clear {
 	clear: both;
 }
+
 body {
 	a {
 		color: $blue;
@@ -50,15 +56,19 @@ body {
 		margin: 0;
 	}
 }
+
 a:focus {
 	text-decoration: none;
 }
+
 .tablesorter thead th {
 	cursor: pointer;
 }
+
 button.btn {
 	box-shadow: none;
 }
+
 .close-panel {
 	cursor: pointer;
 }
@@ -67,9 +77,11 @@ button.btn {
 	width: 12px;
 	height: 12px;
 }
+
 ::-webkit-scrollbar-track {
 	background: rgba(0, 0, 0, 0.1);
 }
+
 ::-webkit-scrollbar-thumb {
 	background: rgba(215, 215, 215, 1);
 }

@@ -1,8 +1,8 @@
 const LOCALES = [
-  { name: 'English', key: 'en' },
-  { name: 'Deutsch', key: 'de' },
-  { name: 'Français', key: 'fr' },
-  { name: 'Español', key: 'es' }
+	{ name: 'English', key: 'en' },
+	{ name: 'Deutsch', key: 'de' },
+	{ name: 'Français', key: 'fr' },
+	{ name: 'Español', key: 'es' }
 ];
 export { LOCALES };
 

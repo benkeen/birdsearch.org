@@ -1,113 +1,113 @@
 // German overrides
 .de {
-  #intro-overlay {
-    height: 200px;
-    button {
-      width: 185px;
-      float: left;
-      margin-top: 2px;
-    }
-  }
+	#intro-overlay {
+		height: 200px;
+		button {
+			width: 185px;
+			float: left;
+			margin-top: 2px;
+		}
+	}
 
-  #locations-panel .location {
-    width: 250px;
-    div {
-      width: 230px;
-    }
-  }
+	#locations-panel .location {
+		width: 250px;
+		div {
+			width: 230px;
+		}
+	}
 
-  #settings-overlay {
-    height: 295px;
-  }
-  .has-results #settings-overlay {
-    height: 341px;
-  }
+	#settings-overlay {
+		height: 295px;
+	}
+	.has-results #settings-overlay {
+		height: 341px;
+	}
 
-  .search-type, .search-results {
-    padding-top: 7px;
+	.search-type, .search-results {
+		padding-top: 7px;
 
-    > span {
-      line-height: 25px;
-      display: block;
+		> span {
+			line-height: 25px;
+			display: block;
 
-      input, label {
-        float: none;
-      }
-      input {
-        margin-top: -1px;
-      }
-      .margin-left {
-        margin: 0;
-      }
-      .zoom-tip {
-        margin-top: -22px;
-      }
-      #notable-sightings-setting, #zoom-handling-setting {
-        padding-left: 10px;
-      }
-    }
-  }
+			input, label {
+				float: none;
+			}
+			input {
+				margin-top: -1px;
+			}
+			.margin-left {
+				margin: 0;
+			}
+			.zoom-tip {
+				margin-top: -22px;
+			}
+			#notable-sightings-setting, #zoom-handling-setting {
+				padding-left: 10px;
+			}
+		}
+	}
 }
 
 @media (max-width: 768px) {
-  .de {
+	.de {
 
-    // bit of a pain. Need to undo much of the above for mobile-german, specifically...
-    #intro-overlay {
-      width: 100%;
-      height: 234px;
+		// bit of a pain. Need to undo much of the above for mobile-german, specifically...
+		#intro-overlay {
+			width: 100%;
+			height: 234px;
 
-      button {
-        width: 100%;
-        float: inherit;
-        margin-top: inherit;
-      }
-    }
-    #locations-panel .location {
-      width: 100%;
-      div {
-        width: 100%;
-      }
-    }
-    #settings-overlay {
-      height: 416px;
-      .zoom-tip {
-        top: 34px;
-      }
-      &.with-search {
-        height: 470px;
-      }
-    }
+			button {
+				width: 100%;
+				float: inherit;
+				margin-top: inherit;
+			}
+		}
+		#locations-panel .location {
+			width: 100%;
+			div {
+				width: 100%;
+			}
+		}
+		#settings-overlay {
+			height: 416px;
+			.zoom-tip {
+				top: 34px;
+			}
+			&.with-search {
+				height: 470px;
+			}
+		}
 
-    #settings-overlay .settings-row label {
-      width: 134px;
-    }
+		#settings-overlay .settings-row label {
+			width: 134px;
+		}
 
-    #rt2 {
-      position: absolute;
-      top: 39px;
-    }
-    #zh2 {
-      position: absolute;
-      top: 39px;
-    }
-    #notable-sightings-setting, #zoom-handling-setting {
-      margin-left: 13px;
-    }
+		#rt2 {
+			position: absolute;
+			top: 39px;
+		}
+		#zh2 {
+			position: absolute;
+			top: 39px;
+		}
+		#notable-sightings-setting, #zoom-handling-setting {
+			margin-left: 13px;
+		}
 
-    #scientific-name {
-      position: absolute;
-      top: 16px;
-    }
-    .scientific-name-field label {
-      margin-left: 22px;
-    }
-  }
+		#scientific-name {
+			position: absolute;
+			top: 16px;
+		}
+		.scientific-name-field label {
+			margin-left: 22px;
+		}
+	}
 
-  #about-overlay {
-    height: 342px;
-  }
-  .nav-pills > li > a {
-    padding: 6px;
-  }
+	#about-overlay {
+		height: 342px;
+	}
+	.nav-pills > li > a {
+		padding: 6px;
+	}
 }

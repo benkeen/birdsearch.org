@@ -44,40 +44,40 @@ const showScientificName = (sciName && sciName === '1');
 // I also tried pulling all these stored values into their own section the store, but the data felt like it was badly
 // organized.
 const store = initStore({
-  user: {
-    locale: locale,
-    isFetching: false,
-    userLocationFound: false,
-    lat: null,
-    lng: null,
-    address: ''
-  },
-  mapSettings: {
-    zoom: 3,
-    mapTypeId: mapTypeId,
-    lat: 30,
-    lng: 0,
-    bounds: null,
-    searchUpdateCounter: 0,
-    resetSearchCounter: 0
-  },
-  searchSettings: {
-    searchType: searchType,
-    location: '',
-    lat: null,
-    lng: null,
-    observationRecency: obsRecency,
-    zoomHandling: zoomHandling
-  },
-  settingsOverlay: {
-    selectedTab: C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS,
-    visible: false,
-    searchType: searchType,
-    observationRecency: obsRecency,
-    zoomHandling: zoomHandling,
-    showScientificName: showScientificName,
-    mapStyle: mapStyle
-  }
+	user: {
+		locale: locale,
+		isFetching: false,
+		userLocationFound: false,
+		lat: null,
+		lng: null,
+		address: ''
+	},
+	mapSettings: {
+		zoom: 3,
+		mapTypeId: mapTypeId,
+		lat: 30,
+		lng: 0,
+		bounds: null,
+		searchUpdateCounter: 0,
+		resetSearchCounter: 0
+	},
+	searchSettings: {
+		searchType: searchType,
+		location: '',
+		lat: null,
+		lng: null,
+		observationRecency: obsRecency,
+		zoomHandling: zoomHandling
+	},
+	settingsOverlay: {
+		selectedTab: C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS,
+		visible: false,
+		searchType: searchType,
+		observationRecency: obsRecency,
+		zoomHandling: zoomHandling,
+		showScientificName: showScientificName,
+		mapStyle: mapStyle
+	}
 });
 
 // meh. Gotta go somewhere.
@@ -85,34 +85,34 @@ $('body').addClass(locale);
 
 
 class I18NWrapper extends React.Component {
-  render () {
-    const { locale } = this.props;
+	render() {
+		const { locale } = this.props;
 
-    return (
-      <IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
-        <Router history={browserHistory}>
-          <Route path="/" component={App}>
-            <Route path="/about" component={About} />
-            <Route path="/intro" component={Intro} />
-            <Route path="/search" component={SearchTip} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/report" component={Report} />
-          </Route>
-        </Router>
-      </IntlProvider>
-    );
-  }
+		return (
+		<IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
+			<Router history={browserHistory}>
+				<Route path="/" component={App}>
+					<Route path="/about" component={About}/>
+					<Route path="/intro" component={Intro}/>
+					<Route path="/search" component={SearchTip}/>
+					<Route path="/settings" component={Settings}/>
+					<Route path="/report" component={Report}/>
+				</Route>
+			</Router>
+		</IntlProvider>
+		);
+	}
 }
 
-function initStore (initialState) {
-  const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-  return createStoreWithMiddleware(combineReducers(reducers), initialState);
+function initStore(initialState) {
+	const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+	return createStoreWithMiddleware(combineReducers(reducers), initialState);
 }
 const ConnectedI18nWrapper = connect(state => ({ locale: state.user.locale }))(I18NWrapper);
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ConnectedI18nWrapper />
-  </Provider>,
-  document.getElementById('app')
+<Provider store={store}>
+	<ConnectedI18nWrapper />
+</Provider>,
+document.getElementById('app')
 );
