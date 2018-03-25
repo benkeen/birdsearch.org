@@ -16,9 +16,8 @@ React, Redux, react-intl, Node.
 ## Versions
 
 
-### v2.2.0 - Mar, 2018 
-- *Ongoing*.
-- Updates for mobile.
+### v2.2.0 - Mar 25, 2018 
+- A few styling updates for mobile: better scrolling, better spacing for bird tab content.
 
 ### v2.1.0 - Dec 11th, 2016
 Mobile support.
