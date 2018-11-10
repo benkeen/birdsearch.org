@@ -1,5 +1,8 @@
 # birdsearch.org
 
+> Nov 9th, 2018. Ack! eBird updated their API so the site is currently not functioning properly. I'm looking into it - 
+be back online shortly. 
+
 Like many birders I know, discovering [eBird.org](http://ebird.org) was a cause for celebration. It brought birding 
 out of the dark ages of pen and pencil and into the digital age. Now we have a simple, centralized place to track 
 observations, share knowledge and open up the data for everyone.
