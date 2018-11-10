@@ -16,10 +16,10 @@ React, Redux, react-intl, Node.
 ## Versions
 
 
-### v2.3.0 - November, 2018 
+### v2.3.0 - Nov 9th, 2018 
 - Updated for eBird API v2 (not all API called updated; only the broken ones).
 
-### v2.2.0 - Mar 25, 2018 
+### v2.2.0 - Mar 25th, 2018 
 - A few styling updates for mobile: better scrolling, better spacing for bird tab content.
 
 ### v2.1.0 - Dec 11th, 2016
