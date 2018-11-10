@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Link, browserHistory } from 'react-router';
-import { FormattedMessage, FormattedNumber, intlShape, injectIntl } from 'react-intl';
-import { Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
+import { FormattedMessage, FormattedNumber, intlShape } from 'react-intl';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../core/core';
 import { LineLoader, LocationCount } from './general';
@@ -400,8 +399,8 @@ class SpeciesRow extends React.Component {
 		return _.map(species.locations, function (locInfo) {
 			const checklistLink = `http://ebird.org/ebird/view/checklist/${locInfo.subID}`;
 			return (
-			<li key={locInfo.locID}>
-				<span data-id={locInfo.locID}>{locInfo.locName}</span>
+			<li key={locInfo.locId}>
+				<span data-id={locInfo.locId}>{locInfo.locName}</span>
 				<a href={checklistLink} target="_blank" className="glyphicon glyphicon-list"
 				   title={viewChecklistLabel}/>
 			</li>

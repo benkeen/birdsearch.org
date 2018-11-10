@@ -13,7 +13,7 @@ onmessage = function (e) {
 	// the sightings array contains sightings for ALL locations in the list
 	var numSightings = sightings.length;
 	for (let i = 0; i < numSightings; i++) {
-		var locationID = sightings[i].locID;
+		var locationID = sightings[i].locId;
 
 		if (!data[locationID]) {
 			data[locationID] = [];

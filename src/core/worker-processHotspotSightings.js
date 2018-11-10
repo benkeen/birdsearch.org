@@ -20,7 +20,7 @@ onmessage = function (e) {
 	// the sightings array contains sightings for ALL locations in the list
 	var numSightings = sightings.length;
 	for (var i = 0; i < numSightings; i++) {
-		var locationID = sightings[i].locID;
+		var locationID = sightings[i].locId;
 
 		// no timezone information is returned in the API for this field. They appear to be all local to the timezone in which
 		// they were made

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { intlShape, injectIntl } from 'react-intl';
-import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
+import { injectIntl } from 'react-intl';
+import { VelocityTransitionGroup } from 'velocity-react';
 import { C, _, actions } from '../core/core';
 import Header from './header';
 import { Map } from './map';

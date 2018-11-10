@@ -136,7 +136,7 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 					howMany: info.howMany,
 					lat: info.lat,
 					lng: info.lng,
-					locID: info.locID,
+					locId: info.locId,
 					locName: info.locName,
 					obsDt: info.obsDt,
 					obsReviewed: info.obsReviewed,
@@ -150,7 +150,7 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 			if (!_.has(allDataBySpecies, sciName)) {
 				allDataBySpecies[sciName] = [];
 			}
-			allDataBySpecies[sciName].push({ locID: info.locID, locName: info.locName, subID: info.subID });
+			allDataBySpecies[sciName].push({ locId: info.locId, locName: info.locName, subID: info.subID });
 		});
 	});
 
@@ -159,8 +159,8 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 		const uniqueLocations = [];
 
 		_.each(allDataBySpecies[sciName], (obsInfo) => {
-			if (uniqueLocations.indexOf(obsInfo.locID) === -1) {
-				uniqueLocations.push(obsInfo.locID);
+			if (uniqueLocations.indexOf(obsInfo.locId) === -1) {
+				uniqueLocations.push(obsInfo.locId);
 				dataBySpecies[sciName].locations.push(obsInfo);
 			}
 		});
@@ -245,7 +245,7 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 					lat: info.lat,
 					lng: info.lng,
 					subID: info.subID,
-					locID: info.locID,
+					locId: info.locId,
 					locName: info.locName,
 					reporter: `${info.firstName} ${info.lastName}`,
 					obsDt: time,

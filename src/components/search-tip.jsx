@@ -1,11 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, FormattedPlural, intlShape, injectIntl } from 'react-intl';
-import { browserHistory } from 'react-router';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from 'react-router';
-import { C, _, actions } from '../core/core';
-import { VelocityTransitionGroup } from 'velocity-react';
-import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
+import { actions } from '../core/core';
+import { Tooltip } from 'react-bootstrap';
 import { ClosePanel } from './general';
 
 

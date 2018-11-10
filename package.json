@@ -1,6 +1,6 @@
 {
   "name": "birdsearch.org",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Source code for the birdsearch.org site.",
   "main": "Gruntfile.js",
   "scripts": {
@@ -61,7 +61,6 @@
     "redux": "^3.0.4",
     "request": "^2.73.0",
     "underscore": "^1.8.3",
-    "velocity-react": "^1.1.8",
-    "xml2js": "^0.4.17"
+    "velocity-react": "^1.1.8"
   }
 }

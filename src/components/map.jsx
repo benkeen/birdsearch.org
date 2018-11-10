@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
-import { FormattedMessage } from 'react-intl';
 import { C, _, actions, helpers } from '../core/core';
 import moment from 'moment';
 
@@ -572,23 +571,23 @@ export class Map extends React.Component {
 			latLngList.push([lat, lng]);
 
 			var latlng = new google.maps.LatLng(lat, lng);
-			var locID = locInfo.i;
+			var locId = locInfo.i;
 
 			// filter out-of-bounds markers
 			if (!boundsObj.contains(latlng)) {
-				if (_.has(_data[_currentSearchType].markers, locID)) {
-					_data[_currentSearchType].markers[locID].marker.setMap(null);
+				if (_.has(_data[_currentSearchType].markers, locId)) {
+					_data[_currentSearchType].markers[locId].marker.setMap(null);
 				}
 				return;
 			}
 
-			if (_.has(_data[_currentSearchType].markers, locID)) {
+			if (_.has(_data[_currentSearchType].markers, locId)) {
 				this.showMarkerWithFilter(locInfo);
 			} else {
 				if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
-					this.addBirdMarker(locID, latlng, locInfo);
+					this.addBirdMarker(locId, latlng, locInfo);
 				} else {
-					this.addNotableMarker(searchType, locID, latlng, locInfo);
+					this.addNotableMarker(searchType, locId, latlng, locInfo);
 				}
 			}
 

@@ -1,8 +1,5 @@
 # birdsearch.org
 
-> Nov 9th, 2018. Ack! eBird updated their API so the site is currently not functioning properly. I'm looking into it - 
-be back online shortly. 
-
 Like many birders I know, discovering [eBird.org](http://ebird.org) was a cause for celebration. It brought birding 
 out of the dark ages of pen and pencil and into the digital age. Now we have a simple, centralized place to track 
 observations, share knowledge and open up the data for everyone.
@@ -18,6 +15,9 @@ React, Redux, react-intl, Node.
 
 ## Versions
 
+
+### v2.3.0 - November, 2018 
+- Updated for eBird API v2 (not all API called updated; only the broken ones).
 
 ### v2.2.0 - Mar 25, 2018 
 - A few styling updates for mobile: better scrolling, better spacing for bird tab content.

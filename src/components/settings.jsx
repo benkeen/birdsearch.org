@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
 import { Overlay } from './general';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';

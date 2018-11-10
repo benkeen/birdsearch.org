@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
-import { browserHistory, Link } from 'react-router';
-import { Modal, Button } from 'react-bootstrap';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { browserHistory } from 'react-router';
 import { Overlay, ClosePanel } from './general';
 import { _, actions } from '../core/core';
 

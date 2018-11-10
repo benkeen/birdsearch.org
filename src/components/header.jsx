@@ -2,10 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import { Link } from 'react-router';
 import { browserHistory } from 'react-router';
 import { VelocityTransitionGroup } from 'velocity-react';
-import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { C, _, actions, helpers } from '../core/core';
 import { LOCALES } from '../i18n/index';
 
@@ -96,7 +95,6 @@ class Header extends React.Component {
 		<header className="flex-fill">
 			<div className="navbar navbar-header" onClick={this.showIntroOverlay}>
 				<h1 className="brand">birdsearch.org</h1>
-				<span className="beta">BETA</span>
 			</div>
 
 			<button type="button" className="navbar-toggle collapsed" ref="mobileNavButton" data-toggle="collapse"
