@@ -77,17 +77,16 @@ export class LocationsPanel extends React.Component {
 	getLocationRows() {
 		const { locationSightings, filter, searchSettings } = this.props;
 
-		return _.map(this.sortedFilteredLocations, function (location) {
-			return (
+		return this.sortedFilteredLocations.map((location) => (
 			<LocationRow
-			key={location.i}
-			searchType={searchSettings.searchType}
-			filter={filter}
-			location={location}
-			sightings={locationSightings[location.i]}
-			observationRecency={searchSettings.observationRecency}/>
-			);
-		}, this);
+				key={location.i}
+				searchType={searchSettings.searchType}
+				filter={filter}
+				location={location}
+				sightings={locationSightings[location.i]}
+				observationRecency={searchSettings.observationRecency}
+			/>
+		));
 	}
 
 	getLocationColSort() {
@@ -96,11 +95,11 @@ export class LocationsPanel extends React.Component {
 			return null;
 		}
 
-		var className = 'col-sort glyphicon ';
+		let className = 'col-sort glyphicon ';
 		className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
 
 		return (
-		<span className={className}/>
+			<span className={className} />
 		);
 	}
 

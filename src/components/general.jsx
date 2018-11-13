@@ -1,5 +1,4 @@
-import React from 'react';;
-import { _ } from '../core/core';
+import React from 'react';
 
 
 // generic overlay component. Provides a styled overlay wrapper (white, rounded corners with padding), plus
@@ -8,11 +7,11 @@ class Overlay extends React.Component {
 	componentDidMount() {
 		const { id, onClose, customKeyActions } = this.props;
 		$(document).on('keydown.' + id, (e) => {
-			if (e.keyCode == 27) {
+			if (e.keyCode === 27) {
 				onClose();
 				return;
 			}
-			_.each(customKeyActions, ([keyCode, action]) => {
+			customKeyActions.forEach(([keyCode, action]) => {
 				if (e.keyCode === parseInt(keyCode, 10)) {
 					e.preventDefault();
 					action();
@@ -159,9 +158,9 @@ class LocationsDropdown extends React.Component {
 	}
 
 	getLocationRows() {
-		return _.map(this.props.locations, function (location) {
-			return (<option value={location.i} key={location.i}>{location.n}</option>);
-		});
+		return this.props.locations.map((location) => (
+			<option value={location.i} key={location.i}>{location.n}</option>
+		));
 	}
 
 	render() {

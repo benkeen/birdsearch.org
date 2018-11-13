@@ -33,7 +33,7 @@ const getUniqueSpeciesInLocationList = (locations, sightings, obsRecency) => {
 	var locationIDs = getLocationIDs(locations);
 	var allFetched = true;
 
-	_.each(locationIDs, function (locationID) {
+	locationIDs.forEach((locationID) => {
 		if (!sightings[locationID].fetched) {
 			allFetched = false;
 			return;
@@ -42,7 +42,7 @@ const getUniqueSpeciesInLocationList = (locations, sightings, obsRecency) => {
 		var sightingsData = sightings[locationID].data;
 		_.times(obsRecency, function (index) {
 			var currDaySightings = sightingsData[index].obs;
-			_.each(currDaySightings, function (sighting) {
+			currDaySightings.forEach((sighting) => {
 				if (!_.has(uniqueSpeciesInAllLocations, sighting.sciName)) {
 					uniqueSpeciesInAllLocations[sighting.sciName] = null;
 					numUniqueSpeciesInAllLocations++;
@@ -60,7 +60,7 @@ const getUniqueSpeciesInLocationList = (locations, sightings, obsRecency) => {
 
 // return the species seen for a particular location and observation recency
 const getLocationSpeciesList = (locationID, sightings, obsRecency) => {
-	if (!_.has(sightings, locationID)) {
+	if (!sightings.hasOwnProperty(locationID)) {
 		return false;
 	}
 
@@ -71,7 +71,7 @@ const getLocationSpeciesList = (locationID, sightings, obsRecency) => {
 			return;
 		}
 		var observations = sightings[locationID].data[index].obs;
-		_.each(observations, function (obsInfo) {
+		observations.forEach((obsInfo) => {
 			if (!species.hasOwnProperty(obsInfo.sciName)) {
 				species[obsInfo.sciName] = obsInfo;
 				numSpecies++;
@@ -96,9 +96,7 @@ const filterLocations = (locations, filter) => {
 		return locations;
 	}
 	var regexp = new RegExp(filter, 'i');
-	return _.filter(locations, function (locInfo) {
-		return regexp.test(locInfo.n);
-	});
+	return locations.filter((locInfo) => regexp.test(locInfo.n));
 };
 
 
@@ -114,14 +112,14 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 	let numSpecies = 0;
 
 	// gah! Super complicated.
-	_.each(locationIDs, (locationID) => {
+	locationIDs.forEach((locationID) => {
 		let currLocationSpeciesInfo = getLocationSpeciesList(locationID, sightings, obsRecency);
 
 		// only include the species info if the users's looking as "All Locations", or if this current location
 		// is the specific one
-		_.each(currLocationSpeciesInfo.species, function (info, sciName) {
+		currLocationSpeciesInfo.species.forEach((info, sciName) => {
 			if (targetLocationID === null || locationID === targetLocationID) {
-				if (!_.has(dataBySpecies, sciName)) {
+				if (!dataBySpecies.hasOwnProperty(sciName)) {
 					dataBySpecies[sciName] = {
 						comName: info.comName,
 						sciName: sciName,
@@ -147,7 +145,7 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 			// allDataBySpecies is a temp var in this method used to contain ALL observation details for each species,
 			// regardless of whether the user is viewing a specific location. This is used to show the full list of locations
 			// where a species has been seen
-			if (!_.has(allDataBySpecies, sciName)) {
+			if (!allDataBySpecies.hasOwnProperty(sciName)) {
 				allDataBySpecies[sciName] = [];
 			}
 			allDataBySpecies[sciName].push({ locId: info.locId, locName: info.locName, subID: info.subID });
@@ -155,10 +153,10 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 	});
 
 	// now append ALL locations for the found species. TODO this only needs to change when the search does. It shouldn't be here.
-	_.each(dataBySpecies, (speciesData, sciName) => {
+	dataBySpecies.forEach((speciesData, sciName) => {
 		const uniqueLocations = [];
 
-		_.each(allDataBySpecies[sciName], (obsInfo) => {
+		allDataBySpecies[sciName].forEach((obsInfo) => {
 			if (uniqueLocations.indexOf(obsInfo.locId) === -1) {
 				uniqueLocations.push(obsInfo.locId);
 				dataBySpecies[sciName].locations.push(obsInfo);
@@ -168,16 +166,16 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 
 	// now convert the sightings into an array
 	var sightingsData = _.values(dataBySpecies);
-	sightingsData.sort(function (a, b) {
+	sightingsData.sort((a, b) => {
 		return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1;
 	});
 
-	var results = _.map(sightingsData, function (sighting) {
+	var results = sightingsData.map((sighting) => {
 		var lastObservation = 0;
 		var howManyArray = [];
 		var lastSeenArray = [];
 
-		_.each(sighting.obs, function (observation) {
+		sighting.obs.forEach((observation) => {
 			var observationTimeUnix = parseInt(moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format("X"), 10);
 			if (observationTimeUnix > lastObservation) {
 				lastObservation = observationTimeUnix;
@@ -211,7 +209,7 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 	const locationIDs = _.pluck(locations, 'i');
 
 	const data = [];
-	_.each(sightings, (sightingData, locationID) => {
+	sightings.forEach((sightingData, locationID) => {
 		if (!sightingData.fetched) {
 			return;
 		}
@@ -265,7 +263,7 @@ const getNumNotableSightings = (locations, sightings, obsRecency) => {
 	const locationIDs = _.pluck(locations, 'i');
 
 	let count = 0;
-	_.each(sightings, (sightingData, locationID) => {
+	sightings.forEach((sightingData, locationID) => {
 		if (!sightingData.fetched) {
 			return;
 		}
@@ -332,7 +330,7 @@ const sortLocations = (locations, locationSightings, observationRecency, sort, s
 const getNumLoadedLocations = (locations, sightings) => {
 	var count = 0;
 
-	_.each(locations, function (location) {
+	locations.forEach((location) => {
 		if (sightings[location.i].fetched) {
 			count++;
 			//return 10000 - sightings.data[observationRecency - 1].runningTotal;
@@ -383,7 +381,7 @@ const getColSort = (field, sort, sortDir) => {
 	className += (sortDir === C.SORT_DIR.DEFAULT) ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-top';
 
 	return (
-	<span className={className}/>
+		<span className={className}/>
 	);
 };
 
@@ -464,7 +462,7 @@ const sortSightings = (sightings, sort, sortDir) => {
 			}
 			break;
 
-	// species name
+		// species name
 		default:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
 				sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase());
@@ -526,6 +524,11 @@ const getAllLocationsCount = (searchType, observationRecency, locations, locatio
 };
 
 
+const isNumeric = (n) => {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+};
+
+
 export {
 	getBestBounds,
 	getLocationIDs,
@@ -546,5 +549,6 @@ export {
 	sortSightings,
 	rad,
 	findClosestLatLng,
-	getAllLocationsCount
+	getAllLocationsCount,
+	isNumeric
 };

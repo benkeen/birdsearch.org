@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
@@ -7,7 +7,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { C, _, actions } from '../core/core';
 
 
-class SettingsOverlay extends React.Component {
+class SettingsOverlay extends Component {
 	constructor(props) {
 		super(props);
 		this.search = this.search.bind(this);
@@ -96,7 +96,7 @@ export default injectIntl(connect(state => ({
 }))(SettingsOverlay));
 
 
-class SearchSettings extends React.Component {
+class SearchSettings extends Component {
 	constructor(props) {
 		super(props);
 		this.toggleScientificName = this.toggleScientificName.bind(this);
@@ -243,7 +243,7 @@ SearchSettings.propTypes = {
 };
 
 
-class MapStyles extends React.Component {
+class MapStyles extends Component {
 	render() {
 		const { dispatch, intl, selected } = this.props;
 		const defaultStyleClasses = (selected === C.MAP_STYLES.DEFAULT) ? 'selected' : '';
@@ -313,22 +313,18 @@ class MapStyles extends React.Component {
 }
 
 
-class DaysDropdown extends React.Component {
+class DaysDropdown extends Component {
 	getDays() {
 		const days = [1, 2, 3, 4, 5, 7, 10, 14, 20, 30];
-		return _.map(days, (day) => {
-			return (<option value={day} key={day}>{day}</option>);
-		});
+		return days.map((day) => <option value={day} key={day}>{day}</option>);
 	}
 
 	render() {
 		const { value, onChange } = this.props;
 		return (
-		<select className="num-days" value={value} onChange={(e) => {
-			onChange(e.target.value);
-		}}>
+			<select className="num-days" value={value} onChange={(e) => { onChange(e.target.value); }}>
 			{this.getDays()}
-		</select>
+			</select>
 		);
 	}
 }

@@ -346,7 +346,7 @@ function results(state = {
 
 		case E.STORE_NOTABLE_SIGHTINGS:
 			var locationSightings = {};
-			_.each(action.sightings, (sightings, locationID) => {
+			action.sightings.forEach((sightings, locationID) => {
 				locationSightings[locationID] = {
 					fetched: true,
 					data: sightings

@@ -299,16 +299,15 @@ class LocaleSelector extends React.Component {
 	}
 
 	getLocaleOptions() {
-		return _.map(LOCALES, (locale) => {
-			return (
+		return LOCALES.map((locale) => (
 			<option value={locale.key} key={locale.key}>{locale.name}</option>
-			);
-		});
+		));
 	}
 
 	getLocalePills() {
 		const { locale } = this.props;
-		return _.map(LOCALES, (currLocale) => {
+
+		return LOCALES.map((currLocale) => {
 			let className = (locale === currLocale.key) ? 'active' : '';
 			return (
 			<li value={currLocale.key} className={className} key={currLocale.key}
@@ -321,16 +320,16 @@ class LocaleSelector extends React.Component {
 		const { type, locale } = this.props;
 		if (type === 'dropdown') {
 			return (
-			<select id="select-locale" className="form-control" value={locale} onChange={(e) => this.onChange(e)}>
-				{this.getLocaleOptions()}
-			</select>
+				<select id="select-locale" className="form-control" value={locale} onChange={(e) => this.onChange(e)}>
+					{this.getLocaleOptions()}
+				</select>
 			);
 		}
 
 		return (
-		<ul className="nav-pills">
-			{this.getLocalePills()}
-		</ul>
+			<ul className="nav-pills">
+				{this.getLocalePills()}
+			</ul>
 		);
 	}
 }

@@ -274,7 +274,7 @@ class SpeciesTable extends React.Component {
 	getRows() {
 		const { dispatch, filter, showScientificName, viewportMode, intl } = this.props;
 
-		return _.map(this.sortedSpecies, function (speciesInfo, index) {
+		return this.sortedSpecies.map((speciesInfo, index) => {
 			var comNameData = helpers.highlightString(speciesInfo.comName, filter);
 
 			var sciNameData = {
@@ -287,18 +287,18 @@ class SpeciesTable extends React.Component {
 
 			if (comNameData.match || (showScientificName && sciNameData.match)) {
 				return (
-				<SpeciesRow
-				dispatch={dispatch}
-				intl={intl}
-				filter={filter}
-				species={speciesInfo}
-				rowNum={index + 1}
-				showScientificName={showScientificName}
-				comName={speciesInfo.comName}
-				comNameDisplay={comNameData.string}
-				sciNameDisplay={sciNameData.string}
-				viewportMode={viewportMode}
-				key={index}/>
+					<SpeciesRow
+						dispatch={dispatch}
+						intl={intl}
+						filter={filter}
+						species={speciesInfo}
+						rowNum={index + 1}
+						showScientificName={showScientificName}
+						comName={speciesInfo.comName}
+						comNameDisplay={comNameData.string}
+						sciNameDisplay={sciNameData.string}
+						viewportMode={viewportMode}
+						key={index}/>
 				);
 			}
 
@@ -396,14 +396,14 @@ class SpeciesRow extends React.Component {
 		const { intl, species } = this.props;
 		const viewChecklistLabel = intl.formatMessage({ id: 'viewChecklist' });
 
-		return _.map(species.locations, function (locInfo) {
+		return species.locations.map((locInfo) => {
 			const checklistLink = `http://ebird.org/ebird/view/checklist/${locInfo.subID}`;
 			return (
-			<li key={locInfo.locId}>
-				<span data-id={locInfo.locId}>{locInfo.locName}</span>
-				<a href={checklistLink} target="_blank" className="glyphicon glyphicon-list"
-				   title={viewChecklistLabel}/>
-			</li>
+				<li key={locInfo.locId}>
+					<span data-id={locInfo.locId}>{locInfo.locName}</span>
+					<a href={checklistLink} target="_blank" className="glyphicon glyphicon-list"
+					   title={viewChecklistLabel}/>
+				</li>
 			);
 		});
 	}
@@ -414,7 +414,7 @@ class SpeciesRow extends React.Component {
 			return null;
 		}
 		return (
-		<div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+			<div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
 		);
 	}
 
@@ -536,7 +536,7 @@ class NotableSightingsTable extends React.Component {
 		const { dispatch, selectedLocation, showScientificName, filter, env, intl } = this.props;
 		const isMobile = (env.viewportMode === C.VIEWPORT_MODES.MOBILE);
 
-		return _.map(this.sortedSpecies, function (row, index) {
+		return this.sortedSpecies.map((row, index) => {
 			var comNameData = helpers.highlightString(row.comName, filter);
 			var sciNameData = helpers.highlightString(row.sciName, filter);
 			if (!comNameData.match && !sciNameData.match) {
@@ -545,34 +545,34 @@ class NotableSightingsTable extends React.Component {
 
 			if (isMobile) {
 				return (
-				<NotableSpeciesMobileRow
-				dispatch={dispatch}
-				selectedLocation={selectedLocation}
-				filter={filter}
-				row={row}
-				showScientificName={showScientificName}
-				rowNum={index + 1}
-				comName={row.comName}
-				comNameDisplay={comNameData.string}
-				sciNameDisplay={sciNameData.string}
-				key={index}
-				intl={intl}/>
+					<NotableSpeciesMobileRow
+						dispatch={dispatch}
+						selectedLocation={selectedLocation}
+						filter={filter}
+						row={row}
+						showScientificName={showScientificName}
+						rowNum={index + 1}
+						comName={row.comName}
+						comNameDisplay={comNameData.string}
+						sciNameDisplay={sciNameData.string}
+						key={index}
+						intl={intl}/>
 				);
 			}
 
 			return (
-			<NotableSpeciesRow
-			dispatch={dispatch}
-			selectedLocation={selectedLocation}
-			filter={filter}
-			row={row}
-			showScientificName={showScientificName}
-			rowNum={index + 1}
-			comName={row.comName}
-			comNameDisplay={comNameData.string}
-			sciNameDisplay={sciNameData.string}
-			key={index}
-			intl={intl}/>
+				<NotableSpeciesRow
+					dispatch={dispatch}
+					selectedLocation={selectedLocation}
+					filter={filter}
+					row={row}
+					showScientificName={showScientificName}
+					rowNum={index + 1}
+					comName={row.comName}
+					comNameDisplay={comNameData.string}
+					sciNameDisplay={sciNameData.string}
+					key={index}
+					intl={intl}/>
 			);
 		});
 	}
@@ -584,8 +584,8 @@ class NotableSightingsTable extends React.Component {
 		}
 
 		return (
-		<SortableColHeader dispatch={dispatch} ref="location" label="location" colClass="location-col"
-						   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION} sort={sort} sortDir={sortDir}/>
+			<SortableColHeader dispatch={dispatch} ref="location" label="location" colClass="location-col"
+				sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION} sort={sort} sortDir={sortDir}/>
 		);
 	}
 
@@ -597,37 +597,37 @@ class NotableSightingsTable extends React.Component {
 		}
 
 		return (
-		<tr>
-			<th className="row-num"/>
-			{this.getLocationColHeader()}
-			<SortableColHeader dispatch={dispatch} label="species" colClass="species-col"
-							   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.SPECIES} sort={sort} sortDir={sortDir}/>
-			<SortableColHeader dispatch={dispatch} label="dateSeen" colClass="date-seen-col"
-							   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN} sort={sort} sortDir={sortDir}/>
-			<SortableColHeader dispatch={dispatch} label="reportedBy" colClass="reporter-col"
-							   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER} sort={sort} sortDir={sortDir}/>
-			<SortableColHeader dispatch={dispatch} label="status" colClass="status-col"
-							   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS} sort={sort} sortDir={sortDir}/>
-		</tr>
+			<tr>
+				<th className="row-num"/>
+				{this.getLocationColHeader()}
+				<SortableColHeader dispatch={dispatch} label="species" colClass="species-col"
+								   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.SPECIES} sort={sort} sortDir={sortDir}/>
+				<SortableColHeader dispatch={dispatch} label="dateSeen" colClass="date-seen-col"
+								   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN} sort={sort} sortDir={sortDir}/>
+				<SortableColHeader dispatch={dispatch} label="reportedBy" colClass="reporter-col"
+								   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER} sort={sort} sortDir={sortDir}/>
+				<SortableColHeader dispatch={dispatch} label="status" colClass="status-col"
+								   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS} sort={sort} sortDir={sortDir}/>
+			</tr>
 		);
 	}
 
 	render() {
 		return (
-		<div className="species-table notable-table">
-			<div className="species-table-header">
-				<table className="table table-striped">
-					<thead>
-					{this.getNotableSightingsHeader()}
-					</thead>
-				</table>
+			<div className="species-table notable-table">
+				<div className="species-table-header">
+					<table className="table table-striped">
+						<thead>
+						{this.getNotableSightingsHeader()}
+						</thead>
+					</table>
+				</div>
+				<div className="species-table-content-wrapper">
+					<table className="species-table-content table table-striped" id="notable-sightings-table">
+						{this.getContent()}
+					</table>
+				</div>
 			</div>
-			<div className="species-table-content-wrapper">
-				<table className="species-table-content table table-striped" id="notable-sightings-table">
-					{this.getContent()}
-				</table>
-			</div>
-		</div>
 		);
 	}
 }

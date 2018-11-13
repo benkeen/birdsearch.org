@@ -440,9 +440,11 @@ export class Map extends React.Component {
 		addCustomControls(mapTypeId, customControlsVisible, intl, dispatch);
 
 		// precache all marker images
-		_.each(_icons, function (key) {
+		Object.keys(_icons).forEach((key) => {
+			const item = _icons[key];
+
 			var img = new Image();
-			img.src = key.url;
+			img.src = item.url;
 		});
 	}
 
@@ -474,7 +476,7 @@ export class Map extends React.Component {
 		this.applyLocationFilter(nextProps);
 
 		if (isNewSearch || (this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng) &&
-		(_.isNumber(nextProps.lat) && _.isNumber(nextProps.lng))) {
+		(helpers.isNumeric(nextProps.lat) && helpers.isNumeric(nextProps.lng))) {
 			_map.setCenter({
 				lat: nextProps.lat,
 				lng: nextProps.lng
@@ -497,8 +499,8 @@ export class Map extends React.Component {
 			}
 		}
 
-		var numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
-		var windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
+		let numLocationsChanged = this.props.results.allLocations.length !== nextProps.results.allLocations.length;
+		let windowResized = this.props.env.width !== nextProps.env.width || this.props.env.height !== nextProps.env.height;
 		if (numLocationsChanged || windowResized) {
 			this.updateMapMarkers(nextProps.searchSettings.searchType, nextProps.results.allLocations, nextProps.results.locationSightings, true);
 		}
@@ -522,7 +524,7 @@ export class Map extends React.Component {
 	}
 
 	setMarkerColours(nextProps) {
-		_.each(nextProps.results.visibleLocations, function (locInfo) {
+		nextProps.results.visibleLocations.forEach((locInfo) => {
 			var locId = locInfo.i;
 			var locationSightings = nextProps.results.locationSightings[locId].data;
 
@@ -552,7 +554,7 @@ export class Map extends React.Component {
 	}
 
 	setNotableMarkerColours(nextProps) {
-		_.each(nextProps.results.visibleLocations, (locInfo) => {
+		nextProps.results.visibleLocations.forEach((locInfo) => {
 			_data[_currentSearchType].markers[locInfo.i].marker.setIcon(_icons.notable);
 		});
 	}
@@ -575,13 +577,13 @@ export class Map extends React.Component {
 
 			// filter out-of-bounds markers
 			if (!boundsObj.contains(latlng)) {
-				if (_.has(_data[_currentSearchType].markers, locId)) {
+				if (_data[_currentSearchType].markers.hasOwnProperty(locId)) {
 					_data[_currentSearchType].markers[locId].marker.setMap(null);
 				}
 				return;
 			}
 
-			if (_.has(_data[_currentSearchType].markers, locId)) {
+			if (_data[_currentSearchType].markers.hasOwnProperty(locId)) {
 				this.showMarkerWithFilter(locInfo);
 			} else {
 				if (searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) {
@@ -666,7 +668,7 @@ export class Map extends React.Component {
 		// if the location filter just changed, update the list of hidden/visible markers
 		if (locationFilter !== nextProps.locationFilter) {
 			var regexp = new RegExp(nextProps.locationFilter, 'i');
-			_.each(nextProps.results.visibleLocations, (locInfo) => {
+			nextProps.results.visibleLocations.forEach((locInfo) => {
 				if (regexp.test(locInfo.n)) {
 					if (!_data[_currentSearchType].markers[locInfo.i].visible) {
 						_data[_currentSearchType].markers[locInfo.i].visible = true;
@@ -696,7 +698,7 @@ export class Map extends React.Component {
 	addBirdMarker(locationID, latlng, currMarkerInfo) {
 		const { intl } = this.props;
 
-		if (_.has(_data[_currentSearchType].markers, locationID)) {
+		if (_data[_currentSearchType].markers.hasOwnProperty(locationID)) {
 			if (_data[_currentSearchType].markers[locationID].marker.map === null) {
 				_data[_currentSearchType].markers[locationID].marker.setMap(_map);
 			}
@@ -727,7 +729,7 @@ export class Map extends React.Component {
 	addNotableMarker(searchType, locationID, latlng, currMarkerInfo) {
 		const { intl } = this.props;
 
-		if (_.has(_data[_currentSearchType].markers, locationID)) {
+		if (_data[_currentSearchType].markers.hasOwnProperty(locationID)) {
 			if (_data[_currentSearchType].markers[locationID].marker.map === null) {
 				_data[_currentSearchType].markers[locationID].marker.setMap(_map);
 			}
@@ -813,25 +815,25 @@ export class Map extends React.Component {
 	}
 
 	getNotableRows(sightings, l10n) {
-		return _.map(sightings, (sighting) => {
+		return sightings.map((sighting) => {
 			const checklistLink = `http://ebird.org/ebird/view/checklist/${sighting.subID}`;
 			const sightingDate = moment(sighting.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 			return (
-			<tr key={sighting.obsID}>
-				<td className="species-name">{sighting.comName}</td>
-				<td className="obs-date">{sightingDate}</td>
-				<td>
-					<a href={checklistLink} target="_blank" className="checklist-link glyphicon glyphicon-list"
-					   title={l10n.viewChecklist}/>
-				</td>
-			</tr>
+				<tr key={sighting.obsID}>
+					<td className="species-name">{sighting.comName}</td>
+					<td className="obs-date">{sightingDate}</td>
+					<td>
+						<a href={checklistLink} target="_blank" className="checklist-link glyphicon glyphicon-list"
+						   title={l10n.viewChecklist}/>
+					</td>
+				</tr>
 			);
 		});
 	}
 
 	render() {
 		return (
-		<div className="flex-body"></div>
+			<div className="flex-body"></div>
 		);
 	}
 }
