@@ -43,7 +43,7 @@ const getUniqueSpeciesInLocationList = (locations, sightings, obsRecency) => {
 		_.times(obsRecency, function (index) {
 			var currDaySightings = sightingsData[index].obs;
 			currDaySightings.forEach((sighting) => {
-				if (!_.has(uniqueSpeciesInAllLocations, sighting.sciName)) {
+				if (!uniqueSpeciesInAllLocations.hasOwnProperty(sighting.sciName)) {
 					uniqueSpeciesInAllLocations[sighting.sciName] = null;
 					numUniqueSpeciesInAllLocations++;
 				}
@@ -86,9 +86,7 @@ const getLocationSpeciesList = (locationID, sightings, obsRecency) => {
 };
 
 
-const getLocationIDs = (locations) => {
-	return _.pluck(locations, 'i');
-};
+const getLocationIDs = (locations) => arrayPluck(locations, 'i');
 
 
 const filterLocations = (locations, filter) => {
@@ -206,7 +204,7 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 
 
 const getNotableSightings = (locations, sightings, obsRecency, targetLocationID = null) => {
-	const locationIDs = _.pluck(locations, 'i');
+	const locationIDs = arrayPluck(locations, 'i');
 
 	const data = [];
 	sightings.forEach((sightingData, locationID) => {
@@ -260,7 +258,7 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 };
 
 const getNumNotableSightings = (locations, sightings, obsRecency) => {
-	const locationIDs = _.pluck(locations, 'i');
+	const locationIDs = arrayPluck(locations, 'i');
 
 	let count = 0;
 	sightings.forEach((sightingData, locationID) => {
@@ -304,9 +302,16 @@ const sortLocations = (locations, locationSightings, observationRecency, sort, s
 
 	// apply the appropriate sort
 	if (sort === C.LOCATION_SORT.FIELDS.LOCATION) {
-		sortedLocations = _.sortBy(locations, function (locInfo) {
+		sortedLocations = _.sortBy(locations, (locInfo) => {
 			return locInfo.n;
 		});
+
+		// locations.sort((a, b) => {
+		// 	if (a.n < b.n) { return -1; }
+		// 	if (a.n > b.n) { return 1; }
+		// 	return 0;
+		// });
+
 	} else {
 		// the 10000 thing is a bit weird, but basically we just need to sort the species count from largest to smallest
 		// when the user first clicks the column. That does it.
@@ -529,6 +534,16 @@ const isNumeric = (n) => {
 };
 
 
+const arrayPluck = (arr, prop) => {
+	return arr.map((item) => item[prop]);
+};
+
+
+const arraySort = (arr) => {
+
+};
+
+
 export {
 	getBestBounds,
 	getLocationIDs,
@@ -550,5 +565,6 @@ export {
 	rad,
 	findClosestLatLng,
 	getAllLocationsCount,
-	isNumeric
+	isNumeric,
+	arrayPluck
 };
