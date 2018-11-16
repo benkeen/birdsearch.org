@@ -298,18 +298,12 @@ const highlightString = (string, filter) => {
 
 
 const sortLocations = (locations, locationSightings, observationRecency, sort, sortDir, filter) => {
-	var sortedLocations = locations;
+	var sortedLocations = [...locations];
 
 	// apply the appropriate sort
 	if (sort === C.LOCATION_SORT.FIELDS.LOCATION) {
-		sortedLocations = _.sortBy(locations, (locInfo) => {
-			return locInfo.n;
-		});
-
-		// locations.sort((a, b) => {
-		// 	if (a.n < b.n) { return -1; }
-		// 	if (a.n > b.n) { return 1; }
-		// 	return 0;
+		// sortedLocations = _.sortBy(locations, (locInfo) => {
+		// 	return locInfo.n;
 		// });
 
 	} else {
@@ -538,10 +532,16 @@ const arrayPluck = (arr, prop) => {
 	return arr.map((item) => item[prop]);
 };
 
-
-const arraySort = (arr) => {
-
-};
+const sortByFunc = (arr, fn) => {
+	arr.sort((a, b) => {
+		if (fn(a) > fn(b)) {
+			return 1;
+		} else if (fn(a) < fn(b)) {
+			return -1
+		}
+		return 0;
+	});
+}
 
 
 export {
@@ -566,5 +566,6 @@ export {
 	findClosestLatLng,
 	getAllLocationsCount,
 	isNumeric,
-	arrayPluck
+	arrayPluck,
+	sortByFunc
 };
