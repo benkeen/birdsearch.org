@@ -1,71 +1,13 @@
+const pkg = require('./package.json');
+
+
 module.exports = function (grunt) {
+
 	require('load-grunt-tasks')(grunt);
 
-	var appFiles = [
-		'./core/*.js',
-		'./core/*.jsx',
-		'./i18n/*.jsx',
-		'./components/**/*.js',
-		'./components/**/*.jsx'
-	];
-
-	const package = grunt.file.readJSON('package.json');
-	const version = package.version;
-	var config = {
-		pkg: package,
-
-		// this task converts javascript/JSX files and stashes an es5-friendly version of them in /dist
-		babel: {
-			options: {
-				plugins: ['transform-react-jsx', 'transform-object-assign'],
-				sourceMap: true,
-				presets: ['es2015', 'react']
-			},
-			jsx: {
-				files: [{
-					expand: true,
-					cwd: './src',
-					src: appFiles,
-					dest: 'dist',
-					ext: '.js'
-				}]
-			}
-		},
-
-		uglify: {
-			js: {
-				files: {
-					[`dist/bundle-${version}.min.js`]: [`dist/bundle-${version}.js`]
-				},
-				options: {
-					report: "min",
-					compress: {}
-				}
-			}
-		},
-
-		// bundles up the whole shebang
-		browserify: {
-			dist: {
-				cwd: './',
-				files: {
-					[`dist/bundle-${version}.js`]: 'dist/core/init.js'
-				}
-			}
-		},
-
-		env: {
-			build: {
-				NODE_ENV: 'production'
-			}
-		},
-
+	const version = pkg.version;
+	const config = {
 		watch: {
-			scripts: {
-				cwd: './src',
-				files: ['**/*.jsx'],
-				tasks: ['babel:jsx', 'browserify']
-			},
 			sass: {
 				files: ['**/*.scss'],
 				tasks: ['sass', 'copy', 'cssmin']
@@ -75,7 +17,7 @@ module.exports = function (grunt) {
 		template: {
 			dev: {
 				options: {
-					data: {version: package.version}
+					data: {version: pkg.version}
 				},
 				files: {
 					'dist/index.html': ['src/template-dev.html']
@@ -83,7 +25,7 @@ module.exports = function (grunt) {
 			},
 			prod: {
 				options: {
-					data: {version: package.version}
+					data: {version: pkg.version}
 				},
 				files: {
 					'dist/index.html': ['src/template-prod.html']
@@ -97,14 +39,18 @@ module.exports = function (grunt) {
 					style: 'expanded'
 				},
 				files: {
-					'dist/css/styles.css': 'src/css/sass/styles.scss'
+					'dist/css/styles.css': 'src/sass/styles.scss'
 				}
 			}
 		},
 
 		copy: {
-			fonts: {src: './src/css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile'},
-			libs: {src: './src/libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile'},
+			fonts: {
+				src: './src/css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile'
+			},
+			libs: {
+				src: './src/libs/*', dest: 'dist/libs/', flatten: true, expand: true, filter: 'isFile'
+			},
 			images: {
 				src: '**/*',
 				dest: 'dist/images/',
@@ -126,11 +72,37 @@ module.exports = function (grunt) {
 					[`dist/css/styles-${version}.css`]: ['dist/css/styles.css']
 				}
 			}
+		},
+
+		run: {
+			webpack_dev: {
+				cmd: 'npm',
+				args: [
+					'run',
+					'webpack-dev'
+				]
+			},
+			webpack_prod: {
+				cmd: 'npm',
+				args: [
+					'build'
+				]
+			}
+		},
+
+		concurrent: {
+			watchers: {
+				options: {
+					logConcurrentOutput: true
+				},
+				tasks: ['watch', 'run:webpack_dev']
+			}
 		}
 	};
 
 	grunt.initConfig(config);
-	grunt.registerTask('prod', ['env', 'babel:jsx', 'browserify', 'uglify', 'sass', 'copy', 'cssmin', 'template:prod']);
-	grunt.registerTask('dev', ['env', 'babel:jsx', 'browserify', 'sass', 'copy', 'cssmin', 'template:dev']);
-	grunt.registerTask('start', ['dev', 'watch']);
+
+	grunt.registerTask('prod', ['sass', 'copy', 'cssmin']); // 'template:prod'
+	grunt.registerTask('dev', ['sass', 'copy', 'cssmin']); // 'template:dev',
+	grunt.registerTask('start', ['dev', 'concurrent:watchers']);
 };

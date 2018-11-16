@@ -1,5 +1,4 @@
 const request = require('request');
-const _ = require('underscore');
 
 const ebirdApiToken = '30a4ftm0lcfo';
 

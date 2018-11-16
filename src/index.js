@@ -5,8 +5,8 @@ import { addLocaleData, IntlProvider } from 'react-intl';
 import { Router, Route, browserHistory } from 'react-router';
 import { Provider, connect } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import * as reducers from './reducers';
-import { C, storage, i18n } from './core';
+import * as reducers from './core/reducers';
+import { C, storage, i18n } from './core/core';
 
 // locale information for react-intl
 import en from 'react-intl/locale-data/en'
@@ -19,12 +19,12 @@ addLocaleData(fr);
 addLocaleData(de);
 
 // application components
-import App from '../components/app';
-import Intro from '../components/intro';
-import About from '../components/about';
-import Report from '../components/report';
-import Settings from '../components/settings';
-import SearchTip from '../components/search-tip';
+import App from './components/app';
+import Intro from './components/intro';
+import About from './components/about';
+import Report from './components/report';
+import Settings from './components/settings';
+import SearchTip from './components/search-tip';
 
 // initialize the section of the store based on local storage values
 const locale = storage.get('locale') || C.DEFAULT_LOCALE;
@@ -111,8 +111,8 @@ function initStore(initialState) {
 const ConnectedI18nWrapper = connect(state => ({ locale: state.user.locale }))(I18NWrapper);
 
 ReactDOM.render(
-<Provider store={store}>
-	<ConnectedI18nWrapper />
-</Provider>,
-document.getElementById('app')
+	<Provider store={store}>
+		<ConnectedI18nWrapper />
+	</Provider>,
+	document.getElementById('app')
 );

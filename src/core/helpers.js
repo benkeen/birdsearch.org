@@ -1,5 +1,5 @@
 import React from 'react';
-import { C, _ } from './core';
+import { C } from './core';
 import moment from 'moment';
 
 
@@ -40,7 +40,7 @@ const getUniqueSpeciesInLocationList = (locations, sightings, obsRecency) => {
 		}
 
 		var sightingsData = sightings[locationID].data;
-		_.times(obsRecency, function (index) {
+		times(obsRecency, function (index) {
 			var currDaySightings = sightingsData[index].obs;
 			currDaySightings.forEach((sighting) => {
 				if (!uniqueSpeciesInAllLocations.hasOwnProperty(sighting.sciName)) {
@@ -66,7 +66,7 @@ const getLocationSpeciesList = (locationID, sightings, obsRecency) => {
 
 	var species = {};
 	var numSpecies = 0;
-	_.times(obsRecency, function (index) {
+	times(obsRecency, function (index) {
 		if (!sightings[locationID].fetched) {
 			return;
 		}
@@ -541,6 +541,10 @@ const sortByFunc = (arr, fn) => {
 		}
 		return 0;
 	});
+};
+
+const times = (count, fn) => {
+	return Array.from({length: 10}, (_,x) => fn(x));
 }
 
 
@@ -567,5 +571,6 @@ export {
 	getAllLocationsCount,
 	isNumeric,
 	arrayPluck,
-	sortByFunc
+	sortByFunc,
+	times
 };
