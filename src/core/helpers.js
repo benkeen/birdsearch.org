@@ -309,8 +309,8 @@ const sortLocations = (locations, locationSightings, observationRecency, sort, s
 	} else {
 		// the 10000 thing is a bit weird, but basically we just need to sort the species count from largest to smallest
 		// when the user first clicks the column. That does it.
-		sortedLocations = _.sortBy(locations, function (locInfo) {
-			var sightings = locationSightings[locInfo.i];
+		sortedLocations = sortByFunc(locations, ({ i }) => {
+			const sightings = locationSightings[i];
 			if (sightings.fetched) {
 				return 10000 - sightings.data[observationRecency - 1].runningTotal;
 			}
@@ -390,58 +390,42 @@ const sortSightings = (sightings, sort, sortDir) => {
 	switch (sort) {
 		case C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = _.sortBy(sightings, function (i) {
-					return i.locations.length;
-				});
+				sorted = sortByFunc(sightings, (i) => i.locations.length);
 			} else {
-				sorted = _.sortBy(sightings, function (i) {
-					return -i.locations.length;
-				});
+				sorted = sortByFunc(sightings, (i) => -i.locations.length);
 			}
 			break;
 
 		case C.SIGHTINGS_SORT.FIELDS.LAST_SEEN:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = _.sortBy(sightings, function (i) {
-					return i.mostRecentObservation.format('X');
-				});
+				sorted = sortByFunc(sightings, (i) => i.mostRecentObservation.format('X'));
 			} else {
-				sorted = _.sortBy(sightings, function (i) {
-					return -i.mostRecentObservation.format('X');
-				});
+				sorted = sortByFunc(sightings, (i) => -i.mostRecentObservation.format('X'));
 			}
 			break;
 
 		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
 		case C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = _.sortBy(sightings, function (i) {
-					return i.howManyCount;
-				});
+				sorted = sortByFunc(sightings, (i) => i.howManyCount);
 			} else {
-				sorted = _.sortBy(sightings, function (i) {
-					return -i.howManyCount;
-				});
+				sorted = sortByFunc(sightings, (i) => -i.howManyCount);
 			}
 			break;
 
 		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase());
+				sorted = sortByFunc(sightings, (i) => i.locName.toLowerCase());
 			} else {
-				sorted = _.sortBy(sightings, (i) => i.locName.toLowerCase().charCodeAt() * -1);
+				sorted = sortByFunc(sightings, (i) => i.locName.toLowerCase().charCodeAt(0) * -1);
 			}
 			break;
 
 		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = _.sortBy(sightings, function (i) {
-					return i.obsDt.format('X');
-				});
+				sorted = sortByFunc(sightings, (i) => i.obsDt.format('X'));
 			} else {
-				sorted = _.sortBy(sightings, function (i) {
-					return -i.obsDt.format('X');
-				});
+				sorted = sortByFunc(sightings, (i) => -i.obsDt.format('X'));
 			}
 			break;
 
@@ -532,20 +516,51 @@ const arrayPluck = (arr, prop) => {
 	return arr.map((item) => item[prop]);
 };
 
-const sortByFunc = (arr, fn) => {
+
+/**
+ * Very basic generic sorter function for numeric values. The benefit of this method is that you can just
+ * pass a function that returns the number value out of a complex object, rather than have to supply the comparison
+ * operators, e.g.
+ *      helpers.sortNumeric(data, (obj) => obj.totalCount);
+ *      helpers.sortNumeric(data, (obj) => -obj.totalCount); // reverse sort
+ * @param arr
+ * @param extractFn
+ * @return {*}
+ */
+const sortNumeric = (arr, extractFn) => {
 	arr.sort((a, b) => {
-		if (fn(a) > fn(b)) {
+		if (extractFn(a) > extractFn(b)) {
 			return 1;
-		} else if (fn(a) < fn(b)) {
+		} else if (extractFn(a) < extractFn(b)) {
 			return -1
 		}
 		return 0;
 	});
+
+	return arr;
 };
 
+/**
+ * Sorts an array of objects (in place, but also returns) by an arbitrary property value, determined by the fn() function
+ * which returns the value. The second
+ * @param arr
+ * @param extractFn
+ * @param dir
+ * @return {*}
+ */
+const sortAlpha = (arr, extractFn, dir = 'ASC') => {
+	arr.sort((a, b) => {
+		return dir === 'DESC' ?
+			- extractFn(a).localeCompare(extractFn(b)) :
+			(extractFn(a).localeCompare(extractFn(b)));
+	});
+	return arr;
+};
+
+
 const times = (count, fn) => {
-	return Array.from({length: 10}, (_,x) => fn(x));
-}
+	return Array.from({ length: 10 }, (_,x) => fn(x));
+};
 
 
 export {
@@ -571,6 +586,7 @@ export {
 	getAllLocationsCount,
 	isNumeric,
 	arrayPluck,
-	sortByFunc,
+	sortNumeric,
+	sortAlpha,
 	times
 };
