@@ -398,18 +398,11 @@ class SpeciesRow extends React.Component {
 	}
 
 	getLocations () {
-		const { intl, species } = this.props;
-		const viewChecklistLabel = intl.formatMessage({ id: 'viewChecklist' });
-
+		const { species } = this.props;
 		return species.locations.map((locInfo) => {
-
-			console.log(locInfo);
-			const checklistLink = `http://ebird.org/ebird/view/checklist/${locInfo.subId}`;
 			return (
 				<li key={locInfo.locId}>
 					<span data-id={locInfo.locId}>{locInfo.locName}</span>
-					<a href={checklistLink} target="_blank" className="glyphicon glyphicon-list"
-					   title={viewChecklistLabel}/>
 				</li>
 			);
 		});
@@ -542,6 +535,10 @@ class NotableSightingsTable extends React.Component {
 	getRows () {
 		const { dispatch, selectedLocation, showScientificName, filter, env, intl } = this.props;
 		const isMobile = (env.viewportMode === C.VIEWPORT_MODES.MOBILE);
+
+		if (!this.sortedSpecies) {
+			return null;
+		}
 
 		return this.sortedSpecies.map((row, index) => {
 			var comNameData = helpers.highlightString(row.comName, filter);

@@ -1,6 +1,6 @@
 {
   "name": "birdsearch.org",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Source code for the birdsearch.org site.",
   "main": "Gruntfile.js",
   "scripts": {

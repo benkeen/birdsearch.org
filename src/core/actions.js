@@ -68,7 +68,7 @@ const search = (searchType, locationString, lat, lng, mapBounds, observationRece
 	return function (dispatch) {
 		dispatch(startSearchRequest(searchType, locationString, lat, lng, mapBounds, observationRecency, zoomHandling));
 
-		var searchParams = {
+		const searchParams = {
 			lat: lat,
 			lng: lng,
 			observationRecency: observationRecency
@@ -79,21 +79,21 @@ const search = (searchType, locationString, lat, lng, mapBounds, observationRece
 			// this makes a request for the hotspots, converts the results to JSON (which is async for some reason...?) then
 			// publishes the appropriate action
 			return fetchLocations(searchParams)
-			.then(res => res.json())
-			.then(
-			json => dispatch(searchLocationsFound(dispatch, json, showLocationsPanel),
-			error => dispatch(searchLocationRequestError(dispatch, error))
-			)
-			);
+				.then(res => res.json())
+				.then(
+					json => dispatch(searchLocationsFound(dispatch, json, showLocationsPanel),
+						error => dispatch(searchLocationRequestError(dispatch, error))
+					)
+				);
 		}
 
 		// this makes a request for the hotspots, converts the results to JSON (which is async for some reason...?) then
 		// publishes the appropriate action
 		return fetchNotableSightings(searchParams)
-		.then(res => res.json())
-		.then(
-		json => dispatch(notableResultsReturned(dispatch, json, showLocationsPanel))
-		);
+			.then(res => res.json())
+			.then(
+				json => dispatch(notableResultsReturned(dispatch, json, showLocationsPanel))
+			);
 	}
 };
 
@@ -116,7 +116,7 @@ const searchLocationRequestError = (dispatch, error) => {
 };
 
 const notableResultsReturned = (dispatch, data, showLocationsPanel) => {
-	var worker = new NotableWorker();
+	const worker = new NotableWorker();
 	worker.postMessage({
 		sightings: data,
 		maxSearchDays: C.MISC.MAX_SEARCH_DAYS
@@ -258,7 +258,7 @@ const updateVisibleLocations = (visibleLocations) => {
 const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) => {
 	const numLocations = locations.length;
 
-	var updateBundleCount = 1;
+	let updateBundleCount = 1;
 	if (numLocations > 60) {
 		updateBundleCount = 10;
 	} else if (numLocations > 40) {
@@ -273,8 +273,8 @@ const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) =
 	let counter = 0;
 
 
-	var processHotspotSightingsPacket = function (json, locationIDs) {
-		var worker = new HotspotWorker();
+	const processHotspotSightingsPacket = function (json, locationIDs) {
+		const worker = new HotspotWorker();
 		worker.postMessage({
 			locationIDs,
 			sightings: json,
@@ -312,10 +312,10 @@ const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) =
 
 	chunks.forEach((locationIDs) => {
 		promises.push(fetchHotspotSightingsPacket(locationIDs)
-		.then(res => res.json())
-		.then(json => processHotspotSightingsPacket(json, locationIDs)
-		//error => dispatch(searchLocationRequestError(dispatch, error))
-		));
+			.then(res => res.json())
+			.then(json => processHotspotSightingsPacket(json, locationIDs)
+				//error => dispatch(searchLocationRequestError(dispatch, error))
+			));
 	});
 
 	return promises;

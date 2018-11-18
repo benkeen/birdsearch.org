@@ -207,7 +207,9 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 	const locationIDs = arrayPluck(locations, 'i');
 
 	const data = [];
-	sightings.forEach((sightingData, locationID) => {
+	Object.keys(sightings).forEach((locationID) => {
+		const sightingData = sightings[locationID];
+
 		if (!sightingData.fetched) {
 			return;
 		}
@@ -261,7 +263,9 @@ const getNumNotableSightings = (locations, sightings, obsRecency) => {
 	const locationIDs = arrayPluck(locations, 'i');
 
 	let count = 0;
-	sightings.forEach((sightingData, locationID) => {
+	Object.keys(sightings).forEach((locationID) => {
+		const sightingData = sightings[locationID];
+
 		if (!sightingData.fetched) {
 			return;
 		}

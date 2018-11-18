@@ -7,11 +7,11 @@ import { C, E, _, helpers, actions } from './core';
 import * as storage from './storage';
 
 
-function env(state = {
+const env = (state = {
 	windowWidth: $(window).width(),
 	windowHeight: $(window).height(),
 	viewportMode: C.VIEWPORT_MODES.DESKTOP
-}, action) {
+}, action) => {
 	switch (action.type) {
 		case E.WINDOW_RESIZED:
 			const newViewportMode = (action.width <= C.MOBILE_BREAKPOINT_WIDTH) ? C.VIEWPORT_MODES.MOBILE : C.VIEWPORT_MODES.DESKTOP;
@@ -24,17 +24,17 @@ function env(state = {
 		default:
 			return state;
 	}
-}
+};
 
 
-function searchSettings(state = {
+const searchSettings = (state = {
 	searchType: C.SEARCH_SETTINGS.SEARCH_TYPES.ALL,
 	location: '',
 	lat: null,
 	lng: null,
 	observationRecency: null,
 	zoomHandling: null
-}, action) {
+}, action) => {
 
 	switch (action.type) {
 		case E.SET_SEARCH_LOCATION:
@@ -72,17 +72,17 @@ function searchSettings(state = {
 		default:
 			return state;
 	}
-}
+};
 
 
-function mapSettings(state = {
+const mapSettings = (state = {
 	mapTypeId: C.DEFAULT_MAP_TYPE,
 	lat: 30,
 	lng: 0,
 	bounds: null,
 	searchUpdateCounter: 0,
 	resetSearchCounter: 0
-}, action) {
+}, action) => {
 
 	switch (action.type) {
 		case E.SEARCH_REQUEST_STARTED:
@@ -109,8 +109,8 @@ function mapSettings(state = {
 				mapTypeId: action.mapTypeId
 			});
 
-	// this ensures ROAD MAP is set any time you choose a non-default map style. Otherwise things like "satellite"
-	// would overwrite the styles. A little inelegant.
+		// this ensures ROAD MAP is set any time you choose a non-default map style. Otherwise things like "satellite"
+		// would overwrite the styles. A little inelegant.
 		case E.SELECT_MAP_STYLE:
 			let mapTypeId = state.mapTypeId;
 			if (action.mapStyle !== C.MAP_STYLES.DEFAULT) {
@@ -133,10 +133,10 @@ function mapSettings(state = {
 		default:
 			return state;
 	}
-}
+};
 
 
-function user(state = {
+const user = (state = {
 	isFetching: false,
 	userLocationFound: false,
 	errorRetrievingUserLocation: false,
@@ -145,7 +145,7 @@ function user(state = {
 	bounds: null,
 	address: '',
 	locale: C.DEFAULT_LOCALE
-}, action) {
+}, action) => {
 	switch (action.type) {
 		case E.REQUESTING_USER_LOCATION:
 			return Object.assign({}, state, { isFetching: true });
@@ -175,17 +175,17 @@ function user(state = {
 		default:
 			return state;
 	}
-}
+};
 
 
-function introOverlay(state = {
+const introOverlay = (state = {
 	visible: true,
 
 	// the intro overlay is special: it has it's own /intro route, but it automatically shows up when the user first
 	// goes to the root with no route change. To know when NOT to automatically show it, we track when the overlay is
 	// first closed
 	hasBeenClosedAtLeastOnce: false
-}, action) {
+}, action) => {
 
 	switch (action.type) {
 		case E.SET_INTRO_OVERLAY_VISIBILITY:
@@ -206,12 +206,12 @@ function introOverlay(state = {
 		default:
 			return state;
 	}
-}
+};
 
 
-function aboutOverlay(state = {
+const aboutOverlay = (state = {
 	selectedTab: C.ABOUT_TABS.ABOUT
-}, action) {
+}, action) => {
 
 	switch (action.type) {
 		case E.SELECT_ABOUT_TAB:
@@ -221,20 +221,20 @@ function aboutOverlay(state = {
 		default:
 			return state;
 	}
-}
+};
 
 
 // the search settings overlay has its own copy of the actual search settings. This allows the user to change settings
 // there and not have them immediately effect the rest of the UI. Only after a search is performed do the settings
 // get copied over to searchSettings
-function settingsOverlay(state = {
+const settingsOverlay = (state = {
 	selectedTab: C.SEARCH_OVERLAY_TABS.SEARCH_SETTINGS,
 	searchType: null,
 	observationRecency: null,
 	zoomHandling: null,
 	showScientificName: false,
 	mapStyle: ''
-}, action) {
+}, action) => {
 
 	switch (action.type) {
 		case E.SELECT_SETTINGS_OVERLAY_TAB:
@@ -275,10 +275,10 @@ function settingsOverlay(state = {
 		default:
 			return state;
 	}
-}
+};
 
 
-function results(state = {
+const results = (state = {
 	isFetching: false,
 	numLocations: 0,
 
@@ -292,7 +292,7 @@ function results(state = {
 	locationSightings: {}, // an object of [location ID] => sighting info. Populated as need be, based on what's visible
 
 	searchError: ''
-}, action) {
+}, action) => {
 	switch (action.type) {
 		case E.SEARCH_REQUEST_STARTED:
 			return Object.assign({}, state, {
@@ -314,7 +314,7 @@ function results(state = {
 			});
 
 		case E.SEARCH_LOCATIONS_RETURNED:
-			var locationSightings = Object.assign({}, state.locationSightings);
+			const locationSightings = Object.assign({}, state.locationSightings);
 
 			let searchError = '';
 			if (action.locations.length === 0) {
@@ -472,13 +472,13 @@ function locationsPanel(state = {
 }
 
 
-function sightingsPanel(state = {
+const sightingsPanel = (state = {
 	visible: false,
 	filter: '',
 	updateCounter: 0,
 	sort: C.SIGHTINGS_SORT.FIELDS.SPECIES,
 	sortDir: C.SORT_DIR.DEFAULT
-}, action) {
+}, action) => {
 
 	switch (action.type) {
 		case E.TOGGLE_PANEL_VISIBILITY:
@@ -524,7 +524,7 @@ function sightingsPanel(state = {
 				updateCounter: state.updateCounter + 1
 			});
 
-	// if we resize the window down to mobile mode, the filter field isn't available so we clear it
+		// if we resize the window down to mobile mode, the filter field isn't available so we clear it
 		case E.WINDOW_RESIZED:
 			const filter = (action.width <= C.MOBILE_BREAKPOINT_WIDTH) ? '' : state.filter;
 			return Object.assign({}, state, {
@@ -538,14 +538,13 @@ function sightingsPanel(state = {
 		case E.SET_LOCALE:
 		case E.LOCATION_SELECTED:
 		case E.SEARCH_REQUEST_ENDED:
-		case E.WINDOW_RESIZED:
 		case E.SET_SCIENTIFIC_NAME_VISIBILITY:
 			return Object.assign({}, state, { updateCounter: state.updateCounter + 1 });
 
 		default:
 			return state;
 	}
-}
+};
 
 
 // this is a weird one - react really fails to handle certain scenarios well. e.g. close a modal and focus on some
