@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 
 // generic overlay component. Provides a styled overlay wrapper (white, rounded corners with padding), plus
@@ -54,12 +55,12 @@ class Overlay extends React.Component {
 	}
 }
 Overlay.propTypes = {
-	id: React.PropTypes.string.isRequired,
-	onClose: React.PropTypes.func.isRequired,
-	showCloseIcon: React.PropTypes.bool,
-	closeIconDisabled: React.PropTypes.bool,
-	className: React.PropTypes.string,
-	customKeyActions: React.PropTypes.array
+	id: PropTypes.string.isRequired,
+	onClose: PropTypes.func.isRequired,
+	showCloseIcon: PropTypes.bool,
+	closeIconDisabled: PropTypes.bool,
+	className: PropTypes.string,
+	customKeyActions: PropTypes.array
 };
 Overlay.defaultProps = {
 	showCloseIcon: false,
@@ -95,7 +96,7 @@ class Loader extends React.Component {
 }
 
 Loader.PropTypes = {
-	label: React.PropTypes.string.isRequired
+	label: PropTypes.string.isRequired
 };
 
 
@@ -120,8 +121,8 @@ class ClosePanel extends React.Component {
 	}
 }
 ClosePanel.propTypes = {
-	onClose: React.PropTypes.func.isRequired,
-	disabled: React.PropTypes.bool
+	onClose: PropTypes.func.isRequired,
+	disabled: PropTypes.bool
 };
 ClosePanel.defaultTypes = {
 	disabled: false
@@ -148,7 +149,7 @@ class LineLoader extends React.Component {
 	}
 }
 LineLoader.PropTypes = {
-	className: React.PropTypes.string
+	className: PropTypes.string
 };
 
 
@@ -173,8 +174,8 @@ class LocationsDropdown extends React.Component {
 	}
 }
 LocationsDropdown.PropTypes = {
-	locations: React.PropTypes.array.isRequired,
-	selected: React.PropTypes.string.isRequired
+	locations: PropTypes.array.isRequired,
+	selected: PropTypes.string.isRequired
 };
 
 // draws a pretty count element with the appropriate colour
@@ -214,8 +215,8 @@ class LocationCount extends React.Component {
 	}
 }
 LocationCount.PropTypes = {
-	count: React.PropTypes.number,
-	classNameOverride: React.PropTypes.string
+	count: PropTypes.number,
+	classNameOverride: PropTypes.string
 };
 LocationCount.defaultProps = {
 	count: null,

@@ -99,7 +99,7 @@ const filterLocations = (locations, filter) => {
 
 
 const getLocationById = (locations, locationId) => {
-	return _.findWhere(locations, { i: locationId });
+	return locations.find((item) => item.i === locationId);
 };
 
 
@@ -115,7 +115,9 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 
 		// only include the species info if the users's looking as "All Locations", or if this current location
 		// is the specific one
-		currLocationSpeciesInfo.species.forEach((info, sciName) => {
+		Object.keys(currLocationSpeciesInfo.species).forEach((sciName) => {
+			const info = currLocationSpeciesInfo.species[sciName];
+
 			if (targetLocationID === null || locationID === targetLocationID) {
 				if (!dataBySpecies.hasOwnProperty(sciName)) {
 					dataBySpecies[sciName] = {
@@ -151,7 +153,7 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 	});
 
 	// now append ALL locations for the found species. TODO this only needs to change when the search does. It shouldn't be here.
-	dataBySpecies.forEach((speciesData, sciName) => {
+	Object.keys(dataBySpecies).forEach((sciName) => {
 		const uniqueLocations = [];
 
 		allDataBySpecies[sciName].forEach((obsInfo) => {
@@ -163,10 +165,8 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 	});
 
 	// now convert the sightings into an array
-	var sightingsData = _.values(dataBySpecies);
-	sightingsData.sort((a, b) => {
-		return (a.comName.toLowerCase() > b.comName.toLowerCase()) ? 1 : -1;
-	});
+	var sightingsData = Object.values(dataBySpecies);
+	sortAlpha(sightingsData, (obj) => obj.comName);
 
 	var results = sightingsData.map((sighting) => {
 		var lastObservation = 0;
@@ -302,14 +302,11 @@ const sortLocations = (locations, locationSightings, observationRecency, sort, s
 
 	// apply the appropriate sort
 	if (sort === C.LOCATION_SORT.FIELDS.LOCATION) {
-		// sortedLocations = _.sortBy(locations, (locInfo) => {
-		// 	return locInfo.n;
-		// });
-
+		sortAlpha(sortedLocations, (locInfo) => locInfo.n);
 	} else {
 		// the 10000 thing is a bit weird, but basically we just need to sort the species count from largest to smallest
 		// when the user first clicks the column. That does it.
-		sortedLocations = sortByFunc(locations, ({ i }) => {
+		sortNumeric(sortedLocations, ({ i }) => {
 			const sightings = locationSightings[i];
 			if (sightings.fetched) {
 				return 10000 - sightings.data[observationRecency - 1].runningTotal;
@@ -390,67 +387,67 @@ const sortSightings = (sightings, sort, sortDir) => {
 	switch (sort) {
 		case C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = sortByFunc(sightings, (i) => i.locations.length);
+				sorted = sortNumeric(sightings, (i) => i.locations.length);
 			} else {
-				sorted = sortByFunc(sightings, (i) => -i.locations.length);
+				sorted = sortNumeric(sightings, (i) => -i.locations.length);
 			}
 			break;
 
 		case C.SIGHTINGS_SORT.FIELDS.LAST_SEEN:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = sortByFunc(sightings, (i) => i.mostRecentObservation.format('X'));
+				sorted = sortNumeric(sightings, (i) => i.mostRecentObservation.format('X'));
 			} else {
-				sorted = sortByFunc(sightings, (i) => -i.mostRecentObservation.format('X'));
+				sorted = sortNumeric(sightings, (i) => -i.mostRecentObservation.format('X'));
 			}
 			break;
 
 		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
 		case C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = sortByFunc(sightings, (i) => i.howManyCount);
+				sorted = sortNumeric(sightings, (i) => i.howManyCount);
 			} else {
-				sorted = sortByFunc(sightings, (i) => -i.howManyCount);
+				sorted = sortNumeric(sightings, (i) => -i.howManyCount);
 			}
 			break;
 
 		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = sortByFunc(sightings, (i) => i.locName.toLowerCase());
+				sorted = sortAlpha(sightings, (i) => i.locName);
 			} else {
-				sorted = sortByFunc(sightings, (i) => i.locName.toLowerCase().charCodeAt(0) * -1);
+				sorted = sortAlpha(sightings, (i) => i.locName, 'DESC');
 			}
 			break;
 
 		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = sortByFunc(sightings, (i) => i.obsDt.format('X'));
+				sorted = sortNumeric(sightings, (i) => i.obsDt.format('X'));
 			} else {
-				sorted = sortByFunc(sightings, (i) => -i.obsDt.format('X'));
+				sorted = sortNumeric(sightings, (i) => -i.obsDt.format('X'));
 			}
 			break;
 
 		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = _.sortBy(sightings, (i) => i.reporter.toLowerCase());
+				sorted = sortAlpha(sightings, (i) => i.reporter);
 			} else {
-				sorted = _.sortBy(sightings, (i) => i.reporter.toLowerCase().charCodeAt() * -1);
+				sorted = sortAlpha(sightings, (i) => i.reporter, 'DESC');
 			}
 			break;
 
 		case C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = _.sortBy(sightings, (i) => i.status);
+				sorted = sortAlpha(sightings, (i) => i.status);
 			} else {
-				sorted = _.sortBy(sightings, (i) => i.status.charCodeAt() * -1);
+				sorted = sortAlpha(sightings, (i) => i.status, 'DESC');
 			}
 			break;
 
 		// species name
 		default:
 			if (sortDir === C.SORT_DIR.DEFAULT) {
-				sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase());
+				sorted = sortAlpha(sightings, (i) => i.comName.toLowerCase());
 			} else {
-				sorted = _.sortBy(sightings, (i) => i.comName.toLowerCase().charCodeAt() * -1);
+				sorted = sortAlpha(sightings, (i) => i.comName.toLowerCase(), 'DESC');
 			}
 			break;
 	}

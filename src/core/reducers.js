@@ -346,10 +346,10 @@ function results(state = {
 
 		case E.STORE_NOTABLE_SIGHTINGS:
 			var locationSightings = {};
-			action.sightings.forEach((sightings, locationID) => {
+			Object.keys(action.sightings).forEach((locationID) => {
 				locationSightings[locationID] = {
 					fetched: true,
-					data: sightings
+					data: action.sightings[locationID]
 				}
 			});
 			return Object.assign({}, state, {
@@ -444,7 +444,7 @@ function locationsPanel(state = {
 				updateCounter: state.updateCounter + 1
 			};
 			if (state.selectedLocation) {
-				let found = _.findWhere(action.locations, { i: state.selectedLocation });
+				let found = action.locations.find((item) => item.i === state.selectedLocation);
 				if (!found) {
 					updatedState.selectedLocation = '';
 				}

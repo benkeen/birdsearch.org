@@ -1,8 +1,6 @@
 const pkg = require('./package.json');
 
-
 module.exports = function (grunt) {
-
 	require('load-grunt-tasks')(grunt);
 
 	const version = pkg.version;
@@ -11,25 +9,6 @@ module.exports = function (grunt) {
 			sass: {
 				files: ['**/*.scss'],
 				tasks: ['sass', 'copy', 'cssmin']
-			}
-		},
-
-		template: {
-			dev: {
-				options: {
-					data: {version: pkg.version}
-				},
-				files: {
-					'dist/index.html': ['src/template-dev.html']
-				}
-			},
-			prod: {
-				options: {
-					data: {version: pkg.version}
-				},
-				files: {
-					'dist/index.html': ['src/template-prod.html']
-				}
 			}
 		},
 
@@ -85,6 +64,7 @@ module.exports = function (grunt) {
 			webpack_prod: {
 				cmd: 'npm',
 				args: [
+					'run',
 					'build'
 				]
 			}
@@ -102,7 +82,7 @@ module.exports = function (grunt) {
 
 	grunt.initConfig(config);
 
-	grunt.registerTask('prod', ['sass', 'copy', 'cssmin']); // 'template:prod'
-	grunt.registerTask('dev', ['sass', 'copy', 'cssmin']); // 'template:dev',
+	grunt.registerTask('prod', ['sass', 'copy', 'cssmin', 'run:webpack_prod']);
+	grunt.registerTask('dev', ['sass', 'copy', 'cssmin']);
 	grunt.registerTask('start', ['dev', 'concurrent:watchers']);
 };

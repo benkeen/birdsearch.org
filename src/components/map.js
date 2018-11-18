@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
+import PropTypes from 'prop-types';
 import { C, _, actions, helpers } from '../core/core';
 import moment from 'moment';
 
@@ -615,7 +616,7 @@ export class Map extends React.Component {
 		const newSorted = locationIDsInBounds.sort();
 
 		// if the list of hotspots in the map boundary changed, publish the info
-		if (!_.isEqual(newSorted, _currentHotspotIDsInMapBoundaries)) {
+		if (JSON.stringify(newSorted) !== JSON.stringify(_currentHotspotIDsInMapBoundaries)) {
 			this.props.dispatch(actions.visibleLocationsFound(searchType, locationsInBounds, locationSightings));
 		}
 
@@ -838,8 +839,8 @@ export class Map extends React.Component {
 	}
 }
 Map.PropTypes = {
-	results: React.PropTypes.array.isRequired,
-	locationFilter: React.PropTypes.string.isRequired
+	results: PropTypes.array.isRequired,
+	locationFilter: PropTypes.string.isRequired
 };
 
 

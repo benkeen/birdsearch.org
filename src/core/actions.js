@@ -1,6 +1,8 @@
 import React from 'react';
 import { C, E, helpers, _ } from './core';
 import fetch from 'isomorphic-fetch';
+import HotspotWorker from './worker-processHotspotSightings';
+import NotableWorker from './worker-processNotableSightings';
 
 
 const setLocale = (locale) => {
@@ -114,7 +116,7 @@ const searchLocationRequestError = (dispatch, error) => {
 };
 
 const notableResultsReturned = (dispatch, data, showLocationsPanel) => {
-	var worker = new Worker('./worker-processNotableSightings.js');
+	var worker = new NotableWorker();
 	worker.postMessage({
 		sightings: data,
 		maxSearchDays: C.MISC.MAX_SEARCH_DAYS
@@ -272,9 +274,9 @@ const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) =
 
 
 	var processHotspotSightingsPacket = function (json, locationIDs) {
-		var worker = new Worker('./worker-processHotspotSightings.js'); // TODO shared worker?
+		var worker = new HotspotWorker();
 		worker.postMessage({
-			locationIDs: locationIDs,
+			locationIDs,
 			sightings: json,
 			maxSearchDays: C.MISC.MAX_SEARCH_DAYS
 		});
@@ -283,7 +285,6 @@ const getBirdHotspotObservations = (dispatch, locations, allLocationSightings) =
 			if (counter % updateBundleCount === 0 || counter === numToFetch - 1) {
 				dispatch(updateLocationSightings());
 			}
-
 			if (counter === numToFetch - 1) {
 				dispatch(searchRequestComplete());
 			}

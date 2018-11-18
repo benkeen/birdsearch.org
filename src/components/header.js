@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { browserHistory } from 'react-router';
@@ -276,11 +277,11 @@ class HeaderSearch extends React.Component {
 	}
 }
 HeaderSearch.PropTypes = {
-	disabled: React.PropTypes.bool.isRequired,
-	location: React.PropTypes.string.isRequired,
-	onChangeLocation: React.PropTypes.func.isRequired,
-	onSubmit: React.PropTypes.func.isRequired,
-	setLocation: React.PropTypes.func.isRequired,
+	disabled: PropTypes.bool.isRequired,
+	location: PropTypes.string.isRequired,
+	onChangeLocation: PropTypes.func.isRequired,
+	onSubmit: PropTypes.func.isRequired,
+	setLocation: PropTypes.func.isRequired,
 	intl: intlShape.isRequired
 };
 
@@ -335,8 +336,8 @@ class LocaleSelector extends React.Component {
 }
 
 LocaleSelector.propTypes = {
-	type: React.PropTypes.string.isRequired, // oneOf syntax?
-	locale: React.PropTypes.string.isRequired,
-	onChange: React.PropTypes.func.isRequired
+	type: PropTypes.string.isRequired, // oneOf syntax?
+	locale: PropTypes.string.isRequired,
+	onChange: PropTypes.func.isRequired
 };
 

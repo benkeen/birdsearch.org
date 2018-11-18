@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedHTMLMessage, intlShape, injectIntl } from 'react-intl';
 import { browserHistory } from 'react-router';
 import { Loader, Overlay } from './general';
@@ -131,7 +132,7 @@ class IntroOverlay extends React.Component {
 	}
 }
 IntroOverlay.PropTypes = {
-	loading: React.PropTypes.bool.isRequired,
+	loading: PropTypes.bool.isRequired,
 	intl: intlShape.isRequired
 };
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { VelocityComponent } from 'velocity-react';
 import { C, helpers, _, actions } from '../core/core';
@@ -251,14 +252,14 @@ export class LocationsPanel extends React.Component {
 	}
 }
 LocationsPanel.PropTypes = {
-	visible: React.PropTypes.bool.isRequired,
-	sort: React.PropTypes.string.isRequired,
-	sortDir: React.PropTypes.string.isRequired,
-	filter: React.PropTypes.string.isRequired,
-	locations: React.PropTypes.array.isRequired,
-	locationSightings: React.PropTypes.object.isRequired,
-	observationRecency: React.PropTypes.number.isRequired,
-	env: React.PropTypes.object.isRequired,
+	visible: PropTypes.bool.isRequired,
+	sort: PropTypes.string.isRequired,
+	sortDir: PropTypes.string.isRequired,
+	filter: PropTypes.string.isRequired,
+	locations: PropTypes.array.isRequired,
+	locationSightings: PropTypes.object.isRequired,
+	observationRecency: PropTypes.number.isRequired,
+	env: PropTypes.object.isRequired,
 	intl: intlShape.isRequired
 };
 
@@ -289,10 +290,10 @@ class LocationRow extends React.Component {
 	}
 }
 LocationRow.PropTypes = {
-	searchType: React.PropTypes.string.isRequired,
-	location: React.PropTypes.object.isRequired,
-	sightings: React.PropTypes.object.isRequired,
-	observationRecency: React.PropTypes.number.isRequired,
-	filter: React.PropTypes.string.isRequired
+	searchType: PropTypes.string.isRequired,
+	location: PropTypes.object.isRequired,
+	sightings: PropTypes.object.isRequired,
+	observationRecency: PropTypes.number.isRequired,
+	filter: PropTypes.string.isRequired
 };
 

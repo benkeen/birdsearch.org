@@ -8,6 +8,11 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import * as reducers from './core/reducers';
 import { C, storage, i18n } from './core/core';
 
+import 'moment/locale/en-ca.js';
+import 'moment/locale/de.js';
+import 'moment/locale/es.js';
+import 'moment/locale/fr.js';
+
 // locale information for react-intl
 import en from 'react-intl/locale-data/en'
 import es from 'react-intl/locale-data/es';
