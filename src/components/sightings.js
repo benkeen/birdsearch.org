@@ -9,7 +9,7 @@ import { LineLoader, LocationCount } from './general';
 
 
 export class SightingsPanel extends React.Component {
-	constructor(props) {
+	constructor (props) {
 		super(props);
 		this.getTitle = this.getTitle.bind(this);
 		this.toggleVisibility = this.toggleVisibility.bind(this);
@@ -18,11 +18,11 @@ export class SightingsPanel extends React.Component {
 		};
 	}
 
-	componentDidMount() {
+	componentDidMount () {
 		$(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
 	}
 
-	shouldComponentUpdate(nextProps) {
+	shouldComponentUpdate (nextProps) {
 		const locationsJustAdded = this.props.locations.length === 0 && nextProps.locations.length > 0;
 		if (locationsJustAdded) {
 			return true;
@@ -31,7 +31,7 @@ export class SightingsPanel extends React.Component {
 		return this.props.updateCounter !== nextProps.updateCounter;
 	}
 
-	componentWillReceiveProps(nextProps) {
+	componentWillReceiveProps (nextProps) {
 		const { visible, env } = this.props;
 
 		var animation = {};
@@ -63,25 +63,25 @@ export class SightingsPanel extends React.Component {
 		}
 	}
 
-	transitionBegin() {
+	transitionBegin () {
 		if (this.props.visible) {
 			$(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'block' });
 		}
 	}
 
-	transitionComplete() {
+	transitionComplete () {
 		if (!this.props.visible) {
 			$(ReactDOM.findDOMNode(this.refs.panel)).css({ display: 'none' });
 		}
 	}
 
-	getEBirdHotspotLink(selectedLocation) {
+	getEBirdHotspotLink (selectedLocation) {
 		if (!selectedLocation) {
 			return;
 		}
 		const link = `http://ebird.org/ebird/hotspot/${selectedLocation}`;
 		return (
-		<span className="eBirdLink">
+			<span className="eBirdLink">
         <a href={link} target="_blank">
           <span className="eBird">e</span>Bird hotspot
           <span className="eBirdOffsiteIcon glyphicon glyphicon-new-window"/>
@@ -90,7 +90,7 @@ export class SightingsPanel extends React.Component {
 		);
 	}
 
-	getTitle() {
+	getTitle () {
 		const { dispatch, locations, sightings, selectedLocation, searchSettings, intl } = this.props;
 		const { searchType, observationRecency } = searchSettings;
 		const totalSectionClassOverride = (searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? null : 'notableSightingsTotal';
@@ -106,11 +106,11 @@ export class SightingsPanel extends React.Component {
 			}
 
 			title = (
-			<span>
+				<span>
           <a href="#" onClick={(e) => {
-			  e.preventDefault();
-			  dispatch(actions.selectLocation(''));
-		  }}>{title}</a>
+	          e.preventDefault();
+	          dispatch(actions.selectLocation(''));
+          }}>{title}</a>
           <span className="delimiter glyphicon glyphicon-triangle-right"/>
           <span>{locationInfo.n}</span>
         </span>
@@ -120,18 +120,19 @@ export class SightingsPanel extends React.Component {
 		}
 
 		return (
-		<div className="species-heading-row">
-			<h1>{title}</h1>
-			<div className="counter"><LocationCount count={numSpecies} classNameOverride={totalSectionClassOverride}/></div>
-			{(searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? this.getEBirdHotspotLink(selectedLocation) : null}
-		</div>
+			<div className="species-heading-row">
+				<h1>{title}</h1>
+				<div className="counter"><LocationCount count={numSpecies}
+				                                        classNameOverride={totalSectionClassOverride}/></div>
+				{(searchSettings.searchType === C.SEARCH_SETTINGS.SEARCH_TYPES.ALL) ? this.getEBirdHotspotLink(selectedLocation) : null}
+			</div>
 		);
 	}
 
-	getTable() {
+	getTable () {
 		const {
-		dispatch, visible, searchSettings, selectedLocation, locations, sightings, showScientificName,
-		speciesFilter, sort, sortDir, env, intl
+			dispatch, visible, searchSettings, selectedLocation, locations, sightings, showScientificName,
+			speciesFilter, sort, sortDir, env, intl
 		} = this.props;
 
 		var selLocation = (selectedLocation) ? selectedLocation : null;
@@ -140,18 +141,18 @@ export class SightingsPanel extends React.Component {
 			let sightingsData = helpers.getSightings(locations, sightings, searchSettings.observationRecency, selLocation);
 
 			return (
-			<SpeciesTable
-				intl={intl}
-				dispatch={dispatch}
-				tabVisible={visible}
-				species={sightingsData}
-				selectedLocation={selectedLocation}
-				observationRecency={searchSettings.observationRecency}
-				showScientificName={showScientificName}
-				filter={speciesFilter}
-				sort={sort}
-				sortDir={sortDir}
-				viewportMode={env.viewportMode} />
+				<SpeciesTable
+					intl={intl}
+					dispatch={dispatch}
+					tabVisible={visible}
+					species={sightingsData}
+					selectedLocation={selectedLocation}
+					observationRecency={searchSettings.observationRecency}
+					showScientificName={showScientificName}
+					filter={speciesFilter}
+					sort={sort}
+					sortDir={sortDir}
+					viewportMode={env.viewportMode}/>
 			);
 		}
 
@@ -172,7 +173,7 @@ export class SightingsPanel extends React.Component {
 		);
 	}
 
-	toggleVisibility() {
+	toggleVisibility () {
 		const { dispatch, env } = this.props;
 		dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES));
 		if (env.viewportMode === C.VIEWPORT_MODES.MOBILE) {
@@ -180,7 +181,7 @@ export class SightingsPanel extends React.Component {
 		}
 	}
 
-	render() {
+	render () {
 		const { dispatch, locations, sightings, searchSettings, visible, env } = this.props;
 		if (!locations.length) {
 			return null;
@@ -193,36 +194,38 @@ export class SightingsPanel extends React.Component {
 		const transitionSpeed = (env.viewportMode === C.VIEWPORT_MODES.MOBILE) ? 0 : C.TRANSITION_SPEED;
 
 		return (
-		<section id="species-panel" style={{ width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH }}>
-			<header className={headerClasses} onClick={() => this.toggleVisibility()}>
-				<div>
-					<h2>
-						<FormattedMessage id={tabLangKey}/>
-						{(!results.allFetched) ? <LineLoader className="species-loading"/> : null}
-					</h2>
-					<span className={headerIconClasses}/>
-				</div>
-			</header>
-
-			<VelocityComponent animation={this.state.nextAnimation} duration={transitionSpeed}
-							   complete={this.transitionComplete.bind(this)} begin={this.transitionBegin.bind(this)}>
-				<div id="species-panel-content" ref="panel">
+			<section id="species-panel" style={{ width: env.windowWidth - C.PANEL_DIMENSIONS.LEFT_PANEL_WIDTH }}>
+				<header className={headerClasses} onClick={() => this.toggleVisibility()}>
 					<div>
-						<div className="panel">
-							{this.getTitle()}
-							{this.getTable()}
-						</div>
-						<footer style={{ height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px' }}
-								onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
-							<span className="glyphicon glyphicon-triangle-top"/>
-						</footer>
+						<h2>
+							<FormattedMessage id={tabLangKey}/>
+							{(!results.allFetched) ? <LineLoader className="species-loading"/> : null}
+						</h2>
+						<span className={headerIconClasses}/>
 					</div>
-				</div>
-			</VelocityComponent>
-		</section>
+				</header>
+
+				<VelocityComponent animation={this.state.nextAnimation} duration={transitionSpeed}
+				                   complete={this.transitionComplete.bind(this)}
+				                   begin={this.transitionBegin.bind(this)}>
+					<div id="species-panel-content" ref="panel">
+						<div>
+							<div className="panel">
+								{this.getTitle()}
+								{this.getTable()}
+							</div>
+							<footer style={{ height: C.PANEL_DIMENSIONS.PANEL_FOOTER_HEIGHT + 'px' }}
+							        onClick={() => dispatch(actions.togglePanelVisibility(C.PANELS.SPECIES))}>
+								<span className="glyphicon glyphicon-triangle-top"/>
+							</footer>
+						</div>
+					</div>
+				</VelocityComponent>
+			</section>
 		);
 	}
 }
+
 SightingsPanel.PropTypes = {
 	visible: PropTypes.bool.isRequired,
 	updateCounter: PropTypes.number.isRequired,
@@ -238,16 +241,16 @@ SightingsPanel.PropTypes = {
 
 class SpeciesTable extends React.Component {
 
-	componentDidMount() {
+	componentDidMount () {
 		this.sortedSpecies = this.props.species;
 	}
 
 	// we don't update anything if the user is closing the tab - it's super slow
-	shouldComponentUpdate(nextProps) {
+	shouldComponentUpdate (nextProps) {
 		return !(nextProps.tabVisible !== this.props.tabVisible && !nextProps.tabVisible);
 	}
 
-	componentWillReceiveProps({ species, sort, sortDir }) {
+	componentWillReceiveProps ({ species, sort, sortDir }) {
 		const numSpeciesChanged = species.length !== this.props.species.length;
 		const sortChanged = sort !== this.props.sort;
 		const sortDirChanged = sortDir !== this.props.sortDir;
@@ -258,7 +261,7 @@ class SpeciesTable extends React.Component {
 		this.sortedSpecies = helpers.sortSightings(species, sort, sortDir);
 	}
 
-	getContent() {
+	getContent () {
 		const { species } = this.props;
 
 		if (!species.length) {
@@ -266,13 +269,13 @@ class SpeciesTable extends React.Component {
 		}
 
 		return (
-		<tbody>
-		{this.getRows()}
-		</tbody>
+			<tbody>
+			{this.getRows()}
+			</tbody>
 		)
 	}
 
-	getRows() {
+	getRows () {
 		const { dispatch, filter, showScientificName, viewportMode, intl } = this.props;
 
 		return this.sortedSpecies.map((speciesInfo, index) => {
@@ -307,29 +310,29 @@ class SpeciesTable extends React.Component {
 		});
 	}
 
-	getClearSpeciesFilterIcon() {
+	getClearSpeciesFilterIcon () {
 		const { dispatch, filter } = this.props;
 		if (!filter) {
 			return;
 		}
 		return (
-		<span className="clear-filter-icon glyphicon glyphicon-remove"
-			  onClick={() => dispatch(actions.setSpeciesFilter(''))}/>
+			<span className="clear-filter-icon glyphicon glyphicon-remove"
+			      onClick={() => dispatch(actions.setSpeciesFilter(''))}/>
 		);
 	}
 
-	getLastSeenHeader() {
+	getLastSeenHeader () {
 		const { viewportMode, dispatch, sort, sortDir } = this.props;
 		if (viewportMode === C.VIEWPORT_MODES.MOBILE) {
 			return null;
 		}
 		return (
-		<SortableColHeader dispatch={dispatch} label="lastSeen" colClass="last-seen"
-						   sortField={C.SIGHTINGS_SORT.FIELDS.LAST_SEEN} sort={sort} sortDir={sortDir}/>
+			<SortableColHeader dispatch={dispatch} label="lastSeen" colClass="last-seen"
+			                   sortField={C.SIGHTINGS_SORT.FIELDS.LAST_SEEN} sort={sort} sortDir={sortDir}/>
 		);
 	}
 
-	render() {
+	render () {
 		const { filter, dispatch, intl, sort, sortDir } = this.props;
 
 		return (
@@ -345,19 +348,19 @@ class SpeciesTable extends React.Component {
 									{helpers.getColSort(C.SIGHTINGS_SORT.FIELDS.SPECIES, sort, sortDir)}
 								</span>
 								<input type="text" placeholder={intl.formatMessage({ id: 'filterSpecies' })}
-									className="filter-field search-input-field" value={filter}
-									onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))}/>
+								       className="filter-field search-input-field" value={filter}
+								       onChange={(e) => dispatch(actions.setSpeciesFilter(e.target.value))}/>
 								{this.getClearSpeciesFilterIcon()}
 							</th>
 							<SortableColHeader dispatch={dispatch} label="locations" colClass="locations-seen"
-								sortField={C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS} sort={sort}
-								sortDir={sortDir}/>
+							                   sortField={C.SIGHTINGS_SORT.FIELDS.NUM_LOCATIONS} sort={sort}
+							                   sortDir={sortDir}/>
 
 							{this.getLastSeenHeader()}
 
 							<SortableColHeader dispatch={dispatch} label="numReported" colClass="num-reported"
-							   sortField={C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED} sort={sort}
-							   sortDir={sortDir}/>
+							                   sortField={C.SIGHTINGS_SORT.FIELDS.NUM_REPORTED} sort={sort}
+							                   sortDir={sortDir}/>
 						</tr>
 						</thead>
 					</table>
@@ -371,6 +374,7 @@ class SpeciesTable extends React.Component {
 		);
 	}
 }
+
 SpeciesTable.PropTypes = {
 	species: PropTypes.array.isRequired,
 	filter: PropTypes.string.isRequired,
@@ -380,25 +384,27 @@ SpeciesTable.PropTypes = {
 
 
 class SpeciesRow extends React.Component {
-	constructor(props) {
+	constructor (props) {
 		super(props);
 		this.state = {
 			show: false
 		};
 	}
 
-	selectLocation(dispatch, el) {
+	selectLocation (dispatch, el) {
 		$('body').trigger('click');
 		var locationID = $(el).data('id');
 		dispatch(actions.selectLocation(locationID));
 	}
 
-	getLocations() {
+	getLocations () {
 		const { intl, species } = this.props;
 		const viewChecklistLabel = intl.formatMessage({ id: 'viewChecklist' });
 
 		return species.locations.map((locInfo) => {
-			const checklistLink = `http://ebird.org/ebird/view/checklist/${locInfo.subID}`;
+
+			console.log(locInfo);
+			const checklistLink = `http://ebird.org/ebird/view/checklist/${locInfo.subId}`;
 			return (
 				<li key={locInfo.locId}>
 					<span data-id={locInfo.locId}>{locInfo.locName}</span>
@@ -409,7 +415,7 @@ class SpeciesRow extends React.Component {
 		});
 	}
 
-	getSciName() {
+	getSciName () {
 		const { showScientificName, sciNameDisplay } = this.props;
 		if (!showScientificName) {
 			return null;
@@ -419,27 +425,27 @@ class SpeciesRow extends React.Component {
 		);
 	}
 
-	getNumReported(species) {
+	getNumReported (species) {
 		if (species.howManyCount && species.howManyCount !== '0') {
 			return (<FormattedNumber value={species.howManyCount}/>);
 		}
 		return <span className="unknown-count">-</span>;
 	}
 
-	getRecentObservationTime(time) {
+	getRecentObservationTime (time) {
 		const { viewportMode } = this.props;
 		if (viewportMode === C.VIEWPORT_MODES.MOBILE) {
 			return null;
 		}
 
 		return (
-		<td className="last-seen">
-			<div>{time}</div>
-		</td>
+			<td className="last-seen">
+				<div>{time}</div>
+			</td>
 		);
 	}
 
-	render() {
+	render () {
 		const { dispatch, species, comName, comNameDisplay, rowNum, intl } = this.props;
 		const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
 
@@ -447,50 +453,50 @@ class SpeciesRow extends React.Component {
 		const title = intl.formatMessage({ id: 'locations' });
 
 		return (
-		<tr>
-			<td className="row-num">{rowNum}</td>
-			<td className="species-col">
-				<div>
-					<a href={wikipediaLink} target="_blank" className="com-name">
-						<span dangerouslySetInnerHTML={{ __html: comNameDisplay }}/>
-						<span className="icon icon-wikipedia"/>
-					</a>
-				</div>
-				{this.getSciName()}
-			</td>
-			<td ref="cell" className="locations-seen species-num-locations-cell">
-				<OverlayTrigger trigger="click" placement="left" rootClose={true} container={this.refs.cell}
-								overlay={
-									<Popover title={title} id="locations-popover">
-										<ul className="bird-location-sightings"
-											onClick={(e) => this.selectLocation(dispatch, e.target)}>
-											{locations}
-										</ul>
-									</Popover>
-								}>
+			<tr>
+				<td className="row-num">{rowNum}</td>
+				<td className="species-col">
+					<div>
+						<a href={wikipediaLink} target="_blank" className="com-name">
+							<span dangerouslySetInnerHTML={{ __html: comNameDisplay }}/>
+							<span className="icon icon-wikipedia"/>
+						</a>
+					</div>
+					{this.getSciName()}
+				</td>
+				<td ref="cell" className="locations-seen species-num-locations-cell">
+					<OverlayTrigger trigger="click" placement="left" rootClose={true} container={this.refs.cell}
+					                overlay={
+						                <Popover title={title} id="locations-popover">
+							                <ul className="bird-location-sightings"
+							                    onClick={(e) => this.selectLocation(dispatch, e.target)}>
+								                {locations}
+							                </ul>
+						                </Popover>
+					                }>
             <span className="species-num-locations">
               {species.locations.length}
             </span>
-				</OverlayTrigger>
-			</td>
-			{this.getRecentObservationTime(species.mostRecentObservationTime)}
-			<td className="num-reported">{this.getNumReported(species)}</td>
-		</tr>
+					</OverlayTrigger>
+				</td>
+				{this.getRecentObservationTime(species.mostRecentObservationTime)}
+				<td className="num-reported">{this.getNumReported(species)}</td>
+			</tr>
 		);
 	}
 }
 
 
 class NotableSightingsTable extends React.Component {
-	constructor(props) {
+	constructor (props) {
 		super(props);
 	}
 
-	componentDidMount() {
+	componentDidMount () {
 		this.sortedSpecies = this.props.species;
 	}
 
-	shouldComponentUpdate(nextProps) {
+	shouldComponentUpdate (nextProps) {
 		// don't update anything if the user is closing the tab - it's super slow
 		if (nextProps.tabVisible !== this.props.tabVisible && !nextProps.tabVisible) {
 			return false;
@@ -498,7 +504,7 @@ class NotableSightingsTable extends React.Component {
 		return true;
 	}
 
-	componentWillReceiveProps({ species, sort, sortDir }) {
+	componentWillReceiveProps ({ species, sort, sortDir }) {
 		const numSpeciesChanged = species.length !== this.props.species.length;
 		const sortChanged = sort !== this.props.sort;
 		const sortDirChanged = sortDir !== this.props.sortDir;
@@ -509,31 +515,31 @@ class NotableSightingsTable extends React.Component {
 		this.sortedSpecies = helpers.sortSightings(species, sort, sortDir);
 	}
 
-	getClearSpeciesFilterIcon() {
+	getClearSpeciesFilterIcon () {
 		const { dispatch, filter } = this.props;
 		if (!filter) {
 			return;
 		}
 		return (
-		<span className="clear-filter-icon glyphicon glyphicon-remove"
-			  onClick={() => dispatch(actions.setSpeciesFilter(''))}/>
+			<span className="clear-filter-icon glyphicon glyphicon-remove"
+			      onClick={() => dispatch(actions.setSpeciesFilter(''))}/>
 		);
 	}
 
-	getContent() {
+	getContent () {
 		const { species } = this.props;
 		if (!species.length) {
 			return null;
 		}
 
 		return (
-		<tbody>
-		{this.getRows()}
-		</tbody>
+			<tbody>
+			{this.getRows()}
+			</tbody>
 		)
 	}
 
-	getRows() {
+	getRows () {
 		const { dispatch, selectedLocation, showScientificName, filter, env, intl } = this.props;
 		const isMobile = (env.viewportMode === C.VIEWPORT_MODES.MOBILE);
 
@@ -578,7 +584,7 @@ class NotableSightingsTable extends React.Component {
 		});
 	}
 
-	getLocationColHeader() {
+	getLocationColHeader () {
 		const { selectedLocation, dispatch, sort, sortDir } = this.props;
 		if (selectedLocation) {
 			return null;
@@ -586,11 +592,11 @@ class NotableSightingsTable extends React.Component {
 
 		return (
 			<SortableColHeader dispatch={dispatch} ref="location" label="location" colClass="location-col"
-				sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION} sort={sort} sortDir={sortDir}/>
+			                   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.LOCATION} sort={sort} sortDir={sortDir}/>
 		);
 	}
 
-	getNotableSightingsHeader() {
+	getNotableSightingsHeader () {
 		const { env, dispatch, sort, sortDir } = this.props;
 
 		if (env.viewportMode === C.VIEWPORT_MODES.MOBILE) {
@@ -602,18 +608,18 @@ class NotableSightingsTable extends React.Component {
 				<th className="row-num"/>
 				{this.getLocationColHeader()}
 				<SortableColHeader dispatch={dispatch} label="species" colClass="species-col"
-								   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.SPECIES} sort={sort} sortDir={sortDir}/>
+				                   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.SPECIES} sort={sort} sortDir={sortDir}/>
 				<SortableColHeader dispatch={dispatch} label="dateSeen" colClass="date-seen-col"
-								   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN} sort={sort} sortDir={sortDir}/>
+				                   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.DATE_SEEN} sort={sort} sortDir={sortDir}/>
 				<SortableColHeader dispatch={dispatch} label="reportedBy" colClass="reporter-col"
-								   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER} sort={sort} sortDir={sortDir}/>
+				                   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.REPORTER} sort={sort} sortDir={sortDir}/>
 				<SortableColHeader dispatch={dispatch} label="status" colClass="status-col"
-								   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS} sort={sort} sortDir={sortDir}/>
+				                   sortField={C.NOTABLE_SIGHTINGS_SORT.FIELDS.STATUS} sort={sort} sortDir={sortDir}/>
 			</tr>
 		);
 	}
 
-	render() {
+	render () {
 		return (
 			<div className="species-table notable-table">
 				<div className="species-table-header">
@@ -634,19 +640,20 @@ class NotableSightingsTable extends React.Component {
 }
 
 class SortableColHeader extends React.Component {
-	render() {
+	render () {
 		const { dispatch, label, sortField, colClass, sort, sortDir, width } = this.props;
 		const className = 'sortable ' + colClass;
 
 		const style = (width) ? { width: width + 'px' } : {};
 		return (
-		<th className={className} onClick={() => dispatch(actions.sortSightings(sortField))} style={style}>
-			<FormattedMessage id={label}/>
-			{helpers.getColSort(sortField, sort, sortDir)}
-		</th>
+			<th className={className} onClick={() => dispatch(actions.sortSightings(sortField))} style={style}>
+				<FormattedMessage id={label}/>
+				{helpers.getColSort(sortField, sort, sortDir)}
+			</th>
 		)
 	}
 }
+
 SortableColHeader.propTypes = {
 	label: PropTypes.string.isRequired,
 	sortField: PropTypes.string.isRequired,
@@ -655,17 +662,17 @@ SortableColHeader.propTypes = {
 
 
 class NotableSpeciesRow extends React.Component {
-	getLocationField() {
+	getLocationField () {
 		const { selectedLocation, row } = this.props;
 		if (selectedLocation) {
 			return null;
 		}
 		return (
-		<td className="location-col">{row.locName}</td>
+			<td className="location-col">{row.locName}</td>
 		);
 	}
 
-	getStatus(row) {
+	getStatus (row) {
 		let status = null;
 		if (row.obsValid) {
 			status = <span className="confirmed"><FormattedMessage id="confirmed"/></span>;
@@ -677,66 +684,66 @@ class NotableSpeciesRow extends React.Component {
 		return status;
 	}
 
-	getCount(row) {
+	getCount (row) {
 		if (row.howMany) {
 			return <span>(<FormattedNumber value={row.howMany}/>)</span>;
 		}
 		return null;
 	}
 
-	getSciName() {
+	getSciName () {
 		const { showScientificName, sciNameDisplay } = this.props;
 		if (!showScientificName) {
 			return null;
 		}
 		return (
-		<div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+			<div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
 		);
 	}
 
-	render() {
+	render () {
 		const { row, comName, comNameDisplay, rowNum, intl } = this.props;
 		const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
-		const checklistLink = `http://ebird.org/ebird/view/checklist/${row.subID}`;
+		const checklistLink = `http://ebird.org/ebird/view/checklist/${row.subId}`;
 
 		return (
-		<tr>
-			<td className="row-num">{rowNum}</td>
-			{this.getLocationField()}
-			<td className="species-col">
-				<div>
-					<a href={wikipediaLink} target="_blank" className="com-name">
-						<span dangerouslySetInnerHTML={{ __html: comNameDisplay }}/>
-						<span className="icon icon-wikipedia"/>
-					</a>
-					<span className="notable-count">{this.getCount(row)}</span>
-				</div>
-				{this.getSciName()}
-			</td>
-			<td className="date-seen-col">{row.obsDtDisplay}</td>
-			<td className="reporter-col">{row.reporter}</td>
-			<td className="status-col">{this.getStatus(row)}</td>
-			<td className="checklist-col">
-				<a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list"
-				   title={intl.formatMessage({ id: 'viewChecklist' })}/>
-			</td>
-		</tr>
+			<tr>
+				<td className="row-num">{rowNum}</td>
+				{this.getLocationField()}
+				<td className="species-col">
+					<div>
+						<a href={wikipediaLink} target="_blank" className="com-name">
+							<span dangerouslySetInnerHTML={{ __html: comNameDisplay }}/>
+							<span className="icon icon-wikipedia"/>
+						</a>
+						<span className="notable-count">{this.getCount(row)}</span>
+					</div>
+					{this.getSciName()}
+				</td>
+				<td className="date-seen-col">{row.obsDtDisplay}</td>
+				<td className="reporter-col">{row.reporter}</td>
+				<td className="status-col">{this.getStatus(row)}</td>
+				<td className="checklist-col">
+					<a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list"
+					   title={intl.formatMessage({ id: 'viewChecklist' })}/>
+				</td>
+			</tr>
 		);
 	}
 }
 
 class NotableSpeciesMobileRow extends React.Component {
-	getLocationField() {
+	getLocationField () {
 		const { selectedLocation, row } = this.props;
 		if (selectedLocation) {
 			return null;
 		}
 		return (
-		<td className="location-col">{row.locName}</td>
+			<td className="location-col">{row.locName}</td>
 		);
 	}
 
-	getStatus(row) {
+	getStatus (row) {
 		let status = null;
 		if (row.obsValid) {
 			status = <span className="confirmed"><FormattedMessage id="confirmed"/></span>;
@@ -748,50 +755,50 @@ class NotableSpeciesMobileRow extends React.Component {
 		return status;
 	}
 
-	getCount(row) {
+	getCount (row) {
 		if (row.howMany) {
 			return <span>(<FormattedNumber value={row.howMany}/>)</span>;
 		}
 		return null;
 	}
 
-	getSciName() {
+	getSciName () {
 		const { showScientificName, sciNameDisplay } = this.props;
 		if (!showScientificName) {
 			return null;
 		}
 		return (
-		<div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
+			<div className="sci-name" dangerouslySetInnerHTML={{ __html: sciNameDisplay }}></div>
 		);
 	}
 
-	render() {
+	render () {
 		const { row, comName, comNameDisplay, rowNum, intl } = this.props;
 		const wikipediaLink = 'https://en.wikipedia.org/wiki/Special:Search/' + comName;
-		const checklistLink = `http://ebird.org/ebird/view/checklist/${row.subID}`;
+		const checklistLink = `http://ebird.org/ebird/view/checklist/${row.subId}`;
 
 		return (
-		<tr>
-			<td className="row-num">{rowNum}</td>
-			<td className="species-col">
-				<div>
-					<a href={wikipediaLink} target="_blank" className="com-name">
-						<span dangerouslySetInnerHTML={{ __html: comNameDisplay }}/>
-						<span className="icon icon-wikipedia"/>
-					</a>
-					<span className="notable-count">{this.getCount(row)}</span>
-				</div>
-				{this.getSciName()}
-				{this.getLocationField()}
-				<div>{row.obsDtDisplay}</div>
-				<div>{row.reporter}</div>
-				<div>{this.getStatus(row)}</div>
-			</td>
-			<td className="checklist-col">
-				<a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list"
-				   title={intl.formatMessage({ id: 'viewChecklist' })}/>
-			</td>
-		</tr>
+			<tr>
+				<td className="row-num">{rowNum}</td>
+				<td className="species-col">
+					<div>
+						<a href={wikipediaLink} target="_blank" className="com-name">
+							<span dangerouslySetInnerHTML={{ __html: comNameDisplay }}/>
+							<span className="icon icon-wikipedia"/>
+						</a>
+						<span className="notable-count">{this.getCount(row)}</span>
+					</div>
+					{this.getSciName()}
+					{this.getLocationField()}
+					<div>{row.obsDtDisplay}</div>
+					<div>{row.reporter}</div>
+					<div>{this.getStatus(row)}</div>
+				</td>
+				<td className="checklist-col">
+					<a href={checklistLink} target="_blank" className="checklist glyphicon glyphicon-list"
+					   title={intl.formatMessage({ id: 'viewChecklist' })}/>
+				</td>
+			</tr>
 		);
 	}
 }

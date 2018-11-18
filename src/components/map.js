@@ -817,7 +817,7 @@ export class Map extends React.Component {
 
 	getNotableRows(sightings, l10n) {
 		return sightings.map((sighting) => {
-			const checklistLink = `http://ebird.org/ebird/view/checklist/${sighting.subID}`;
+			const checklistLink = `http://ebird.org/ebird/view/checklist/${sighting.subId}`;
 			const sightingDate = moment(sighting.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
 			return (
 				<tr key={sighting.obsID}>

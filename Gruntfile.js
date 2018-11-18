@@ -23,6 +23,12 @@ module.exports = function (grunt) {
 			}
 		},
 
+		uglify: {
+			libs: {
+				files: {}
+			}
+		},
+
 		copy: {
 			fonts: {
 				src: './src/css/fonts/*', dest: 'dist/fonts/', flatten: true, expand: true, filter: 'isFile'
@@ -80,9 +86,14 @@ module.exports = function (grunt) {
 		}
 	};
 
+	config.uglify.libs.files[`dist/libs-${version}.min.js`] = [
+		'src/libs/bootstrap.js',
+		'src/libs/gmaps.inverted.circle.js'
+	];
+
 	grunt.initConfig(config);
 
-	grunt.registerTask('prod', ['sass', 'copy', 'cssmin', 'run:webpack_prod']);
-	grunt.registerTask('dev', ['sass', 'copy', 'cssmin']);
+	grunt.registerTask('prod', ['sass', 'copy', 'cssmin', 'uglify', 'run:webpack_prod']);
+	grunt.registerTask('dev', ['sass', 'copy', 'cssmin', 'uglify']);
 	grunt.registerTask('start', ['dev', 'concurrent:watchers']);
 };

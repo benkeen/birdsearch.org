@@ -148,7 +148,7 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 			if (!allDataBySpecies.hasOwnProperty(sciName)) {
 				allDataBySpecies[sciName] = [];
 			}
-			allDataBySpecies[sciName].push({ locId: info.locId, locName: info.locName, subID: info.subID });
+			allDataBySpecies[sciName].push({ locId: info.locId, locName: info.locName, subId: info.subId });
 		});
 	});
 
@@ -240,7 +240,7 @@ const getNotableSightings = (locations, sightings, obsRecency, targetLocationID 
 					howMany: info.howMany,
 					lat: info.lat,
 					lng: info.lng,
-					subID: info.subID,
+					subId: info.subId,
 					locId: info.locId,
 					locName: info.locName,
 					reporter: `${info.firstName} ${info.lastName}`,
