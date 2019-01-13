@@ -177,10 +177,8 @@ const getSightings = (locations, sightings, obsRecency, targetLocationID = null)
 			var observationTimeUnix = parseInt(moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format("X"), 10);
 			if (observationTimeUnix > lastObservation) {
 				lastObservation = observationTimeUnix;
-
-				// TODO drop the second one
 				sighting.mostRecentObservation = moment(observation.obsDt, 'YYYY-MM-DD HH:mm');
-				sighting.mostRecentObservationTime = moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a');
+				sighting.mostRecentObservationTime = moment(observation.obsDt).format('MMM Do, H:mm a');
 			}
 			lastSeenArray.push(moment(observation.obsDt, 'YYYY-MM-DD HH:mm').format('MMM Do, H:mm a'));
 

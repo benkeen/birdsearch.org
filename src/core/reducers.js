@@ -5,6 +5,7 @@
 
 import { C, E, _, helpers, actions } from './core';
 import * as storage from './storage';
+import moment from 'moment';
 
 
 const env = (state = {
@@ -167,6 +168,7 @@ const user = (state = {
 			});
 
 		case E.SET_LOCALE:
+			moment.locale(action.locale);
 			storage.set('locale', action.locale);
 			return Object.assign({}, state, {
 				locale: action.locale
