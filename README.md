@@ -1,5 +1,7 @@
 # birdsearch.org
 
+> Alas, alack, Cornell changed their API a little while back. So while the site still functions, it's gotten a little glitchy here and there. On the bright side, in the years since I created this app, eBird has been much improved. And while it still doesn't offer quite the same UX for giving high-level overviews for a region like birdsearch.org it's a lot better. I doubt I will update this script again.
+
 Like many birders I know, discovering [eBird.org](http://ebird.org) was a cause for celebration. It brought birding 
 out of the dark ages of pen and pencil and into the digital age. Now we have a simple, centralized place to track 
 observations, share knowledge and open up the data for everyone.
