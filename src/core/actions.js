@@ -3,9 +3,12 @@ import { C, E, helpers, _ } from './core';
 import fetch from 'isomorphic-fetch';
 import HotspotWorker from './worker-processHotspotSightings';
 import NotableWorker from './worker-processNotableSightings';
+import moment from 'moment';
 
 
 const setLocale = (locale) => {
+	moment.locale(locale);
+
 	return {
 		type: E.SET_LOCALE,
 		locale

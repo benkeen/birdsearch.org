@@ -90,23 +90,25 @@ const store = initStore({
 // meh. Gotta go somewhere.
 $('body').addClass(locale);
 
+// set the default locale
+moment.locale(locale);
 
 class I18NWrapper extends React.Component {
 	render() {
 		const { locale } = this.props;
 
 		return (
-		<IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
-			<Router history={browserHistory}>
-				<Route path="/" component={App}>
-					<Route path="/about" component={About}/>
-					<Route path="/intro" component={Intro}/>
-					<Route path="/search" component={SearchTip}/>
-					<Route path="/settings" component={Settings}/>
-					<Route path="/report" component={Report}/>
-				</Route>
-			</Router>
-		</IntlProvider>
+			<IntlProvider key="intl" locale={locale} messages={i18n[locale]}>
+				<Router history={browserHistory}>
+					<Route path="/" component={App}>
+						<Route path="/about" component={About}/>
+						<Route path="/intro" component={Intro}/>
+						<Route path="/search" component={SearchTip}/>
+						<Route path="/settings" component={Settings}/>
+						<Route path="/report" component={Report}/>
+					</Route>
+				</Router>
+			</IntlProvider>
 		);
 	}
 }
