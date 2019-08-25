@@ -15,6 +15,9 @@ React, Redux, react-intl, Node.
 
 ## Versions
 
+### v2.3.2 - Aug 24, 2019 
+- fixed bug with notable searches not returning any data due to to eBird API change.
+
 ### v2.3.1 - Nov 17th, 2018 
 - Converted build process to webpack;
 - fixed bug with broken checklist link by removing checklist links :( eBird API no longer passes the checklist ID so we

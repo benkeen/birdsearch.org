@@ -38,9 +38,10 @@ const getHotspotSightingsPacket = ({ locationIDs, recency }, res) => {
 
 
 const getNotableSightings = ({ lat, lng, observationRecency }, res) => {
-	const endpoint = 'http://ebird.org/ws1.1/data/notable/geo/recent';
-	const url = `${endpoint}?lat=${lat}&lng=${lng}&fmt=json&back=${observationRecency}&dist=250&hotspot=false&detail=full`;
-	request.get(url, function (error, response, body) {
+	const endpoint = 'https://api.ebird.org/v2/data/obs/geo/recent/notable';
+	const url = `${endpoint}?lat=${lat}&lng=${lng}&back=${observationRecency}&dist=50&hotspot=false&detail=full`;
+
+	request.get({url, headers: { 'X-eBirdApiToken': ebirdApiToken }}, (error, response, body) => {
 		res.send(body);
 	});
 };

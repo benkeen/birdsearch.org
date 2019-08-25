@@ -30,8 +30,8 @@ var _data = {
 		markers: {}
 	},
 	[C.SEARCH_SETTINGS.SEARCH_TYPES.NOTABLE]: {
-		defaultZoomLevel: 7,
-		circleRadius: 250000,
+		defaultZoomLevel: 9,
+		circleRadius: 50000,
 		markers: {}
 	}
 };
